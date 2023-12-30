@@ -1,0 +1,29 @@
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+    - vendor/tomasvotruba/type-coverage/config/extension.neon
+    - vendor/phpat/phpat/extension.neon
+
+parameters:
+    level: 9
+    phpVersion: 80213
+    editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+    excludePaths:
+        analyseAndScan:
+            - vendor
+            - tests/*/Stub/*
+            - rector.php
+    type_coverage:
+        return_type: 100
+        param_type: 100
+        property_type: 100
+    fileExtensions:
+        - 'php'
+    phpat:
+        ignore_built_in_classes: true
+
+services:
+    -
+        class: PhPhD\ExceptionalValidation\Tests\ArchitectureRuleSet
+        tags:
+            - phpat.test

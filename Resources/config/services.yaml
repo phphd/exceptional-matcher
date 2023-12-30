@@ -1,0 +1,71 @@
+services:
+    phd_exceptional_validation:
+        class: PhPhD\ExceptionalValidationBundle\Messenger\ExceptionalValidationMiddleware
+        arguments:
+            - '@phd_exceptional_validation.exception_handler'
+
+    phd_exceptional_validation.exception_handler:
+        class: PhPhD\ExceptionalValidation\Handler\ExceptionalHandler
+        arguments:
+            - '@phd_exceptional_validation.rule_set_assembler'
+            - '@phd_exceptional_validation.violations_list_formatter'
+        lazy: true
+        tags:
+            - { name: 'proxy', interface: 'PhPhD\ExceptionalValidation\Handler\ExceptionHandler' }
+
+    phd_exceptional_validation.rule_set_assembler:
+        alias: phd_exceptional_validation.rule_set_assembler.object
+
+    phd_exceptional_validation.violations_list_formatter:
+        class: PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationsListFormatter
+        arguments:
+            - '@phd_exceptional_validation.violation_formatter'
+        lazy: true
+        tags:
+            - { name: 'proxy', interface: 'PhPhD\ExceptionalValidation\Formatter\ExceptionViolationsListFormatter' }
+
+    phd_exceptional_validation.violation_formatter:
+        class: PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationFormatter
+        arguments:
+            - '@translator'
+            - '%validator.translation_domain%'
+
+    phd_exceptional_validation.rule_set_assembler.object:
+        class: PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler
+        arguments:
+            - '@phd_exceptional_validation.rule_set_assembler.object.rules'
+
+    phd_exceptional_validation.rule_set_assembler.object.rules:
+        class: PhPhD\ExceptionalValidation\Assembler\Object\Rules\ObjectRulesAssembler
+        arguments:
+            - '@phd_exceptional_validation.rule_set_assembler.property'
+
+    phd_exceptional_validation.rule_set_assembler.property:
+        class: PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\PropertyRuleSetAssembler
+        arguments:
+            - '@phd_exceptional_validation.rule_set_assembler.property.rules'
+
+    phd_exceptional_validation.rule_set_assembler.property.rules:
+        class: PhPhD\ExceptionalValidation\Assembler\CompositeRuleSetAssembler
+        arguments:
+            -   - '@phd_exceptional_validation.rule_set_assembler.property.rules.captures'
+                - '@phd_exceptional_validation.rule_set_assembler.property.rules.nested_valid_object'
+
+    phd_exceptional_validation.rule_set_assembler.property.rules.captures:
+        class: PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyCaptureRulesAssembler
+
+    phd_exceptional_validation.rule_set_assembler.property.rules.nested_valid_object:
+        class: PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler
+        arguments:
+            - '@phd_exceptional_validation.rule_set_assembler.object'
+        lazy: true
+        tags:
+            - { name: 'proxy', interface: 'PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler' }
+
+when@test:
+    parameters:
+        validator.translation_domain: test
+
+    services:
+        translator:
+            class: stdClass
