@@ -1,0 +1,77 @@
+{
+    "name": "phphd/exceptional-validation-bundle",
+    "description": "Mapping domain exceptions to symfony validator format",
+    "type": "symfony-bundle",
+    "license": "LicenseRef-Apache-2.0-with-Commons-Clause",
+    "authors": [
+        {
+            "name": "Yevhen Sidelnyk",
+            "email": "zsidelnik@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=8.1",
+        "symfony/dependency-injection": "^6.2 | ^7.0",
+        "symfony/http-kernel": "^6.0 | ^7.0",
+        "symfony/messenger": "^6.0 | ^7.0",
+        "symfony/validator": "^6.0 | ^7.0"
+    },
+    "require-dev": {
+        "phphd/coding-standard": "~0.5.0",
+        "symfony/var-dumper": "^6.0 | ^7.0",
+        "tomasvotruba/type-coverage": "^0.2.1",
+        "phpstan/phpstan-phpunit": "^1.3",
+        "psalm/plugin-phpunit": "^0.18.4",
+        "nyholm/symfony-bundle-test": "^3.0",
+        "phpstan/phpstan": "^1.10",
+        "phpat/phpat": "^0.10.13",
+        "vimeo/psalm": "^5.13",
+        "phpunit/phpunit": "^10.5"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/phphd/coding-standard"
+        }
+    ],
+    "autoload": {
+        "classmap": [
+            "src/ExceptionalValidation.php",
+            "DependencyInjection",
+            "Messenger",
+            "PhdExceptionalValidationBundle.php"
+        ],
+        "psr-4": {
+            "PhPhD\\ExceptionalValidation\\": "src/ExceptionalValidation"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/ArchitectureRuleSet.php"
+        ],
+        "psr-4": {
+            "PhPhD\\ExceptionalValidationBundle\\Tests\\": "tests/Integration",
+            "PhPhD\\ExceptionalValidation\\Tests\\": "tests/Unit"
+        }
+    },
+    "scripts": {
+        "ci:pack": [
+            "@ci:ecs",
+            "@ci:rector",
+            "@ci:phpstan",
+            "@ci:psalm",
+            "@ci:unit-test",
+            "@ci:integration-test"
+        ],
+        "ci:ecs": "vendor/bin/ecs check",
+        "ci:ecs-fix": "vendor/bin/ecs check --fix",
+        "ci:rector": "vendor/bin/rector process --dry-run -vv",
+        "ci:rector-fix": "vendor/bin/rector process",
+        "ci:phpstan": "vendor/bin/phpstan analyze ./",
+        "ci:psalm": "vendor/bin/psalm",
+        "ci:test": "vendor/bin/phpunit --testdox --colors=always",
+        "ci:unit-test": "vendor/bin/phpunit --testdox --colors=always --testsuite=Unit",
+        "ci:integration-test": "vendor/bin/phpunit --testdox --colors=always --testsuite=Integration"
+    }
+}
