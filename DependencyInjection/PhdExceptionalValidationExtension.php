@@ -28,10 +28,6 @@ final class PhdExceptionalValidationExtension extends Extension
 
         $loader = new YamlFileLoader($container, new FileLocator(), $env);
         $loader->load(__DIR__.'/../Resources/config/services.yaml');
-
-        if ('test' === $env) {
-            $container->getDefinition('phd_exceptional_validation')->setPublic(true);
-        }
     }
 
     /** @override */

@@ -61,11 +61,3 @@ services:
         lazy: true
         tags:
             - { name: 'proxy', interface: 'PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler' }
-
-when@test:
-    parameters:
-        validator.translation_domain: test
-
-    services:
-        translator:
-            class: stdClass

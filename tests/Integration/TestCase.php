@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalValidationBundle\Tests;
 
 use Nyholm\BundleTest\TestKernel;
 use PhPhD\ExceptionalValidationBundle\PhdExceptionalValidationBundle;
+use PhPhD\ExceptionalValidationBundle\Tests\Compiler\TestServicesCompilerPass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -22,6 +23,7 @@ abstract class TestCase extends KernelTestCase
         /** @var TestKernel $kernel */
         $kernel = parent::createKernel($options);
         $kernel->addTestBundle(PhdExceptionalValidationBundle::class);
+        $kernel->addTestCompilerPass(new TestServicesCompilerPass());
 
         return $kernel;
     }
