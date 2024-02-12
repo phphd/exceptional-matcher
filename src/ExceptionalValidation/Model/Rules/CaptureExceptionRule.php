@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalValidation\Model\Rules;
 use PhPhD\ExceptionalValidation\Model\CaptureRule;
 use PhPhD\ExceptionalValidation\Model\ValueObject\CaughtException;
 use PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath;
+use PhPhD\ExceptionalValidation\Model\ValueObject\ThrownException;
 use Throwable;
 
 final class CaptureExceptionRule implements CaptureRule
@@ -19,9 +20,11 @@ final class CaptureExceptionRule implements CaptureRule
     ) {
     }
 
-    public function capture(Throwable $exception): array
+    public function capture(ThrownException $thrownException): array
     {
-        if (!$exception instanceof $this->exceptionClass) {
+        $exception = $thrownException->match($this->exceptionClass);
+
+        if (null === $exception) {
             return [];
         }
 

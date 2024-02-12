@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation\Model\Sets;
 use Closure;
 use PhPhD\ExceptionalValidation\Model\CaptureRule;
 use PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath;
-use Throwable;
+use PhPhD\ExceptionalValidation\Model\ValueObject\ThrownException;
 
 final class LazyRuleSet implements CaptureRule
 {
@@ -17,9 +17,9 @@ final class LazyRuleSet implements CaptureRule
     ) {
     }
 
-    public function capture(Throwable $exception): array
+    public function capture(ThrownException $thrownException): array
     {
-        return ($this->ruleSetFactory)()->capture($exception);
+        return ($this->ruleSetFactory)()->capture($thrownException);
     }
 
     public function getPropertyPath(): PropertyPath
