@@ -19,13 +19,13 @@ final class CaptureExceptionRule implements CaptureRule
     ) {
     }
 
-    public function capture(Throwable $exception): ?CaughtException
+    public function capture(Throwable $exception): array
     {
         if (!$exception instanceof $this->exceptionClass) {
-            return null;
+            return [];
         }
 
-        return new CaughtException($exception, $this);
+        return [new CaughtException($exception, $this)];
     }
 
     public function getPropertyPath(): PropertyPath
