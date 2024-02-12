@@ -6,12 +6,12 @@ namespace PhPhD\ExceptionalValidation\Model;
 
 use PhPhD\ExceptionalValidation\Model\ValueObject\CaughtException;
 use PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath;
-use Throwable;
+use PhPhD\ExceptionalValidation\Model\ValueObject\ThrownException;
 
 interface CaptureRule
 {
     /** @return list<CaughtException> */
-    public function capture(Throwable $exception): array;
+    public function capture(ThrownException $thrownException): array;
 
     public function getPropertyPath(): PropertyPath;
 

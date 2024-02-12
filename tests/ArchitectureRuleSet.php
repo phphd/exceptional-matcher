@@ -91,6 +91,7 @@ final class ArchitectureRuleSet
                     Selector::AND(
                         Selector::classname(ObjectRuleSetAssembler::class),
                     ),
+                    $this->model(),
                     Selector::AND(
                         Selector::isInterface(),
                         $this->violationsFormatter(),
