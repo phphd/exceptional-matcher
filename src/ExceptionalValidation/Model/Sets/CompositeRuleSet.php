@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Model\Sets;
 
 use PhPhD\ExceptionalValidation\Model\CaptureRule;
-use PhPhD\ExceptionalValidation\Model\ValueObject\CaughtException;
 use PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath;
 use Throwable;
+
+use function array_merge;
 
 final class CompositeRuleSet implements CaptureRule
 {
@@ -18,15 +19,15 @@ final class CompositeRuleSet implements CaptureRule
     ) {
     }
 
-    public function capture(Throwable $exception): ?CaughtException
+    public function capture(Throwable $exception): array
     {
+        $hits = [];
+
         foreach ($this->rules as $rule) {
-            if (null !== ($hit = $rule->capture($exception))) {
-                return $hit;
-            }
+            $hits[] = $rule->capture($exception);
         }
 
-        return null;
+        return array_merge(...$hits);
     }
 
     public function getPropertyPath(): PropertyPath

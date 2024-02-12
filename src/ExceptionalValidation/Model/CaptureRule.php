@@ -10,7 +10,8 @@ use Throwable;
 
 interface CaptureRule
 {
-    public function capture(Throwable $exception): ?CaughtException;
+    /** @return list<CaughtException> */
+    public function capture(Throwable $exception): array;
 
     public function getPropertyPath(): PropertyPath;
 

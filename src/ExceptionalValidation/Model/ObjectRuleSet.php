@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Model;
 
-use PhPhD\ExceptionalValidation\Model\ValueObject\CaughtException;
 use PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath;
 use Throwable;
 
@@ -18,7 +17,7 @@ final class ObjectRuleSet implements CaptureRule
     ) {
     }
 
-    public function capture(Throwable $exception): ?CaughtException
+    public function capture(Throwable $exception): array
     {
         return $this->ruleSet->capture($exception);
     }

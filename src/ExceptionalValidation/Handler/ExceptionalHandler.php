@@ -31,13 +31,13 @@ final class ExceptionalHandler implements ExceptionHandler
             throw $exception;
         }
 
-        $caughtException = $ruleSet->capture($exception);
+        $caughtExceptions = $ruleSet->capture($exception);
 
-        if (null === $caughtException) {
+        if ([] === $caughtExceptions) {
             throw $exception;
         }
 
-        $violationList = $this->violationsFormatter->formatViolations([$caughtException]);
+        $violationList = $this->violationsFormatter->formatViolations($caughtExceptions);
 
         throw new ExceptionalValidationFailedException($message, $violationList, $exception);
     }

@@ -6,7 +6,6 @@ namespace PhPhD\ExceptionalValidation\Model\Sets;
 
 use Closure;
 use PhPhD\ExceptionalValidation\Model\CaptureRule;
-use PhPhD\ExceptionalValidation\Model\ValueObject\CaughtException;
 use PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath;
 use Throwable;
 
@@ -18,7 +17,7 @@ final class LazyRuleSet implements CaptureRule
     ) {
     }
 
-    public function capture(Throwable $exception): ?CaughtException
+    public function capture(Throwable $exception): array
     {
         return ($this->ruleSetFactory)()->capture($exception);
     }
