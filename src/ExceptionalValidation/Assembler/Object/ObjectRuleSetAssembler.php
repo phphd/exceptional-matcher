@@ -6,9 +6,9 @@ namespace PhPhD\ExceptionalValidation\Assembler\Object;
 
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\ObjectRulesAssemblerEnvelope;
-use PhPhD\ExceptionalValidation\Model\CaptureRule;
-use PhPhD\ExceptionalValidation\Model\ObjectRuleSet;
-use PhPhD\ExceptionalValidation\Model\Sets\LazyRuleSet;
+use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
+use PhPhD\ExceptionalValidation\Model\Rule\LazyRuleSet;
+use PhPhD\ExceptionalValidation\Model\Rule\ObjectRuleSet;
 use ReflectionClass;
 
 /** @internal */

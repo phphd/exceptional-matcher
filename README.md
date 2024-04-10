@@ -1,6 +1,6 @@
 # PhdExceptionalValidationBundle
 
-🧰 Provides [Symfony Messenger](https://symfony.com/doc/current/messenger.html) middleware to capture any thrown
+🧰 Provides [Symfony Messenger](https://symfony.com/doc/current/messenger.html) middleware allowing to capture any thrown
 exception and map it into [Symfony Validator](https://symfony.com/doc/current/validation.html) violations format in
 accordance with message property path.
 
@@ -70,9 +70,8 @@ final readonly class CreateVacationRequestCommand
 }
 ```
 
-In addition to standard symfony validator constraints, certain properties also have `#[Capture]` attributes. These
-attributes specify the particular exception class to be intercepted and the corresponding validation message to be shown
-when this exception occurs.
+As you can see, certain properties have `#[Capture]` attributes defined. These specify the specific exception class to
+be intercepted and the corresponding validation message to be shown when the exception occurs.
 
 Finally, when the exception has been captured, `ExceptionalValidationFailedException` is thrown:
 
@@ -89,5 +88,93 @@ try {
 ```
 
 As you can see in the example above, `$exception` object has constraint violation list with respectively mapped error
-messages. This errors list may be used in various ways such as displaying on an HTML page, formatting them into a JSON
+messages. This error list may be used in various ways such as displaying on an HTML page, formatting into a JSON
 response, logging into file, rethrowing different exception, or any other specific requirement you might have.
+
+## Advanced usage ⚙️
+
+The `ExceptionalValidation` and `Capture` attributes can be used in more complex scenarios to provide robust error
+handling and validation for your application. Here's an example of how you can use these attributes for advanced use
+cases.
+
+### Capturing Multiple Exceptions
+
+You can capture multiple exceptions for a single property by adding multiple `Capture` attributes. Each `Capture`
+attribute can specify a different exception class and validation message.
+
+```php
+use PhPhD\ExceptionalValidation;
+
+#[ExceptionalValidation]
+final class AdvancedMessage
+{
+    #[ExceptionalValidation\Capture(FirstException::class, 'first_error')]
+    #[ExceptionalValidation\Capture(SecondException::class, 'second_error')]
+    private string $property;
+}
+```
+
+In this example, if `FirstException` or `SecondException` is thrown, it will be captured and mapped to the property with
+the corresponding validation message.
+
+### Nested Exception Handling
+
+The `Capture` attribute can also be used on nested objects to handle exceptions at different levels of your object
+hierarchy.
+
+```php
+use PhPhD\ExceptionalValidation;
+use Symfony\Component\Validator\Constraints\Valid;
+
+#[ExceptionalValidation]
+final class ParentMessage
+{
+    #[Valid]
+    private NestedMessage $nestedMessage;
+}
+
+#[ExceptionalValidation]
+final class NestedMessage
+{
+    #[ExceptionalValidation\Capture(NestedException::class, 'nested_error')]
+    private string $nestedProperty;
+}
+```
+
+In this example, if `NestedException` is thrown, it will be captured and mapped to the `nestedProperty` of the
+`NestedMessage` object. Hence, violation property path would be `nestedMessage.nestedProperty`.
+
+### Conditional Exception Capturing with Callbacks
+
+The `Capture` attribute can also accept a callback function that determines whether the exception should be
+captured or not. This allows for more complex and dynamic exception handling scenarios.
+
+Here's an example:
+
+```php
+use PhPhD\ExceptionalValidation;
+
+#[ExceptionalValidation]
+final class ConditionalMessage
+{
+    #[ExceptionalValidation\Capture(ConditionallyCapturedException::class, 'oops', when: [self::class, 'firstPropertyMatchesException'])]
+    private int $firstProperty;
+
+    #[ExceptionalValidation\Capture(ConditionallyCapturedException::class, 'oops', when: [self::class, 'secondPropertyMatchesException'])]
+    private int $secondProperty;
+
+    public function firstPropertyMatchesException(ConditionallyCapturedException $exception): bool
+    {
+        return $exception->getConditionValue() === $this->firstProperty;
+    }
+
+    public function secondPropertyMatchesException(ConditionallyCapturedException $exception): bool
+    {
+        return $exception->getConditionValue() === $this->secondProperty;
+    }
+}
+```
+
+In this example the `when` option of the `Capture` attribute specifies a callback
+function (`firstPropertyMatchesException` and `secondPropertyMatchesException`) that is called when the exception is
+processed. If the callback returns `true`, the exception is captured; if it returns `false`, it is not captured.

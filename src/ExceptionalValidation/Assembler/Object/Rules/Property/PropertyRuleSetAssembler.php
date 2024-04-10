@@ -7,9 +7,9 @@ namespace PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property;
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyRulesAssemblerEnvelope;
-use PhPhD\ExceptionalValidation\Model\CaptureRule;
-use PhPhD\ExceptionalValidation\Model\PropertyRuleSet;
-use PhPhD\ExceptionalValidation\Model\Sets\LazyRuleSet;
+use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
+use PhPhD\ExceptionalValidation\Model\Rule\LazyRuleSet;
+use PhPhD\ExceptionalValidation\Model\Rule\PropertyRuleSet;
 use ReflectionProperty;
 
 /**

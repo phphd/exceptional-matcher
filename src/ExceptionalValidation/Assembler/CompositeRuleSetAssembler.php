@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Assembler;
 
 use ArrayIterator;
-use PhPhD\ExceptionalValidation\Model\CaptureRule;
-use PhPhD\ExceptionalValidation\Model\Sets\CompositeRuleSet;
+use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
+use PhPhD\ExceptionalValidation\Model\Rule\CompositeRuleSet;
 
 /**
  * @internal

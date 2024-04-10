@@ -7,7 +7,6 @@ namespace PhPhD\ExceptionalValidation\Tests;
 use ArrayIterator;
 use LogicException;
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Assembler\CompositeRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\ObjectRulesAssembler;
@@ -19,6 +18,8 @@ use PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationsListFormatter;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
 use PhPhD\ExceptionalValidation\Handler\ExceptionalHandler;
+use PhPhD\ExceptionalValidation\Tests\Stub\ConditionalMessage;
+use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ConditionallyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\PropertyCapturableException;
@@ -38,11 +39,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException
  * @covers \PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationsListFormatter
  * @covers \PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationFormatter
- * @covers \PhPhD\ExceptionalValidation\Model\ObjectRuleSet
- * @covers \PhPhD\ExceptionalValidation\Model\PropertyRuleSet
- * @covers \PhPhD\ExceptionalValidation\Model\Sets\CompositeRuleSet
- * @covers \PhPhD\ExceptionalValidation\Model\Sets\LazyRuleSet
- * @covers \PhPhD\ExceptionalValidation\Model\Rules\CaptureExceptionRule
+ * @covers \PhPhD\ExceptionalValidation\Model\Rule\ObjectRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Model\Rule\PropertyRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Model\Rule\CompositeRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Model\Rule\LazyRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Model\Rule\CaptureExceptionRule
+ * @covers \PhPhD\ExceptionalValidation\Model\Condition\MatchByExceptionClassCondition
+ * @covers \PhPhD\ExceptionalValidation\Model\Condition\MatchWithClosureCondition
+ * @covers \PhPhD\ExceptionalValidation\Model\Condition\CompositeMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Model\ValueObject\CaughtException
  * @covers \PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath
  * @covers \PhPhD\ExceptionalValidation\Assembler\CompositeRuleSetAssembler
@@ -231,5 +235,41 @@ final class ExceptionalValidationTest extends TestCase
 
             throw $e;
         }
+    }
+
+    public function testCapturesExceptionWithGivenCondition(): void
+    {
+        $message = HandleableMessageStub::createWithConditionalMessage(11, 41);
+
+        $rootException = new ConditionallyCapturedException(41);
+
+        $this->expectException(ExceptionalValidationFailedException::class);
+
+        try {
+            $this->exceptionHandler->capture($message, $rootException);
+        } catch (ExceptionalValidationFailedException $e) {
+            self::assertSame($rootException, $e->getPrevious());
+
+            $violations = $e->getViolations();
+            self::assertCount(1, $violations);
+
+            /** @var ConstraintViolationInterface $violation */
+            $violation = $violations[0];
+            self::assertSame('nestedObject.conditionalMessage.secondProperty', $violation->getPropertyPath());
+            self::assertSame(41, $violation->getInvalidValue());
+
+            throw $e;
+        }
+    }
+
+    public function testDoesntCaptureAnyExceptionWhenConditionIsNotMet(): void
+    {
+        $message = HandleableMessageStub::createWithConditionalMessage(11, 41);
+
+        $rootException = new ConditionallyCapturedException(12);
+
+        $this->expectExceptionObject($rootException);
+
+        $this->exceptionHandler->capture($message, $rootException);
     }
 }
