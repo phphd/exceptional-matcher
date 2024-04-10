@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules;
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Model\CaptureRule;
+use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
 use Symfony\Component\Validator\Constraints\Valid;
 
 use function is_object;

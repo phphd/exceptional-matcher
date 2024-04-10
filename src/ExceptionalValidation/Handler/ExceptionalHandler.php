@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation\Handler;
 use PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationsListFormatter;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
-use PhPhD\ExceptionalValidation\Model\ValueObject\ThrownException;
+use PhPhD\ExceptionalValidation\Model\ValueObject\ThrownExceptions;
 use Throwable;
 
 /** @internal */
@@ -32,7 +32,7 @@ final class ExceptionalHandler implements ExceptionHandler
             throw $exception;
         }
 
-        $caughtExceptions = $ruleSet->capture(new ThrownException($exception));
+        $caughtExceptions = $ruleSet->capture(new ThrownExceptions($exception));
 
         if ([] === $caughtExceptions) {
             throw $exception;

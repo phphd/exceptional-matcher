@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Assembler;
 
-use PhPhD\ExceptionalValidation\Model\CaptureRule;
+use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
 
 /**
  * @internal
