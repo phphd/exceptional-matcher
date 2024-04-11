@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Model\Sets;
+namespace PhPhD\ExceptionalValidation\Model\Rule;
 
-use PhPhD\ExceptionalValidation\Model\CaptureRule;
 use PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath;
-use PhPhD\ExceptionalValidation\Model\ValueObject\ThrownException;
+use PhPhD\ExceptionalValidation\Model\ValueObject\ThrownExceptions;
 
 use function array_merge;
 
+/** @internal */
 final class CompositeRuleSet implements CaptureRule
 {
     public function __construct(
@@ -19,12 +19,12 @@ final class CompositeRuleSet implements CaptureRule
     ) {
     }
 
-    public function capture(ThrownException $thrownException): array
+    public function capture(ThrownExceptions $thrownExceptions): array
     {
         $hits = [];
 
         foreach ($this->rules as $rule) {
-            $hits[] = $rule->capture($thrownException);
+            $hits[] = $rule->capture($thrownExceptions);
         }
 
         return array_merge(...$hits);
@@ -33,6 +33,11 @@ final class CompositeRuleSet implements CaptureRule
     public function getPropertyPath(): PropertyPath
     {
         return $this->parent->getPropertyPath();
+    }
+
+    public function getEnclosingObject(): object
+    {
+        return $this->parent->getEnclosingObject();
     }
 
     public function getRoot(): object

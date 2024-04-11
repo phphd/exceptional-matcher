@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Model\ValueObject;
 
+use PhPhD\ExceptionalValidation\Model\Condition\MatchCondition;
 use Throwable;
 
-final class ThrownException
+final class ThrownExceptions
 {
     public function __construct(
         private readonly Throwable $exception,
     ) {
     }
 
-    /** @param class-string<Throwable> $exceptionClass */
-    public function match(string $exceptionClass): ?Throwable
+    public function ejectWith(MatchCondition $condition): ?Throwable
     {
-        if (!$this->exception instanceof $exceptionClass) {
+        if (!$condition->matches($this->exception)) {
             return null;
         }
 

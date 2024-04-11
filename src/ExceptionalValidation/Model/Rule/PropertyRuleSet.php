@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Model;
+namespace PhPhD\ExceptionalValidation\Model\Rule;
 
 use PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath;
-use PhPhD\ExceptionalValidation\Model\ValueObject\ThrownException;
+use PhPhD\ExceptionalValidation\Model\ValueObject\ThrownExceptions;
 
 /** @internal */
 final class PropertyRuleSet implements CaptureRule
@@ -18,14 +18,19 @@ final class PropertyRuleSet implements CaptureRule
     ) {
     }
 
-    public function capture(ThrownException $thrownException): array
+    public function capture(ThrownExceptions $thrownExceptions): array
     {
-        return $this->ruleSet->capture($thrownException);
+        return $this->ruleSet->capture($thrownExceptions);
     }
 
     public function getPropertyPath(): PropertyPath
     {
         return $this->parent->getPropertyPath()->with($this->name);
+    }
+
+    public function getEnclosingObject(): object
+    {
+        return $this->parent->getEnclosingObject();
     }
 
     public function getRoot(): object

@@ -17,7 +17,7 @@ use PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationsListFormatter;
 use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
-use PhPhD\ExceptionalValidation\Model\CaptureRule;
+use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
 use PhPhD\ExceptionalValidationBundle\Messenger\ExceptionalValidationMiddleware;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -144,7 +144,7 @@ final class ArchitectureRuleSet
 
     public function model(): ClassNamespace
     {
-        return Selector::inNamespace(class_namespace(CaptureRule::class));
+        return Selector::inNamespace(class_namespace(class_namespace(CaptureRule::class)));
     }
 }
 
