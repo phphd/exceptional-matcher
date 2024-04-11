@@ -2,27 +2,26 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Model\Rules;
+namespace PhPhD\ExceptionalValidation\Model\Rule;
 
-use PhPhD\ExceptionalValidation\Model\CaptureRule;
+use PhPhD\ExceptionalValidation\Model\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Model\ValueObject\CaughtException;
 use PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath;
-use PhPhD\ExceptionalValidation\Model\ValueObject\ThrownException;
-use Throwable;
+use PhPhD\ExceptionalValidation\Model\ValueObject\ThrownExceptions;
 
+/** @internal */
 final class CaptureExceptionRule implements CaptureRule
 {
-    /** @param class-string<Throwable> $exceptionClass */
     public function __construct(
         private readonly CaptureRule $parent,
-        private readonly string $exceptionClass,
+        private readonly MatchCondition $condition,
         private readonly string $message,
     ) {
     }
 
-    public function capture(ThrownException $thrownException): array
+    public function capture(ThrownExceptions $thrownExceptions): array
     {
-        $exception = $thrownException->match($this->exceptionClass);
+        $exception = $thrownExceptions->ejectWith($this->condition);
 
         if (null === $exception) {
             return [];
@@ -34,6 +33,11 @@ final class CaptureExceptionRule implements CaptureRule
     public function getPropertyPath(): PropertyPath
     {
         return $this->parent->getPropertyPath();
+    }
+
+    public function getEnclosingObject(): object
+    {
+        return $this->parent->getEnclosingObject();
     }
 
     public function getRoot(): object
@@ -49,11 +53,5 @@ final class CaptureExceptionRule implements CaptureRule
     public function getValue(): mixed
     {
         return $this->parent->getValue();
-    }
-
-    /** @return class-string<Throwable> */
-    public function getExceptionClass(): string
-    {
-        return $this->exceptionClass;
     }
 }

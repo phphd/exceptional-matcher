@@ -9,8 +9,8 @@ use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\PropertyRuleSetAssemblerEnvelope;
-use PhPhD\ExceptionalValidation\Model\CaptureRule;
-use PhPhD\ExceptionalValidation\Model\Sets\CompositeRuleSet;
+use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
+use PhPhD\ExceptionalValidation\Model\Rule\CompositeRuleSet;
 
 use function count;
 

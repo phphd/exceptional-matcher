@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Model\Sets;
+namespace PhPhD\ExceptionalValidation\Model\Rule;
 
 use Closure;
-use PhPhD\ExceptionalValidation\Model\CaptureRule;
 use PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath;
-use PhPhD\ExceptionalValidation\Model\ValueObject\ThrownException;
+use PhPhD\ExceptionalValidation\Model\ValueObject\ThrownExceptions;
 
+/** @internal */
 final class LazyRuleSet implements CaptureRule
 {
     /** @param Closure(): CaptureRule $ruleSetFactory */
@@ -17,14 +17,19 @@ final class LazyRuleSet implements CaptureRule
     ) {
     }
 
-    public function capture(ThrownException $thrownException): array
+    public function capture(ThrownExceptions $thrownExceptions): array
     {
-        return ($this->ruleSetFactory)()->capture($thrownException);
+        return ($this->ruleSetFactory)()->capture($thrownExceptions);
     }
 
     public function getPropertyPath(): PropertyPath
     {
         return ($this->ruleSetFactory)()->getPropertyPath();
+    }
+
+    public function getEnclosingObject(): object
+    {
+        return ($this->ruleSetFactory)()->getEnclosingObject();
     }
 
     public function getRoot(): object
