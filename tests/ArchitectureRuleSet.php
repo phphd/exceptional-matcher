@@ -89,9 +89,7 @@ final class ArchitectureRuleSet
             ],
             'exceptionHandler' => [
                 'deps' => [
-                    Selector::AND(
-                        Selector::classname(ObjectRuleSetAssembler::class),
-                    ),
+                    Selector::classname(ObjectRuleSetAssembler::class),
                     $this->model(),
                     Selector::AND(
                         Selector::isInterface(),
