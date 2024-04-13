@@ -22,6 +22,7 @@ use PhPhD\ExceptionalValidationBundle\Messenger\ExceptionalValidationMiddleware;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Webmozart\Assert\Assert;
 
 /**
  * @internal

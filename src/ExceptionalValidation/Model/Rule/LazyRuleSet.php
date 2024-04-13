@@ -11,7 +11,9 @@ use PhPhD\ExceptionalValidation\Model\ValueObject\ThrownExceptions;
 /** @internal */
 final class LazyRuleSet implements CaptureRule
 {
-    /** @param Closure(): CaptureRule $ruleSetFactory */
+    private ?CaptureRule $innerRule = null;
+
+    /** @param Closure(LazyRuleSet): CaptureRule $ruleSetFactory */
     public function __construct(
         private readonly Closure $ruleSetFactory,
     ) {
@@ -19,26 +21,31 @@ final class LazyRuleSet implements CaptureRule
 
     public function capture(ThrownExceptions $thrownExceptions): array
     {
-        return ($this->ruleSetFactory)()->capture($thrownExceptions);
+        return $this->innerRule()->capture($thrownExceptions);
     }
 
     public function getPropertyPath(): PropertyPath
     {
-        return ($this->ruleSetFactory)()->getPropertyPath();
+        return $this->innerRule()->getPropertyPath();
     }
 
     public function getEnclosingObject(): object
     {
-        return ($this->ruleSetFactory)()->getEnclosingObject();
+        return $this->innerRule()->getEnclosingObject();
     }
 
     public function getRoot(): object
     {
-        return ($this->ruleSetFactory)()->getRoot();
+        return $this->innerRule()->getRoot();
     }
 
     public function getValue(): mixed
     {
-        return ($this->ruleSetFactory)()->getValue();
+        return $this->innerRule()->getValue();
+    }
+
+    private function innerRule(): CaptureRule
+    {
+        return $this->innerRule ??= ($this->ruleSetFactory)($this);
     }
 }
