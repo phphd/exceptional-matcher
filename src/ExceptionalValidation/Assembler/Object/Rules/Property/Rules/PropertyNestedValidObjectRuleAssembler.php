@@ -20,7 +20,7 @@ use function is_object;
 final class PropertyNestedValidObjectRuleAssembler implements CaptureRuleSetAssembler
 {
     public function __construct(
-        private readonly ObjectRuleSetAssembler $objectTreeAssembler,
+        private readonly ObjectRuleSetAssembler $objectRuleSetAssembler,
     ) {
     }
 
@@ -39,6 +39,6 @@ final class PropertyNestedValidObjectRuleAssembler implements CaptureRuleSetAsse
             return null;
         }
 
-        return $this->objectTreeAssembler->assemble($propertyValue, $parent);
+        return $this->objectRuleSetAssembler->assemble($propertyValue, $parent);
     }
 }

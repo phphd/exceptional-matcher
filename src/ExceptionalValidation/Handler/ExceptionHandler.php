@@ -8,10 +8,6 @@ use Throwable;
 
 interface ExceptionHandler
 {
-    /**
-     * @return never
-     *
-     * @throws Throwable
-     */
-    public function capture(object $message, Throwable $exception): void;
+    /** @throws Throwable */
+    public function capture(object $message, Throwable $exception): never;
 }

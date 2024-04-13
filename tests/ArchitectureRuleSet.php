@@ -23,6 +23,10 @@ use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+use function array_slice;
+use function explode;
+use function implode;
+
 /**
  * @internal
  *
@@ -64,13 +68,14 @@ final class ArchitectureRuleSet
     {
         $layer = $this->layers()[$name];
 
-        $layerClasses = $this->$name();
+        $layerClasses = $this->{$name}();
 
         return PHPat::rule()
             ->classes($layerClasses)
             ->canOnlyDependOn()
             ->classes($layerClasses, ...$layer['deps'])
-            ->because($layer['description'] ?? 'It has clearly defined dependency rules in '.self::class.'::layers()');
+            ->because($layer['description'] ?? 'It has clearly defined dependency rules in '.self::class.'::layers()')
+        ;
     }
 
     /** @return array<string,array{deps:list<SelectorInterface>,description?: string}> */
@@ -83,14 +88,12 @@ final class ArchitectureRuleSet
                         Selector::isInterface(),
                         $this->exceptionHandler(),
                     ),
-                    Selector::inNamespace('Symfony\Component\Messenger')
+                    Selector::inNamespace('Symfony\Component\Messenger'),
                 ],
             ],
             'exceptionHandler' => [
                 'deps' => [
-                    Selector::AND(
-                        Selector::classname(ObjectRuleSetAssembler::class),
-                    ),
+                    Selector::classname(ObjectRuleSetAssembler::class),
                     $this->model(),
                     Selector::AND(
                         Selector::isInterface(),
