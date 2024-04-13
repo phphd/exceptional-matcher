@@ -44,6 +44,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationsListFormatter
  * @covers \PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\ObjectRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Model\Rule\IterableItemCaptureRule
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\PropertyRuleSet
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\CompositeRuleSet
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\LazyRuleSet
@@ -53,6 +54,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Model\Condition\CompositeMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Model\ValueObject\CaughtException
  * @covers \PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath
+ * @covers \PhPhD\ExceptionalValidation\Model\ValueObject\ThrownExceptions
  * @covers \PhPhD\ExceptionalValidation\Assembler\CompositeRuleSetAssembler
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\ObjectRulesAssemblerEnvelope
@@ -62,6 +64,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyRulesAssemblerEnvelope
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyCaptureRulesAssembler
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler
+ * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidIterableRulesAssembler
+ * @covers \PhPhD\ExceptionalValidation\Assembler\Object\IterableOfObjectsRuleSetAssembler
  *
  * @internal
  */
@@ -243,6 +247,17 @@ final class ExceptionalValidationTest extends TestCase
         }
     }
 
+    public function testDoesntCaptureAnyExceptionWhenConditionIsNotMet(): never
+    {
+        $message = HandleableMessageStub::createWithConditionalMessage(11, 41);
+
+        $rootException = new ConditionallyCapturedException(12);
+
+        $this->expectExceptionObject($rootException);
+
+        $this->exceptionHandler->capture($message, $rootException);
+    }
+
     public function testCapturesExceptionWithGivenCondition(): void
     {
         $message = HandleableMessageStub::createWithConditionalMessage(11, 41);
@@ -268,11 +283,15 @@ final class ExceptionalValidationTest extends TestCase
         }
     }
 
-    public function testDoesntCaptureAnyExceptionWhenConditionIsNotMet(): never
+    public function testDoesntCaptureNestedItemsNotHavingValidAttribute(): never
     {
-        $message = HandleableMessageStub::createWithConditionalMessage(11, 41);
+        $message = HandleableMessageStub::createWithJustArray([
+            new NestedItem(1),
+            new NestedItem(2),
+            new NestedItem(3),
+        ]);
 
-        $rootException = new ConditionallyCapturedException(12);
+        $rootException = new NestedIterableItemCapturedException(code: 2);
 
         $this->expectExceptionObject($rootException);
 
