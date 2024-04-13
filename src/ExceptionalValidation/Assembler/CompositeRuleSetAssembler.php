@@ -19,7 +19,7 @@ final class CompositeRuleSetAssembler implements CaptureRuleSetAssembler
 {
     public function __construct(
         /** @var iterable<CaptureRuleSetAssembler<T>> */
-        private readonly iterable $captureListAssemblers,
+        private readonly iterable $assemblers,
     ) {
     }
 
@@ -29,8 +29,8 @@ final class CompositeRuleSetAssembler implements CaptureRuleSetAssembler
         $rules = new ArrayIterator();
         $ruleSet = new CompositeRuleSet($parent, $rules);
 
-        foreach ($this->captureListAssemblers as $captureListAssembler) {
-            $innerRuleSet = $captureListAssembler->assemble($ruleSet, $envelope);
+        foreach ($this->assemblers as $assembler) {
+            $innerRuleSet = $assembler->assemble($ruleSet, $envelope);
 
             if (null !== $innerRuleSet) {
                 $rules->append($innerRuleSet);

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Model\ValueObject;
 
+use function array_pop;
 use function implode;
+use function sprintf;
 
 final class PropertyPath
 {
@@ -22,6 +24,15 @@ final class PropertyPath
     public function with(string $item): self
     {
         return new self([...$this->items, $item]);
+    }
+
+    public function at(int|string $key): self
+    {
+        $items = $this->items;
+
+        $lastItem = array_pop($items);
+
+        return new self([...$items, sprintf('%s[%s]', $lastItem, $key)]);
     }
 
     public function join(string $separator): string

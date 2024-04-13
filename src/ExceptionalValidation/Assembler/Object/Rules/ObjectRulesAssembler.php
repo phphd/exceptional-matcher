@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Assembler\Object\Rules;
 
-use ArrayIterator;
+use Generator;
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\PropertyRuleSetAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Model\Rule\CompositeRuleSet;
-
-use function count;
+use PhPhD\ExceptionalValidation\Model\Rule\LazyRuleSet;
+use ReflectionClass;
 
 /**
  * @internal
@@ -28,7 +28,7 @@ final class ObjectRulesAssembler implements CaptureRuleSetAssembler
     }
 
     /** @param ObjectRulesAssemblerEnvelope $envelope */
-    public function assemble(CaptureRule $parent, CaptureRuleSetAssemblerEnvelope $envelope): ?CompositeRuleSet
+    public function assemble(CaptureRule $parent, CaptureRuleSetAssemblerEnvelope $envelope): ?CaptureRule
     {
         $reflectionClass = $envelope->getReflectionClass();
 
@@ -36,23 +36,24 @@ final class ObjectRulesAssembler implements CaptureRuleSetAssembler
             return null;
         }
 
-        $propertyRules = new ArrayIterator();
-        $objectRuleSet = new CompositeRuleSet($parent, $propertyRules);
+        return new LazyRuleSet(function (LazyRuleSet $ruleSet) use ($parent, $reflectionClass): CompositeRuleSet {
+            $propertyRules = $this->getPropertyRules($reflectionClass, $ruleSet);
 
+            return new CompositeRuleSet($parent, $propertyRules);
+        });
+    }
+
+    /** @param ReflectionClass<object> $reflectionClass */
+    private function getPropertyRules(ReflectionClass $reflectionClass, CaptureRule $objectRuleSet): Generator
+    {
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             $propertyEnvelope = new PropertyRuleSetAssemblerEnvelope($reflectionProperty);
 
             $propertyRuleSet = $this->propertyRuleSetAssembler->assemble($objectRuleSet, $propertyEnvelope);
 
             if (null !== $propertyRuleSet) {
-                $propertyRules->append($propertyRuleSet);
+                yield $propertyRuleSet;
             }
         }
-
-        if (0 === count($propertyRules)) {
-            return null;
-        }
-
-        return $objectRuleSet;
     }
 }

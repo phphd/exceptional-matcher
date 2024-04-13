@@ -5,27 +5,31 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Tests;
 
 use ArrayIterator;
+use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\CompositeRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Assembler\Object\IterableOfObjectsRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\ObjectRulesAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\PropertyRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyCaptureRulesAssembler;
+use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidIterableRulesAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyRulesAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationsListFormatter;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
 use PhPhD\ExceptionalValidation\Handler\ExceptionalHandler;
-use PhPhD\ExceptionalValidation\Tests\Stub\ConditionalMessage;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ConditionallyCapturedException;
+use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedIterableItemCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\StaticPropertyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalValidation\Tests\Stub\NestedHandleableMessage;
+use PhPhD\ExceptionalValidation\Tests\Stub\NestedItem;
 use PhPhD\ExceptionalValidation\Tests\Stub\NotHandleableMessageStub;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -40,6 +44,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationsListFormatter
  * @covers \PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\ObjectRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Model\Rule\IterableItemCaptureRule
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\PropertyRuleSet
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\CompositeRuleSet
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\LazyRuleSet
@@ -49,6 +54,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Model\Condition\CompositeMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Model\ValueObject\CaughtException
  * @covers \PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath
+ * @covers \PhPhD\ExceptionalValidation\Model\ValueObject\ThrownExceptions
  * @covers \PhPhD\ExceptionalValidation\Assembler\CompositeRuleSetAssembler
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\ObjectRulesAssemblerEnvelope
@@ -58,6 +64,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyRulesAssemblerEnvelope
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyCaptureRulesAssembler
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler
+ * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidIterableRulesAssembler
+ * @covers \PhPhD\ExceptionalValidation\Assembler\Object\IterableOfObjectsRuleSetAssembler
  *
  * @internal
  */
@@ -75,7 +83,8 @@ final class ExceptionalValidationTest extends TestCase
                 ['oops', [], 'domain', null, 'oops - translated'],
                 ['object.oops', [], 'domain', null, 'object.oops - translated'],
                 ['nested.message', [], 'domain', null, 'nested.message - translated'],
-            ]);
+            ])
+        ;
 
         /** @var ArrayIterator<array-key,CaptureRuleSetAssembler<PropertyRulesAssemblerEnvelope>> $captureListAssemblers */
         $captureListAssemblers = new ArrayIterator();
@@ -87,13 +96,14 @@ final class ExceptionalValidationTest extends TestCase
 
         $captureListAssemblers->append(new PropertyCaptureRulesAssembler());
         $captureListAssemblers->append(new PropertyNestedValidObjectRuleAssembler($objectRuleSetAssembler));
+        $captureListAssemblers->append(new PropertyNestedValidIterableRulesAssembler(new IterableOfObjectsRuleSetAssembler($objectRuleSetAssembler)));
 
         $formatter = new ExceptionalViolationFormatter($translator, 'domain');
         $listFormatter = new ExceptionalViolationsListFormatter($formatter);
         $this->exceptionHandler = new ExceptionalHandler($objectRuleSetAssembler, $listFormatter);
     }
 
-    public function testDoesNotCaptureExceptionForMessageNotHavingExceptionalValidationAttribute(): void
+    public function testDoesNotCaptureExceptionForMessageNotHavingExceptionalValidationAttribute(): never
     {
         $message = new NotHandleableMessageStub(123);
 
@@ -192,7 +202,7 @@ final class ExceptionalValidationTest extends TestCase
         }
     }
 
-    public function testDoesNotCaptureNestedObjectWithoutValidPropertyAttribute(): void
+    public function testDoesNotCaptureNestedObjectWithoutValidPropertyAttribute(): never
     {
         $message = HandleableMessageStub::createWithOrdinaryObject(new NestedHandleableMessage());
 
@@ -201,7 +211,7 @@ final class ExceptionalValidationTest extends TestCase
         $this->exceptionHandler->capture($message, $exception);
     }
 
-    public function testDoesNotCaptureNotInitializedValidNestedObjectProperty(): void
+    public function testDoesNotCaptureNotInitializedValidNestedObjectProperty(): never
     {
         $message = HandleableMessageStub::createEmpty();
 
@@ -237,6 +247,17 @@ final class ExceptionalValidationTest extends TestCase
         }
     }
 
+    public function testDoesntCaptureAnyExceptionWhenConditionIsNotMet(): never
+    {
+        $message = HandleableMessageStub::createWithConditionalMessage(11, 41);
+
+        $rootException = new ConditionallyCapturedException(12);
+
+        $this->expectExceptionObject($rootException);
+
+        $this->exceptionHandler->capture($message, $rootException);
+    }
+
     public function testCapturesExceptionWithGivenCondition(): void
     {
         $message = HandleableMessageStub::createWithConditionalMessage(11, 41);
@@ -262,14 +283,79 @@ final class ExceptionalValidationTest extends TestCase
         }
     }
 
-    public function testDoesntCaptureAnyExceptionWhenConditionIsNotMet(): void
+    public function testDoesntCaptureNestedItemsNotHavingValidAttribute(): never
     {
-        $message = HandleableMessageStub::createWithConditionalMessage(11, 41);
+        $message = HandleableMessageStub::createWithJustArray([
+            new NestedItem(1),
+            new NestedItem(2),
+            new NestedItem(3),
+        ]);
 
-        $rootException = new ConditionallyCapturedException(12);
+        $rootException = new NestedIterableItemCapturedException(code: 2);
 
         $this->expectExceptionObject($rootException);
 
         $this->exceptionHandler->capture($message, $rootException);
+    }
+
+    public function testCapturesExceptionOnNestedArrayItem(): void
+    {
+        $message = HandleableMessageStub::createWithNestedArrayItems([
+            new NestedItem(41),
+            new NestedItem(57),
+            new NestedItem(32),
+        ]);
+
+        $rootException = new NestedIterableItemCapturedException(code: 57);
+
+        $this->expectException(ExceptionalValidationFailedException::class);
+
+        try {
+            $this->exceptionHandler->capture($message, $rootException);
+        } catch (ExceptionalValidationFailedException $e) {
+            self::assertSame($rootException, $e->getPrevious());
+
+            $violations = $e->getViolations();
+            self::assertCount(1, $violations);
+
+            /** @var ConstraintViolationInterface $violation */
+            $violation = $violations[0];
+            self::assertSame('nestedArrayItems[1].property', $violation->getPropertyPath());
+
+            throw $e;
+        }
+    }
+
+    public function testCapturesExceptionOnNestedIterableItem(): void
+    {
+        $message = HandleableMessageStub::createWithNestedIterableItems(new ArrayObject([
+            'first' => new NestedItem(1),
+            'second' => new NestedItem(2),
+            'third' => new NestedItem(3),
+            4 => new NestedItem(2),
+        ]));
+
+        $rootException = new NestedIterableItemCapturedException(code: 2);
+
+        $this->expectException(ExceptionalValidationFailedException::class);
+
+        try {
+            $this->exceptionHandler->capture($message, $rootException);
+        } catch (ExceptionalValidationFailedException $e) {
+            self::assertSame($rootException, $e->getPrevious());
+
+            $violations = $e->getViolations();
+            self::assertCount(2, $violations);
+
+            /** @var ConstraintViolationInterface $firstViolation */
+            $firstViolation = $violations[0];
+            self::assertSame('nestedIterableItems[second].property', $firstViolation->getPropertyPath());
+
+            /** @var ConstraintViolationInterface $secondViolation */
+            $secondViolation = $violations[1];
+            self::assertSame('nestedIterableItems[4].property', $secondViolation->getPropertyPath());
+
+            throw $e;
+        }
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Tests\Stub;
 
+use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableException;
@@ -30,6 +31,16 @@ final class HandleableMessageStub
 
     #[Valid]
     private NestedHandleableMessage $nestedObject;
+
+    /** @var array<array-key,NestedItem> */
+    #[Valid]
+    private array $nestedArrayItems;
+
+    /** @var ArrayObject<array-key,NestedItem> */
+    #[Valid]
+    private ArrayObject $nestedIterableItems;
+
+    private array $justArray;
 
     private function __construct()
     {
@@ -75,7 +86,34 @@ final class HandleableMessageStub
     public static function createWithConditionalMessage(int $firstConditionalProperty, int $secondConditionalProperty): self
     {
         return self::createWithNestedObject(NestedHandleableMessage::createWithConditionalMessage(
-            ConditionalMessage::createWithConditionalProperties($firstConditionalProperty, $secondConditionalProperty)
+            ConditionalMessage::createWithConditionalProperties($firstConditionalProperty, $secondConditionalProperty),
         ));
+    }
+
+    /** @param array<array-key,NestedItem> $items */
+    public static function createWithNestedArrayItems(array $items): self
+    {
+        $message = new self();
+        $message->nestedArrayItems = $items;
+
+        return $message;
+    }
+
+    /** @param ArrayObject<array-key,NestedItem> $items */
+    public static function createWithNestedIterableItems(ArrayObject $items): self
+    {
+        $message = new self();
+        $message->nestedIterableItems = $items;
+
+        return $message;
+    }
+
+    /** @param array<array-key,NestedItem> $justArray */
+    public static function createWithJustArray(array $justArray): self
+    {
+        $message = new self();
+        $message->justArray = $justArray;
+
+        return $message;
     }
 }
