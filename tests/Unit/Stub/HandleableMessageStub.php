@@ -40,6 +40,8 @@ final class HandleableMessageStub
     #[Valid]
     private ArrayObject $nestedIterableItems;
 
+    private array $justArray;
+
     private function __construct()
     {
     }
@@ -102,6 +104,15 @@ final class HandleableMessageStub
     {
         $message = new self();
         $message->nestedIterableItems = $items;
+
+        return $message;
+    }
+
+    /** @param array<array-key,NestedItem> $justArray */
+    public static function createWithJustArray(array $justArray): self
+    {
+        $message = new self();
+        $message->justArray = $justArray;
 
         return $message;
     }
