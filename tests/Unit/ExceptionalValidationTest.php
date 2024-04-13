@@ -28,10 +28,9 @@ use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableExc
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\StaticPropertyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\HandleableMessageStub;
-use PhPhD\ExceptionalValidation\Tests\Stub\NestedItem;
 use PhPhD\ExceptionalValidation\Tests\Stub\NestedHandleableMessage;
+use PhPhD\ExceptionalValidation\Tests\Stub\NestedItem;
 use PhPhD\ExceptionalValidation\Tests\Stub\NotHandleableMessageStub;
-use PHPUnit\Event\Telemetry\SystemStopWatch;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -80,7 +79,8 @@ final class ExceptionalValidationTest extends TestCase
                 ['oops', [], 'domain', null, 'oops - translated'],
                 ['object.oops', [], 'domain', null, 'object.oops - translated'],
                 ['nested.message', [], 'domain', null, 'nested.message - translated'],
-            ]);
+            ])
+        ;
 
         /** @var ArrayIterator<array-key,CaptureRuleSetAssembler<PropertyRulesAssemblerEnvelope>> $captureListAssemblers */
         $captureListAssemblers = new ArrayIterator();

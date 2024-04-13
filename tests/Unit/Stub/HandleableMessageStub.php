@@ -84,7 +84,7 @@ final class HandleableMessageStub
     public static function createWithConditionalMessage(int $firstConditionalProperty, int $secondConditionalProperty): self
     {
         return self::createWithNestedObject(NestedHandleableMessage::createWithConditionalMessage(
-            ConditionalMessage::createWithConditionalProperties($firstConditionalProperty, $secondConditionalProperty)
+            ConditionalMessage::createWithConditionalProperties($firstConditionalProperty, $secondConditionalProperty),
         ));
     }
 
