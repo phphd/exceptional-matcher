@@ -144,6 +144,31 @@ final class NestedMessage
 In this example, if `NestedException` is thrown, it will be captured and mapped to the `nestedProperty` of the
 `NestedMessage` object. Hence, violation property path would be `nestedMessage.nestedProperty`.
 
+Besides that, you can also apply validation rules for nested iterable objects. Here's an example:
+
+```php
+use PhPhD\ExceptionalValidation;
+use Symfony\Component\Validator\Constraints\Valid;
+
+#[ExceptionalValidation]
+final class ParentMessage
+{
+    #[Valid]
+    private array $nestedItems;
+}
+
+#[ExceptionalValidation]
+final class NestedItem
+{
+    #[ExceptionalValidation\Capture(NestedItemException::class, 'nested_item_error')]
+    private string $itemProperty;
+}
+```
+
+In this example, if `NestedItemException` is thrown, it will be captured and mapped to the `itemProperty` of
+the `NestedItem` object. Hence, violation property path would be `nestedItems[*].itemProperty`, where `*` stands for
+index.
+
 ### Conditional Exception Capturing with Callbacks
 
 The `Capture` attribute can also accept a callback function that determines whether the exception should be
