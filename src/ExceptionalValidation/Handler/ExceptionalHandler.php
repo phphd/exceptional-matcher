@@ -19,12 +19,7 @@ final class ExceptionalHandler implements ExceptionHandler
     ) {
     }
 
-    /**
-     * @return never
-     *
-     * @throws Throwable
-     */
-    public function capture(object $message, Throwable $exception): void
+    public function capture(object $message, Throwable $exception): never
     {
         $ruleSet = $this->ruleSetAssembler->assemble($message);
 

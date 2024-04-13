@@ -99,7 +99,7 @@ final class ExceptionalValidationTest extends TestCase
         $this->exceptionHandler = new ExceptionalHandler($objectRuleSetAssembler, $listFormatter);
     }
 
-    public function testDoesNotCaptureExceptionForMessageNotHavingExceptionalValidationAttribute(): void
+    public function testDoesNotCaptureExceptionForMessageNotHavingExceptionalValidationAttribute(): never
     {
         $message = new NotHandleableMessageStub(123);
 
@@ -198,7 +198,7 @@ final class ExceptionalValidationTest extends TestCase
         }
     }
 
-    public function testDoesNotCaptureNestedObjectWithoutValidPropertyAttribute(): void
+    public function testDoesNotCaptureNestedObjectWithoutValidPropertyAttribute(): never
     {
         $message = HandleableMessageStub::createWithOrdinaryObject(new NestedHandleableMessage());
 
@@ -207,7 +207,7 @@ final class ExceptionalValidationTest extends TestCase
         $this->exceptionHandler->capture($message, $exception);
     }
 
-    public function testDoesNotCaptureNotInitializedValidNestedObjectProperty(): void
+    public function testDoesNotCaptureNotInitializedValidNestedObjectProperty(): never
     {
         $message = HandleableMessageStub::createEmpty();
 
@@ -268,7 +268,7 @@ final class ExceptionalValidationTest extends TestCase
         }
     }
 
-    public function testDoesntCaptureAnyExceptionWhenConditionIsNotMet(): void
+    public function testDoesntCaptureAnyExceptionWhenConditionIsNotMet(): never
     {
         $message = HandleableMessageStub::createWithConditionalMessage(11, 41);
 
