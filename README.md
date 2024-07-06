@@ -1,8 +1,9 @@
 # PhdExceptionalValidationBundle
 
-🧰 Provides [Symfony Messenger](https://symfony.com/doc/current/messenger.html) middleware allowing to capture any thrown
-exception and map it into [Symfony Validator](https://symfony.com/doc/current/validation.html) violations format in
-accordance with message property path.
+🧰 Provides exception-to-violation mapper bundled as [Symfony Messenger](https://symfony.com/doc/current/messenger.html)
+middleware. It captures thrown exceptions, mapping them
+into [Symfony Validator](https://symfony.com/doc/current/validation.html)
+violations format based on message mapping attributes.
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/phphd/exceptional-validation-bundle/ci.yaml?branch=main)](https://github.com/phphd/exceptional-validation-bundle/actions?query=branch%3Amain)
 [![Codecov](https://codecov.io/gh/phphd/exceptional-validation-bundle/graph/badge.svg?token=GZRXWYT55Z)](https://codecov.io/gh/phphd/exceptional-validation-bundle)
@@ -27,6 +28,8 @@ accordance with message property path.
 
 ## Configuration ⚒️
 
+The recommended way to use this package is via Symfony Messenger.
+
 To leverage features of this bundle, you should add `phd_exceptional_validation` middleware to the list:
 
 ```diff
@@ -42,164 +45,193 @@ framework:
 
 ## Usage 🚀
 
-When the exception is thrown from the handler, the message that is mapped by `#[ExceptionalValidation]` attribute is
-analyzed for `#[Capture]` properties attributes. If a mapping defines this exception, it will be processed.
+The first thing necessary is to mark your message with `#[ExceptionalValidation]` attribute. It is used to include the
+message for processing by the middleware.
 
-Here is an example of mapped message:
+Then you define `#[Capture]` attributes on the properties of the message. These attributes are used to specify mapping
+for the thrown exceptions to the corresponding properties of the class with the respective error message translation.
 
 ```php
 use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Capture;
 
 #[ExceptionalValidation]
-final readonly class CreateVacationRequestCommand
+final class RegisterUserCommand
 {
-    public function __construct(
-        public Employee $employee,
-        
-        #[ExceptionalValidation\Capture(VacationTypeNotFoundException::class, 'vacation.type_not_found')]
-        public int $vacationTypeId,
-        
-        #[Assert\DateTime]
-        public string $startDate,
+    #[Capture(LoginAlreadyTakenException::class, 'auth.login.already_taken')]
+    private string $login;
 
-        #[Assert\DateTime]
-        #[ExceptionalValidation\Capture(InsufficientVacationBalanceException::class, 'vacation.insufficient_balance')]
-        public string $endDate,
-    ) {
-    }
+    #[Capture(WeakPasswordException::class, 'auth.password.weak')]
+    private string $password;
 }
 ```
 
-As you can see, certain properties have `#[Capture]` attributes defined. These specify the specific exception class to
-be intercepted and the corresponding validation message to be shown when the exception occurs.
+In this example, whenever `LoginAlreadyTakenException` or `WeakPasswordException` is thrown, it will be captured and
+mapped to the `login` or `password` property.
 
-Finally, when the exception has been captured, `ExceptionalValidationFailedException` is thrown:
+Eventually when `phd_exceptional_validation` middleware has processed the exception, it will
+throw `ExceptionalValidationFailedException` so that it can be caught and processed as needed:
 
 ```php
-$message = new CreateVacationRequestCommand($user, $vacationTypeId, $startDate, $endDate);
+$command = new RegisterUserCommand($login, $password);
 
 try {
-    $this->commandBus->dispatch($message);
+    $this->commandBus->dispatch($command);
 } catch (ExceptionalValidationFailedException $exception) {
-    // Is thrown when handler failed with VacationTypeNotFoundException or InsufficientVacationBalanceException
+    $constraintViolationList = $exception->getViolations();
 
-    return $this->render('vacationForm.html.twig', ['errors' => $exception->getViolations()]);
+    return $this->render('registrationForm.html.twig', ['errors' => $constraintViolationList]);
 } 
 ```
 
-As you can see in the example above, `$exception` object has constraint violation list with respectively mapped error
-messages. This error list may be used in various ways such as displaying on an HTML page, formatting into a JSON
-response, logging into file, rethrowing different exception, or any other specific requirement you might have.
+The `$exception` object enfolds constraint violations with respectively mapped error messages. This
+violation list can be used for example to render errors into html-form or to serialize them for a json-response.
 
 ## Advanced usage ⚙️
 
-The `ExceptionalValidation` and `Capture` attributes can be used in more complex scenarios to provide robust error
-handling and validation for your application. Here's an example of how you can use these attributes for advanced use
-cases.
+`#[ExceptionalValidation]` and `#[Capture]` attributes allow you to implement very flexible mappings.
+Here are just few examples of how you can use them.
 
-### Capturing Multiple Exceptions
+### Exception mapping on nested objects
 
-You can capture multiple exceptions for a single property by adding multiple `Capture` attributes. Each `Capture`
-attribute can specify a different exception class and validation message.
-
-```php
-use PhPhD\ExceptionalValidation;
-
-#[ExceptionalValidation]
-final class AdvancedMessage
-{
-    #[ExceptionalValidation\Capture(FirstException::class, 'first_error')]
-    #[ExceptionalValidation\Capture(SecondException::class, 'second_error')]
-    private string $property;
-}
-```
-
-In this example, if `FirstException` or `SecondException` is thrown, it will be captured and mapped to the property with
-the corresponding validation message.
-
-### Nested Exception Handling
-
-The `Capture` attribute can also be used on nested objects to handle exceptions at different levels of your object
-hierarchy.
+`#[ExceptionalValidation]` attribute works side-by-side with Symfony Validator `#[Valid]` attribute. Once you have
+defined these, the `#[Capture]` attribute can be defined on the nested objects.
 
 ```php
 use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Capture;
 use Symfony\Component\Validator\Constraints\Valid;
 
 #[ExceptionalValidation]
-final class ParentMessage
+final class OrderProductCommand
 {
     #[Valid]
-    private NestedMessage $nestedMessage;
+    private ProductDetails $product;
 }
 
 #[ExceptionalValidation]
-final class NestedMessage
+final class ProductDetails
 {
-    #[ExceptionalValidation\Capture(NestedException::class, 'nested_error')]
-    private string $nestedProperty;
+    private int $id;
+
+    #[Capture(InsufficientStockException::class, 'order.insufficient_stock')]
+    private string $quantity;
+
+    // ...
 }
 ```
 
-In this example, if `NestedException` is thrown, it will be captured and mapped to the `nestedProperty` of the
-`NestedMessage` object. Hence, violation property path would be `nestedMessage.nestedProperty`.
+In this example, whenever `InsufficientStockException` is thrown, it will be captured and mapped to the
+`product.quantity` property with the corresponding message translation.
 
-Besides that, you can also apply validation rules for nested iterable objects. Here's an example:
+### Capture Conditions
 
-```php
-use PhPhD\ExceptionalValidation;
-use Symfony\Component\Validator\Constraints\Valid;
-
-#[ExceptionalValidation]
-final class ParentMessage
-{
-    #[Valid]
-    private array $nestedItems;
-}
-
-#[ExceptionalValidation]
-final class NestedItem
-{
-    #[ExceptionalValidation\Capture(NestedItemException::class, 'nested_item_error')]
-    private string $itemProperty;
-}
-```
-
-In this example, if `NestedItemException` is thrown, it will be captured and mapped to the `itemProperty` of
-the `NestedItem` object. Hence, violation property path would be `nestedItems[*].itemProperty`, where `*` stands for
-index.
-
-### Conditional Exception Capturing with Callbacks
-
-The `Capture` attribute can also accept a callback function that determines whether the exception should be
-captured or not. This allows for more complex and dynamic exception handling scenarios.
-
-Here's an example:
+`#[Capture]` attribute accepts the callback function to determine whether particular exception instance should
+be captured for the given property or not. It allows more dynamic exception handling scenarios:
 
 ```php
 use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Capture;
 
 #[ExceptionalValidation]
-final class ConditionalMessage
+final class TransferMoneyCommand
 {
-    #[ExceptionalValidation\Capture(ConditionallyCapturedException::class, 'oops', when: [self::class, 'firstPropertyMatchesException'])]
-    private int $firstProperty;
+    #[Capture(
+        BlockedCardException::class,
+        'wallet.blocked_card',
+        when: [self::class, 'isWithdrawalCardBlocked'],
+    )]
+    private int $withdrawalCardId;
 
-    #[ExceptionalValidation\Capture(ConditionallyCapturedException::class, 'oops', when: [self::class, 'secondPropertyMatchesException'])]
-    private int $secondProperty;
+    #[Capture(
+        BlockedCardException::class,
+        'wallet.blocked_card',
+        when: [self::class, 'isDepositCardBlocked'],
+    )]
+    private int $depositCardId;
 
-    public function firstPropertyMatchesException(ConditionallyCapturedException $exception): bool
+    #[Capture(
+        InsufficientFundsException::class, 
+        'wallet.insufficient_funds',
+    )]
+    private int $unitAmount;
+
+    public function isWithdrawalCardBlocked(BlockedCardException $exception): bool
     {
-        return $exception->getConditionValue() === $this->firstProperty;
+        return $exception->getCardId() === $this->withdrawalCardId;
     }
 
-    public function secondPropertyMatchesException(ConditionallyCapturedException $exception): bool
+    public function isDepositCardBlocked(BlockedCardException $exception): bool
     {
-        return $exception->getConditionValue() === $this->secondProperty;
+        return $exception->getCardId() === $this->depositCardId;
     }
 }
 ```
 
-In this example the `when` option of the `Capture` attribute specifies a callback
-function (`firstPropertyMatchesException` and `secondPropertyMatchesException`) that is called when the exception is
-processed. If the callback returns `true`, the exception is captured; if it returns `false`, it is not captured.
+In this example, `when: ` option of the `#[Capture]` attribute is used to specify the callback functions that are called
+when exception is processed. If `isWithdrawalCardBlocked` callback returns `true`, then exception is captured for
+`withdrawalCardId` property; if `isDepositCardBlocked` callback returns `true`, then exception is captured for
+`depositCardId` property. If neither of the callbacks return `true`, then exception is re-thrown upper in the stack.
+
+### Exception mapping on nested arrays
+
+You are perfectly allowed to map the violations for the nested array items given that you have `#[Valid]` attribute
+on the iterable property. For example:
+
+```php
+use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Capture;
+use Symfony\Component\Validator\Constraints as Assert;
+
+#[ExceptionalValidation]
+final class CreateOrderCommand
+{
+    /** @var ProductDetails[] */
+    #[Assert\Valid]
+    private array $products;
+}
+
+#[ExceptionalValidation]
+final class ProductDetails
+{
+    private int $id;
+
+    #[Capture(
+        InsufficientStockException::class, 
+        'order.insufficient_stock', 
+        when: [self::class, 'isStockExceptionForThisProduct'],
+    )]
+    private string $quantity;
+
+    public function isStockExceptionForThisProduct(InsufficientStockException $exception): bool
+    {
+        return $exception->getProductId() === $this->id;
+    }
+}
+```
+
+In this example, when `InsufficientStockException` is captured, it will be mapped to the `products[*].quantity`
+property, where `*` stands for the index of the particular `ProductDetails` instance from the `products` array on which
+the exception was captured.
+
+## Limitations
+
+### Custom translation parameters
+
+Currently, the bundle supports only one way to format violations - that is a single translation message.
+It is not yet possible to pass custom parameters to the translation message.
+
+### Capturing multiple exceptions at once
+
+Typically, validation process is expected to capture all errors at once and return them as a list of violations.
+However, the whole concept of exceptional processing in PHP is based on the idea that only one exception is thrown at a
+time, since only one instruction is executed at a time.
+
+In case of Symfony Messenger, it is partially overcome by the fact that `HandlerFailedException` can wrap multiple
+exceptions collected from the underlying handlers. Though, currently there's no way to collect more than one
+exception from the same handler because of the limitations of sequential computing model.
+
+We are currently working on this issue and trying to implement a solution that will allow capturing multiple exceptions.
+Most likely the solution will be based on some ideas from the system of interaction combinators, where code is no longer
+considered as a sequence of instructions, but rather as a graph of interactions that are combined and reduced on each
+step.
