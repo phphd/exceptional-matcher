@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidationBundle\Tests;
 
+use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\PropertyCapturableException;
+use PhPhD\ExceptionalValidation\Tests\Stub\Exception\StaticPropertyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalValidationBundle\Messenger\ExceptionalValidationMiddleware;
 use PHPUnit\Framework\MockObject\MockObject;
+use RuntimeException;
 use stdClass;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
@@ -17,6 +20,8 @@ use Throwable;
 
 /**
  * @covers \PhPhD\ExceptionalValidationBundle\Messenger\ExceptionalValidationMiddleware
+ * @covers \PhPhD\ExceptionalValidationBundle\Messenger\Adapter\MessengerThrownException
+ * @covers \PhPhD\ExceptionalValidation\Model\Exception\Adapter\SingleThrownException
  *
  * @internal
  */
@@ -45,7 +50,7 @@ final class ExceptionalValidationMiddlewareTest extends TestCase
 
     public function testReturnsResultEnvelopeWhenNoException(): void
     {
-        $envelope = Envelope::wrap(HandleableMessageStub::createEmpty());
+        $envelope = Envelope::wrap(HandleableMessageStub::create());
         $resultEnvelope = Envelope::wrap(new stdClass());
 
         $this->nextMiddleware
@@ -58,12 +63,60 @@ final class ExceptionalValidationMiddlewareTest extends TestCase
         self::assertSame($resultEnvelope, $result);
     }
 
-    public function testRethrowsHandlerFailedExceptionWhenNotCaught(): void
+    public function testHandlesWrappedExceptionsOfHandlerFailedException(): void
     {
-        $envelope = Envelope::wrap(HandleableMessageStub::createEmpty());
+        $envelope = Envelope::wrap(HandleableMessageStub::create());
 
-        $previous = new PropertyCapturableException();
-        $this->willThrow($exception = new HandlerFailedException($envelope, [$previous]));
+        $handlerException1 = new PropertyCapturableException();
+        $handlerException2 = new StaticPropertyCapturedException();
+
+        $messengerException = new HandlerFailedException($envelope, [$handlerException1, $handlerException2]);
+
+        $this->willThrow($messengerException);
+
+        $this->expectException(ExceptionalValidationFailedException::class);
+
+        try {
+            $this->middleware->handle($envelope, $this->stack);
+        } catch (ExceptionalValidationFailedException $e) {
+            self::assertSame($messengerException, $e->getPrevious());
+
+            $violations = $e->getViolations();
+            self::assertCount(2, $violations);
+
+            self::assertSame('property', $violations->get(0)->getPropertyPath());
+            self::assertSame('staticProperty', $violations->get(1)->getPropertyPath());
+
+            throw $e;
+        }
+    }
+
+    public function testHandlesNotWrappedException(): void
+    {
+        $envelope = Envelope::wrap(HandleableMessageStub::create());
+
+        $handlerException = new PropertyCapturableException();
+
+        $this->willThrow($handlerException);
+
+        $this->expectException(ExceptionalValidationFailedException::class);
+
+        try {
+            $this->middleware->handle($envelope, $this->stack);
+        } catch (ExceptionalValidationFailedException $e) {
+            self::assertSame($handlerException, $e->getPrevious());
+
+            throw $e;
+        }
+    }
+
+    public function testRethrowsUnhandledException(): void
+    {
+        $envelope = Envelope::wrap(HandleableMessageStub::create());
+
+        $exception = new RuntimeException();
+
+        $this->willThrow($exception);
 
         $this->expectExceptionObject($exception);
 

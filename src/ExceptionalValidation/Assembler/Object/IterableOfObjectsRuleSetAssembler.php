@@ -25,7 +25,8 @@ final class IterableOfObjectsRuleSetAssembler
     /** @param iterable<array-key,mixed> $items */
     public function assemble(iterable $items, CaptureRule $parent): ?CaptureRule
     {
-        $objects = array_filter($this->convertToArray($items), 'is_object');
+        /** @var array<array-key,object> $objects */
+        $objects = array_filter($this->convertToArray($items), is_object(...));
 
         if ([] === $objects) {
             return null;

@@ -8,6 +8,7 @@ use function array_pop;
 use function implode;
 use function sprintf;
 
+/** @internal */
 final class PropertyPath
 {
     public function __construct(

@@ -9,9 +9,19 @@ use PhPhD\ExceptionalValidationBundle\PhdExceptionalValidationBundle;
 use PhPhD\ExceptionalValidationBundle\Tests\Compiler\TestServicesCompilerPass;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class TestCase extends KernelTestCase
 {
+    protected function setUp(): void
+    {
+        $container = self::getContainer();
+
+        $translator = $this->createMock(TranslatorInterface::class);
+        $translator->method('trans')->willReturnCallback(static fn (string $id): string => $id);
+        $container->set('translator', $translator);
+    }
+
     protected static function getKernelClass(): string
     {
         return TestKernel::class;
