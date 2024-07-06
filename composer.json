@@ -14,7 +14,7 @@
         "php": ">=8.1",
         "symfony/dependency-injection": "^6.2 | ^7.0",
         "symfony/http-kernel": "^6.0 | ^7.0",
-        "symfony/messenger": "^6.0 | ^7.0",
+        "symfony/messenger": "^6.4 | ^7.0",
         "symfony/validator": "^6.0 | ^7.0"
     },
     "require-dev": {
@@ -37,12 +37,12 @@
     ],
     "autoload": {
         "classmap": [
-            "src/ExceptionalValidation.php",
-            "DependencyInjection",
-            "Messenger",
-            "PhdExceptionalValidationBundle.php"
+            "PhdExceptionalValidationBundle.php",
+            "src/ExceptionalValidation.php"
         ],
         "psr-4": {
+            "PhPhD\\ExceptionalValidationBundle\\DependencyInjection\\": "DependencyInjection",
+            "PhPhD\\ExceptionalValidationBundle\\Messenger\\": "Messenger",
             "PhPhD\\ExceptionalValidation\\": "src/ExceptionalValidation"
         }
     },
