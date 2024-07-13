@@ -15,13 +15,15 @@ use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationsListFormatter;
+use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationListFormatter;
 use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
+use PhPhD\ExceptionalValidation\Model\Exception\Adapter\ThrownException;
 use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
 use PhPhD\ExceptionalValidationBundle\Messenger\ExceptionalValidationMiddleware;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Webmozart\Assert\Assert;
 
 use function array_slice;
 use function explode;
@@ -88,6 +90,7 @@ final class ArchitectureRuleSet
                         Selector::isInterface(),
                         $this->exceptionHandler(),
                     ),
+                    Selector::inNamespace(class_namespace(ThrownException::class)),
                     Selector::inNamespace('Symfony\Component\Messenger'),
                 ],
             ],
@@ -118,7 +121,9 @@ final class ArchitectureRuleSet
                 ],
             ],
             'model' => [
-                'deps' => [],
+                'deps' => [
+                    Selector::classname(Assert::class),
+                ],
                 'description' => 'Model classes must not depend on anything else',
             ],
         ];
@@ -137,7 +142,7 @@ final class ArchitectureRuleSet
 
     public function violationsFormatter(): ClassNamespace
     {
-        return Selector::inNamespace(class_namespace(ExceptionViolationsListFormatter::class));
+        return Selector::inNamespace(class_namespace(ExceptionViolationListFormatter::class));
     }
 
     public function captureRuleSetAssembler(): ClassNamespace
