@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Formatter;
 
-use PhPhD\ExceptionalValidation\Model\ValueObject\CaughtException;
+use PhPhD\ExceptionalValidation\Model\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -18,9 +18,9 @@ final class ExceptionalViolationFormatter implements ExceptionViolationFormatter
     ) {
     }
 
-    public function formatViolation(CaughtException $caughtException): ConstraintViolationInterface
+    public function formatViolation(CapturedException $capturedException): ConstraintViolationInterface
     {
-        $rule = $caughtException->getCaptureRule();
+        $rule = $capturedException->getMatchedRule();
 
         $message = $rule->getMessage();
         $root = $rule->getRoot();

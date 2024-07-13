@@ -19,4 +19,7 @@
     <plugins>
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
     </plugins>
+    <stubs>
+        <file name="stubs/WrappedExceptionsInterface.stub"/>
+    </stubs>
 </psalm>

@@ -15,7 +15,7 @@ final class TestServicesCompilerPass implements CompilerPassInterface
     {
         $container->setParameter('validator.translation_domain', 'test');
 
-        $container->setDefinition('translator', new Definition(stdClass::class));
+        $container->setDefinition('translator', (new Definition(stdClass::class))->setPublic(true));
 
         $container->getDefinition('phd_exceptional_validation')->setPublic(true);
     }
