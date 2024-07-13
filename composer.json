@@ -15,7 +15,8 @@
         "symfony/dependency-injection": "^6.2 | ^7.0",
         "symfony/http-kernel": "^6.0 | ^7.0",
         "symfony/messenger": "^6.4 | ^7.0",
-        "symfony/validator": "^6.0 | ^7.0"
+        "symfony/validator": "^6.0 | ^7.0",
+        "webmozart/assert": "^1.11"
     },
     "require-dev": {
         "phphd/coding-standard": "~0.5.0",
