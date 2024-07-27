@@ -20,6 +20,7 @@ use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
 use PhPhD\ExceptionalValidation\Model\Exception\Adapter\ThrownException;
 use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
 use PhPhD\ExceptionalValidationBundle\Messenger\ExceptionalValidationMiddleware;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -49,9 +50,9 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
-    public function testViolationsFormatterDependencies(): Rule
+    public function testViolationFormatterDependencies(): Rule
     {
-        return $this->layerRule('violationsFormatter');
+        return $this->layerRule('formatter');
     }
 
     #[TestRule]
@@ -100,16 +101,17 @@ final class ArchitectureRuleSet
                     $this->model(),
                     Selector::AND(
                         Selector::isInterface(),
-                        $this->violationsFormatter(),
+                        $this->formatter(),
                     ),
                     Selector::classname(ConstraintViolationListInterface::class),
                 ],
             ],
-            'violationsFormatter' => [
+            'formatter' => [
                 'deps' => [
                     $this->model(),
                     Selector::inNamespace(class_namespace(ConstraintViolationListInterface::class)),
                     Selector::classname(TranslatorInterface::class),
+                    Selector::inNamespace(class_namespace(ContainerInterface::class)),
                 ],
             ],
             'captureRuleSetAssembler' => [
@@ -140,7 +142,7 @@ final class ArchitectureRuleSet
         return Selector::inNamespace(class_namespace(ExceptionHandler::class));
     }
 
-    public function violationsFormatter(): ClassNamespace
+    public function formatter(): ClassNamespace
     {
         return Selector::inNamespace(class_namespace(ExceptionViolationListFormatter::class));
     }

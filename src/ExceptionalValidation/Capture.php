@@ -19,6 +19,7 @@ final class Capture
         private readonly string $message,
         /** @var ?array{0:object|class-string,1:string} */
         private readonly ?array $when = null,
+        private readonly string $formatter = 'default',
     ) {
         if (null !== $this->when) {
             Assert::count($this->when, 2);
@@ -40,5 +41,10 @@ final class Capture
     public function getWhen(): ?array
     {
         return $this->when;
+    }
+
+    public function getFormatter(): string
+    {
+        return $this->formatter;
     }
 }

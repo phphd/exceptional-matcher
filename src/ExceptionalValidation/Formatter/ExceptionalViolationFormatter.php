@@ -22,16 +22,16 @@ final class ExceptionalViolationFormatter implements ExceptionViolationFormatter
     {
         $rule = $capturedException->getMatchedRule();
 
-        $message = $rule->getMessage();
+        $messageTemplate = $rule->getMessageTemplate();
         $root = $rule->getRoot();
         $propertyPath = $rule->getPropertyPath();
         $value = $rule->getValue();
 
-        $translatedMessage = $this->translator->trans($message, domain: $this->translationDomain);
+        $message = $this->translator->trans($messageTemplate, domain: $this->translationDomain);
 
         return new ConstraintViolation(
-            $translatedMessage,
             $message,
+            $messageTemplate,
             [],
             $root,
             $propertyPath->join('.'),

@@ -214,12 +214,84 @@ In this example, when `InsufficientStockException` is captured, it will be mappe
 property, where `*` stands for the index of the particular `ProductDetails` instance from the `products` array on which
 the exception was captured.
 
+### Custom violation formatters
+
+In some cases, you might need to customize the way the violations are formatted, such as passing additional
+parameters to the message translation. You can achieve this by implementing your own violation formatter service that
+implements `ExceptionViolationFormatter` interface:
+
+```php
+use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Model\Exception\CapturedException;
+use Symfony\Component\Validator\ConstraintViolationInterface;
+
+final class RegistrationViolationsFormatter implements ExceptionViolationFormatter
+{
+    public function __construct(
+        #[Autowire('@phd_exceptional_validation.violation_formatter.default')]
+        private ExceptionViolationFormatter $formatter,
+    ) {
+    }
+
+    public function formatViolation(CapturedException $capturedException): ConstraintViolationInterface
+    {
+        $violation = $this->formatter->formatViolation($capturedException);
+
+        $exception = $capturedException->getException();
+
+        if ($exception instanceof LoginAlreadyTakenException) {
+            return new ConstraintViolation(
+                $violation->getMessage(),
+                $violation->getMessageTemplate(),
+                ['loginHolder' => $exception->getLoginHolder()],
+                // ...
+            );
+        }
+
+        if ($exception instanceof WeakPasswordException) {
+            // ...
+        }
+
+        return $violation;
+    }
+}
+```
+
+In order for your custom violation formatter service to be recognized by this bundle, it must be tagged
+with `exceptional_validation.violation_formatter` tag. If you
+use [autoconfiguration](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option), this is done
+automatically by service container owing to the fact that `ExceptionViolationFormatter` interface is implemented.
+
+Finally, custom formatter can be specified in the `#[Capture]` attribute:
+
+```php
+use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Capture;
+
+#[ExceptionalValidation]
+final class RegisterUserCommand
+{
+    #[Capture(
+        LoginAlreadyTakenException::class, 
+        'auth.login.already_taken', 
+        formatter: RegistrationViolationsFormatter::class,
+    )]
+    private string $login;
+
+    #[Capture(
+        WeakPasswordException::class, 
+        'auth.password.weak', 
+        formatter: RegistrationViolationsFormatter::class,
+    )]
+    private string $password;
+}
+```
+
+In this example, `RegistrationViolationsFormatter` is used to format error messages for
+both `LoginAlreadyTakenException` and `WeakPasswordException`, enriching constraint violations with additional
+exception context.
+
 ## Limitations
-
-### Custom translation parameters
-
-Currently, the bundle supports only one way to format violations - that is a single translation message.
-It is not yet possible to pass custom parameters to the translation message.
 
 ### Capturing multiple exceptions at once
 

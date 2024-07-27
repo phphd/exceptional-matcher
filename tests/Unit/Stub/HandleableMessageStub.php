@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalValidation\Tests\Stub;
 use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Tests\Stub\Exception\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\StaticPropertyCapturedException;
@@ -20,6 +21,9 @@ final class HandleableMessageStub
 
     #[ExceptionalValidation\Capture(PropertyCapturableException::class, 'oops')]
     private int $property;
+
+    #[ExceptionalValidation\Capture(CustomFormattedException::class, 'oops', formatter: CustomExceptionViolationFormatter::class)]
+    private string $formatted;
 
     #[ExceptionalValidation\Capture(ObjectPropertyCapturableException::class, 'object.oops')]
     private object $objectProperty;
