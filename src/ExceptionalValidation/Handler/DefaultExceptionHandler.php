@@ -11,7 +11,7 @@ use PhPhD\ExceptionalValidation\Model\Exception\Adapter\ThrownException;
 use PhPhD\ExceptionalValidation\Model\Exception\ExceptionPackage;
 
 /** @internal */
-final class ExceptionalHandler implements ExceptionHandler
+final class DefaultExceptionHandler implements ExceptionHandler
 {
     public function __construct(
         private readonly ObjectRuleSetAssembler $ruleSetAssembler,

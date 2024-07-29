@@ -9,7 +9,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /** @internal */
-final class ExceptionalViolationListFormatter implements ExceptionViolationListFormatter
+final class DefaultViolationListFormatter implements ExceptionViolationListFormatter
 {
     public function __construct(
         private readonly ExceptionViolationFormatter $violationFormatter,

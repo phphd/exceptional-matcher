@@ -46,7 +46,12 @@ final class PropertyCaptureRulesAssembler implements CaptureRuleSetAssembler
 
             $condition = $this->getCondition($capture, $parent);
 
-            $rules->append(new CaptureExceptionRule($ruleSet, $condition->compile(), $capture->getMessage()));
+            $rules->append(new CaptureExceptionRule(
+                $ruleSet,
+                $condition->compile(),
+                $capture->getMessage(),
+                $capture->getFormatter(),
+            ));
         }
 
         if (0 === $rules->count()) {
