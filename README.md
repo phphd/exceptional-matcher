@@ -92,7 +92,7 @@ violation list can be used for example to render errors into html-form or to ser
 `#[ExceptionalValidation]` and `#[Capture]` attributes allow you to implement very flexible mappings.
 Here are just few examples of how you can use them.
 
-### Exception mapping on nested objects
+### Capturing exceptions on nested objects
 
 `#[ExceptionalValidation]` attribute works side-by-side with Symfony Validator `#[Valid]` attribute. Once you have
 defined these, the `#[Capture]` attribute can be defined on the nested objects.
@@ -100,12 +100,12 @@ defined these, the `#[Capture]` attribute can be defined on the nested objects.
 ```php
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Capture;
-use Symfony\Component\Validator\Constraints\Valid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ExceptionalValidation]
 final class OrderProductCommand
 {
-    #[Valid]
+    #[Assert\Valid]
     private ProductDetails $product;
 }
 
@@ -173,7 +173,7 @@ when exception is processed. If `isWithdrawalCardBlocked` callback returns `true
 `withdrawalCardId` property; if `isDepositCardBlocked` callback returns `true`, then exception is captured for
 `depositCardId` property. If neither of the callbacks return `true`, then exception is re-thrown upper in the stack.
 
-### Exception mapping on nested arrays
+### Capturing exceptions on nested array items
 
 You are perfectly allowed to map the violations for the nested array items given that you have `#[Valid]` attribute
 on the iterable property. For example:
@@ -216,8 +216,8 @@ the exception was captured.
 
 ### Custom violation formatters
 
-In some cases, you might need to customize the way the violations are formatted, such as passing additional
-parameters to the message translation. You can achieve this by implementing your own violation formatter service that
+In some cases, you might need to customize the way violations are formatted such as passing additional
+parameters to the message translation. You can achieve this by creating your own violation formatter service that
 implements `ExceptionViolationFormatter` interface:
 
 ```php
@@ -235,6 +235,8 @@ final class RegistrationViolationsFormatter implements ExceptionViolationFormatt
 
     public function formatViolation(CapturedException $capturedException): ConstraintViolationInterface
     {
+        // you can format violations with the default formatter
+        // and then slightly adjust necessary parts
         $violation = $this->formatter->formatViolation($capturedException);
 
         $exception = $capturedException->getException();
@@ -257,12 +259,20 @@ final class RegistrationViolationsFormatter implements ExceptionViolationFormatt
 }
 ```
 
-In order for your custom violation formatter service to be recognized by this bundle, it must be tagged
-with `exceptional_validation.violation_formatter` tag. If you
-use [autoconfiguration](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option), this is done
-automatically by service container owing to the fact that `ExceptionViolationFormatter` interface is implemented.
+Then you should register your custom formatter as a service:
 
-Finally, custom formatter can be specified in the `#[Capture]` attribute:
+```yaml
+services:
+    App\AuthBundle\ViolationFormatter\RegistrationViolationsFormatter:
+        tags: [ 'exceptional_validation.violation_formatter' ]
+```
+
+> In order for your custom violation formatter to be recognized by this bundle, its service must be tagged
+> with `exceptional_validation.violation_formatter` tag. If you
+> use [autoconfiguration](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option), this is done
+> automatically by the service container owing to the fact that `ExceptionViolationFormatter` interface is implemented.
+
+Finally, your custom formatter should be specified in the `#[Capture]` attribute:
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -287,23 +297,23 @@ final class RegisterUserCommand
 }
 ```
 
-In this example, `RegistrationViolationsFormatter` is used to format error messages for
-both `LoginAlreadyTakenException` and `WeakPasswordException`, enriching constraint violations with additional
-exception context.
+In this example, `RegistrationViolationsFormatter` is used to format constraint violations for
+both `LoginAlreadyTakenException` and `WeakPasswordException` (though you are perfectly fine to use separate
+formatters), enriching them with additional context.
 
 ## Limitations
 
 ### Capturing multiple exceptions at once
 
 Typically, validation process is expected to capture all errors at once and return them as a list of violations.
-However, the whole concept of exceptional processing in PHP is based on the idea that only one exception is thrown at a
-time, since only one instruction is executed at a time.
+However, the whole concept of exceptional processing in PHP is based on the idea that only one exception could be thrown
+at a time, since only one logical instruction is executed at a time.
 
-In case of Symfony Messenger, it is partially overcome by the fact that `HandlerFailedException` can wrap multiple
+In case of Symfony Messenger, this is somewhat overcome by the fact that `HandlerFailedException` can wrap multiple
 exceptions collected from the underlying handlers. Though, currently there's no way to collect more than one
 exception from the same handler because of the limitations of sequential computing model.
 
-We are currently working on this issue and trying to implement a solution that will allow capturing multiple exceptions.
-Most likely the solution will be based on some ideas from the system of interaction combinators, where code is no longer
-considered as a sequence of instructions, but rather as a graph of interactions that are combined and reduced on each
-step.
+We are currently thinking about the issue and trying to anticipate the solution that will allow capturing multiple
+exceptions. Most likely the solution will be based on some ideas from the interaction combinators computing model, where
+code is no longer considered as a mere sequence of instructions, but rather as a graph of interactions that are combined
+and reduced on each step of evaluation.
