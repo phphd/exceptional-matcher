@@ -10,7 +10,7 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /** @internal */
-final class ExceptionalViolationFormatter implements ExceptionViolationFormatter
+final class DefaultViolationFormatter implements ExceptionViolationFormatter
 {
     public function __construct(
         private readonly TranslatorInterface $translator,

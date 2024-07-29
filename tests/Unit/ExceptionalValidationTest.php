@@ -17,11 +17,11 @@ use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyCa
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidIterableRulesAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyRulesAssemblerEnvelope;
+use PhPhD\ExceptionalValidation\Formatter\DefaultViolationFormatter;
+use PhPhD\ExceptionalValidation\Formatter\DefaultViolationListFormatter;
 use PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationFormatter;
-use PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationListFormatter;
+use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
-use PhPhD\ExceptionalValidation\Handler\ExceptionalHandler;
 use PhPhD\ExceptionalValidation\Model\Exception\Adapter\SingleThrownException;
 use PhPhD\ExceptionalValidation\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\Adapter\CompositeThrownException;
@@ -45,11 +45,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * @covers \PhPhD\ExceptionalValidation
  * @covers \PhPhD\ExceptionalValidation\Capture
- * @covers \PhPhD\ExceptionalValidation\Handler\ExceptionalHandler
+ * @covers \PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler
  * @covers \PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException
- * @covers \PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationListFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\DefaultViolationListFormatter
  * @covers \PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter
- * @covers \PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\DefaultViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\ObjectRuleSet
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\IterableItemCaptureRule
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\PropertyRuleSet
@@ -79,7 +79,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class ExceptionalValidationTest extends TestCase
 {
-    private ExceptionalHandler $exceptionHandler;
+    private DefaultExceptionHandler $exceptionHandler;
 
     protected function setUp(): void
     {
@@ -106,7 +106,7 @@ final class ExceptionalValidationTest extends TestCase
         $captureListAssemblers->append(new PropertyNestedValidObjectRuleAssembler($objectRuleSetAssembler));
         $captureListAssemblers->append(new PropertyNestedValidIterableRulesAssembler(new IterableOfObjectsRuleSetAssembler($objectRuleSetAssembler)));
 
-        $defaultViolationFormatter = new ExceptionalViolationFormatter($translator, 'domain');
+        $defaultViolationFormatter = new DefaultViolationFormatter($translator, 'domain');
         $customViolationFormatter = new CustomExceptionViolationFormatter($defaultViolationFormatter);
 
         $formatterRegistry = $this->createMock(ContainerInterface::class);
@@ -116,8 +116,8 @@ final class ExceptionalValidationTest extends TestCase
         ]);
 
         $violationFormatter = new DelegatingExceptionViolationFormatter($formatterRegistry);
-        $violationListFormatter = new ExceptionalViolationListFormatter($violationFormatter);
-        $this->exceptionHandler = new ExceptionalHandler($objectRuleSetAssembler, $violationListFormatter);
+        $violationListFormatter = new DefaultViolationListFormatter($violationFormatter);
+        $this->exceptionHandler = new DefaultExceptionHandler($objectRuleSetAssembler, $violationListFormatter);
     }
 
     public function testDoesNotCaptureExceptionForMessageNotHavingExceptionalValidationAttribute(): void
