@@ -13,11 +13,18 @@ use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\PropertyRuleSetA
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyCaptureRulesAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidIterableRulesAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler;
+use PhPhD\ExceptionalValidation\Formatter\DefaultViolationFormatter;
+use PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationListFormatter;
-use PhPhD\ExceptionalValidation\Handler\ExceptionalHandler;
+use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
+use PhPhD\ExceptionalValidation\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidationBundle\Messenger\ExceptionalValidationMiddleware;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\VarExporter\LazyObjectInterface;
+
+use function krsort;
 
 /**
  * @covers \PhPhD\ExceptionalValidationBundle\PhdExceptionalValidationBundle
@@ -36,6 +43,8 @@ final class DependencyInjectionTest extends TestCase
         $this->checkRuleSetAssembler();
 
         $this->checkViolationsListFormatter();
+
+        $this->checkViolationFormatter();
 
         $this->checkObjectRuleSetAssembler();
 
@@ -58,7 +67,7 @@ final class DependencyInjectionTest extends TestCase
         $exceptionHandler = self::getContainer()->get('phd_exceptional_validation.exception_handler');
         self::assertInstanceOf(ExceptionHandler::class, $exceptionHandler);
         self::assertInstanceOf(LazyObjectInterface::class, $exceptionHandler);
-        self::assertInstanceOf(ExceptionalHandler::class, $exceptionHandler->initializeLazyObject());
+        self::assertInstanceOf(DefaultExceptionHandler::class, $exceptionHandler->initializeLazyObject());
     }
 
     private function checkRuleSetAssembler(): void
@@ -72,6 +81,27 @@ final class DependencyInjectionTest extends TestCase
         $violationsListFormatter = self::getContainer()->get('phd_exceptional_validation.violations_list_formatter');
         self::assertInstanceOf(ExceptionViolationListFormatter::class, $violationsListFormatter);
         self::assertInstanceOf(LazyObjectInterface::class, $violationsListFormatter);
+    }
+
+    private function checkViolationFormatter(): void
+    {
+        $violationFormatter = self::getContainer()->get('phd_exceptional_validation.violation_formatter');
+        self::assertInstanceOf(DelegatingExceptionViolationFormatter::class, $violationFormatter);
+
+        $defaultFormatter = self::getContainer()->get('phd_exceptional_validation.violation_formatter.default');
+        self::assertInstanceOf(DefaultViolationFormatter::class, $defaultFormatter);
+
+        $formatterRegistry = $this->getFormatterRegistry($violationFormatter);
+        self::assertInstanceOf(ServiceLocator::class, $formatterRegistry);
+
+        $providedServices = $formatterRegistry->getProvidedServices();
+        krsort($providedServices);
+        self::assertSame([
+            'default' => DefaultViolationFormatter::class,
+            CustomExceptionViolationFormatter::class => CustomExceptionViolationFormatter::class,
+        ], $providedServices);
+
+        self::assertSame($defaultFormatter, $formatterRegistry->get('default'));
     }
 
     private function checkObjectRuleSetAssembler(): void
@@ -112,5 +142,13 @@ final class DependencyInjectionTest extends TestCase
 
         $iterableOfObjectsRuleSetAssembler = self::getContainer()->get('phd_exceptional_validation.rule_set_assembler.iterable_of_objects');
         self::assertInstanceOf(IterableOfObjectsRuleSetAssembler::class, $iterableOfObjectsRuleSetAssembler);
+    }
+
+    private function getFormatterRegistry(DelegatingExceptionViolationFormatter $violationFormatter): ?ContainerInterface
+    {
+        /** @psalm-suppress InaccessibleProperty */
+        return (static fn (): ContainerInterface => $violationFormatter->formatterRegistry) // @phpstan-ignore-line
+            ->bindTo(null, DelegatingExceptionViolationFormatter::class)?->__invoke()
+        ;
     }
 }

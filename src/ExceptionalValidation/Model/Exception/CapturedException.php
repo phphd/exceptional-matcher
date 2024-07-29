@@ -21,6 +21,7 @@ final class CapturedException
         return $this->exception;
     }
 
+    /** @internal */
     public function getMatchedRule(): CaptureExceptionRule
     {
         return $this->matchedRule;

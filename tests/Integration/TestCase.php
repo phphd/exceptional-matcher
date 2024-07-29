@@ -33,7 +33,8 @@ abstract class TestCase extends KernelTestCase
         /** @var TestKernel $kernel */
         $kernel = parent::createKernel($options);
         $kernel->addTestBundle(PhdExceptionalValidationBundle::class);
-        $kernel->addTestCompilerPass(new TestServicesCompilerPass());
+        // priority 105 is primarily necessary for interface autoconfiguration
+        $kernel->addTestCompilerPass(new TestServicesCompilerPass(), priority: 105);
 
         return $kernel;
     }

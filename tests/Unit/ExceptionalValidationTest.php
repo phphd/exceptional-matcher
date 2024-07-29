@@ -17,13 +17,16 @@ use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyCa
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidIterableRulesAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyRulesAssemblerEnvelope;
-use PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationFormatter;
-use PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationListFormatter;
+use PhPhD\ExceptionalValidation\Formatter\DefaultViolationFormatter;
+use PhPhD\ExceptionalValidation\Formatter\DefaultViolationListFormatter;
+use PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
-use PhPhD\ExceptionalValidation\Handler\ExceptionalHandler;
 use PhPhD\ExceptionalValidation\Model\Exception\Adapter\SingleThrownException;
+use PhPhD\ExceptionalValidation\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\Adapter\CompositeThrownException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ConditionallyCapturedException;
+use PhPhD\ExceptionalValidation\Tests\Stub\Exception\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedItemCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableException;
@@ -34,6 +37,7 @@ use PhPhD\ExceptionalValidation\Tests\Stub\NestedHandleableMessage;
 use PhPhD\ExceptionalValidation\Tests\Stub\NestedItem;
 use PhPhD\ExceptionalValidation\Tests\Stub\NotHandleableMessageStub;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use stdClass;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -41,10 +45,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * @covers \PhPhD\ExceptionalValidation
  * @covers \PhPhD\ExceptionalValidation\Capture
- * @covers \PhPhD\ExceptionalValidation\Handler\ExceptionalHandler
+ * @covers \PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler
  * @covers \PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException
- * @covers \PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationListFormatter
- * @covers \PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\DefaultViolationListFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\DefaultViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\ObjectRuleSet
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\IterableItemCaptureRule
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\PropertyRuleSet
@@ -74,7 +79,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class ExceptionalValidationTest extends TestCase
 {
-    private ExceptionalHandler $exceptionHandler;
+    private DefaultExceptionHandler $exceptionHandler;
 
     protected function setUp(): void
     {
@@ -101,9 +106,18 @@ final class ExceptionalValidationTest extends TestCase
         $captureListAssemblers->append(new PropertyNestedValidObjectRuleAssembler($objectRuleSetAssembler));
         $captureListAssemblers->append(new PropertyNestedValidIterableRulesAssembler(new IterableOfObjectsRuleSetAssembler($objectRuleSetAssembler)));
 
-        $violationFormatter = new ExceptionalViolationFormatter($translator, 'domain');
-        $violationListFormatter = new ExceptionalViolationListFormatter($violationFormatter);
-        $this->exceptionHandler = new ExceptionalHandler($objectRuleSetAssembler, $violationListFormatter);
+        $defaultViolationFormatter = new DefaultViolationFormatter($translator, 'domain');
+        $customViolationFormatter = new CustomExceptionViolationFormatter($defaultViolationFormatter);
+
+        $formatterRegistry = $this->createMock(ContainerInterface::class);
+        $formatterRegistry->method('get')->willReturnMap([
+            ['default', $defaultViolationFormatter],
+            [CustomExceptionViolationFormatter::class, $customViolationFormatter],
+        ]);
+
+        $violationFormatter = new DelegatingExceptionViolationFormatter($formatterRegistry);
+        $violationListFormatter = new DefaultViolationListFormatter($violationFormatter);
+        $this->exceptionHandler = new DefaultExceptionHandler($objectRuleSetAssembler, $violationListFormatter);
     }
 
     public function testDoesNotCaptureExceptionForMessageNotHavingExceptionalValidationAttribute(): void
@@ -118,18 +132,18 @@ final class ExceptionalValidationTest extends TestCase
     public function testCapturesExceptionMappedToProperty(): void
     {
         $message = HandleableMessageStub::create();
-        $rootException = new PropertyCapturableException();
+        $originalException = new PropertyCapturableException();
 
         $this->expectException(ExceptionalValidationFailedException::class);
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($rootException));
+            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
         } catch (ExceptionalValidationFailedException $e) {
             self::assertSame(
                 'Message of type "PhPhD\ExceptionalValidation\Tests\Stub\HandleableMessageStub" has failed exceptional validation.',
                 $e->getMessage(),
             );
-            self::assertSame($rootException, $e->getPrevious());
+            self::assertSame($originalException, $e->getPrevious());
             self::assertSame($message, $e->getViolatingMessage());
 
             $violationList = $e->getViolations();
@@ -172,10 +186,10 @@ final class ExceptionalValidationTest extends TestCase
 
         $this->expectException(ExceptionalValidationFailedException::class);
 
-        $rootException = new ObjectPropertyCapturableException();
+        $originalException = new ObjectPropertyCapturableException();
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($rootException));
+            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
         } catch (ExceptionalValidationFailedException $e) {
             /** @var ConstraintViolationInterface $violation */
             [$violation] = $e->getViolations();
@@ -194,10 +208,10 @@ final class ExceptionalValidationTest extends TestCase
 
         $this->expectException(ExceptionalValidationFailedException::class);
 
-        $rootException = new StaticPropertyCapturedException();
+        $originalException = new StaticPropertyCapturedException();
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($rootException));
+            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
         } catch (ExceptionalValidationFailedException $e) {
             /** @var ConstraintViolationInterface $violation */
             [$violation] = $e->getViolations();
@@ -235,14 +249,14 @@ final class ExceptionalValidationTest extends TestCase
     {
         $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());
 
-        $rootException = new NestedPropertyCapturableException();
+        $originalException = new NestedPropertyCapturableException();
 
         $this->expectException(ExceptionalValidationFailedException::class);
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($rootException));
+            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
         } catch (ExceptionalValidationFailedException $e) {
-            self::assertSame($rootException, $e->getPrevious());
+            self::assertSame($originalException, $e->getPrevious());
 
             $violations = $e->getViolations();
             self::assertCount(1, $violations);
@@ -262,25 +276,25 @@ final class ExceptionalValidationTest extends TestCase
     {
         $message = HandleableMessageStub::create()->withConditionalMessage(11, 41);
 
-        $rootException = new ConditionallyCapturedException(12);
+        $originalException = new ConditionallyCapturedException(12);
 
         $this->expectNotToPerformAssertions();
 
-        $this->exceptionHandler->capture($message, new SingleThrownException($rootException));
+        $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
     }
 
     public function testCapturesExceptionWithGivenCondition(): void
     {
         $message = HandleableMessageStub::create()->withConditionalMessage(11, 41);
 
-        $rootException = new ConditionallyCapturedException(41);
+        $originalException = new ConditionallyCapturedException(41);
 
         $this->expectException(ExceptionalValidationFailedException::class);
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($rootException));
+            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
         } catch (ExceptionalValidationFailedException $e) {
-            self::assertSame($rootException, $e->getPrevious());
+            self::assertSame($originalException, $e->getPrevious());
 
             $violations = $e->getViolations();
             self::assertCount(1, $violations);
@@ -302,11 +316,11 @@ final class ExceptionalValidationTest extends TestCase
             new NestedItem(3),
         ]);
 
-        $rootException = new NestedItemCapturedException(code: 2);
+        $originalException = new NestedItemCapturedException(code: 2);
 
         $this->expectNotToPerformAssertions();
 
-        $this->exceptionHandler->capture($message, new SingleThrownException($rootException));
+        $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
     }
 
     public function testCapturesExceptionOnNestedArrayItem(): void
@@ -317,14 +331,14 @@ final class ExceptionalValidationTest extends TestCase
             new NestedItem(32),
         ]);
 
-        $rootException = new NestedItemCapturedException(code: 57);
+        $originalException = new NestedItemCapturedException(code: 57);
 
         $this->expectException(ExceptionalValidationFailedException::class);
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($rootException));
+            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
         } catch (ExceptionalValidationFailedException $e) {
-            self::assertSame($rootException, $e->getPrevious());
+            self::assertSame($originalException, $e->getPrevious());
 
             $violations = $e->getViolations();
             self::assertCount(1, $violations);
@@ -346,14 +360,14 @@ final class ExceptionalValidationTest extends TestCase
             4 => new NestedItem(2),
         ]));
 
-        $rootException = new NestedItemCapturedException(code: 2);
+        $originalException = new NestedItemCapturedException(code: 2);
 
         $this->expectException(ExceptionalValidationFailedException::class);
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($rootException));
+            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
         } catch (ExceptionalValidationFailedException $e) {
-            self::assertSame($rootException, $e->getPrevious());
+            self::assertSame($originalException, $e->getPrevious());
 
             $violations = $e->getViolations();
             self::assertCount(1, $violations);
@@ -375,14 +389,14 @@ final class ExceptionalValidationTest extends TestCase
             ])
         ;
 
-        $rootException = new CompositeThrownException([
+        $originalException = new CompositeThrownException([
             new NestedItemCapturedException(code: 1),
             new NestedItemCapturedException(code: 3),
         ]);
 
         $this->expectNotToPerformAssertions();
 
-        $this->exceptionHandler->capture($message, $rootException);
+        $this->exceptionHandler->capture($message, $originalException);
     }
 
     public function testCapturesMultipleExceptions(): void
@@ -426,6 +440,33 @@ final class ExceptionalValidationTest extends TestCase
             /** @var ConstraintViolationInterface $fourthViolation */
             $fourthViolation = $violations[3];
             self::assertSame('nestedIterableItems[second].property', $fourthViolation->getPropertyPath());
+
+            throw $e;
+        }
+    }
+
+    public function testCustomViolationFormatter(): void
+    {
+        $message = HandleableMessageStub::create();
+
+        $this->expectException(ExceptionalValidationFailedException::class);
+
+        $originalException = new CustomFormattedException();
+
+        try {
+            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
+        } catch (ExceptionalValidationFailedException $e) {
+            $violations = $e->getViolations();
+            self::assertCount(1, $violations);
+
+            /** @var ConstraintViolationInterface $violation */
+            $violation = $violations[0];
+            self::assertSame('custom - oops - translated', $violation->getMessage());
+            self::assertSame('custom.oops', $violation->getMessageTemplate());
+            self::assertSame([
+                'custom' => 'param',
+            ], $violation->getParameters());
+            self::assertSame('customFormatted', $violation->getPropertyPath());
 
             throw $e;
         }

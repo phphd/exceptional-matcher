@@ -10,6 +10,7 @@ use PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath;
 /** @internal */
 interface CaptureRule
 {
+    /** Returns TRUE if all exceptions were captured or FALSE otherwise */
     public function process(ExceptionPackage $package): bool;
 
     public function getPropertyPath(): PropertyPath;
