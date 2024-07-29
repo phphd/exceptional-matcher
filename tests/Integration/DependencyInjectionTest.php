@@ -13,10 +13,10 @@ use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\PropertyRuleSetA
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyCaptureRulesAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidIterableRulesAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler;
+use PhPhD\ExceptionalValidation\Formatter\DefaultViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Formatter\ExceptionalViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationListFormatter;
-use PhPhD\ExceptionalValidation\Handler\ExceptionalHandler;
+use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
 use PhPhD\ExceptionalValidation\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidationBundle\Messenger\ExceptionalValidationMiddleware;
@@ -67,7 +67,7 @@ final class DependencyInjectionTest extends TestCase
         $exceptionHandler = self::getContainer()->get('phd_exceptional_validation.exception_handler');
         self::assertInstanceOf(ExceptionHandler::class, $exceptionHandler);
         self::assertInstanceOf(LazyObjectInterface::class, $exceptionHandler);
-        self::assertInstanceOf(ExceptionalHandler::class, $exceptionHandler->initializeLazyObject());
+        self::assertInstanceOf(DefaultExceptionHandler::class, $exceptionHandler->initializeLazyObject());
     }
 
     private function checkRuleSetAssembler(): void
@@ -89,7 +89,7 @@ final class DependencyInjectionTest extends TestCase
         self::assertInstanceOf(DelegatingExceptionViolationFormatter::class, $violationFormatter);
 
         $defaultFormatter = self::getContainer()->get('phd_exceptional_validation.violation_formatter.default');
-        self::assertInstanceOf(ExceptionalViolationFormatter::class, $defaultFormatter);
+        self::assertInstanceOf(DefaultViolationFormatter::class, $defaultFormatter);
 
         $formatterRegistry = $this->getFormatterRegistry($violationFormatter);
         self::assertInstanceOf(ServiceLocator::class, $formatterRegistry);
@@ -97,7 +97,7 @@ final class DependencyInjectionTest extends TestCase
         $providedServices = $formatterRegistry->getProvidedServices();
         krsort($providedServices);
         self::assertSame([
-            'default' => ExceptionalViolationFormatter::class,
+            'default' => DefaultViolationFormatter::class,
             CustomExceptionViolationFormatter::class => CustomExceptionViolationFormatter::class,
         ], $providedServices);
 
