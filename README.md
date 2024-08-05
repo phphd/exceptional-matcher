@@ -173,6 +173,44 @@ when exception is processed. If `isWithdrawalCardBlocked` callback returns `true
 `withdrawalCardId` property; if `isDepositCardBlocked` callback returns `true`, then exception is captured for
 `depositCardId` property. If neither of the callbacks return `true`, then exception is re-thrown upper in the stack.
 
+### Simple Capture Conditions
+
+Since in most cases capture conditions come down to the value comparison, it's easier to make your exception implement
+`InvalidValueException` interface rather than implementing `when:` closure every time. This way simple value comparison
+will be done for you:
+
+```php
+#[ExceptionalValidation]
+final class TransferMoneyCommand
+{
+    #[Capture(BlockedCardException::class, 'wallet.blocked_card')]
+    private int $withdrawalCardId;
+
+    #[Capture(BlockedCardException::class, 'wallet.blocked_card')]
+    private int $depositCardId;
+}
+
+use PhPhD\ExceptionalValidation\Model\Condition\Exception\InvalidValueException;
+use RuntimeException;
+
+final class BlockedCardException extends RuntimeException implements InvalidValueException
+{
+    public function __construct(
+        private Card $card,
+    ) {
+        parent::__construct();
+    }
+
+    public function getInvalidValue(): int
+    {
+        return $this->card->getId();    
+    }
+}
+```
+
+In this example `BlockedCardException` implements `InvalidValueException` interface, which allows us to compare the
+exception invalid value directly with the property value. If the values are equal, then the exception is captured.
+
 ### Capturing exceptions on nested array items
 
 You are perfectly allowed to map the violations for the nested array items given that you have `#[Valid]` attribute
