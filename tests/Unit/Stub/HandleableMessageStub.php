@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalValidation\Tests\Stub;
 use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Model\Condition\Exception\InvalidValueException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\PropertyCapturableException;
@@ -45,6 +46,15 @@ final class HandleableMessageStub
     private ArrayObject $nestedIterableItems;
 
     private array $justArray;
+
+    #[ExceptionalValidation\Capture(InvalidValueException::class, 'oops')]
+    private string $firstInvalidValue = 'first';
+
+    #[ExceptionalValidation\Capture(InvalidValueException::class, 'oops')]
+    private string $notMatched;
+
+    #[ExceptionalValidation\Capture(InvalidValueException::class, 'oops')]
+    private string $secondInvalidValue = 'second';
 
     private function __construct()
     {
