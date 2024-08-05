@@ -9,7 +9,10 @@ use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Model\Condition\CompositeMatchCondition;
+use PhPhD\ExceptionalValidation\Model\Condition\Exception\InvalidValueException;
 use PhPhD\ExceptionalValidation\Model\Condition\MatchByExceptionClassCondition;
+use PhPhD\ExceptionalValidation\Model\Condition\MatchByInvalidValueCondition;
+use PhPhD\ExceptionalValidation\Model\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Model\Condition\MatchWithClosureCondition;
 use PhPhD\ExceptionalValidation\Model\Rule\CaptureExceptionRule;
 use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
@@ -17,6 +20,7 @@ use PhPhD\ExceptionalValidation\Model\Rule\CompositeRuleSet;
 
 use function array_filter;
 use function array_values;
+use function is_a;
 
 /**
  * @internal
@@ -66,7 +70,7 @@ final class PropertyCaptureRulesAssembler implements CaptureRuleSetAssembler
         $conditions = [];
 
         $conditions[] = $this->getExceptionClassCondition($capture);
-        $conditions[] = $this->getClosureCondition($capture, $parent);
+        $conditions[] = $this->getExceptionValueCondition($capture, $parent);
 
         return new CompositeMatchCondition(array_values(array_filter($conditions)));
     }
@@ -76,12 +80,12 @@ final class PropertyCaptureRulesAssembler implements CaptureRuleSetAssembler
         return new MatchByExceptionClassCondition($capture->getExceptionClass());
     }
 
-    private function getClosureCondition(Capture $capture, CaptureRule $parent): ?MatchWithClosureCondition
+    private function getExceptionValueCondition(Capture $capture, CaptureRule $parent): ?MatchCondition
     {
         $when = $capture->getWhen();
 
         if (null === $when) {
-            return null;
+            return $this->getMatchByInvalidValueCondition($capture, $parent);
         }
 
         $object = $parent->getEnclosingObject();
@@ -92,5 +96,18 @@ final class PropertyCaptureRulesAssembler implements CaptureRuleSetAssembler
 
         /** @phpstan-ignore-next-line */
         return new MatchWithClosureCondition($when(...));
+    }
+
+    private function getMatchByInvalidValueCondition(Capture $capture, CaptureRule $parent): ?MatchByInvalidValueCondition
+    {
+        $exceptionClass = $capture->getExceptionClass();
+
+        if (!is_a($exceptionClass, InvalidValueException::class, true)) {
+            return null;
+        }
+
+        $value = $parent->getValue();
+
+        return new MatchByInvalidValueCondition($value);
     }
 }

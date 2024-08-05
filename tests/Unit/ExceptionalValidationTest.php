@@ -31,6 +31,7 @@ use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedItemCapturedException
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\PropertyCapturableException;
+use PhPhD\ExceptionalValidation\Tests\Stub\Exception\SomeInvalidValueException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\StaticPropertyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalValidation\Tests\Stub\NestedHandleableMessage;
@@ -57,6 +58,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\LazyRuleSet
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\CaptureExceptionRule
  * @covers \PhPhD\ExceptionalValidation\Model\Condition\MatchByExceptionClassCondition
+ * @covers \PhPhD\ExceptionalValidation\Model\Condition\MatchByInvalidValueCondition
  * @covers \PhPhD\ExceptionalValidation\Model\Condition\MatchWithClosureCondition
  * @covers \PhPhD\ExceptionalValidation\Model\Condition\CompositeMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath
@@ -467,6 +469,29 @@ final class ExceptionalValidationTest extends TestCase
                 'custom' => 'param',
             ], $violation->getParameters());
             self::assertSame('customFormatted', $violation->getPropertyPath());
+
+            throw $e;
+        }
+    }
+
+    public function testInvalidValueException(): void
+    {
+        $message = HandleableMessageStub::create();
+
+        $originalException = new SomeInvalidValueException('second');
+
+        $this->expectException(ExceptionalValidationFailedException::class);
+
+        try {
+            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
+        } catch (ExceptionalValidationFailedException $e) {
+            $violations = $e->getViolations();
+            self::assertCount(1, $violations);
+
+            /** @var ConstraintViolationInterface $violation */
+            $violation = $violations[0];
+
+            self::assertSame('secondInvalidValue', $violation->getPropertyPath());
 
             throw $e;
         }
