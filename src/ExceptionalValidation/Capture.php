@@ -17,12 +17,17 @@ final class Capture
         /** @var class-string<Exception> */
         private readonly string $exception,
         private readonly ?string $message = null,
+        private readonly ?string $condition = null,
         /** @var ?array{0:object|class-string,1:string} */
         private readonly ?array $when = null,
         private readonly string $formatter = 'default',
     ) {
         if (null !== $this->when) {
             Assert::count($this->when, 2);
+        }
+
+        if (null !== $this->condition) {
+            Assert::same($this->condition, 'invalid_value');
         }
     }
 
@@ -35,6 +40,11 @@ final class Capture
     public function getMessage(): ?string
     {
         return $this->message;
+    }
+
+    public function getCondition(): ?string
+    {
+        return $this->condition;
     }
 
     /** @return ?array{0:object|class-string,1:string} */

@@ -48,13 +48,13 @@ final class HandleableMessageStub
 
     private array $justArray;
 
-    #[ExceptionalValidation\Capture(InvalidValueException::class, 'oops')]
+    #[ExceptionalValidation\Capture(InvalidValueException::class, 'oops', condition: 'invalid_value')]
     private string $firstInvalidValue = 'first';
 
-    #[ExceptionalValidation\Capture(InvalidValueException::class, 'oops')]
+    #[ExceptionalValidation\Capture(InvalidValueException::class, 'oops', condition: 'invalid_value')]
     private string $notMatched;
 
-    #[ExceptionalValidation\Capture(InvalidValueException::class, 'oops')]
+    #[ExceptionalValidation\Capture(InvalidValueException::class, 'oops', condition: 'invalid_value')]
     private string $secondInvalidValue = 'second';
 
     #[ExceptionalValidation\Capture(MessageContainingException::class)]
