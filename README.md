@@ -183,10 +183,10 @@ will be done for you:
 #[ExceptionalValidation]
 final class TransferMoneyCommand
 {
-    #[Capture(BlockedCardException::class, 'wallet.blocked_card')]
+    #[Capture(BlockedCardException::class, 'wallet.blocked_card', condition: 'invalid_value')]
     private int $withdrawalCardId;
 
-    #[Capture(BlockedCardException::class, 'wallet.blocked_card')]
+    #[Capture(BlockedCardException::class, 'wallet.blocked_card', condition: 'invalid_value')]
     private int $depositCardId;
 }
 
