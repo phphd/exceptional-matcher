@@ -20,9 +20,10 @@ final class DefaultViolationFormatter implements ExceptionViolationFormatter
 
     public function formatViolation(CapturedException $capturedException): ConstraintViolationInterface
     {
+        $exception = $capturedException->getException();
         $rule = $capturedException->getMatchedRule();
 
-        $messageTemplate = $rule->getMessageTemplate();
+        $messageTemplate = $rule->getMessageTemplate() ?? $exception->getMessage();
         $root = $rule->getRoot();
         $propertyPath = $rule->getPropertyPath();
         $value = $rule->getValue();

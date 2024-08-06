@@ -27,6 +27,7 @@ use PhPhD\ExceptionalValidation\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\Adapter\CompositeThrownException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ConditionallyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\CustomFormattedException;
+use PhPhD\ExceptionalValidation\Tests\Stub\Exception\MessageContainingException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedItemCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableException;
@@ -90,9 +91,11 @@ final class ExceptionalValidationTest extends TestCase
         $translator = $this->createMock(TranslatorInterface::class);
         $translator->method('trans')
             ->willReturnMap([
+                ['', [], 'domain', null, ''],
                 ['oops', [], 'domain', null, 'oops - translated'],
                 ['object.oops', [], 'domain', null, 'object.oops - translated'],
                 ['nested.message', [], 'domain', null, 'nested.message - translated'],
+                ['This is the message to be used', [], 'domain', null, 'This is the message to be used'],
             ])
         ;
 
@@ -492,6 +495,39 @@ final class ExceptionalValidationTest extends TestCase
             $violation = $violations[0];
 
             self::assertSame('secondInvalidValue', $violation->getPropertyPath());
+
+            throw $e;
+        }
+    }
+
+    public function testViolationMessageFallsBackToExceptionMessage(): void
+    {
+        $message = HandleableMessageStub::create();
+        $originalException = new CompositeThrownException([
+            new MessageContainingException(),
+            new MessageContainingException(),
+        ]);
+
+        $this->expectException(ExceptionalValidationFailedException::class);
+
+        try {
+            $this->exceptionHandler->capture($message, $originalException);
+        } catch (ExceptionalValidationFailedException $e) {
+            $violations = $e->getViolations();
+            self::assertCount(2, $violations);
+
+            /** @var ConstraintViolationInterface $violation1 */
+            $violation1 = $violations[0];
+
+            self::assertSame('fallBackToExceptionMessage', $violation1->getPropertyPath());
+            self::assertSame('This is the message to be used', $violation1->getMessage());
+
+            /** @var ConstraintViolationInterface $violation2 */
+            $violation2 = $violations[1];
+
+            // When the message is specified as an empty string, empty message is used (w/o fallback)
+            self::assertSame('emptyTranslationMessage', $violation2->getPropertyPath());
+            self::assertSame('', $violation2->getMessage());
 
             throw $e;
         }

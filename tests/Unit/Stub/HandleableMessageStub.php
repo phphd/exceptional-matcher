@@ -9,6 +9,7 @@ use LogicException;
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Model\Condition\Exception\InvalidValueException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\CustomFormattedException;
+use PhPhD\ExceptionalValidation\Tests\Stub\Exception\MessageContainingException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\StaticPropertyCapturedException;
@@ -55,6 +56,12 @@ final class HandleableMessageStub
 
     #[ExceptionalValidation\Capture(InvalidValueException::class, 'oops')]
     private string $secondInvalidValue = 'second';
+
+    #[ExceptionalValidation\Capture(MessageContainingException::class)]
+    private int $fallBackToExceptionMessage;
+
+    #[ExceptionalValidation\Capture(MessageContainingException::class, '')]
+    private string $emptyTranslationMessage;
 
     private function __construct()
     {

@@ -16,7 +16,7 @@ final class Capture
     public function __construct(
         /** @var class-string<Exception> */
         private readonly string $exception,
-        private readonly string $message,
+        private readonly ?string $message = null,
         /** @var ?array{0:object|class-string,1:string} */
         private readonly ?array $when = null,
         private readonly string $formatter = 'default',
@@ -32,7 +32,7 @@ final class Capture
         return $this->exception;
     }
 
-    public function getMessage(): string
+    public function getMessage(): ?string
     {
         return $this->message;
     }
