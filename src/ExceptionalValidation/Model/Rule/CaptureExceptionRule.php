@@ -15,7 +15,7 @@ final class CaptureExceptionRule implements CaptureRule, MatchCondition
     public function __construct(
         private readonly CaptureRule $parent,
         private readonly MatchCondition $condition,
-        private readonly string $messageTemplate,
+        private readonly ?string $messageTemplate,
         private readonly string $formatterId,
     ) {
     }
@@ -52,7 +52,7 @@ final class CaptureExceptionRule implements CaptureRule, MatchCondition
         return $this->parent->getValue();
     }
 
-    public function getMessageTemplate(): string
+    public function getMessageTemplate(): ?string
     {
         return $this->messageTemplate;
     }
