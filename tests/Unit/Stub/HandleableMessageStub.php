@@ -11,7 +11,7 @@ use PhPhD\ExceptionalValidation\Tests\Stub\Exception\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\MessageContainingException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\PropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\SomeInvalidValueException;
+use PhPhD\ExceptionalValidation\Tests\Stub\Exception\SomeValueException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\StaticPropertyCapturedException;
 use Symfony\Component\Validator\Constraints\Valid;
 
@@ -48,13 +48,13 @@ final class HandleableMessageStub
 
     private array $justArray;
 
-    #[ExceptionalValidation\Capture(SomeInvalidValueException::class, 'oops', condition: 'invalid_value')]
+    #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: 'value')]
     private string $notMatchedCondition = 'not matched';
 
-    #[ExceptionalValidation\Capture(SomeInvalidValueException::class, 'oops', condition: 'invalid_value')]
+    #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: 'value')]
     private string $matchedCondition = 'matched!';
 
-    #[ExceptionalValidation\Capture(SomeInvalidValueException::class, 'oops')]
+    #[ExceptionalValidation\Capture(SomeValueException::class, 'oops')]
     private string $anotherMatchedAsNoCondition;
 
     #[ExceptionalValidation\Capture(MessageContainingException::class)]

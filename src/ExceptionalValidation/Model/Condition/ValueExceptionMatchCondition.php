@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Model\Condition;
 
-use PhPhD\ExceptionalValidation\Model\Condition\Exception\InvalidValueException;
+use PhPhD\ExceptionalValidation\Model\Condition\Exception\ValueException;
 use Throwable;
 
 /** @internal */
-final class InvalidValueExceptionMatchCondition implements MatchCondition
+final class ValueExceptionMatchCondition implements MatchCondition
 {
     public function __construct(
         private readonly mixed $value,
@@ -17,10 +17,10 @@ final class InvalidValueExceptionMatchCondition implements MatchCondition
 
     public function matches(Throwable $exception): bool
     {
-        if (!$exception instanceof InvalidValueException) {
+        if (!$exception instanceof ValueException) {
             return false;
         }
 
-        return $exception->getInvalidValue() === $this->value;
+        return $exception->getValue() === $this->value;
     }
 }
