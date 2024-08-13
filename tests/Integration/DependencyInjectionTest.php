@@ -14,7 +14,7 @@ use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyCa
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidIterableRulesAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler;
 use PhPhD\ExceptionalValidation\ConditionFactory\CaptureMatchConditionFactory;
-use PhPhD\ExceptionalValidation\ConditionFactory\InvalidValueExceptionMatchConditionFactory;
+use PhPhD\ExceptionalValidation\ConditionFactory\ValueExceptionMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Formatter\DefaultViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationListFormatter;
@@ -92,7 +92,7 @@ final class DependencyInjectionTest extends TestCase
         krsort($providedServices);
 
         self::assertSame([
-            'invalid_value' => InvalidValueExceptionMatchConditionFactory::class,
+            'value' => ValueExceptionMatchConditionFactory::class,
         ], $providedServices);
     }
 
