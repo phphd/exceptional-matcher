@@ -18,7 +18,7 @@ use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNe
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyRulesAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\ConditionFactory\CaptureMatchConditionFactory;
-use PhPhD\ExceptionalValidation\ConditionFactory\InvalidValueExceptionMatchConditionFactory;
+use PhPhD\ExceptionalValidation\ConditionFactory\ValueExceptionMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Formatter\DefaultViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\DefaultViolationListFormatter;
 use PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter;
@@ -34,7 +34,7 @@ use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedItemCapturedException
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\PropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\SomeInvalidValueException;
+use PhPhD\ExceptionalValidation\Tests\Stub\Exception\SomeValueException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\StaticPropertyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalValidation\Tests\Stub\NestedHandleableMessage;
@@ -61,7 +61,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\LazyRuleSet
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\CaptureExceptionRule
  * @covers \PhPhD\ExceptionalValidation\Model\Condition\ExceptionClassMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Model\Condition\InvalidValueExceptionMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Model\Condition\ClosureMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Model\Condition\CompositeMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath
@@ -81,7 +81,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\IterableOfObjectsRuleSetAssembler
  * @covers \PhPhD\ExceptionalValidation\ConditionFactory\CaptureMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\ConditionFactory\ExceptionClassMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\ConditionFactory\InvalidValueExceptionMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\ConditionFactory\ValueExceptionMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\ConditionFactory\ClosureMatchConditionFactory
  *
  * @internal
@@ -115,7 +115,7 @@ final class ExceptionalValidationTest extends TestCase
 
         $conditionFactoryRegistry = $this->createMock(ContainerInterface::class);
         $conditionFactoryRegistry->method('get')->willReturnMap([
-            ['invalid_value', new InvalidValueExceptionMatchConditionFactory()],
+            ['value', new ValueExceptionMatchConditionFactory()],
         ]);
         $captureMatchConditionFactory = new CaptureMatchConditionFactory($conditionFactoryRegistry);
 
@@ -489,13 +489,13 @@ final class ExceptionalValidationTest extends TestCase
         }
     }
 
-    public function testInvalidValueException(): void
+    public function testValueException(): void
     {
         $message = HandleableMessageStub::create();
 
         $exceptionAdapter = new CompositeThrownException([
-            new SomeInvalidValueException('matched!'),
-            new SomeInvalidValueException('whatever'),
+            new SomeValueException('matched!'),
+            new SomeValueException('whatever'),
         ]);
 
         $this->expectException(ExceptionalValidationFailedException::class);

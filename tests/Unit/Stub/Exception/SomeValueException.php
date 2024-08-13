@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Tests\Stub\Exception;
 
-use PhPhD\ExceptionalValidation\Model\Condition\Exception\InvalidValueException;
+use PhPhD\ExceptionalValidation\Model\Condition\Exception\ValueException;
 use RuntimeException;
 
-final class SomeInvalidValueException extends RuntimeException implements InvalidValueException
+final class SomeValueException extends RuntimeException implements ValueException
 {
     public function __construct(
         private readonly mixed $value,
@@ -15,7 +15,7 @@ final class SomeInvalidValueException extends RuntimeException implements Invali
         parent::__construct();
     }
 
-    public function getInvalidValue(): mixed
+    public function getValue(): mixed
     {
         return $this->value;
     }

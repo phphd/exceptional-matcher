@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation\Model\Condition\Exception;
 use Throwable;
 
 /** @api */
-interface InvalidValueException extends Throwable
+interface ValueException extends Throwable
 {
-    public function getInvalidValue(): mixed;
+    public function getValue(): mixed;
 }
