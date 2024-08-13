@@ -176,28 +176,28 @@ when exception is processed. If `isWithdrawalCardBlocked` callback returns `true
 ### Simple Capture Conditions
 
 Since in most cases capture conditions come down to the simple value comparison, it's easier to make your exception
-implement `InvalidValueException` interface and specify `condition: 'invalid_value'` rather than implementing `when:`
+implement `ValueException` interface and specify `condition: 'value'` rather than implementing `when:`
 closure every time. This way you can avoid boilerplate code and make your code more readable.
 
 ```php
 #[ExceptionalValidation]
 final class TransferMoneyCommand
 {
-    #[Capture(BlockedCardException::class, 'wallet.blocked_card', condition: 'invalid_value')]
+    #[Capture(BlockedCardException::class, 'wallet.blocked_card', condition: 'value')]
     private int $withdrawalCardId;
 
-    #[Capture(BlockedCardException::class, 'wallet.blocked_card', condition: 'invalid_value')]
+    #[Capture(BlockedCardException::class, 'wallet.blocked_card', condition: 'value')]
     private int $depositCardId;
 }
 ```
 
-The `BlockedCardException` should implement `InvalidValueException` interface:
+The `BlockedCardException` should implement `ValueException` interface:
 
 ```php
-use PhPhD\ExceptionalValidation\Model\Condition\Exception\InvalidValueException;
+use PhPhD\ExceptionalValidation\Model\Condition\Exception\ValueException;
 use RuntimeException;
 
-final class BlockedCardException extends RuntimeException implements InvalidValueException
+final class BlockedCardException extends RuntimeException implements ValueException
 {
     public function __construct(
         private Card $card,
@@ -205,7 +205,7 @@ final class BlockedCardException extends RuntimeException implements InvalidValu
         parent::__construct();
     }
 
-    public function getInvalidValue(): int
+    public function getValue(): int
     {
         return $this->card->getId();    
     }
