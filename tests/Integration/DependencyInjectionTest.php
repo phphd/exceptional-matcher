@@ -21,6 +21,7 @@ use PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
+use PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition;
 use PhPhD\ExceptionalValidation\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidationBundle\Messenger\ExceptionalValidationMiddleware;
 use Psr\Container\ContainerInterface;
@@ -93,7 +94,7 @@ final class DependencyInjectionTest extends TestCase
         krsort($providedServices);
 
         self::assertSame([
-            'value' => ValueExceptionMatchConditionFactory::class,
+            ValueExceptionMatchCondition::class => ValueExceptionMatchConditionFactory::class,
         ], $providedServices);
     }
 

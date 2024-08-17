@@ -176,17 +176,19 @@ when exception is processed. If `isWithdrawalCardBlocked` callback returns `true
 ### Simple Capture Conditions
 
 Since in most cases capture conditions come down to the simple value comparison, it's easier to make your exception
-implement `ValueException` interface and specify `condition: 'value'` rather than implementing `when:`
+implement `ValueException` interface and specify `condition: ValueExceptionMatchCondition::class` rather than implementing `when:`
 closure every time. This way, it's possible to avoid boilerplate code, keeping it clean:
 
 ```php
+use PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition;
+
 #[ExceptionalValidation]
 final class TransferMoneyCommand
 {
-    #[Capture(BlockedCardException::class, 'wallet.blocked_card', condition: 'value')]
+    #[Capture(BlockedCardException::class, 'wallet.blocked_card', condition: ValueExceptionMatchCondition::class)]
     private int $withdrawalCardId;
 
-    #[Capture(BlockedCardException::class, 'wallet.blocked_card', condition: 'value')]
+    #[Capture(BlockedCardException::class, 'wallet.blocked_card', condition: ValueExceptionMatchCondition::class)]
     private int $depositCardId;
 }
 ```
