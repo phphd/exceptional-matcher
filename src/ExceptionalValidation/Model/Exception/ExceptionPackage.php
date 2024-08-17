@@ -24,7 +24,7 @@ final class ExceptionPackage
     }
 
     /** @return non-empty-list<CapturedException> */
-    public function getCapturedExceptions(): array
+    public function getCapturedExceptionsList(): array
     {
         Assert::notEmpty($this->capturedExceptions);
 

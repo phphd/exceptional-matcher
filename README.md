@@ -275,16 +275,17 @@ final class RegistrationViolationsFormatter implements ExceptionViolationFormatt
     ) {
     }
 
-    public function formatViolation(CapturedException $capturedException): ConstraintViolationInterface
+    /** @return array{ConstraintViolationInterface} */
+    public function format(CapturedException $capturedException): ConstraintViolationInterface
     {
         // you can format violations with the default formatter
         // and then slightly adjust necessary parts
-        $violation = $this->formatter->formatViolation($capturedException);
+        [$violation] = $this->formatter->format($capturedException);
 
         $exception = $capturedException->getException();
 
         if ($exception instanceof LoginAlreadyTakenException) {
-            return new ConstraintViolation(
+            $violation = new ConstraintViolation(
                 $violation->getMessage(),
                 $violation->getMessageTemplate(),
                 ['loginHolder' => $exception->getLoginHolder()],
@@ -296,7 +297,7 @@ final class RegistrationViolationsFormatter implements ExceptionViolationFormatt
             // ...
         }
 
-        return $violation;
+        return [$violation];
     }
 }
 ```
