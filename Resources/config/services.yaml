@@ -76,7 +76,7 @@ services:
     phd_exceptional_validation.match_condition_factory.value:
         class: PhPhD\ExceptionalValidation\ConditionFactory\ValueExceptionMatchConditionFactory
         tags:
-            - { name: 'exceptional_validation.match_condition_factory', id: 'value' }
+            - { name: 'exceptional_validation.match_condition_factory', id: 'PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition' }
 
     phd_exceptional_validation.rule_set_assembler.property.rules.nested_valid_object:
         class: PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler
