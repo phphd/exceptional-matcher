@@ -21,7 +21,7 @@ final class ExceptionClassMatchConditionFactory implements MatchConditionFactory
         $exceptionClass = $capture->getExceptionClass();
 
         if (!is_a($exceptionClass, Throwable::class, true)) {
-            throw new LogicException('Exception class condition should only be used for exception classes that implements Throwable');
+            throw new LogicException('Exception class condition should only be used for exception classes that implement Throwable');
         }
 
         return new ExceptionClassMatchCondition($exceptionClass);

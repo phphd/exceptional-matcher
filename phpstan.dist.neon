@@ -3,6 +3,7 @@ includes:
     - vendor/phpstan/phpstan-phpunit/rules.neon
     - vendor/tomasvotruba/type-coverage/config/extension.neon
     - vendor/phpat/phpat/extension.neon
+    - phpstan-vendor-baseline.neon
 
 parameters:
     level: 9
@@ -13,12 +14,12 @@ parameters:
             - vendor
             - tests/*/Stub/*
             - rector.php
+    fileExtensions:
+        - 'php'
     type_coverage:
         return_type: 100
         param_type: 100
         property_type: 100
-    fileExtensions:
-        - 'php'
     phpat:
         ignore_built_in_classes: true
 
