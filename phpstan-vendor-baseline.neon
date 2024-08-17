@@ -1,0 +1,9 @@
+parameters:
+    ignoreErrors:
+        -
+            message: "#^Call to an undefined method Symfony\\\\Component\\\\Validator\\\\ConstraintViolationInterface\\:\\:getCause\\(\\)\\.$#"
+            reportUnmatched: false
+
+        -
+            message: "#^Call to an undefined method Symfony\\\\Component\\\\Validator\\\\ConstraintViolationInterface\\:\\:getConstraint\\(\\)\\.$#"
+            reportUnmatched: false

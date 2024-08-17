@@ -81,7 +81,7 @@ final class ExceptionalValidationMiddlewareTest extends TestCase
         } catch (ExceptionalValidationFailedException $e) {
             self::assertSame($messengerException, $e->getPrevious());
 
-            $violations = $e->getViolations();
+            $violations = $e->getViolationList();
             self::assertCount(2, $violations);
 
             self::assertSame('property', $violations->get(0)->getPropertyPath());

@@ -1,0 +1,19 @@
+<?php
+
+namespace Symfony\Component\Validator;
+
+interface ConstraintViolationInterface
+{
+    public function getMessage(): string|\Stringable;
+    public function getMessageTemplate(): string;
+    /** @return array<string,mixed> */
+    public function getParameters(): array;
+    public function getPlural(): ?int;
+    public function getRoot(): mixed;
+    public function getPropertyPath(): string;
+    public function getInvalidValue(): mixed;
+    public function getCode(): ?string;
+    public function getConstraint(): ?\Symfony\Component\Validator\Constraint;
+    public function getCause(): mixed;
+    public function __toString(): string;
+}
