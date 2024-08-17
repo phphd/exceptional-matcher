@@ -19,8 +19,8 @@ use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNe
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyRulesAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\ConditionFactory\CaptureMatchConditionFactory;
 use PhPhD\ExceptionalValidation\ConditionFactory\ValueExceptionMatchConditionFactory;
-use PhPhD\ExceptionalValidation\Formatter\DefaultViolationFormatter;
-use PhPhD\ExceptionalValidation\Formatter\DefaultViolationListFormatter;
+use PhPhD\ExceptionalValidation\Formatter\DefaultExceptionListViolationFormatter;
+use PhPhD\ExceptionalValidation\Formatter\DefaultExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
@@ -51,9 +51,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Capture
  * @covers \PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler
  * @covers \PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException
- * @covers \PhPhD\ExceptionalValidation\Formatter\DefaultViolationListFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\DefaultExceptionListViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter
- * @covers \PhPhD\ExceptionalValidation\Formatter\DefaultViolationFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\DefaultExceptionViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\ObjectRuleSet
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\IterableItemCaptureRule
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\PropertyRuleSet
@@ -123,7 +123,7 @@ final class ExceptionalValidationTest extends TestCase
         $captureListAssemblers->append(new PropertyNestedValidObjectRuleAssembler($objectRuleSetAssembler));
         $captureListAssemblers->append(new PropertyNestedValidIterableRulesAssembler(new IterableOfObjectsRuleSetAssembler($objectRuleSetAssembler)));
 
-        $defaultViolationFormatter = new DefaultViolationFormatter($translator, 'domain');
+        $defaultViolationFormatter = new DefaultExceptionViolationFormatter($translator, 'domain');
         $customViolationFormatter = new CustomExceptionViolationFormatter($defaultViolationFormatter);
 
         $formatterRegistry = $this->createMock(ContainerInterface::class);
@@ -133,7 +133,7 @@ final class ExceptionalValidationTest extends TestCase
         ]);
 
         $violationFormatter = new DelegatingExceptionViolationFormatter($formatterRegistry);
-        $violationListFormatter = new DefaultViolationListFormatter($violationFormatter);
+        $violationListFormatter = new DefaultExceptionListViolationFormatter($violationFormatter);
         $this->exceptionHandler = new DefaultExceptionHandler($objectRuleSetAssembler, $violationListFormatter);
     }
 

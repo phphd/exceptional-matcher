@@ -16,7 +16,7 @@ use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\ConditionFactory\MatchConditionFactory;
-use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationListFormatter;
+use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
 use PhPhD\ExceptionalValidation\Model\Exception\Adapter\ThrownException;
 use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
@@ -160,7 +160,7 @@ final class ArchitectureRuleSet
 
     public function formatter(): ClassNamespace
     {
-        return Selector::inNamespace(class_namespace(ExceptionViolationListFormatter::class));
+        return Selector::inNamespace(class_namespace(ExceptionViolationFormatter::class));
     }
 
     public function captureRuleSetAssembler(): ClassNamespace

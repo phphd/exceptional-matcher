@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Formatter;
 
 use PhPhD\ExceptionalValidation\Model\Exception\CapturedException;
-use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\ConstraintViolation;
 
 /** @api */
 interface ExceptionViolationFormatter
 {
-    public function formatViolation(CapturedException $capturedException): ConstraintViolationInterface;
+    /** @return non-empty-list<ConstraintViolation> */
+    public function format(CapturedException $capturedException): array;
 }

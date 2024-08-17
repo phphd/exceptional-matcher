@@ -7,7 +7,6 @@ namespace PhPhD\ExceptionalValidation\Tests\Stub;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Model\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Component\Validator\ConstraintViolationInterface;
 
 use function ucfirst;
 
@@ -18,19 +17,22 @@ final class CustomExceptionViolationFormatter implements ExceptionViolationForma
     ) {
     }
 
-    public function formatViolation(CapturedException $capturedException): ConstraintViolationInterface
+    /** @return array{ConstraintViolation} */
+    public function format(CapturedException $capturedException): array
     {
-        $violation = $this->formatter->formatViolation($capturedException);
+        [$violation] = $this->formatter->format($capturedException);
 
-        return new ConstraintViolation(
-            'custom - '.$violation->getMessage(),
-            'custom.'.$violation->getMessageTemplate(),
-            [
-                'custom' => 'param',
-            ],
-            $violation->getRoot(),
-            'custom'.ucfirst($violation->getPropertyPath()),
-            $violation->getInvalidValue(),
-        );
+        return [
+            new ConstraintViolation(
+                'custom - '.$violation->getMessage(),
+                'custom.'.$violation->getMessageTemplate(),
+                [
+                    'custom' => 'param',
+                ],
+                $violation->getRoot(),
+                'custom'.ucfirst($violation->getPropertyPath()),
+                $violation->getInvalidValue(),
+            ),
+        ];
     }
 }
