@@ -8,8 +8,8 @@ use PhPhD\ExceptionalValidation\Model\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /** @api */
-interface ExceptionViolationListFormatter
+interface ExceptionListViolationFormatter
 {
-    /** @param non-empty-list<CapturedException> $capturedExceptions */
-    public function formatViolations(array $capturedExceptions): ConstraintViolationListInterface;
+    /** @param non-empty-list<CapturedException> $capturedExceptionList */
+    public function format(array $capturedExceptionList): ConstraintViolationListInterface;
 }
