@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalValidation\Tests\Stub;
 use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\MessageContainingException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableException;
@@ -48,10 +49,10 @@ final class HandleableMessageStub
 
     private array $justArray;
 
-    #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: 'value')]
+    #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: ValueExceptionMatchCondition::class)]
     private string $notMatchedCondition = 'not matched';
 
-    #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: 'value')]
+    #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: ValueExceptionMatchCondition::class)]
     private string $matchedCondition = 'matched!';
 
     #[ExceptionalValidation\Capture(SomeValueException::class, 'oops')]

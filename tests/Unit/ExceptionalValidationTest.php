@@ -26,6 +26,7 @@ use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
+use PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition;
 use PhPhD\ExceptionalValidation\Model\Exception\Adapter\SingleThrownException;
 use PhPhD\ExceptionalValidation\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\Adapter\CompositeThrownException;
@@ -125,7 +126,7 @@ final class ExceptionalValidationTest extends TestCase
 
         $conditionFactoryRegistry = $this->createMock(ContainerInterface::class);
         $conditionFactoryRegistry->method('get')->willReturnMap([
-            ['value', new ValueExceptionMatchConditionFactory()],
+            [ValueExceptionMatchCondition::class, new ValueExceptionMatchConditionFactory()],
         ]);
         $captureMatchConditionFactory = new CaptureMatchConditionFactory($conditionFactoryRegistry);
 
