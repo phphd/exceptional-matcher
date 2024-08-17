@@ -21,7 +21,7 @@ final class ValueExceptionMatchConditionFactory implements MatchConditionFactory
         $exceptionClass = $capture->getExceptionClass();
 
         if (!is_a($exceptionClass, ValueException::class, true)) {
-            throw new LogicException('Invalid value condition could only be used for exception class that implements ValueException');
+            throw new LogicException('Invalid value condition could only be used for exception classes that implement ValueException');
         }
 
         $value = $parent->getValue();

@@ -1,9 +1,9 @@
 # PhdExceptionalValidationBundle
 
 🧰 Provides exception-to-violation mapper bundled as [Symfony Messenger](https://symfony.com/doc/current/messenger.html)
-middleware. It captures thrown exceptions, mapping them
+middleware. It captures thrown exceptions, maps them
 into [Symfony Validator](https://symfony.com/doc/current/validation.html)
-violations format based on message mapping attributes.
+violations format, and throws `ExceptionalValidationFailedException`.
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/phphd/exceptional-validation-bundle/ci.yaml?branch=main)](https://github.com/phphd/exceptional-validation-bundle/actions?query=branch%3Amain)
 [![Codecov](https://codecov.io/gh/phphd/exceptional-validation-bundle/graph/badge.svg?token=GZRXWYT55Z)](https://codecov.io/gh/phphd/exceptional-validation-bundle)
@@ -78,9 +78,9 @@ $command = new RegisterUserCommand($login, $password);
 try {
     $this->commandBus->dispatch($command);
 } catch (ExceptionalValidationFailedException $exception) {
-    $constraintViolationList = $exception->getViolations();
+    $violationList = $exception->getViolationList();
 
-    return $this->render('registrationForm.html.twig', ['errors' => $constraintViolationList]);
+    return $this->render('registrationForm.html.twig', ['errors' => $violationList]);
 } 
 ```
 
@@ -127,7 +127,7 @@ In this example, whenever `InsufficientStockException` is thrown, it will be cap
 ### Capture Closure Conditions
 
 `#[Capture]` attribute accepts the callback function to determine whether particular exception instance should
-be captured for the given property or not. It allows more dynamic exception handling scenarios:
+be captured for the given property or not.
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -168,7 +168,7 @@ final class TransferMoneyCommand
 }
 ```
 
-In this example, `when: ` option of the `#[Capture]` attribute is used to specify the callback functions that are called
+In this example, `when:` option of the `#[Capture]` attribute is used to specify the callback functions that are called
 when exception is processed. If `isWithdrawalCardBlocked` callback returns `true`, then exception is captured for
 `withdrawalCardId` property; if `isDepositCardBlocked` callback returns `true`, then exception is captured for
 `depositCardId` property. If neither of the callbacks return `true`, then exception is re-thrown upper in the stack.
@@ -177,7 +177,7 @@ when exception is processed. If `isWithdrawalCardBlocked` callback returns `true
 
 Since in most cases capture conditions come down to the simple value comparison, it's easier to make your exception
 implement `ValueException` interface and specify `condition: 'value'` rather than implementing `when:`
-closure every time. This way you can avoid boilerplate code and make your code more readable.
+closure every time. This way, it's possible to avoid boilerplate code, keeping it clean:
 
 ```php
 #[ExceptionalValidation]
@@ -194,10 +194,10 @@ final class TransferMoneyCommand
 The `BlockedCardException` should implement `ValueException` interface:
 
 ```php
+use DomainException;
 use PhPhD\ExceptionalValidation\Model\Condition\Exception\ValueException;
-use RuntimeException;
 
-final class BlockedCardException extends RuntimeException implements ValueException
+final class BlockedCardException extends DomainException implements ValueException
 {
     public function __construct(
         private Card $card,
@@ -256,7 +256,70 @@ In this example, when `InsufficientStockException` is captured, it will be mappe
 property, where `*` stands for the index of the particular `ProductDetails` instance from the `products` array on which
 the exception was captured.
 
-### Custom violation formatters
+### Violation formatters
+
+There are two built-in violation formatters that you can use - `DefaultViolationFormatter`
+and `ViolationListExceptionFormatter`. If needed, you can create your own custom violation formatter as described below.
+
+#### Default
+
+`DefaultViolationFormatter` is used by default if other formatter is not specified.
+
+It provides a very basic way to format violations, building `ConstraintViolation` with such parameters
+as: `$message`, `$root`, `$propertyPath`, `$value`.
+
+#### Constraint Violation List Formatter
+
+`ViolationListExceptionFormatter` is used to format violations for the exceptions that
+implement `ViolationListException`
+interface. It allows to easily capture the exception that has `ConstraintViolationList` obtained from the validator.
+
+The typical exception class implementing `ViolationListException` interface would look like this:
+
+```php
+use DomainException;
+use PhPhD\ExceptionalValidation\Formatter\ViolationListException;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+
+final class CardNumberValidationFailedException extends DomainException implements ViolationListException
+{
+    public function __construct(
+        private readonly string $cardNumber,
+        private readonly ConstraintViolationListInterface $violationList,
+    ) {
+        parent::__construct((string)$this->violationList);
+    }
+
+    public function getViolationList(): ConstraintViolationListInterface
+    {
+        return $this->violationList;
+    }
+}
+```
+
+Then you can use `ViolationListExceptionFormatter` on the `#[Capture]` attribute of the property:
+
+```php
+use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter;
+
+#[ExceptionalValidation]
+final class IssueCreditCardCommand
+{
+    #[Capture(
+        exception: CardNumberValidationFailedException::class, 
+        formatter: ViolationListExceptionFormatter::class,
+    )]
+    private string $cardNumber;
+}
+```
+
+In this example, `CardNumberValidationFailedException` is captured on the `cardNumber` property and all the constraint
+violations from this exception are mapped to this property. If there's message specified on the `#[Capture]` attribute, it
+is ignored in favor of the messages from `ConstraintViolationList`.
+
+#### Custom violation formatters
 
 In some cases, you might need to customize the way violations are formatted such as passing additional
 parameters to the message translation. You can achieve this by creating your own violation formatter service that
@@ -271,7 +334,7 @@ final class RegistrationViolationsFormatter implements ExceptionViolationFormatt
 {
     public function __construct(
         #[Autowire('@phd_exceptional_validation.violation_formatter.default')]
-        private ExceptionViolationFormatter $formatter,
+        private ExceptionViolationFormatter $defaultFormatter,
     ) {
     }
 
@@ -279,8 +342,8 @@ final class RegistrationViolationsFormatter implements ExceptionViolationFormatt
     public function format(CapturedException $capturedException): ConstraintViolationInterface
     {
         // you can format violations with the default formatter
-        // and then slightly adjust necessary parts
-        [$violation] = $this->formatter->format($capturedException);
+        // and then slightly adjust only necessary parts
+        [$violation] = $this->defaultFormatter->format($capturedException);
 
         $exception = $capturedException->getException();
 

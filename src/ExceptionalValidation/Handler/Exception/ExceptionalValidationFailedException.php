@@ -15,7 +15,7 @@ final class ExceptionalValidationFailedException extends RuntimeException
 {
     public function __construct(
         private readonly object $violatingMessage,
-        private readonly ConstraintViolationListInterface $violations,
+        private readonly ConstraintViolationListInterface $violationList,
         ThrownException $thrownException,
     ) {
         parent::__construct(
@@ -29,8 +29,8 @@ final class ExceptionalValidationFailedException extends RuntimeException
         return $this->violatingMessage;
     }
 
-    public function getViolations(): ConstraintViolationListInterface
+    public function getViolationList(): ConstraintViolationListInterface
     {
-        return $this->violations;
+        return $this->violationList;
     }
 }

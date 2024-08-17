@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Tests\Stub;
 
 use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedPropertyCapturableException;
+use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ViolationListExampleException;
 use Symfony\Component\Validator\Constraints\Valid;
 
 #[ExceptionalValidation]
@@ -16,6 +18,9 @@ final class NestedHandleableMessage
 
     #[Valid]
     private ConditionalMessage $conditionalMessage;
+
+    #[ExceptionalValidation\Capture(ViolationListExampleException::class, formatter: ViolationListExceptionFormatter::class)]
+    private int $violationListCapturedProperty;
 
     public static function createWithConditionalMessage(ConditionalMessage $conditionalMessage): self
     {

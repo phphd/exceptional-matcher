@@ -13,11 +13,7 @@ use Psr\Container\ContainerInterface;
 use function array_filter;
 use function array_values;
 
-/**
- * @internal
- *
- * @api
- */
+/** @internal */
 final class CaptureMatchConditionFactory implements MatchConditionFactory
 {
     public function __construct(
