@@ -18,6 +18,7 @@ use PhPhD\ExceptionalValidation\ConditionFactory\ValueExceptionMatchConditionFac
 use PhPhD\ExceptionalValidation\Formatter\DefaultExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter;
+use PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
 use PhPhD\ExceptionalValidation\Tests\Stub\CustomExceptionViolationFormatter;
@@ -111,6 +112,9 @@ final class DependencyInjectionTest extends TestCase
         $defaultFormatter = self::getContainer()->get('phd_exceptional_validation.violation_formatter.default');
         self::assertInstanceOf(DefaultExceptionViolationFormatter::class, $defaultFormatter);
 
+        $violationListExceptionFormatter = self::getContainer()->get('phd_exceptional_validation.violation_formatter.violation_list_exception');
+        self::assertInstanceOf(ViolationListExceptionFormatter::class, $violationListExceptionFormatter);
+
         $formatterRegistry = $this->getFormatterRegistry($violationFormatter);
         self::assertInstanceOf(ServiceLocator::class, $formatterRegistry);
 
@@ -119,6 +123,7 @@ final class DependencyInjectionTest extends TestCase
         self::assertSame([
             'default' => DefaultExceptionViolationFormatter::class,
             CustomExceptionViolationFormatter::class => CustomExceptionViolationFormatter::class,
+            ViolationListExceptionFormatter::class => ViolationListExceptionFormatter::class,
         ], $providedServices);
 
         self::assertSame($defaultFormatter, $formatterRegistry->get('default'));

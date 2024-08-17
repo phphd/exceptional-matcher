@@ -22,6 +22,8 @@ use PhPhD\ExceptionalValidation\ConditionFactory\ValueExceptionMatchConditionFac
 use PhPhD\ExceptionalValidation\Formatter\DefaultExceptionListViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\DefaultExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
 use PhPhD\ExceptionalValidation\Model\Exception\Adapter\SingleThrownException;
@@ -36,6 +38,7 @@ use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableExc
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\SomeValueException;
 use PhPhD\ExceptionalValidation\Tests\Stub\Exception\StaticPropertyCapturedException;
+use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ViolationListExampleException;
 use PhPhD\ExceptionalValidation\Tests\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalValidation\Tests\Stub\NestedHandleableMessage;
 use PhPhD\ExceptionalValidation\Tests\Stub\NestedItem;
@@ -43,8 +46,14 @@ use PhPhD\ExceptionalValidation\Tests\Stub\NotHandleableMessageStub;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use stdClass;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\Validation;
 use Symfony\Contracts\Translation\TranslatorInterface;
+
+use function array_flip;
+use function array_intersect_key;
 
 /**
  * @covers \PhPhD\ExceptionalValidation
@@ -54,6 +63,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Formatter\DefaultExceptionListViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Formatter\DefaultExceptionViolationFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\ObjectRuleSet
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\IterableItemCaptureRule
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\PropertyRuleSet
@@ -124,13 +134,21 @@ final class ExceptionalValidationTest extends TestCase
         $captureListAssemblers->append(new PropertyNestedValidIterableRulesAssembler(new IterableOfObjectsRuleSetAssembler($objectRuleSetAssembler)));
 
         $defaultViolationFormatter = new DefaultExceptionViolationFormatter($translator, 'domain');
+        $violationListExceptionFormatter = new ViolationListExceptionFormatter();
         $customViolationFormatter = new CustomExceptionViolationFormatter($defaultViolationFormatter);
 
         $formatterRegistry = $this->createMock(ContainerInterface::class);
-        $formatterRegistry->method('get')->willReturnMap([
-            ['default', $defaultViolationFormatter],
-            [CustomExceptionViolationFormatter::class, $customViolationFormatter],
-        ]);
+        $formatters = [
+            'default' => $defaultViolationFormatter,
+            ViolationListExceptionFormatter::class => $violationListExceptionFormatter,
+            CustomExceptionViolationFormatter::class => $customViolationFormatter,
+        ];
+        $formatterRegistry->method('has')
+            ->willReturnCallback(static fn (string $id): bool => isset($formatters[$id]))
+        ;
+        $formatterRegistry->method('get')
+            ->willReturnCallback(static fn (string $id): ExceptionViolationFormatter => $formatters[$id])
+        ;
 
         $violationFormatter = new DelegatingExceptionViolationFormatter($formatterRegistry);
         $violationListFormatter = new DefaultExceptionListViolationFormatter($violationFormatter);
@@ -163,7 +181,7 @@ final class ExceptionalValidationTest extends TestCase
             self::assertSame($originalException, $e->getPrevious());
             self::assertSame($message, $e->getViolatingMessage());
 
-            $violationList = $e->getViolations();
+            $violationList = $e->getViolationList();
             self::assertCount(1, $violationList);
 
             /** @var ConstraintViolationInterface $violation */
@@ -189,7 +207,7 @@ final class ExceptionalValidationTest extends TestCase
             $this->exceptionHandler->capture($message, new SingleThrownException(new LogicException()));
         } catch (ExceptionalValidationFailedException $e) {
             /** @var ConstraintViolationInterface $violation */
-            [$violation] = $e->getViolations();
+            [$violation] = $e->getViolationList();
 
             self::assertSame('invalid text value', $violation->getInvalidValue());
 
@@ -209,7 +227,7 @@ final class ExceptionalValidationTest extends TestCase
             $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
         } catch (ExceptionalValidationFailedException $e) {
             /** @var ConstraintViolationInterface $violation */
-            [$violation] = $e->getViolations();
+            [$violation] = $e->getViolationList();
 
             self::assertSame('object.oops - translated', $violation->getMessage());
             self::assertSame('object.oops', $violation->getMessageTemplate());
@@ -231,7 +249,7 @@ final class ExceptionalValidationTest extends TestCase
             $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
         } catch (ExceptionalValidationFailedException $e) {
             /** @var ConstraintViolationInterface $violation */
-            [$violation] = $e->getViolations();
+            [$violation] = $e->getViolationList();
 
             self::assertSame('staticProperty', $violation->getPropertyPath());
             self::assertSame('foo', $violation->getInvalidValue());
@@ -275,11 +293,11 @@ final class ExceptionalValidationTest extends TestCase
         } catch (ExceptionalValidationFailedException $e) {
             self::assertSame($originalException, $e->getPrevious());
 
-            $violations = $e->getViolations();
-            self::assertCount(1, $violations);
+            $violationList = $e->getViolationList();
+            self::assertCount(1, $violationList);
 
             /** @var ConstraintViolationInterface $violation */
-            $violation = $violations[0];
+            $violation = $violationList[0];
             self::assertSame('nested.message - translated', $violation->getMessage());
             self::assertSame('nested.message', $violation->getMessageTemplate());
             self::assertSame('nestedObject.nestedProperty', $violation->getPropertyPath());
@@ -313,11 +331,11 @@ final class ExceptionalValidationTest extends TestCase
         } catch (ExceptionalValidationFailedException $e) {
             self::assertSame($originalException, $e->getPrevious());
 
-            $violations = $e->getViolations();
-            self::assertCount(1, $violations);
+            $violationList = $e->getViolationList();
+            self::assertCount(1, $violationList);
 
             /** @var ConstraintViolationInterface $violation */
-            $violation = $violations[0];
+            $violation = $violationList[0];
             self::assertSame('nestedObject.conditionalMessage.secondProperty', $violation->getPropertyPath());
             self::assertSame(41, $violation->getInvalidValue());
 
@@ -357,11 +375,11 @@ final class ExceptionalValidationTest extends TestCase
         } catch (ExceptionalValidationFailedException $e) {
             self::assertSame($originalException, $e->getPrevious());
 
-            $violations = $e->getViolations();
-            self::assertCount(1, $violations);
+            $violationList = $e->getViolationList();
+            self::assertCount(1, $violationList);
 
             /** @var ConstraintViolationInterface $violation */
-            $violation = $violations[0];
+            $violation = $violationList[0];
             self::assertSame('nestedArrayItems[1].property', $violation->getPropertyPath());
 
             throw $e;
@@ -386,11 +404,11 @@ final class ExceptionalValidationTest extends TestCase
         } catch (ExceptionalValidationFailedException $e) {
             self::assertSame($originalException, $e->getPrevious());
 
-            $violations = $e->getViolations();
-            self::assertCount(1, $violations);
+            $violationList = $e->getViolationList();
+            self::assertCount(1, $violationList);
 
             /** @var ConstraintViolationInterface $firstViolation */
-            $firstViolation = $violations[0];
+            $firstViolation = $violationList[0];
             self::assertSame('nestedIterableItems[second].property', $firstViolation->getPropertyPath());
 
             throw $e;
@@ -439,23 +457,23 @@ final class ExceptionalValidationTest extends TestCase
         try {
             $this->exceptionHandler->capture($message, $exceptionAdapter);
         } catch (ExceptionalValidationFailedException $e) {
-            $violations = $e->getViolations();
-            self::assertCount(4, $violations);
+            $violationList = $e->getViolationList();
+            self::assertCount(4, $violationList);
 
             /** @var ConstraintViolationInterface $firstViolation */
-            $firstViolation = $violations[0];
+            $firstViolation = $violationList[0];
             self::assertSame('property', $firstViolation->getPropertyPath());
 
             /** @var ConstraintViolationInterface $secondViolation */
-            $secondViolation = $violations[1];
+            $secondViolation = $violationList[1];
             self::assertSame('objectProperty', $secondViolation->getPropertyPath());
 
             /** @var ConstraintViolationInterface $thirdViolation */
-            $thirdViolation = $violations[2];
+            $thirdViolation = $violationList[2];
             self::assertSame('nestedArrayItems[first].property', $thirdViolation->getPropertyPath());
 
             /** @var ConstraintViolationInterface $fourthViolation */
-            $fourthViolation = $violations[3];
+            $fourthViolation = $violationList[3];
             self::assertSame('nestedIterableItems[second].property', $fourthViolation->getPropertyPath());
 
             throw $e;
@@ -473,11 +491,11 @@ final class ExceptionalValidationTest extends TestCase
         try {
             $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
         } catch (ExceptionalValidationFailedException $e) {
-            $violations = $e->getViolations();
-            self::assertCount(1, $violations);
+            $violationList = $e->getViolationList();
+            self::assertCount(1, $violationList);
 
             /** @var ConstraintViolationInterface $violation */
-            $violation = $violations[0];
+            $violation = $violationList[0];
             self::assertSame('custom - oops - translated', $violation->getMessage());
             self::assertSame('custom.oops', $violation->getMessageTemplate());
             self::assertSame([
@@ -503,16 +521,16 @@ final class ExceptionalValidationTest extends TestCase
         try {
             $this->exceptionHandler->capture($message, $exceptionAdapter);
         } catch (ExceptionalValidationFailedException $e) {
-            $violations = $e->getViolations();
-            self::assertCount(2, $violations);
+            $violationList = $e->getViolationList();
+            self::assertCount(2, $violationList);
 
             /** @var ConstraintViolationInterface $violation1 */
-            $violation1 = $violations[0];
+            $violation1 = $violationList[0];
 
             self::assertSame('matchedCondition', $violation1->getPropertyPath());
 
             /** @var ConstraintViolationInterface $violation2 */
-            $violation2 = $violations[1];
+            $violation2 = $violationList[1];
 
             self::assertSame('anotherMatchedAsNoCondition', $violation2->getPropertyPath());
 
@@ -533,21 +551,69 @@ final class ExceptionalValidationTest extends TestCase
         try {
             $this->exceptionHandler->capture($message, $exceptionAdapter);
         } catch (ExceptionalValidationFailedException $e) {
-            $violations = $e->getViolations();
-            self::assertCount(2, $violations);
+            $violationList = $e->getViolationList();
+            self::assertCount(2, $violationList);
 
             /** @var ConstraintViolationInterface $violation1 */
-            $violation1 = $violations[0];
+            $violation1 = $violationList[0];
 
             self::assertSame('fallBackToExceptionMessage', $violation1->getPropertyPath());
             self::assertSame('This is the message to be used', $violation1->getMessage());
 
             /** @var ConstraintViolationInterface $violation2 */
-            $violation2 = $violations[1];
+            $violation2 = $violationList[1];
 
             // When the message is specified as an empty string, empty message is used (w/o fallback)
             self::assertSame('emptyTranslationMessage', $violation2->getPropertyPath());
             self::assertSame('', $violation2->getMessage());
+
+            throw $e;
+        }
+    }
+
+    public function testValidatorViolationListMapping(): void
+    {
+        $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());
+
+        $violationList = Validation::createValidator()->validate('123', [$constraint = new Length(max: 2)]);
+
+        $originalException = new ViolationListExampleException($violationList);
+
+        $this->expectException(ExceptionalValidationFailedException::class);
+
+        try {
+            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
+        } catch (ExceptionalValidationFailedException $e) {
+            $violationList = $e->getViolationList();
+            self::assertCount(1, $violationList);
+
+            $violation = $violationList[0];
+            self::assertInstanceOf(ConstraintViolation::class, $violation);
+            self::assertSame(
+                'This value is too long. It should have 2 characters or less.',
+                $violation->getMessage(),
+            );
+            self::assertSame(
+                'This value is too long. It should have {{ limit }} character or less.|This value is too long. It should have {{ limit }} characters or less.',
+                $violation->getMessageTemplate(),
+            );
+
+            $parameters = array_intersect_key(
+                $violation->getParameters(),
+                array_flip(['{{ value }}', '{{ limit }}']),
+            );
+            self::assertSame([
+                '{{ value }}' => '"123"',
+                '{{ limit }}' => '2',
+            ], $parameters);
+
+            self::assertSame(2, $violation->getPlural());
+            self::assertSame($message, $violation->getRoot());
+            self::assertSame('nestedObject.violationListCapturedProperty', $violation->getPropertyPath());
+            self::assertSame('123', $violation->getInvalidValue());
+            self::assertSame(Length::TOO_LONG_ERROR, $violation->getCode());
+            self::assertSame($constraint, $violation->getConstraint());
+            self::assertNull($violation->getCause());
 
             throw $e;
         }
