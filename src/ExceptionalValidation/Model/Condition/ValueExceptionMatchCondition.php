@@ -7,7 +7,6 @@ namespace PhPhD\ExceptionalValidation\Model\Condition;
 use PhPhD\ExceptionalValidation\Model\Condition\Exception\ValueException;
 use Throwable;
 
-/** @internal */
 final class ValueExceptionMatchCondition implements MatchCondition
 {
     public function __construct(
