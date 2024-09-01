@@ -1,0 +1,10 @@
+services:
+    phd_exceptional_validation.match_condition_factory:
+        class: PhPhD\ExceptionalValidation\ConditionFactory\CaptureMatchConditionFactory
+        arguments:
+            - !tagged_locator { tag: 'exceptional_validation.match_condition_factory', index_by: 'id' }
+
+    phd_exceptional_validation.match_condition_factory.value:
+        class: PhPhD\ExceptionalValidation\ConditionFactory\ValueExceptionMatchConditionFactory
+        tags:
+            - { name: 'exceptional_validation.match_condition_factory', id: 'PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition' }

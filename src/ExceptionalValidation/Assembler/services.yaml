@@ -1,0 +1,47 @@
+services:
+    phd_exceptional_validation.rule_set_assembler.object:
+        class: PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler
+        arguments:
+            - '@phd_exceptional_validation.rule_set_assembler.object.rules'
+
+    phd_exceptional_validation.rule_set_assembler.object.rules:
+        class: PhPhD\ExceptionalValidation\Assembler\Object\Rules\ObjectRulesAssembler
+        arguments:
+            - '@phd_exceptional_validation.rule_set_assembler.property'
+
+    phd_exceptional_validation.rule_set_assembler.property:
+        class: PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\PropertyRuleSetAssembler
+        arguments:
+            - '@phd_exceptional_validation.rule_set_assembler.property.rules'
+
+    phd_exceptional_validation.rule_set_assembler.property.rules:
+        class: PhPhD\ExceptionalValidation\Assembler\CompositeRuleSetAssembler
+        arguments:
+            -   - '@phd_exceptional_validation.rule_set_assembler.property.rules.captures'
+                - '@phd_exceptional_validation.rule_set_assembler.property.rules.nested_valid_object'
+                - '@phd_exceptional_validation.rule_set_assembler.property.rules.nested_valid_iterable'
+
+    phd_exceptional_validation.rule_set_assembler.property.rules.captures:
+        class: PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyCaptureRulesAssembler
+        arguments: [ '@phd_exceptional_validation.match_condition_factory' ]
+
+    phd_exceptional_validation.rule_set_assembler.property.rules.nested_valid_object:
+        class: PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler
+        arguments:
+            - '@phd_exceptional_validation.rule_set_assembler.object'
+        lazy: true
+        tags:
+            - { name: 'proxy', interface: 'PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler' }
+
+    phd_exceptional_validation.rule_set_assembler.property.rules.nested_valid_iterable:
+        class: PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidIterableRulesAssembler
+        arguments:
+            - '@phd_exceptional_validation.rule_set_assembler.iterable_of_objects'
+        lazy: true
+        tags:
+            - { name: 'proxy', interface: 'PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler' }
+
+    phd_exceptional_validation.rule_set_assembler.iterable_of_objects:
+        class: PhPhD\ExceptionalValidation\Assembler\Object\IterableOfObjectsRuleSetAssembler
+        arguments:
+            - '@phd_exceptional_validation.rule_set_assembler.object'

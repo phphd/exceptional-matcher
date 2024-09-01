@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidationBundle\Tests;
+namespace PhPhD\ExceptionalValidation\Bundle\Tests;
 
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\PropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\StaticPropertyCapturedException;
-use PhPhD\ExceptionalValidation\Tests\Stub\HandleableMessageStub;
-use PhPhD\ExceptionalValidationBundle\Messenger\ExceptionalValidationMiddleware;
+use PhPhD\ExceptionalValidation\Middleware\Messenger\ExceptionalValidationMiddleware;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use stdClass;
@@ -19,13 +19,11 @@ use Symfony\Component\Messenger\Middleware\StackMiddleware;
 use Throwable;
 
 /**
- * @covers \PhPhD\ExceptionalValidationBundle\Messenger\ExceptionalValidationMiddleware
- * @covers \PhPhD\ExceptionalValidationBundle\Messenger\Adapter\MessengerThrownException
- * @covers \PhPhD\ExceptionalValidation\Model\Exception\Adapter\SingleThrownException
+ * @covers \PhPhD\ExceptionalValidation\Middleware\Messenger\ExceptionalValidationMiddleware
  *
  * @internal
  */
-final class ExceptionalValidationMiddlewareTest extends TestCase
+final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCase
 {
     private ExceptionalValidationMiddleware $middleware;
 
@@ -70,7 +68,13 @@ final class ExceptionalValidationMiddlewareTest extends TestCase
         $handlerException1 = new PropertyCapturableException();
         $handlerException2 = new StaticPropertyCapturedException();
 
-        $messengerException = new HandlerFailedException($envelope, [$handlerException1, $handlerException2]);
+        $messengerException = new HandlerFailedException(
+            $envelope,
+            [$handlerException1, new HandlerFailedException(
+                $envelope,
+                [$handlerException2],
+            )],
+        );
 
         $this->willThrow($messengerException);
 

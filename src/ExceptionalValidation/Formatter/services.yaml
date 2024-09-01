@@ -1,0 +1,26 @@
+services:
+    phd_exceptional_validation.violations_list_formatter:
+        class: PhPhD\ExceptionalValidation\Formatter\DefaultExceptionListViolationFormatter
+        arguments:
+            - '@phd_exceptional_validation.violation_formatter'
+        lazy: true
+        tags:
+            - { name: 'proxy', interface: 'PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter' }
+
+    phd_exceptional_validation.violation_formatter:
+        class: PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter
+        arguments:
+            - !tagged_locator { tag: 'exceptional_validation.violation_formatter', index_by: 'id' }
+
+    phd_exceptional_validation.violation_formatter.default:
+        class: PhPhD\ExceptionalValidation\Formatter\DefaultExceptionViolationFormatter
+        arguments:
+            - '@translator'
+            - '%validator.translation_domain%'
+        tags:
+            - { name: 'exceptional_validation.violation_formatter', id: 'default' }
+
+    phd_exceptional_validation.violation_formatter.violation_list_exception:
+        class: PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter
+        tags:
+            - { name: 'exceptional_validation.violation_formatter', id: 'PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter' }

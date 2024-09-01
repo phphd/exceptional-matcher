@@ -9,22 +9,29 @@ parameters:
     level: 9
     phpVersion: 80127
     editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+    paths:
+        - src
+        - tests
     excludePaths:
         analyseAndScan:
-            - vendor
             - tests/*/Stub/*
-            - rector.php
     fileExtensions:
         - 'php'
     type_coverage:
+        declare: 100
         return_type: 100
         param_type: 100
         property_type: 100
+        constant: 0 # requires php 8.3
     phpat:
         ignore_built_in_classes: true
 
 services:
     -
         class: PhPhD\ExceptionalValidation\Tests\ArchitectureRuleSet
+        tags:
+            - phpat.test
+    -
+        class: PhPhD\ExceptionalValidation\Tests\TestsArchitectureRuleSet
         tags:
             - phpat.test

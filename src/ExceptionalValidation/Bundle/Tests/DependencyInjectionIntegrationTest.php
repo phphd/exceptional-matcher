@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidationBundle\Tests;
+namespace PhPhD\ExceptionalValidation\Bundle\Tests;
 
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\CompositeRuleSetAssembler;
@@ -21,9 +21,10 @@ use PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
+use PhPhD\ExceptionalValidation\Middleware\Messenger\ExceptionalValidationMiddleware;
 use PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition;
-use PhPhD\ExceptionalValidation\Tests\Stub\CustomExceptionViolationFormatter;
-use PhPhD\ExceptionalValidationBundle\Messenger\ExceptionalValidationMiddleware;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
+use PhPhD\ExceptionToolkit\Unwrapper\Messenger\MessengerExceptionUnwrapper;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\VarExporter\LazyObjectInterface;
@@ -31,12 +32,12 @@ use Symfony\Component\VarExporter\LazyObjectInterface;
 use function krsort;
 
 /**
- * @covers \PhPhD\ExceptionalValidationBundle\PhdExceptionalValidationBundle
- * @covers \PhPhD\ExceptionalValidationBundle\DependencyInjection\PhdExceptionalValidationExtension
+ * @covers \PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle
+ * @covers \PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension
  *
  * @internal
  */
-final class DependencyInjectionTest extends TestCase
+final class DependencyInjectionIntegrationTest extends BundleTestCase
 {
     public function testServiceDefinitions(): void
     {
@@ -45,6 +46,8 @@ final class DependencyInjectionTest extends TestCase
         $this->checkExceptionHandler();
 
         $this->checkRuleSetAssembler();
+
+        $this->checkExceptionUnwrapper();
 
         $this->checkConditionFactory();
 
@@ -80,6 +83,14 @@ final class DependencyInjectionTest extends TestCase
     {
         $ruleSetAssembler = self::getContainer()->get('phd_exceptional_validation.rule_set_assembler');
         self::assertInstanceOf(ObjectRuleSetAssembler::class, $ruleSetAssembler);
+    }
+
+    private function checkExceptionUnwrapper(): void
+    {
+        $exceptionUnwrapper = self::getContainer()->get('phd_exceptional_validation.exception_unwrapper');
+        self::assertInstanceOf(LazyObjectInterface::class, $exceptionUnwrapper);
+        self::assertFalse($exceptionUnwrapper->isLazyObjectInitialized());
+        self::assertInstanceOf(MessengerExceptionUnwrapper::class, $exceptionUnwrapper->initializeLazyObject());
     }
 
     private function checkConditionFactory(): void
