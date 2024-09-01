@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Tests\Stub\Exception;
+namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception;
 
 use PhPhD\ExceptionalValidation\Model\Condition\Exception\ValueException;
 use RuntimeException;

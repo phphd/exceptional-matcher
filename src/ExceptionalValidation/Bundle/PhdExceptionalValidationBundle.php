@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidationBundle;
+namespace PhPhD\ExceptionalValidation\Bundle;
 
-use PhPhD\ExceptionalValidationBundle\DependencyInjection\PhdExceptionalValidationExtension;
+use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 final class PhdExceptionalValidationBundle extends Bundle

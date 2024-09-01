@@ -7,19 +7,21 @@ namespace PhPhD\ExceptionalValidation\Handler;
 use PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
-use PhPhD\ExceptionalValidation\Model\Exception\Adapter\ThrownException;
 use PhPhD\ExceptionalValidation\Model\Exception\ExceptionPackage;
+use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
+use Throwable;
 
 /** @internal */
 final class DefaultExceptionHandler implements ExceptionHandler
 {
     public function __construct(
         private readonly ObjectRuleSetAssembler $ruleSetAssembler,
+        private readonly ExceptionUnwrapper $exceptionUnwrapper,
         private readonly ExceptionListViolationFormatter $violationListFormatter,
     ) {
     }
 
-    public function capture(object $message, ThrownException $exception): void
+    public function capture(object $message, Throwable $exception): void
     {
         $ruleSet = $this->ruleSetAssembler->assemble($message);
 
@@ -27,7 +29,9 @@ final class DefaultExceptionHandler implements ExceptionHandler
             return;
         }
 
-        $exceptionPackage = new ExceptionPackage($exception);
+        $exceptionList = $this->exceptionUnwrapper->unwrap($exception);
+
+        $exceptionPackage = new ExceptionPackage($exceptionList);
 
         if (!$ruleSet->process($exceptionPackage)) {
             return;

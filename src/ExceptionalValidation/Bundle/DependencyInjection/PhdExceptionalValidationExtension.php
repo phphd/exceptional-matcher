@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidationBundle\DependencyInjection;
+namespace PhPhD\ExceptionalValidation\Bundle\DependencyInjection;
 
 use Exception;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter;
@@ -10,6 +10,9 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\Messenger\Middleware\MiddlewareInterface as MessengerMiddlewareInterface;
+
+use function interface_exists;
 
 final class PhdExceptionalValidationExtension extends Extension
 {
@@ -28,11 +31,20 @@ final class PhdExceptionalValidationExtension extends Extension
         $env = $container->getParameter('kernel.environment');
 
         $loader = new YamlFileLoader($container, new FileLocator(), $env);
-        $loader->load(__DIR__.'/../Resources/config/services.yaml');
+
+        if (interface_exists(MessengerMiddlewareInterface::class)) {
+            $loader->load(__DIR__.'/../../Middleware/Messenger/services.yaml');
+        }
+
+        $loader->load(__DIR__.'/../../Handler/services.yaml');
+        $loader->load(__DIR__.'/../../Assembler/services.yaml');
+        $loader->load(__DIR__.'/../../ConditionFactory/services.yaml');
+        $loader->load(__DIR__.'/../../Formatter/services.yaml');
 
         $container
             ->registerForAutoconfiguration(ExceptionViolationFormatter::class)
-            ->addTag('exceptional_validation.violation_formatter');
+            ->addTag('exceptional_validation.violation_formatter')
+        ;
     }
 
     /** @override */

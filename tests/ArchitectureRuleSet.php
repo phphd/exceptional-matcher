@@ -14,13 +14,13 @@ use PHPat\Test\PHPat;
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle;
 use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\ConditionFactory\MatchConditionFactory;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
-use PhPhD\ExceptionalValidation\Model\Exception\Adapter\ThrownException;
 use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
-use PhPhD\ExceptionalValidationBundle\Messenger\ExceptionalValidationMiddleware;
+use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -38,6 +38,12 @@ use function implode;
  */
 final class ArchitectureRuleSet
 {
+    #[TestRule]
+    public function testBundleDependencies(): Rule
+    {
+        return $this->layerRule('bundle');
+    }
+
     #[TestRule]
     public function testMiddlewareDependencies(): Rule
     {
@@ -81,10 +87,13 @@ final class ArchitectureRuleSet
         $layerClasses = $this->{$name}();
 
         return PHPat::rule()
-            ->classes($layerClasses)
+            ->classes(Selector::AND(
+                $layerClasses,
+                Selector::NOT(Selector::classname('/\\\Tests\\\/', true)),
+            ))
             ->canOnlyDependOn()
             ->classes($layerClasses, ...$layer['deps'])
-            ->because($layer['description'] ?? 'It has clearly defined dependency rules in '.self::class.'::layers()')
+            ->because($layer['description'] ?? 'See its dependency rules in '.self::class.'::layers()')
         ;
     }
 
@@ -92,13 +101,18 @@ final class ArchitectureRuleSet
     public function layers(): array
     {
         return [
+            'bundle' => [
+                'deps' => [
+                    Selector::inNamespace('Symfony\Component'),
+                    $this->formatter(),
+                ],
+            ],
             'middleware' => [
                 'deps' => [
                     Selector::AND(
                         Selector::isInterface(),
                         $this->exceptionHandler(),
                     ),
-                    Selector::inNamespace(class_namespace(ThrownException::class)),
                     Selector::inNamespace('Symfony\Component\Messenger'),
                 ],
             ],
@@ -111,6 +125,7 @@ final class ArchitectureRuleSet
                         $this->formatter(),
                     ),
                     Selector::classname(ConstraintViolationListInterface::class),
+                    Selector::classname(ExceptionUnwrapper::class),
                 ],
             ],
             'formatter' => [
@@ -148,9 +163,15 @@ final class ArchitectureRuleSet
     }
 
     /** @psalm-suppress UnusedMethod */
+    public function bundle(): ClassNamespace
+    {
+        return Selector::inNamespace(class_namespace(PhdExceptionalValidationBundle::class));
+    }
+
+    /** @psalm-suppress UnusedMethod */
     public function middleware(): ClassNamespace
     {
-        return Selector::inNamespace(class_namespace(ExceptionalValidationMiddleware::class));
+        return Selector::inNamespace('PhPhD\ExceptionalValidation\Middleware');
     }
 
     public function exceptionHandler(): ClassNamespace

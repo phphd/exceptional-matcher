@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidationBundle\Tests\Compiler;
+namespace PhPhD\ExceptionalValidation\Bundle\Tests\Compiler;
 
-use PhPhD\ExceptionalValidation\Tests\Stub\CustomExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use stdClass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
