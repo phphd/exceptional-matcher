@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Handler\Exception;
 
-use PhPhD\ExceptionalValidation\Model\Exception\Adapter\ThrownException;
 use RuntimeException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Throwable;
 
 use function sprintf;
 
@@ -16,11 +16,11 @@ final class ExceptionalValidationFailedException extends RuntimeException
     public function __construct(
         private readonly object $violatingMessage,
         private readonly ConstraintViolationListInterface $violationList,
-        ThrownException $thrownException,
+        Throwable $previous,
     ) {
         parent::__construct(
             sprintf('Message of type "%s" has failed exceptional validation.', $this->violatingMessage::class),
-            previous: $thrownException->getOriginalException(),
+            previous: $previous,
         );
     }
 

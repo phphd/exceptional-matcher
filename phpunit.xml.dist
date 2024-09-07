@@ -10,22 +10,21 @@
          failOnWarning="true">
     <testsuites>
         <testsuite name="Unit">
-            <directory>tests/Unit</directory>
+            <directory suffix="UnitTest.php">tests</directory>
         </testsuite>
         <testsuite name="Integration">
-            <directory>tests/Integration</directory>
+            <directory suffix="IntegrationTest.php">src</directory>
         </testsuite>
     </testsuites>
 
     <source restrictDeprecations="true" restrictNotices="true" restrictWarnings="true">
         <include>
-            <directory>.</directory>
+            <directory>src</directory>
         </include>
         <exclude>
-            <directory>vendor</directory>
-            <directory>tests</directory>
-            <file>rector.php</file>
-            <file>ecs.php</file>
+            <directory>src/*/*/Tests</directory>
+            <directory>src/*/*/*/Tests</directory>
+            <directory>src/*/*/*/*/Tests</directory>
         </exclude>
     </source>
 </phpunit>

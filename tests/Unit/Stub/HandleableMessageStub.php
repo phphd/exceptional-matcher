@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Tests\Stub;
+namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
 
 use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\CustomFormattedException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\MessageContainingException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\PropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\SomeValueException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\StaticPropertyCapturedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CustomFormattedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\MessageContainingException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ObjectPropertyCapturableException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\SomeValueException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
 use Symfony\Component\Validator\Constraints\Valid;
 
 #[ExceptionalValidation]

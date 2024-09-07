@@ -1,0 +1,16 @@
+services:
+    phd_exceptional_validation.exception_handler:
+        class: PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler
+        arguments:
+            - '@phd_exceptional_validation.rule_set_assembler'
+            - '@phd_exceptional_validation.exception_unwrapper'
+            - '@phd_exceptional_validation.violations_list_formatter'
+        lazy: true
+        tags:
+            - { name: 'proxy', interface: 'PhPhD\ExceptionalValidation\Handler\ExceptionHandler' }
+
+    phd_exceptional_validation.exception_unwrapper:
+        alias: phd_exception_toolkit.exception_unwrapper
+
+    phd_exceptional_validation.rule_set_assembler:
+        alias: phd_exceptional_validation.rule_set_assembler.object
