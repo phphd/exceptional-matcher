@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Tests;
+namespace PhPhD\ExceptionalValidation\Tests\Unit;
 
 use ArrayIterator;
 use ArrayObject;
@@ -27,23 +27,24 @@ use PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
 use PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition;
-use PhPhD\ExceptionalValidation\Model\Exception\Adapter\SingleThrownException;
-use PhPhD\ExceptionalValidation\Tests\Stub\CustomExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\Adapter\CompositeThrownException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ConditionallyCapturedException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\CustomFormattedException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\MessageContainingException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedItemCapturedException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedPropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ObjectPropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\PropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\SomeValueException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\StaticPropertyCapturedException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ViolationListExampleException;
-use PhPhD\ExceptionalValidation\Tests\Stub\HandleableMessageStub;
-use PhPhD\ExceptionalValidation\Tests\Stub\NestedHandleableMessage;
-use PhPhD\ExceptionalValidation\Tests\Stub\NestedItem;
-use PhPhD\ExceptionalValidation\Tests\Stub\NotHandleableMessageStub;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ConditionallyCapturedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CustomFormattedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\MessageContainingException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedPropertyCapturableException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ObjectPropertyCapturableException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\SomeValueException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ViolationListExampleException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedHandleableMessage;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedItem;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NotHandleableMessageStub;
+use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use stdClass;
@@ -78,7 +79,6 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath
  * @covers \PhPhD\ExceptionalValidation\Model\Exception\ExceptionPackage
  * @covers \PhPhD\ExceptionalValidation\Model\Exception\CapturedException
- * @covers \PhPhD\ExceptionalValidation\Model\Exception\Adapter\SingleThrownException
  * @covers \PhPhD\ExceptionalValidation\Assembler\CompositeRuleSetAssembler
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\ObjectRulesAssemblerEnvelope
@@ -97,7 +97,7 @@ use function array_intersect_key;
  *
  * @internal
  */
-final class ExceptionalValidationTest extends TestCase
+final class ExceptionalValidationUnitTest extends TestCase
 {
     private DefaultExceptionHandler $exceptionHandler;
 
@@ -152,8 +152,9 @@ final class ExceptionalValidationTest extends TestCase
         ;
 
         $violationFormatter = new DelegatingExceptionViolationFormatter($formatterRegistry);
+        $exceptionUnwrapper = new CompositeExceptionUnwrapper(new PassThroughExceptionUnwrapper());
         $violationListFormatter = new DefaultExceptionListViolationFormatter($violationFormatter);
-        $this->exceptionHandler = new DefaultExceptionHandler($objectRuleSetAssembler, $violationListFormatter);
+        $this->exceptionHandler = new DefaultExceptionHandler($objectRuleSetAssembler, $exceptionUnwrapper, $violationListFormatter);
     }
 
     public function testDoesNotCaptureExceptionForMessageNotHavingExceptionalValidationAttribute(): void
@@ -162,7 +163,7 @@ final class ExceptionalValidationTest extends TestCase
 
         $this->expectNotToPerformAssertions();
 
-        $this->exceptionHandler->capture($message, new SingleThrownException(new PropertyCapturableException()));
+        $this->exceptionHandler->capture($message, new PropertyCapturableException());
     }
 
     public function testCapturesExceptionMappedToProperty(): void
@@ -173,10 +174,10 @@ final class ExceptionalValidationTest extends TestCase
         $this->expectException(ExceptionalValidationFailedException::class);
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
+            $this->exceptionHandler->capture($message, $originalException);
         } catch (ExceptionalValidationFailedException $e) {
             self::assertSame(
-                'Message of type "PhPhD\ExceptionalValidation\Tests\Stub\HandleableMessageStub" has failed exceptional validation.',
+                'Message of type "PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub" has failed exceptional validation.',
                 $e->getMessage(),
             );
             self::assertSame($originalException, $e->getPrevious());
@@ -205,7 +206,7 @@ final class ExceptionalValidationTest extends TestCase
         $this->expectException(ExceptionalValidationFailedException::class);
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException(new LogicException()));
+            $this->exceptionHandler->capture($message, new LogicException());
         } catch (ExceptionalValidationFailedException $e) {
             /** @var ConstraintViolationInterface $violation */
             [$violation] = $e->getViolationList();
@@ -225,7 +226,7 @@ final class ExceptionalValidationTest extends TestCase
         $originalException = new ObjectPropertyCapturableException();
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
+            $this->exceptionHandler->capture($message, $originalException);
         } catch (ExceptionalValidationFailedException $e) {
             /** @var ConstraintViolationInterface $violation */
             [$violation] = $e->getViolationList();
@@ -247,7 +248,7 @@ final class ExceptionalValidationTest extends TestCase
         $originalException = new StaticPropertyCapturedException();
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
+            $this->exceptionHandler->capture($message, $originalException);
         } catch (ExceptionalValidationFailedException $e) {
             /** @var ConstraintViolationInterface $violation */
             [$violation] = $e->getViolationList();
@@ -267,7 +268,7 @@ final class ExceptionalValidationTest extends TestCase
 
         $this->expectNotToPerformAssertions();
 
-        $this->exceptionHandler->capture($message, new SingleThrownException($exception));
+        $this->exceptionHandler->capture($message, $exception);
     }
 
     public function testDoesNotCaptureNotInitializedValidNestedObjectProperty(): void
@@ -278,7 +279,7 @@ final class ExceptionalValidationTest extends TestCase
 
         $this->expectNotToPerformAssertions();
 
-        $this->exceptionHandler->capture($message, new SingleThrownException($exception));
+        $this->exceptionHandler->capture($message, $exception);
     }
 
     public function testCapturesNestedObjectPropertyException(): void
@@ -290,7 +291,7 @@ final class ExceptionalValidationTest extends TestCase
         $this->expectException(ExceptionalValidationFailedException::class);
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
+            $this->exceptionHandler->capture($message, $originalException);
         } catch (ExceptionalValidationFailedException $e) {
             self::assertSame($originalException, $e->getPrevious());
 
@@ -316,7 +317,7 @@ final class ExceptionalValidationTest extends TestCase
 
         $this->expectNotToPerformAssertions();
 
-        $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
+        $this->exceptionHandler->capture($message, $originalException);
     }
 
     public function testCapturesExceptionWithGivenCondition(): void
@@ -328,7 +329,7 @@ final class ExceptionalValidationTest extends TestCase
         $this->expectException(ExceptionalValidationFailedException::class);
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
+            $this->exceptionHandler->capture($message, $originalException);
         } catch (ExceptionalValidationFailedException $e) {
             self::assertSame($originalException, $e->getPrevious());
 
@@ -356,7 +357,7 @@ final class ExceptionalValidationTest extends TestCase
 
         $this->expectNotToPerformAssertions();
 
-        $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
+        $this->exceptionHandler->capture($message, $originalException);
     }
 
     public function testCapturesExceptionOnNestedArrayItem(): void
@@ -372,7 +373,7 @@ final class ExceptionalValidationTest extends TestCase
         $this->expectException(ExceptionalValidationFailedException::class);
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
+            $this->exceptionHandler->capture($message, $originalException);
         } catch (ExceptionalValidationFailedException $e) {
             self::assertSame($originalException, $e->getPrevious());
 
@@ -401,7 +402,7 @@ final class ExceptionalValidationTest extends TestCase
         $this->expectException(ExceptionalValidationFailedException::class);
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
+            $this->exceptionHandler->capture($message, $originalException);
         } catch (ExceptionalValidationFailedException $e) {
             self::assertSame($originalException, $e->getPrevious());
 
@@ -425,7 +426,7 @@ final class ExceptionalValidationTest extends TestCase
             ])
         ;
 
-        $exceptionAdapter = new CompositeThrownException([
+        $exceptionAdapter = new CompositeException([
             new NestedItemCapturedException(code: 1),
             new NestedItemCapturedException(code: 3),
         ]);
@@ -446,7 +447,7 @@ final class ExceptionalValidationTest extends TestCase
             ]))
         ;
 
-        $exceptionAdapter = new CompositeThrownException([
+        $exceptionAdapter = new CompositeException([
             new NestedItemCapturedException(code: 1),
             new PropertyCapturableException(),
             new ObjectPropertyCapturableException(),
@@ -490,7 +491,7 @@ final class ExceptionalValidationTest extends TestCase
         $originalException = new CustomFormattedException();
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
+            $this->exceptionHandler->capture($message, $originalException);
         } catch (ExceptionalValidationFailedException $e) {
             $violationList = $e->getViolationList();
             self::assertCount(1, $violationList);
@@ -512,7 +513,7 @@ final class ExceptionalValidationTest extends TestCase
     {
         $message = HandleableMessageStub::create();
 
-        $exceptionAdapter = new CompositeThrownException([
+        $exceptionAdapter = new CompositeException([
             new SomeValueException('matched!'),
             new SomeValueException('whatever'),
         ]);
@@ -542,7 +543,7 @@ final class ExceptionalValidationTest extends TestCase
     public function testViolationMessageFallsBackToExceptionMessage(): void
     {
         $message = HandleableMessageStub::create();
-        $exceptionAdapter = new CompositeThrownException([
+        $exceptionAdapter = new CompositeException([
             new MessageContainingException(),
             new MessageContainingException(),
         ]);
@@ -583,7 +584,7 @@ final class ExceptionalValidationTest extends TestCase
         $this->expectException(ExceptionalValidationFailedException::class);
 
         try {
-            $this->exceptionHandler->capture($message, new SingleThrownException($originalException));
+            $this->exceptionHandler->capture($message, $originalException);
         } catch (ExceptionalValidationFailedException $e) {
             $violationList = $e->getViolationList();
             self::assertCount(1, $violationList);

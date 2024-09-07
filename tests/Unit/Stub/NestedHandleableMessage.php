@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Tests\Stub;
+namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
 
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\NestedPropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Stub\Exception\ViolationListExampleException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedPropertyCapturableException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ViolationListExampleException;
 use Symfony\Component\Validator\Constraints\Valid;
 
 #[ExceptionalValidation]

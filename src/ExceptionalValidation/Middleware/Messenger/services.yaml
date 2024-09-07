@@ -1,0 +1,5 @@
+services:
+    phd_exceptional_validation:
+        class: PhPhD\ExceptionalValidation\Middleware\Messenger\ExceptionalValidationMiddleware
+        arguments:
+            - '@phd_exceptional_validation.exception_handler'

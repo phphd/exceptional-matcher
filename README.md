@@ -1,36 +1,37 @@
-# PhdExceptionalValidationBundle
+# Exceptional Validation
 
-🧰 Provides exception-to-violation mapper bundled as [Symfony Messenger](https://symfony.com/doc/current/messenger.html)
-middleware. It captures thrown exceptions, maps them
-into [Symfony Validator](https://symfony.com/doc/current/validation.html)
-violations format, and throws `ExceptionalValidationFailedException`.
+🧰 Provides exception-to-property mapper bundled as [Symfony Messenger](https://symfony.com/doc/current/messenger.html)
+middleware. It captures thrown exceptions, matches them with the respective properties, formats violations
+in [Symfony Validator](https://symfony.com/doc/current/validation.html) format, and
+throws `ExceptionalValidationFailedException`.
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/phphd/exceptional-validation-bundle/ci.yaml?branch=main)](https://github.com/phphd/exceptional-validation-bundle/actions?query=branch%3Amain)
-[![Codecov](https://codecov.io/gh/phphd/exceptional-validation-bundle/graph/badge.svg?token=GZRXWYT55Z)](https://codecov.io/gh/phphd/exceptional-validation-bundle)
-[![Psalm coverage](https://shepherd.dev/github/phphd/exceptional-validation-bundle/coverage.svg)](https://shepherd.dev/github/phphd/exceptional-validation-bundle)
-[![Psalm level](https://shepherd.dev/github/phphd/exceptional-validation-bundle/level.svg)](https://shepherd.dev/github/phphd/exceptional-validation-bundle)
-[![Licence](https://img.shields.io/badge/licence-Apache--2.0%2FCommons--Clause-blue.svg)](https://github.com/phphd/exceptional-validation-bundle/blob/main/LICENSE)
-[![Packagist Downloads](https://img.shields.io/packagist/dt/phphd/exceptional-validation-bundle.svg)](https://packagist.org/packages/phphd/exceptional-validation-bundle)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/phphd/exceptional-validation/ci.yaml?branch=main)](https://github.com/phphd/exceptional-validation/actions?query=branch%3Amain)
+[![Codecov](https://codecov.io/gh/phphd/exceptional-validation/graph/badge.svg?token=GZRXWYT55Z)](https://codecov.io/gh/phphd/exceptional-validation)
+[![Psalm coverage](https://shepherd.dev/github/phphd/exceptional-validation/coverage.svg)](https://shepherd.dev/github/phphd/exceptional-validation)
+[![Psalm level](https://shepherd.dev/github/phphd/exceptional-validation/level.svg)](https://shepherd.dev/github/phphd/exceptional-validation)
+[![Licence](https://img.shields.io/badge/licence-Apache--2.0%2FCommons--Clause-blue.svg)](https://github.com/phphd/exceptional-validation/blob/main/LICENSE)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/phphd/exceptional-validation.svg)](https://packagist.org/packages/phphd/exceptional-validation)
 
 ## Installation 📥
 
 1. Install via composer
 
     ```sh
-    composer require phphd/exceptional-validation-bundle
+    composer require phphd/exceptional-validation
     ```
 
-2. Enable the bundle in the `bundles.php`
+2. Enable the bundles in the `bundles.php`
 
     ```php
-    PhPhD\ExceptionalValidationBundle\PhdExceptionalValidationBundle::class => ['all' => true],
+    PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle::class => ['all' => true],
+    PhPhD\ExceptionToolkit\Bundle\PhdExceptionToolkitBundle::class => ['all' => true],
     ```
 
 ## Configuration ⚒️
 
-The recommended way to use this package is via Symfony Messenger.
+The recommended way to use this package is via Symfony Messenger middleware.
 
-To leverage features of this bundle, you should add `phd_exceptional_validation` middleware to the list:
+To start off, you should add `phd_exceptional_validation` middleware to the list:
 
 ```diff
 framework:
@@ -43,13 +44,19 @@ framework:
                     - doctrine_transaction
 ```
 
+Once you have done this, middleware will take care of capturing exceptions and processing them.
+
+> If you are not using Messenger component, you can still leverage features of this package, by writing your own
+> implementation of the middleware for the specific command bus you are using. Concerning `symfony/messenger`
+> component, this dependency is optional, so it won't be installed automatically if you don't need it.
+
 ## Usage 🚀
 
 The first thing necessary is to mark your message with `#[ExceptionalValidation]` attribute. It is used to include the
 message for processing by the middleware.
 
-Then you define `#[Capture]` attributes on the properties of the message. These attributes are used to specify mapping
-for the thrown exceptions to the corresponding properties of the class with the respective error message translation.
+Then you define `#[Capture]` attributes on the properties of the message. These are used to map thrown exceptions to
+the corresponding properties of the class:
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -67,7 +74,7 @@ final class RegisterUserCommand
 ```
 
 In this example, whenever `LoginAlreadyTakenException` or `WeakPasswordException` is thrown, it will be captured and
-mapped to the `login` or `password` property.
+mapped to the `login` or `password` property with the respective error message translation.
 
 Eventually when `phd_exceptional_validation` middleware has processed the exception, it will
 throw `ExceptionalValidationFailedException` so that it can be caught and processed as needed:
@@ -84,8 +91,8 @@ try {
 } 
 ```
 
-The `$exception` object enfolds constraint violations with respectively mapped error messages. This
-violation list can be used for example to render errors into html-form or to serialize them for a json-response.
+The `$exception` object enfolds constraint violations with the respectively mapped constraint violations. This
+violation list can be used for example to render errors into html-form or to serialize them into a json-response.
 
 ## Advanced usage ⚙️
 
@@ -95,7 +102,7 @@ Here are just few examples of how you can use them.
 ### Capturing exceptions on nested objects
 
 `#[ExceptionalValidation]` attribute works side-by-side with Symfony Validator `#[Valid]` attribute. Once you have
-defined these, the `#[Capture]` attribute can be defined on the nested objects.
+defined these, `#[Capture]` attribute can be specified on the nested objects.
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -124,10 +131,10 @@ final class ProductDetails
 In this example, whenever `InsufficientStockException` is thrown, it will be captured and mapped to the
 `product.quantity` property with the corresponding message translation.
 
-### Capture Closure Conditions
+### Capture When-Conditions
 
 `#[Capture]` attribute accepts the callback function to determine whether particular exception instance should
-be captured for the given property or not.
+be captured for a given property or not.
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -150,12 +157,6 @@ final class TransferMoneyCommand
     )]
     private int $depositCardId;
 
-    #[Capture(
-        InsufficientFundsException::class, 
-        'wallet.insufficient_funds',
-    )]
-    private int $unitAmount;
-
     public function isWithdrawalCardBlocked(BlockedCardException $exception): bool
     {
         return $exception->getCardId() === $this->withdrawalCardId;
@@ -170,14 +171,16 @@ final class TransferMoneyCommand
 
 In this example, `when:` option of the `#[Capture]` attribute is used to specify the callback functions that are called
 when exception is processed. If `isWithdrawalCardBlocked` callback returns `true`, then exception is captured for
-`withdrawalCardId` property; if `isDepositCardBlocked` callback returns `true`, then exception is captured for
-`depositCardId` property. If neither of the callbacks return `true`, then exception is re-thrown upper in the stack.
+`withdrawalCardId` property; otherwise if `isDepositCardBlocked` callback returns `true`, then exception is captured for
+`depositCardId` property. If neither of them return `true`, then exception is re-thrown upper in the stack.
 
-### Simple Capture Conditions
+### Capture Value-Conditions
 
 Since in most cases capture conditions come down to the simple value comparison, it's easier to make your exception
-implement `ValueException` interface and specify `condition: ValueExceptionMatchCondition::class` rather than implementing `when:`
-closure every time. This way, it's possible to avoid boilerplate code, keeping it clean:
+implement `ValueException` interface and specify `condition: ValueExceptionMatchCondition::class` rather than
+implementing `when:` closure every time.
+
+This way, it's possible to avoid much of boilerplate code, keeping it clean:
 
 ```php
 use PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition;
@@ -193,7 +196,7 @@ final class TransferMoneyCommand
 }
 ```
 
-The `BlockedCardException` should implement `ValueException` interface:
+Following this `BlockedCardException` should implement `ValueException` interface:
 
 ```php
 use DomainException;
@@ -214,13 +217,13 @@ final class BlockedCardException extends DomainException implements ValueExcepti
 }
 ```
 
-In this example `BlockedCardException` could be captured both for `withdrawalCardId` and `depositCardId` properties
+In this example `BlockedCardException` could be captured either for `withdrawalCardId` or `depositCardId` properties
 depending on the `cardId` value from the exception.
 
 ### Capturing exceptions on nested array items
 
-You are perfectly allowed to map the violations for the nested array items given that you have `#[Valid]` attribute
-on the iterable property. For example:
+It is perfectly allowed to map the violations for the nested array items given that you have defined `#[Valid]`
+attribute on the iterable property. For example:
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -257,6 +260,53 @@ final class ProductDetails
 In this example, when `InsufficientStockException` is captured, it will be mapped to the `products[*].quantity`
 property, where `*` stands for the index of the particular `ProductDetails` instance from the `products` array on which
 the exception was captured.
+
+### Capturing multiple exceptions
+
+Typically, during the validation process, it is expected that all validation errors will be shown to the user and not
+just the first one.
+
+Yet, due to the limitations of the sequential computing model, only one exception could be thrown at a
+time. This leads to the situation where only the first exception is thrown, while the rest are not even reached.
+
+This limitation could still be overcome by implementing some of the concepts of interaction combinators model in
+sequential PHP environment. The key concept is to use semi-parallel execution flow instead of sequential.
+
+Let's consider the example of user registration and `RegisterUserCommand` with `login` and `password` properties shown
+above, where we want to capture both `LoginAlreadyTakenException` and `WeakPasswordException` at the same time.
+
+In the main code we must collect these exceptions into some kind of "composite exception" that will eventually
+be thrown. While one could've implemented this manually, it's much easier to use `amphp/amp` library, where it has been
+implemented in a lot better way using async Futures:
+
+```php
+/**
+ * @var Login $login 
+ * @var Password $password 
+ */
+[$login, $password] = awaitAnyN([
+    // validate and create Login instance
+    async(fn (): Login => $this->createLogin($command->getLogin())),
+    // validate and create Password instance
+    async(fn (): Password => $this->createPassword($command->getPassword())),
+]);
+```
+
+In this example, `createLogin()` method could throw `LoginAlreadyTakenException` and `createPassword()` method could
+throw `WeakPasswordException`. By using `async` and `awaitAnyN` functions, we are able to leverage semi-parallel
+execution flow instead of sequential. Therefore, both `createLogin()` and `createPassword()` methods will get executed
+regardless of thrown exceptions.
+
+If there were no exceptions, then `$login` and `$password` variables will be populated from the return values of the
+Futures. But if there indeed were some exceptions, then `Amp\CompositeException` will be thrown with all our exceptions
+wrapped inside.
+
+> If you would like to use custom composite exception, read
+> about [ExceptionUnwrapper](https://github.com/phphd/exception-toolkit?tab=readme-ov-file#exception-unwrapper)
+
+Since current library is capable of processing composite exceptions (actually there are un-wrappers for Amp and
+Messenger exceptions), all our thrown exceptions will be processed and user will have the full stack of validation
+errors at hand.
 
 ### Violation formatters
 
@@ -318,8 +368,8 @@ final class IssueCreditCardCommand
 ```
 
 In this example, `CardNumberValidationFailedException` is captured on the `cardNumber` property and all the constraint
-violations from this exception are mapped to this property. If there's message specified on the `#[Capture]` attribute, it
-is ignored in favor of the messages from `ConstraintViolationList`.
+violations from this exception are mapped to this property. If there's message specified on the `#[Capture]` attribute,
+it is ignored in favor of the messages from `ConstraintViolationList`.
 
 #### Custom violation formatters
 
@@ -408,20 +458,3 @@ final class RegisterUserCommand
 In this example, `RegistrationViolationsFormatter` is used to format constraint violations for
 both `LoginAlreadyTakenException` and `WeakPasswordException` (though you are perfectly fine to use separate
 formatters), enriching them with additional context.
-
-## Limitations
-
-### Capturing multiple exceptions at once
-
-Typically, validation process is expected to capture all errors at once and return them as a list of violations.
-However, the whole concept of exceptional processing in PHP is based on the idea that only one exception could be thrown
-at a time, since only one logical instruction is executed at a time.
-
-In case of Symfony Messenger, this is somewhat overcome by the fact that `HandlerFailedException` can wrap multiple
-exceptions collected from the underlying handlers. Though, currently there's no way to collect more than one
-exception from the same handler because of the limitations of sequential computing model.
-
-We are currently thinking about the issue and trying to anticipate the solution that will allow capturing multiple
-exceptions. Most likely the solution will be based on some ideas from the interaction combinators computing model, where
-code is no longer considered as a mere sequence of instructions, but rather as a graph of interactions that are combined
-and reduced on each step of evaluation.

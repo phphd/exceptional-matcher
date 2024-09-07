@@ -60,7 +60,7 @@ jobs:
                         run: vendor/bin/psalm --stats --no-progress --output-format=github --shepherd --threads=$(nproc)
 
                     -   name: 'PHPStan'
-                        run: vendor/bin/phpstan analyze --no-progress --error-format=github --ansi --configuration=phpstan.dist.neon ./
+                        run: vendor/bin/phpstan analyze --no-progress --error-format=github --ansi --configuration=phpstan.dist.neon
         steps:
             -   name: 'Checkout Code'
                 uses: actions/checkout@v4
