@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
 use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition;
+use PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchCondition;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\MessageContainingException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ObjectPropertyCapturableException;

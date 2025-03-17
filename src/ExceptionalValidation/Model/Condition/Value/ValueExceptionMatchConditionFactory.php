@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\ConditionFactory;
+namespace PhPhD\ExceptionalValidation\Model\Condition\Value;
 
 use LogicException;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Model\Condition\Exception\ValueException;
 use PhPhD\ExceptionalValidation\Model\Condition\MatchCondition;
-use PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition;
+use PhPhD\ExceptionalValidation\Model\Condition\MatchConditionFactory;
 use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
 
 use function is_a;

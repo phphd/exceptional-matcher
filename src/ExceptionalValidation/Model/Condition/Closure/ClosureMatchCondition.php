@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Model\Condition;
+namespace PhPhD\ExceptionalValidation\Model\Condition\Closure;
 
 use Closure;
+use PhPhD\ExceptionalValidation\Model\Condition\MatchCondition;
 use Throwable;
 
 /** @internal */

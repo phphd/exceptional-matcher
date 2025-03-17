@@ -183,7 +183,7 @@ implementing `when:` closure every time.
 This way, it's possible to avoid much of boilerplate code, keeping it clean:
 
 ```php
-use PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition;
+use PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchCondition;
 
 #[ExceptionalValidation]
 final class TransferMoneyCommand
@@ -199,8 +199,7 @@ final class TransferMoneyCommand
 Following this `BlockedCardException` should implement `ValueException` interface:
 
 ```php
-use DomainException;
-use PhPhD\ExceptionalValidation\Model\Condition\Exception\ValueException;
+use PhPhD\ExceptionalValidation\Model\Condition\Value\ValueException;
 
 final class BlockedCardException extends DomainException implements ValueException
 {

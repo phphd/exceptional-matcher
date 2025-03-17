@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Model\Condition;
+namespace PhPhD\ExceptionalValidation\Model\Condition\Value;
 
-use PhPhD\ExceptionalValidation\Model\Condition\Exception\ValueException;
+use PhPhD\ExceptionalValidation\Model\Condition\MatchCondition;
 use Throwable;
 
 final class ValueExceptionMatchCondition implements MatchCondition
