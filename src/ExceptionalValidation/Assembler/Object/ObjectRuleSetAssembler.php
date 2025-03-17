@@ -22,9 +22,9 @@ final class ObjectRuleSetAssembler
 
     public function assemble(object $message, ?CaptureRule $parent = null): ?CaptureRule
     {
-        /** @var CaptureRule $rules */
         $rules = null;
         $ruleSet = new LazyRuleSet(static function () use (&$rules): CaptureRule {
+            /** @var CaptureRule $rules */
             return $rules;
         });
 
