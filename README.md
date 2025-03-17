@@ -285,9 +285,9 @@ implemented in a lot better way using async Futures:
  */
 [$login, $password] = awaitAnyN([
     // validate and create Login instance
-    async(fn (): Login => $this->createLogin($command->getLogin())),
+    async($this->createLogin(...), $command->getLogin()),
     // validate and create Password instance
-    async(fn (): Password => $this->createPassword($command->getPassword())),
+    async($this->createPassword(...), $command->getPassword()),
 ]);
 ```
 
@@ -296,9 +296,9 @@ throw `WeakPasswordException`. By using `async` and `awaitAnyN` functions, we ar
 execution flow instead of sequential. Therefore, both `createLogin()` and `createPassword()` methods will get executed
 regardless of thrown exceptions.
 
-If there were no exceptions, then `$login` and `$password` variables will be populated from the return values of the
-Futures. But if there indeed were some exceptions, then `Amp\CompositeException` will be thrown with all our exceptions
-wrapped inside.
+If no exceptions were thrown, then `$login` and `$password` variables will be populated with the respective return
+values from the Futures. But if there indeed were some exceptions, then `Amp\CompositeException` will be thrown with all
+wrapped exceptions inside.
 
 > If you would like to use custom composite exception, read
 > about [ExceptionUnwrapper](https://github.com/phphd/exception-toolkit?tab=readme-ov-file#exception-unwrapper)
