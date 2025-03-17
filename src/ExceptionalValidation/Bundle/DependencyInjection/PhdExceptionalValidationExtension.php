@@ -38,7 +38,8 @@ final class PhdExceptionalValidationExtension extends Extension
 
         $loader->load(__DIR__.'/../../Handler/services.yaml');
         $loader->load(__DIR__.'/../../Assembler/services.yaml');
-        $loader->load(__DIR__.'/../../ConditionFactory/services.yaml');
+        $loader->load(__DIR__.'/../../Model/Condition/services.yaml');
+        $loader->load(__DIR__.'/../../Model/Condition/Value/services.yaml');
         $loader->load(__DIR__.'/../../Formatter/services.yaml');
 
         $container

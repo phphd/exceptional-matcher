@@ -17,8 +17,6 @@ use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyCa
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidIterableRulesAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyRulesAssemblerEnvelope;
-use PhPhD\ExceptionalValidation\ConditionFactory\CaptureMatchConditionFactory;
-use PhPhD\ExceptionalValidation\ConditionFactory\ValueExceptionMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Formatter\DefaultExceptionListViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\DefaultExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter;
@@ -26,7 +24,9 @@ use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
-use PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition;
+use PhPhD\ExceptionalValidation\Model\Condition\CaptureMatchConditionFactory;
+use PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchCondition;
+use PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
@@ -72,9 +72,9 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\CompositeRuleSet
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\LazyRuleSet
  * @covers \PhPhD\ExceptionalValidation\Model\Rule\CaptureExceptionRule
- * @covers \PhPhD\ExceptionalValidation\Model\Condition\ExceptionClassMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Model\Condition\ClosureMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Model\Condition\ExceptionClass\ExceptionClassMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Model\Condition\Closure\ClosureMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Model\Condition\CompositeMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath
  * @covers \PhPhD\ExceptionalValidation\Model\Exception\ExceptionPackage
@@ -90,10 +90,10 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidIterableRulesAssembler
  * @covers \PhPhD\ExceptionalValidation\Assembler\Object\IterableOfObjectsRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\ConditionFactory\CaptureMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\ConditionFactory\ExceptionClassMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\ConditionFactory\ValueExceptionMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\ConditionFactory\ClosureMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Model\Condition\CaptureMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Model\Condition\ExceptionClass\ExceptionClassMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Model\Condition\Closure\ClosureMatchConditionFactory
  *
  * @internal
  */
