@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\ConditionFactory;
+namespace PhPhD\ExceptionalValidation\Model\Condition\ExceptionClass;
 
 use LogicException;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Model\Condition\ExceptionClassMatchCondition;
 use PhPhD\ExceptionalValidation\Model\Condition\MatchCondition;
+use PhPhD\ExceptionalValidation\Model\Condition\MatchConditionFactory;
 use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
 use Throwable;
 

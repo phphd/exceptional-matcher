@@ -16,9 +16,9 @@ use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\ConditionFactory\MatchConditionFactory;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
+use PhPhD\ExceptionalValidation\Model\Condition\MatchConditionFactory;
 use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Psr\Container\ContainerInterface;
@@ -87,7 +87,7 @@ final class ArchitectureRuleSet
         $layerClasses = $this->{$name}();
 
         return PHPat::rule()
-            ->classes(Selector::AND(
+            ->classes(Selector::AllOf(
                 $layerClasses,
                 Selector::NOT(Selector::classname('/\\\Tests\\\/', true)),
             ))
@@ -109,7 +109,7 @@ final class ArchitectureRuleSet
             ],
             'middleware' => [
                 'deps' => [
-                    Selector::AND(
+                    Selector::AllOf(
                         Selector::isInterface(),
                         $this->exceptionHandler(),
                     ),
@@ -120,7 +120,7 @@ final class ArchitectureRuleSet
                 'deps' => [
                     Selector::classname(ObjectRuleSetAssembler::class),
                     $this->model(),
-                    Selector::AND(
+                    Selector::AllOf(
                         Selector::isInterface(),
                         $this->formatter(),
                     ),
@@ -189,14 +189,20 @@ final class ArchitectureRuleSet
         return Selector::inNamespace(class_namespace(CaptureRuleSetAssembler::class));
     }
 
-    public function matchConditionFactory(): ClassNamespace
+    public function matchConditionFactory(): SelectorInterface
     {
-        return Selector::inNamespace(class_namespace(MatchConditionFactory::class));
+        return Selector::AnyOf(
+            Selector::classname(MatchConditionFactory::class),
+            Selector::implements(MatchConditionFactory::class),
+        );
     }
 
-    public function model(): ClassNamespace
+    public function model(): SelectorInterface
     {
-        return Selector::inNamespace(class_namespace(class_namespace(CaptureRule::class)));
+        return Selector::AllOf(
+            Selector::inNamespace(class_namespace(class_namespace(CaptureRule::class))),
+            Selector::NOT($this->matchConditionFactory()),
+        );
     }
 }
 

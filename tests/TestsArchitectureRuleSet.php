@@ -21,7 +21,7 @@ final class TestsArchitectureRuleSet
     public function testsMustBeIncludedForPHPUnit(): Rule
     {
         return PHPat::rule()
-            ->classes(Selector::AND(
+            ->classes(Selector::AllOf(
                 Selector::extends(TestCase::class),
                 Selector::NOT(Selector::isAbstract()),
                 Selector::NOT(Selector::classname('/UnitTest$/', true)),

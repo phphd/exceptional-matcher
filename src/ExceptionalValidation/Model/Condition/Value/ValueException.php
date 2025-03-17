@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Model\Condition\Exception;
+namespace PhPhD\ExceptionalValidation\Model\Condition\Value;
 
 use Throwable;
 

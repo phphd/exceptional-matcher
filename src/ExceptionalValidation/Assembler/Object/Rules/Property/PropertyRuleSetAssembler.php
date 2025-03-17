@@ -35,9 +35,9 @@ final class PropertyRuleSetAssembler implements CaptureRuleSetAssembler
         $name = $reflectionProperty->getName();
         $value = $this->getPropertyValue($object, $reflectionProperty);
 
-        /** @var CaptureRule $rules */
         $rules = null;
         $rulesSet = new LazyRuleSet(static function () use (&$rules): CaptureRule {
+            /** @var CaptureRule $rules */
             return $rules;
         });
 
