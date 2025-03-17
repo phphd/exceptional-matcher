@@ -55,9 +55,9 @@ final class IterableOfObjectsRuleSetAssembler
 
     private function getIterableItemCaptureRule(CaptureRule $parentIterableRuleSet, int|string $key, object $object): ?IterableItemCaptureRule
     {
-        /** @var CaptureRule $rules */
         $rules = null;
         $rulesSet = new LazyRuleSet(static function () use (&$rules): CaptureRule {
+            /** @var CaptureRule $rules */
             return $rules;
         });
 
