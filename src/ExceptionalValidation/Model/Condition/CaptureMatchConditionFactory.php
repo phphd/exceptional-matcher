@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\ConditionFactory;
+namespace PhPhD\ExceptionalValidation\Model\Condition;
 
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Model\Condition\CompositeMatchCondition;
-use PhPhD\ExceptionalValidation\Model\Condition\MatchCondition;
+use PhPhD\ExceptionalValidation\Model\Condition\Closure\ClosureMatchConditionFactory;
+use PhPhD\ExceptionalValidation\Model\Condition\ExceptionClass\ExceptionClassMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
 use Psr\Container\ContainerInterface;
 

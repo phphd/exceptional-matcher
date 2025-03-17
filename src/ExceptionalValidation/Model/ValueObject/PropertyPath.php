@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Model\ValueObject;
 
+use LogicException;
+
 use function array_pop;
 use function implode;
 use function sprintf;
@@ -30,6 +32,10 @@ final class PropertyPath
     public function at(int|string $key): self
     {
         $items = $this->items;
+
+        if ([] === $items) {
+            throw new LogicException('Property path must not be empty.');
+        }
 
         $lastItem = array_pop($items);
 
