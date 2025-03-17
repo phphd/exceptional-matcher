@@ -16,9 +16,9 @@ use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\ConditionFactory\MatchConditionFactory;
 use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
+use PhPhD\ExceptionalValidation\Model\Condition\MatchConditionFactory;
 use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Psr\Container\ContainerInterface;
@@ -189,14 +189,24 @@ final class ArchitectureRuleSet
         return Selector::inNamespace(class_namespace(CaptureRuleSetAssembler::class));
     }
 
-    public function matchConditionFactory(): ClassNamespace
+    public function matchConditionFactory(): SelectorInterface
     {
-        return Selector::inNamespace(class_namespace(MatchConditionFactory::class));
+        // This selector could've been rewritten into
+        // Selector::OR(classname(MatchConditionFactory), implements(MatchConditionFactory)),
+        // if we had such thing as Selector::OR()
+
+        return Selector::NOT(Selector::AND(
+            Selector::NOT(Selector::classname(MatchConditionFactory::class)),
+            Selector::NOT(Selector::implements(MatchConditionFactory::class)),
+        ));
     }
 
-    public function model(): ClassNamespace
+    public function model(): SelectorInterface
     {
-        return Selector::inNamespace(class_namespace(class_namespace(CaptureRule::class)));
+        return Selector::AND(
+            Selector::inNamespace(class_namespace(class_namespace(CaptureRule::class))),
+            Selector::NOT($this->matchConditionFactory()),
+        );
     }
 }
 
