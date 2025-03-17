@@ -87,7 +87,7 @@ final class ArchitectureRuleSet
         $layerClasses = $this->{$name}();
 
         return PHPat::rule()
-            ->classes(Selector::AND(
+            ->classes(Selector::AllOf(
                 $layerClasses,
                 Selector::NOT(Selector::classname('/\\\Tests\\\/', true)),
             ))
@@ -109,7 +109,7 @@ final class ArchitectureRuleSet
             ],
             'middleware' => [
                 'deps' => [
-                    Selector::AND(
+                    Selector::AllOf(
                         Selector::isInterface(),
                         $this->exceptionHandler(),
                     ),
@@ -120,7 +120,7 @@ final class ArchitectureRuleSet
                 'deps' => [
                     Selector::classname(ObjectRuleSetAssembler::class),
                     $this->model(),
-                    Selector::AND(
+                    Selector::AllOf(
                         Selector::isInterface(),
                         $this->formatter(),
                     ),
@@ -191,19 +191,15 @@ final class ArchitectureRuleSet
 
     public function matchConditionFactory(): SelectorInterface
     {
-        // This selector could've been rewritten into
-        // Selector::OR(classname(MatchConditionFactory), implements(MatchConditionFactory)),
-        // if we had such thing as Selector::OR()
-
-        return Selector::NOT(Selector::AND(
-            Selector::NOT(Selector::classname(MatchConditionFactory::class)),
-            Selector::NOT(Selector::implements(MatchConditionFactory::class)),
-        ));
+        return Selector::AnyOf(
+            Selector::classname(MatchConditionFactory::class),
+            Selector::implements(MatchConditionFactory::class),
+        );
     }
 
     public function model(): SelectorInterface
     {
-        return Selector::AND(
+        return Selector::AllOf(
             Selector::inNamespace(class_namespace(class_namespace(CaptureRule::class))),
             Selector::NOT($this->matchConditionFactory()),
         );
