@@ -1,3 +1,6 @@
+parameters:
+    phd_exceptional_validation.translation_domain: '%validator.translation_domain%'
+
 services:
     phd_exceptional_validation.violations_list_formatter:
         class: PhPhD\ExceptionalValidation\Formatter\DefaultExceptionListViolationFormatter
@@ -16,7 +19,7 @@ services:
         class: PhPhD\ExceptionalValidation\Formatter\DefaultExceptionViolationFormatter
         arguments:
             - '@translator'
-            - '%validator.translation_domain%'
+            - '%phd_exceptional_validation.translation_domain%'
         tags:
             - { name: 'exceptional_validation.violation_formatter', id: 'default' }
 

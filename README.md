@@ -76,6 +76,10 @@ final class RegisterUserCommand
 In this example, whenever `LoginAlreadyTakenException` or `WeakPasswordException` is thrown, it will be captured and
 mapped to the `login` or `password` property with the respective error message translation.
 
+> Please, note that by default `validators` messages translation domain is used, as it is inherited from
+> `%validator.translation_domain%` parameter. If you would like to change it, you could either change this, or
+> specifically set `%phd_exceptional_validation.translation_domain%`.
+
 Eventually when `phd_exceptional_validation` middleware has processed the exception, it will
 throw `ExceptionalValidationFailedException` so that it can be caught and processed as needed:
 
