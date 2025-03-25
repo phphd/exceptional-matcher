@@ -6,3 +6,5 @@ All notable changes to this project are be documented in this file.
 
 * Class `PhPhD\ExceptionalValidation\Model\Condition\Exception\ValueException` was moved:
   `PhPhD\ExceptionalValidation\Model\Condition\Value\ValueException`
+* Class `PhPhD\ExceptionalValidation\Model\Condition\ValueExceptionMatchCondition` was moved:
+  `PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchCondition`
