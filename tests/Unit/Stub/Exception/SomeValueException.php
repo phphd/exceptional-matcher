@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception;
 
-use PhPhD\ExceptionalValidation\Model\Condition\Value\ValueException;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueException;
 use RuntimeException;
 
 final class SomeValueException extends RuntimeException implements ValueException
