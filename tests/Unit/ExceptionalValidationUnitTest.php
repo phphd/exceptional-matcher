@@ -7,26 +7,26 @@ namespace PhPhD\ExceptionalValidation\Tests\Unit;
 use ArrayIterator;
 use ArrayObject;
 use LogicException;
-use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Assembler\CompositeRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Assembler\Object\IterableOfObjectsRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Assembler\Object\Rules\ObjectRulesAssembler;
-use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\PropertyRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyCaptureRulesAssembler;
-use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidIterableRulesAssembler;
-use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler;
-use PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyRulesAssemblerEnvelope;
-use PhPhD\ExceptionalValidation\Formatter\DefaultExceptionListViolationFormatter;
-use PhPhD\ExceptionalValidation\Formatter\DefaultExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalValidation\Formatter\Item\DefaultExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Formatter\Item\Validator\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalValidation\Formatter\List\DefaultExceptionListViolationFormatter;
 use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
-use PhPhD\ExceptionalValidation\Model\Condition\CaptureMatchConditionFactory;
-use PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchCondition;
-use PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchConditionFactory;
+use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\IterableOfObjectsRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRulesAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssemblerEnvelope;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueExceptionMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueExceptionMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
@@ -62,38 +62,38 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Capture
  * @covers \PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler
  * @covers \PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException
- * @covers \PhPhD\ExceptionalValidation\Formatter\DefaultExceptionListViolationFormatter
- * @covers \PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter
- * @covers \PhPhD\ExceptionalValidation\Formatter\DefaultExceptionViolationFormatter
- * @covers \PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter
- * @covers \PhPhD\ExceptionalValidation\Model\Rule\ObjectRuleSet
- * @covers \PhPhD\ExceptionalValidation\Model\Rule\IterableItemCaptureRule
- * @covers \PhPhD\ExceptionalValidation\Model\Rule\PropertyRuleSet
- * @covers \PhPhD\ExceptionalValidation\Model\Rule\CompositeRuleSet
- * @covers \PhPhD\ExceptionalValidation\Model\Rule\LazyRuleSet
- * @covers \PhPhD\ExceptionalValidation\Model\Rule\CaptureExceptionRule
- * @covers \PhPhD\ExceptionalValidation\Model\Condition\ExceptionClass\ExceptionClassMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Model\Condition\Closure\ClosureMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Model\Condition\CompositeMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Model\ValueObject\PropertyPath
- * @covers \PhPhD\ExceptionalValidation\Model\Exception\ExceptionPackage
- * @covers \PhPhD\ExceptionalValidation\Model\Exception\CapturedException
- * @covers \PhPhD\ExceptionalValidation\Assembler\CompositeRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\ObjectRulesAssemblerEnvelope
- * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\ObjectRulesAssembler
- * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\PropertyRuleSetAssemblerEnvelope
- * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\PropertyRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyRulesAssemblerEnvelope
- * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyCaptureRulesAssembler
- * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidObjectRuleAssembler
- * @covers \PhPhD\ExceptionalValidation\Assembler\Object\Rules\Property\Rules\PropertyNestedValidIterableRulesAssembler
- * @covers \PhPhD\ExceptionalValidation\Assembler\Object\IterableOfObjectsRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Model\Condition\CaptureMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Model\Condition\ExceptionClass\ExceptionClassMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Model\Condition\Closure\ClosureMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Formatter\List\DefaultExceptionListViolationFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\Item\DefaultExceptionViolationFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\Item\Validator\ViolationListExceptionFormatter
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Rule\CompositeRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Rule\LazyRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\CaptureExceptionRule
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\ExceptionClass\ExceptionClassMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueExceptionMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CompositeMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Rule\Path\PropertyPath
+ * @covers \PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage
+ * @covers \PhPhD\ExceptionalValidation\Rule\Exception\CapturedException
+ * @covers \PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRulesAssemblerEnvelope
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRulesAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssemblerEnvelope
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssemblerEnvelope
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\IterableOfObjectsRuleSetAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\ExceptionClass\ExceptionClassMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueExceptionMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchConditionFactory
  *
  * @internal
  */

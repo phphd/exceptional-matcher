@@ -3,20 +3,20 @@ parameters:
 
 services:
     phd_exceptional_validation.violations_list_formatter:
-        class: PhPhD\ExceptionalValidation\Formatter\DefaultExceptionListViolationFormatter
+        class: PhPhD\ExceptionalValidation\Formatter\List\DefaultExceptionListViolationFormatter
         arguments:
             - '@phd_exceptional_validation.violation_formatter'
         lazy: true
         tags:
-            - { name: 'proxy', interface: 'PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter' }
+            - { name: 'proxy', interface: 'PhPhD\ExceptionalValidation\Formatter\List\ExceptionListViolationFormatter' }
 
     phd_exceptional_validation.violation_formatter:
-        class: PhPhD\ExceptionalValidation\Formatter\DelegatingExceptionViolationFormatter
+        class: PhPhD\ExceptionalValidation\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter
         arguments:
             - !tagged_locator { tag: 'exceptional_validation.violation_formatter', index_by: 'id' }
 
     phd_exceptional_validation.violation_formatter.default:
-        class: PhPhD\ExceptionalValidation\Formatter\DefaultExceptionViolationFormatter
+        class: PhPhD\ExceptionalValidation\Formatter\Item\DefaultExceptionViolationFormatter
         arguments:
             - '@translator'
             - '%phd_exceptional_validation.translation_domain%'
@@ -24,6 +24,6 @@ services:
             - { name: 'exceptional_validation.violation_formatter', id: 'default' }
 
     phd_exceptional_validation.violation_formatter.violation_list_exception:
-        class: PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter
+        class: PhPhD\ExceptionalValidation\Formatter\Item\Validator\ViolationListExceptionFormatter
         tags:
-            - { name: 'exceptional_validation.violation_formatter', id: 'PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter' }
+            - { name: 'exceptional_validation.violation_formatter', id: 'PhPhD\ExceptionalValidation\Formatter\Item\Validator\ViolationListExceptionFormatter' }

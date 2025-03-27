@@ -8,5 +8,5 @@ use Symplify\EasyCodingStandard\Config\ECSConfig;
 return static function (ECSConfig $ecsConfig): void {
     $ecsConfig->sets([PhdSetList::ecs()->getPath()]);
 
-    $ecsConfig->paths([__DIR__.'/src', __DIR__.'/tests']);
+    $ecsConfig->paths([__DIR__.'/src', __DIR__.'/tests', __DIR__.'/upgrade']);
 };
