@@ -12,14 +12,14 @@ use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\Builder\Rule;
 use PHPat\Test\PHPat;
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Assembler\CaptureRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Assembler\Object\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
-use PhPhD\ExceptionalValidation\Model\Condition\MatchConditionFactory;
-use PhPhD\ExceptionalValidation\Model\Rule\CaptureRule;
+use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\CaptureRule;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\IterableOfObjectsRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Validator\Constraints\Valid;
@@ -181,12 +181,17 @@ final class ArchitectureRuleSet
 
     public function formatter(): ClassNamespace
     {
-        return Selector::inNamespace(class_namespace(ExceptionViolationFormatter::class));
+        return Selector::inNamespace('PhPhD\ExceptionalValidation\Formatter');
     }
 
-    public function captureRuleSetAssembler(): ClassNamespace
+    public function captureRuleSetAssembler(): SelectorInterface
     {
-        return Selector::inNamespace(class_namespace(CaptureRuleSetAssembler::class));
+        return Selector::AnyOf(
+            Selector::classname(CaptureRuleSetAssembler::class),
+            Selector::implements(CaptureRuleSetAssembler::class),
+            Selector::classname(IterableOfObjectsRuleSetAssembler::class),
+            Selector::classname(ObjectRuleSetAssembler::class),
+        );
     }
 
     public function matchConditionFactory(): SelectorInterface
@@ -200,8 +205,9 @@ final class ArchitectureRuleSet
     public function model(): SelectorInterface
     {
         return Selector::AllOf(
-            Selector::inNamespace(class_namespace(class_namespace(CaptureRule::class))),
+            Selector::inNamespace(class_namespace(CaptureRule::class)),
             Selector::NOT($this->matchConditionFactory()),
+            Selector::NOT($this->captureRuleSetAssembler()),
         );
     }
 }

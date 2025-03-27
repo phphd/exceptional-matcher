@@ -16,6 +16,13 @@
         "webmozart/assert": "^1.11",
         "phphd/exception-toolkit": "^1.0"
     },
+    "conflict": {
+        "symfony/http-kernel": "<6.0 || >=8.0",
+        "symfony/dependency-injection": "<6.2 || >=8.0",
+        "symfony/config": "<6.0 || >=8.0",
+        "symfony/messenger": "<6.4 || >=8.0",
+        "rector/rector": "<2.0 || >= 3.0"
+    },
     "require-dev": {
         "symfony/http-kernel": "^6.0 | ^7.0",
         "symfony/dependency-injection": "^6.2 | ^7.0",
@@ -31,12 +38,6 @@
         "phpat/phpat": "^0.11.4",
         "vimeo/psalm": "^6.9.1",
         "phpunit/phpunit": "^10.5.45"
-    },
-    "conflict": {
-        "symfony/http-kernel": "<6.0 || >=8.0",
-        "symfony/dependency-injection": "<6.2 || >=8.0",
-        "symfony/config": "<6.0 || >=8.0",
-        "symfony/messenger": "<6.4 || >=8.0"
     },
     "suggest": {
         "symfony/messenger": "Install Messenger component to use exceptional validation middleware",
@@ -56,7 +57,8 @@
             "src/ExceptionalValidation.php"
         ],
         "psr-4": {
-            "PhPhD\\ExceptionalValidation\\": "src/ExceptionalValidation"
+            "PhPhD\\ExceptionalValidation\\": "src/ExceptionalValidation",
+            "PhPhD\\ExceptionalValidation\\Upgrade\\": "upgrade"
         }
     },
     "autoload-dev": {
