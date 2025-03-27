@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Bundle\DependencyInjection;
 
 use Exception;
-use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Formatter\Item\ExceptionViolationFormatter;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -37,9 +37,9 @@ final class PhdExceptionalValidationExtension extends Extension
         }
 
         $loader->load(__DIR__.'/../../Handler/services.yaml');
-        $loader->load(__DIR__.'/../../Assembler/services.yaml');
-        $loader->load(__DIR__.'/../../Model/Condition/services.yaml');
-        $loader->load(__DIR__.'/../../Model/Condition/Value/services.yaml');
+        $loader->load(__DIR__.'/../../Rule/Assembler/services.yaml');
+        $loader->load(__DIR__.'/../../Rule/Object/Property/Capture/Condition/services.yaml');
+        $loader->load(__DIR__.'/../../Rule/Object/Property/Capture/Condition/Value/services.yaml');
         $loader->load(__DIR__.'/../../Formatter/services.yaml');
 
         $container

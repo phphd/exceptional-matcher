@@ -1,0 +1,52 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite;
+
+use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Rule\CaptureRule;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchConditionFactory;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\ExceptionClass\ExceptionClassMatchConditionFactory;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
+use Psr\Container\ContainerInterface;
+
+use function array_filter;
+use function array_values;
+
+/** @internal */
+final class CaptureMatchConditionFactory implements MatchConditionFactory
+{
+    public function __construct(
+        private readonly ContainerInterface $conditionFactoryRegistry,
+        private readonly MatchConditionFactory $matchByExceptionClassConditionFactory = new ExceptionClassMatchConditionFactory(),
+        private readonly MatchConditionFactory $matchWithClosureConditionFactory = new ClosureMatchConditionFactory(),
+    ) {
+    }
+
+    public function getCondition(Capture $capture, CaptureRule $parent): MatchCondition
+    {
+        $conditions = [];
+
+        $conditions[] = $this->matchByExceptionClassConditionFactory->getCondition($capture, $parent);
+        $conditions[] = $this->getConditionFromRegistry($capture, $parent);
+        $conditions[] = $this->matchWithClosureConditionFactory->getCondition($capture, $parent);
+
+        return (new CompositeMatchCondition(array_values(array_filter($conditions))))->compile();
+    }
+
+    private function getConditionFromRegistry(Capture $capture, CaptureRule $parent): ?MatchCondition
+    {
+        $conditionFactoryId = $capture->getCondition();
+
+        if (null === $conditionFactoryId) {
+            return null;
+        }
+
+        /** @var MatchConditionFactory $conditionFactory */
+        $conditionFactory = $this->conditionFactoryRegistry->get($conditionFactoryId);
+
+        return $conditionFactory->getCondition($capture, $parent);
+    }
+}

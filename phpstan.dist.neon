@@ -12,6 +12,7 @@ parameters:
     paths:
         - src
         - tests
+        - upgrade
     excludePaths:
         analyseAndScan:
             - tests/*/Stub/*
