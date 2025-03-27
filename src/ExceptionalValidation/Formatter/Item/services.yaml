@@ -2,14 +2,6 @@ parameters:
     phd_exceptional_validation.translation_domain: '%validator.translation_domain%'
 
 services:
-    phd_exceptional_validation.violations_list_formatter:
-        class: PhPhD\ExceptionalValidation\Formatter\List\DefaultExceptionListViolationFormatter
-        arguments:
-            - '@phd_exceptional_validation.violation_formatter'
-        lazy: true
-        tags:
-            - { name: 'proxy', interface: 'PhPhD\ExceptionalValidation\Formatter\List\ExceptionListViolationFormatter' }
-
     phd_exceptional_validation.violation_formatter:
         class: PhPhD\ExceptionalValidation\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter
         arguments:
