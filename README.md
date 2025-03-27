@@ -187,7 +187,7 @@ implementing `when:` closure every time.
 This way, it's possible to avoid much of boilerplate code, keeping it clean:
 
 ```php
-use PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueExceptionMatchCondition;
 
 #[ExceptionalValidation]
 final class TransferMoneyCommand
@@ -203,7 +203,7 @@ final class TransferMoneyCommand
 Following this `BlockedCardException` should implement `ValueException` interface:
 
 ```php
-use PhPhD\ExceptionalValidation\Model\Condition\Value\ValueException;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueException;
 
 final class BlockedCardException extends DomainException implements ValueException
 {
@@ -332,11 +332,10 @@ interface. It allows to easily capture the exception that has `ConstraintViolati
 The typical exception class implementing `ViolationListException` interface would look like this:
 
 ```php
-use DomainException;
-use PhPhD\ExceptionalValidation\Formatter\ViolationListException;
+use PhPhD\ExceptionalValidation\Formatter\Item\Validator\ViolationListException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
-final class CardNumberValidationFailedException extends DomainException implements ViolationListException
+final class CardNumberValidationFailedException extends \RuntimeException implements ViolationListException
 {
     public function __construct(
         private readonly string $cardNumber,
@@ -357,7 +356,7 @@ Then you can use `ViolationListExceptionFormatter` on the `#[Capture]` attribute
 ```php
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalValidation\Formatter\Item\Validator\ViolationListExceptionFormatter;
 
 #[ExceptionalValidation]
 final class IssueCreditCardCommand
@@ -381,8 +380,8 @@ parameters to the message translation. You can achieve this by creating your own
 implements `ExceptionViolationFormatter` interface:
 
 ```php
-use PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Model\Exception\CapturedException;
+use PhPhD\ExceptionalValidation\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
 final class RegistrationViolationsFormatter implements ExceptionViolationFormatter
@@ -461,3 +460,19 @@ final class RegisterUserCommand
 In this example, `RegistrationViolationsFormatter` is used to format constraint violations for
 both `LoginAlreadyTakenException` and `WeakPasswordException` (though you are perfectly fine to use separate
 formatters), enriching them with additional context.
+
+## Upgrading
+
+Project comes with `ExceptionalValidationSetList` class that containing rules for automatic upgrade.
+
+To upgrade project to the latest version of `exceptional-validation`,
+you should add the following line to your `rector.php` file:
+
+```php
+return static function (RectorConfig $rectorConfig): void {
+    // Upgrading from the version 1.4 to the latest version
+    $rectorConfig->sets(ExceptionalValidationSetList::fromVersion('1.4')->getSetList());
+}
+```
+
+Make sure to specify your current version of library so that upgrade sets will be matched correctly.
