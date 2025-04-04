@@ -14,6 +14,7 @@
         </testsuite>
         <testsuite name="Integration">
             <directory suffix="IntegrationTest.php">src</directory>
+            <directory suffix="ServiceTest.php">src</directory>
         </testsuite>
     </testsuites>
 
@@ -25,6 +26,7 @@
             <directory>src/*/*/Tests</directory>
             <directory>src/*/*/*/Tests</directory>
             <directory>src/*/*/*/*/Tests</directory>
+            <directory suffix="Test.php">src</directory>
             <directory suffix="services.php">src</directory>
         </exclude>
     </source>
