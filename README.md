@@ -181,21 +181,23 @@ when exception is processed. If `isWithdrawalCardBlocked` callback returns `true
 ### Capture Value-Conditions
 
 Since in most cases capture conditions come down to the simple value comparison, it's easier to make your exception
-implement `ValueException` interface and specify `condition: ValueExceptionMatchCondition::class` rather than
+implement `ValueException` interface and specify `condition: ExceptionValueMatchCondition::class` rather than
 implementing `when:` closure every time.
+
+> It also supports `ValidationFailedException` from SF Validator Component. 
 
 This way, it's possible to avoid much of boilerplate code, keeping it clean:
 
 ```php
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueExceptionMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
 
 #[ExceptionalValidation]
 final class TransferMoneyCommand
 {
-    #[Capture(BlockedCardException::class, 'wallet.blocked_card', condition: ValueExceptionMatchCondition::class)]
+    #[Capture(BlockedCardException::class, 'wallet.blocked_card', condition: ExceptionValueMatchCondition::class)]
     private int $withdrawalCardId;
 
-    #[Capture(BlockedCardException::class, 'wallet.blocked_card', condition: ValueExceptionMatchCondition::class)]
+    #[Capture(BlockedCardException::class, 'wallet.blocked_card', condition: ExceptionValueMatchCondition::class)]
     private int $depositCardId;
 }
 ```
@@ -328,6 +330,8 @@ as: `$message`, `$root`, `$propertyPath`, `$value`.
 `ViolationListExceptionFormatter` is used to format violations for the exceptions that
 implement `ViolationListException`
 interface. It allows to easily capture the exception that has `ConstraintViolationList` obtained from the validator.
+
+> It also supports `ValidationFailedException` from SF Validator Component.
 
 The typical exception class implementing `ViolationListException` interface would look like this:
 
