@@ -12,24 +12,17 @@ use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\Builder\Rule;
 use PHPat\Test\PHPat;
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\IterableOfObjectsRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
-use Psr\Container\ContainerInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Webmozart\Assert\Assert;
-
-use function array_slice;
-use function explode;
-use function implode;
 
 /**
  * @internal
@@ -69,13 +62,13 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
-    public function testCaptureTreeAssemblerDependencies(): Rule
+    public function testCaptureRuleSetAssemblerDependencies(): Rule
     {
         return $this->layerRule('captureRuleSetAssembler');
     }
 
     #[TestRule]
-    public function testCaptureTreeDependencies(): Rule
+    public function testModelDependencies(): Rule
     {
         return $this->layerRule('model');
     }
@@ -131,9 +124,9 @@ final class ArchitectureRuleSet
             'formatter' => [
                 'deps' => [
                     $this->model(),
-                    Selector::inNamespace(class_namespace(ConstraintViolationListInterface::class)),
+                    Selector::inNamespace('Symfony\Component\Validator'),
                     Selector::classname(TranslatorInterface::class),
-                    Selector::inNamespace(class_namespace(ContainerInterface::class)),
+                    Selector::inNamespace('Psr\Container'),
                 ],
             ],
             'captureRuleSetAssembler' => [
@@ -150,7 +143,8 @@ final class ArchitectureRuleSet
                 'deps' => [
                     $this->model(),
                     Selector::classname(Capture::class),
-                    Selector::inNamespace(class_namespace(ContainerInterface::class)),
+                    Selector::classname(ValidationFailedException::class),
+                    Selector::inNamespace('Psr\Container'),
                 ],
             ],
             'model' => [
@@ -165,7 +159,7 @@ final class ArchitectureRuleSet
     /** @psalm-suppress UnusedMethod */
     public function bundle(): ClassNamespace
     {
-        return Selector::inNamespace(class_namespace(PhdExceptionalValidationBundle::class));
+        return Selector::inNamespace('PhPhD\ExceptionalValidation\Bundle');
     }
 
     /** @psalm-suppress UnusedMethod */
@@ -176,7 +170,7 @@ final class ArchitectureRuleSet
 
     public function exceptionHandler(): ClassNamespace
     {
-        return Selector::inNamespace(class_namespace(ExceptionHandler::class));
+        return Selector::inNamespace('PhPhD\ExceptionalValidation\Handler');
     }
 
     public function formatter(): ClassNamespace
@@ -205,22 +199,9 @@ final class ArchitectureRuleSet
     public function model(): SelectorInterface
     {
         return Selector::AllOf(
-            Selector::inNamespace(class_namespace(CaptureRule::class)),
+            Selector::inNamespace('PhPhD\ExceptionalValidation\Rule'),
             Selector::NOT($this->matchConditionFactory()),
             Selector::NOT($this->captureRuleSetAssembler()),
         );
     }
-}
-
-/**
- * @param non-empty-string $class
- *
- * @return non-empty-string
- */
-function class_namespace(string $class): string
-{
-    /** @var non-empty-list<string> $namespaceParts */
-    $namespaceParts = array_slice(explode('\\', $class), 0, -1);
-
-    return implode('\\', $namespaceParts);
 }

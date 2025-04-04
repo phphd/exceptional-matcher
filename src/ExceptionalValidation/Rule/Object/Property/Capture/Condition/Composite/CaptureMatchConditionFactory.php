@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite;
 
+use LogicException;
 use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchConditionFactory;
@@ -42,6 +43,10 @@ final class CaptureMatchConditionFactory implements MatchConditionFactory
 
         if (null === $conditionFactoryId) {
             return null;
+        }
+
+        if (!$this->conditionFactoryRegistry->has($conditionFactoryId)) {
+            throw new LogicException('Condition factory not found: '.$conditionFactoryId);
         }
 
         /** @var MatchConditionFactory $conditionFactory */

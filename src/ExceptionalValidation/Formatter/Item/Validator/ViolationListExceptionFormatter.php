@@ -9,6 +9,9 @@ use PhPhD\ExceptionalValidation\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
+use Throwable;
 
 use function array_map;
 use function iterator_to_array;
@@ -20,16 +23,12 @@ final class ViolationListExceptionFormatter implements ExceptionViolationFormatt
     {
         $exception = $capturedException->getException();
 
-        if (!$exception instanceof ViolationListException) {
-            throw new LogicException('Violation list formatter could only be used for exception class that implement ViolationListException');
-        }
-
         $rule = $capturedException->getMatchedRule();
         $root = $rule->getRoot();
         $propertyPath = $rule->getPropertyPath()->join('.');
 
         /** @var list<ConstraintViolationInterface> $violationList */
-        $violationList = iterator_to_array($exception->getViolationList());
+        $violationList = iterator_to_array($this->getViolationList($exception));
 
         if ([] === $violationList) {
             throw new LogicException('Violation list must not be empty');
@@ -50,5 +49,14 @@ final class ViolationListExceptionFormatter implements ExceptionViolationFormatt
             ),
             $violationList,
         );
+    }
+
+    private function getViolationList(Throwable $exception): ConstraintViolationListInterface
+    {
+        return match (true) {
+            $exception instanceof ViolationListException => $exception->getViolationList(),
+            $exception instanceof ValidationFailedException => $exception->getViolations(),
+            default => throw new LogicException('Violation list formatter could only be used for exceptions that implement ViolationListException or those with built-in support'),
+        };
     }
 }
