@@ -21,8 +21,8 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNes
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueExceptionMatchCondition;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueExceptionMatchConditionFactory;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionToolkit\Unwrapper\Messenger\MessengerExceptionUnwrapper;
 use Psr\Container\ContainerInterface;
@@ -105,7 +105,7 @@ final class DependencyInjectionIntegrationTest extends BundleTestCase
         krsort($providedServices);
 
         self::assertSame([
-            ValueExceptionMatchCondition::class => ValueExceptionMatchConditionFactory::class,
+            ExceptionValueMatchCondition::class => ExceptionValueMatchConditionFactory::class,
         ], $providedServices);
     }
 

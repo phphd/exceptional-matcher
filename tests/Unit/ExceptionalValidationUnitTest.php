@@ -25,8 +25,9 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNes
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueExceptionMatchCondition;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueExceptionMatchConditionFactory;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
@@ -51,6 +52,7 @@ use stdClass;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validation;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -71,11 +73,6 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\CompositeRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\LazyRuleSet
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\CaptureExceptionRule
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\ExceptionClass\ExceptionClassMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueExceptionMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CompositeMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Path\PropertyPath
  * @covers \PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage
  * @covers \PhPhD\ExceptionalValidation\Rule\Exception\CapturedException
@@ -90,10 +87,15 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssembler
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssembler
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\IterableOfObjectsRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\CaptureExceptionRule
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\ExceptionClass\ExceptionClassMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\ExceptionClass\ExceptionClassMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueExceptionMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CompositeMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory
  *
  * @internal
  */
@@ -125,9 +127,16 @@ final class ExceptionalValidationUnitTest extends TestCase
         $objectRuleSetAssembler = new ObjectRuleSetAssembler($objectRulesAssembler);
 
         $conditionFactoryRegistry = $this->createMock(ContainerInterface::class);
-        $conditionFactoryRegistry->method('get')->willReturnMap([
-            [ValueExceptionMatchCondition::class, new ValueExceptionMatchConditionFactory()],
-        ]);
+        $matchConditionFactories = [
+            ExceptionValueMatchCondition::class => new ExceptionValueMatchConditionFactory(),
+        ];
+        $conditionFactoryRegistry->method('has')
+            ->willReturnCallback(static fn (string $id): bool => isset($matchConditionFactories[$id]))
+        ;
+        $conditionFactoryRegistry->method('get')
+            ->willReturnCallback(static fn (string $id): MatchConditionFactory => $matchConditionFactories[$id])
+        ;
+
         $captureMatchConditionFactory = new CaptureMatchConditionFactory($conditionFactoryRegistry);
 
         $captureListAssemblers->append(new PropertyCaptureRulesAssembler($captureMatchConditionFactory));
@@ -157,7 +166,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         $this->exceptionHandler = new DefaultExceptionHandler($objectRuleSetAssembler, $exceptionUnwrapper, $violationListFormatter);
     }
 
-    public function testDoesNotCaptureExceptionForMessageNotHavingExceptionalValidationAttribute(): void
+    public function testDoesNotCaptureExceptionForMessageWithoutExceptionalValidationAttribute(): void
     {
         $message = new NotHandleableMessageStub(123);
 
@@ -529,7 +538,7 @@ final class ExceptionalValidationUnitTest extends TestCase
             /** @var ConstraintViolationInterface $violation1 */
             $violation1 = $violationList[0];
 
-            self::assertSame('matchedCondition', $violation1->getPropertyPath());
+            self::assertSame('matchedProperty', $violation1->getPropertyPath());
 
             /** @var ConstraintViolationInterface $violation2 */
             $violation2 = $violationList[1];
@@ -573,7 +582,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         }
     }
 
-    public function testValidatorViolationListMapping(): void
+    public function testValidatorViolationListExceptionMapping(): void
     {
         $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());
 
@@ -616,6 +625,42 @@ final class ExceptionalValidationUnitTest extends TestCase
             self::assertSame(Length::TOO_LONG_ERROR, $violation->getCode());
             self::assertSame($constraint, $violation->getConstraint());
             self::assertNull($violation->getCause());
+
+            throw $e;
+        }
+    }
+
+    public function testValidationFailedExceptionMapping(): void
+    {
+        $message = HandleableMessageStub::create();
+
+        $validation = Validation::createCallable($constraint = new Length(min: 11));
+        $originalException = null;
+
+        try {
+            $validation('matched!');
+        } catch (ValidationFailedException $originalException) {
+        }
+
+        self::assertNotNull($originalException);
+
+        $this->expectException(ExceptionalValidationFailedException::class);
+
+        try {
+            $this->exceptionHandler->capture($message, $originalException);
+        } catch (ExceptionalValidationFailedException $e) {
+            $violationList = $e->getViolationList();
+            self::assertCount(1, $violationList);
+
+            $violation = $violationList[0];
+            self::assertInstanceOf(ConstraintViolation::class, $violation);
+            self::assertSame(
+                'This value is too short. It should have 11 characters or more.',
+                $violation->getMessage(),
+            );
+            self::assertSame($constraint, $violation->getConstraint());
+            self::assertSame('matchedProperty', $violation->getPropertyPath());
+            self::assertSame('matched!', $violation->getInvalidValue());
 
             throw $e;
         }
