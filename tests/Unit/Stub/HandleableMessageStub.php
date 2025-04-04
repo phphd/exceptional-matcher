@@ -7,7 +7,8 @@ namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
 use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueExceptionMatchCondition;
+use PhPhD\ExceptionalValidation\Formatter\Item\Validator\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\MessageContainingException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ObjectPropertyCapturableException;
@@ -15,6 +16,7 @@ use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableExce
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\SomeValueException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
 use Symfony\Component\Validator\Constraints\Valid;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 #[ExceptionalValidation]
 final class HandleableMessageStub
@@ -49,11 +51,13 @@ final class HandleableMessageStub
 
     private array $justArray;
 
-    #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: ValueExceptionMatchCondition::class)]
-    private string $notMatchedCondition = 'not matched';
+    #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
+    #[ExceptionalValidation\Capture(ValidationFailedException::class, condition: ExceptionValueMatchCondition::class, formatter: ViolationListExceptionFormatter::class)]
+    private string $notMatchedProperty = 'not matched';
 
-    #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: ValueExceptionMatchCondition::class)]
-    private string $matchedCondition = 'matched!';
+    #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
+    #[ExceptionalValidation\Capture(ValidationFailedException::class, condition: ExceptionValueMatchCondition::class, formatter: ViolationListExceptionFormatter::class)]
+    private string $matchedProperty = 'matched!';
 
     #[ExceptionalValidation\Capture(SomeValueException::class, 'oops')]
     private string $anotherMatchedAsNoCondition;
