@@ -1,6 +1,8 @@
+/**/.gitignore export-ignore
+/**/.gitattributes export-ignore
+/**/Tests export-ignore
+/**/*Test.php export-ignore
 /.github export-ignore
-/.gitattributes export-ignore
-/.gitignore export-ignore
 /bin export-ignore
 /tests export-ignore
 /stubs export-ignore

@@ -26,6 +26,7 @@ final class TestsArchitectureRuleSet
                 Selector::NOT(Selector::isAbstract()),
                 Selector::NOT(Selector::classname('/UnitTest$/', true)),
                 Selector::NOT(Selector::classname('/IntegrationTest$/', true)),
+                Selector::NOT(Selector::classname('/ServiceTest$/', true)),
             ))
             ->shouldNotExtend()
             ->classes(Selector::classname(TestCase::class))
