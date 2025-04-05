@@ -8,13 +8,12 @@ use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\ValueObject\PhpVersion;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->paths([__DIR__.'/src', __DIR__.'/tests', __DIR__.'/upgrade']);
-    $rectorConfig->skip([__DIR__.'/tests/*/Stub/*']);
-
-    $rectorConfig->sets([PhdSetList::rector()->getPath()]);
-    $rectorConfig->phpVersion(PhpVersion::PHP_81);
-    $rectorConfig->skip([
+return RectorConfig::configure()
+    ->withPaths([__DIR__.'/src', __DIR__.'/tests', __DIR__.'/upgrade'])
+    ->withSkip([__DIR__.'/tests/*/Stub/*'])
+    ->withSets([PhdSetList::rector()->getPath()])
+    ->withPhpVersion(PhpVersion::PHP_81)
+    ->withSkip([
         ClassPropertyAssignToConstructorPromotionRector::class => [
             __DIR__.'/src/ExceptionalValidation/Rule/Exception/ExceptionPackage.php',
         ],
@@ -22,4 +21,3 @@ return static function (RectorConfig $rectorConfig): void {
             __DIR__.'/upgrade',
         ],
     ]);
-};
