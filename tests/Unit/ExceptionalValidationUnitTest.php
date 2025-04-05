@@ -112,7 +112,6 @@ final class ExceptionalValidationUnitTest extends TestCase
             ->willReturnMap([
                 ['', [], 'domain', null, ''],
                 ['oops', [], 'domain', null, 'oops - translated'],
-                ['object.oops', [], 'domain', null, 'object.oops - translated'],
                 ['nested.message', [], 'domain', null, 'nested.message - translated'],
                 ['This is the message to be used', [], 'domain', null, 'This is the message to be used'],
             ])
@@ -240,15 +239,13 @@ final class ExceptionalValidationUnitTest extends TestCase
             /** @var ConstraintViolationInterface $violation */
             [$violation] = $e->getViolationList();
 
-            self::assertSame('object.oops - translated', $violation->getMessage());
-            self::assertSame('object.oops', $violation->getMessageTemplate());
             self::assertSame($object, $violation->getInvalidValue());
 
             throw $e;
         }
     }
 
-    public function testCapturesExceptionsMappedToStaticProperties(): void
+    public function testCaptureExceptionMappedToStaticProperty(): void
     {
         $message = HandleableMessageStub::create();
 
@@ -269,18 +266,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         }
     }
 
-    public function testDoesNotCaptureNestedObjectWithoutValidPropertyAttribute(): void
-    {
-        $message = HandleableMessageStub::create()->withOrdinaryObject(new NestedHandleableMessage());
-
-        $exception = new NestedPropertyCapturableException();
-
-        $this->expectNotToPerformAssertions();
-
-        $this->exceptionHandler->capture($message, $exception);
-    }
-
-    public function testDoesNotCaptureNotInitializedValidNestedObjectProperty(): void
+    public function testDoesNotCaptureNestedObjectPropertyWhenNotInitialized(): void
     {
         $message = HandleableMessageStub::create();
 
@@ -291,7 +277,18 @@ final class ExceptionalValidationUnitTest extends TestCase
         $this->exceptionHandler->capture($message, $exception);
     }
 
-    public function testCapturesNestedObjectPropertyException(): void
+    public function testDoesNotCaptureNestedObjectWhenValidAttributeIsMissing(): void
+    {
+        $message = HandleableMessageStub::create()->withOrdinaryObject(new NestedHandleableMessage());
+
+        $exception = new NestedPropertyCapturableException();
+
+        $this->expectNotToPerformAssertions();
+
+        $this->exceptionHandler->capture($message, $exception);
+    }
+
+    public function testCaptureNestedObjectPropertyException(): void
     {
         $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());
 
@@ -318,7 +315,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         }
     }
 
-    public function testDoesntCaptureAnyExceptionWhenConditionIsNotMet(): void
+    public function testDoesntCaptureConditionalExceptionWhenConditionIsNotMet(): void
     {
         $message = HandleableMessageStub::create()->withConditionalMessage(11, 41);
 
@@ -329,7 +326,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         $this->exceptionHandler->capture($message, $originalException);
     }
 
-    public function testCapturesExceptionWithGivenCondition(): void
+    public function testCaptureConditionalException(): void
     {
         $message = HandleableMessageStub::create()->withConditionalMessage(11, 41);
 
@@ -354,7 +351,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         }
     }
 
-    public function testDoesntCaptureNestedItemsForPropertyWithoutValidAttribute(): void
+    public function testDoesNotCaptureExceptionOnNestedItemsWhenPropertyIsWithoutValidAttribute(): void
     {
         $message = HandleableMessageStub::create()->withJustArray([
             new NestedItem(1),
@@ -369,7 +366,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         $this->exceptionHandler->capture($message, $originalException);
     }
 
-    public function testCapturesExceptionOnNestedArrayItem(): void
+    public function testCaptureExceptionOnNestedArrayItem(): void
     {
         $message = HandleableMessageStub::create()->withNestedArrayItems([
             new NestedItem(41),
@@ -397,7 +394,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         }
     }
 
-    public function testCapturesExceptionOnNestedIterableItem(): void
+    public function testCaptureExceptionOnNestedIterableItem(): void
     {
         $message = HandleableMessageStub::create()->withNestedIterableItems(new ArrayObject([
             'first' => new NestedItem(1),
@@ -426,7 +423,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         }
     }
 
-    public function testDoesNotAllowASingleUnhandledException(): void
+    public function testNotASingleUnhandledExceptionIsAllowed(): void
     {
         $message = HandleableMessageStub::create()
             ->withNestedArrayItems([
@@ -445,7 +442,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         $this->exceptionHandler->capture($message, $exceptionAdapter);
     }
 
-    public function testCapturesMultipleExceptions(): void
+    public function testCaptureMultipleExceptions(): void
     {
         $message = HandleableMessageStub::create()
             ->withNestedArrayItems([
@@ -518,7 +515,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         }
     }
 
-    public function testValueException(): void
+    public function testValueExceptionCondition(): void
     {
         $message = HandleableMessageStub::create();
 

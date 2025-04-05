@@ -30,7 +30,7 @@ final class HandleableMessageStub
     #[ExceptionalValidation\Capture(CustomFormattedException::class, 'oops', formatter: CustomExceptionViolationFormatter::class)]
     private string $formatted;
 
-    #[ExceptionalValidation\Capture(ObjectPropertyCapturableException::class, 'object.oops')]
+    #[ExceptionalValidation\Capture(ObjectPropertyCapturableException::class, 'oops')]
     private object $objectProperty;
 
     #[ExceptionalValidation\Capture(StaticPropertyCapturedException::class, 'oops')]
