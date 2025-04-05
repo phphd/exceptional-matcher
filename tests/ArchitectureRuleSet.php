@@ -18,6 +18,7 @@ use PhPhD\ExceptionalValidation\Rule\Object\Assembler\IterableOfObjectsRuleSetAs
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
@@ -163,19 +164,28 @@ final class ArchitectureRuleSet
     }
 
     /** @psalm-suppress UnusedMethod */
-    public function middleware(): ClassNamespace
+    public function middleware(): SelectorInterface
     {
-        return Selector::inNamespace('PhPhD\ExceptionalValidation\Middleware');
+        return Selector::AllOf(
+            Selector::inNamespace('PhPhD\ExceptionalValidation\Middleware'),
+            Selector::NOT(Selector::extends(TestCase::class)),
+        );
     }
 
-    public function exceptionHandler(): ClassNamespace
+    public function exceptionHandler(): SelectorInterface
     {
-        return Selector::inNamespace('PhPhD\ExceptionalValidation\Handler');
+        return Selector::AllOf(
+            Selector::inNamespace('PhPhD\ExceptionalValidation\Handler'),
+            Selector::NOT(Selector::extends(TestCase::class)),
+        );
     }
 
-    public function formatter(): ClassNamespace
+    public function formatter(): SelectorInterface
     {
-        return Selector::inNamespace('PhPhD\ExceptionalValidation\Formatter');
+        return Selector::AllOf(
+            Selector::inNamespace('PhPhD\ExceptionalValidation\Formatter'),
+            Selector::NOT(Selector::extends(TestCase::class)),
+        );
     }
 
     public function captureRuleSetAssembler(): SelectorInterface
@@ -202,6 +212,7 @@ final class ArchitectureRuleSet
             Selector::inNamespace('PhPhD\ExceptionalValidation\Rule'),
             Selector::NOT($this->matchConditionFactory()),
             Selector::NOT($this->captureRuleSetAssembler()),
+            Selector::NOT(Selector::extends(TestCase::class)),
         );
     }
 }

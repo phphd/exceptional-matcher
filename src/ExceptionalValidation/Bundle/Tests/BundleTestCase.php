@@ -6,7 +6,6 @@ namespace PhPhD\ExceptionalValidation\Bundle\Tests;
 
 use Nyholm\BundleTest\TestKernel;
 use PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle;
-use PhPhD\ExceptionalValidation\Bundle\Tests\Compiler\TestServicesCompilerPass;
 use PhPhD\ExceptionToolkit\Bundle\PhdExceptionToolkitBundle;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -33,10 +32,14 @@ abstract class BundleTestCase extends KernelTestCase
     {
         /** @var TestKernel $kernel */
         $kernel = parent::createKernel($options);
+
         $kernel->addTestBundle(PhdExceptionalValidationBundle::class);
         $kernel->addTestBundle(PhdExceptionToolkitBundle::class);
         // priority 105 is primarily necessary for interface autoconfiguration to work properly
         $kernel->addTestCompilerPass(new TestServicesCompilerPass(), priority: 105);
+
+        /** @see https://github.com/SymfonyTest/symfony-bundle-test/issues/94 */
+        $kernel->setClearCacheAfterShutdown(false);
 
         return $kernel;
     }

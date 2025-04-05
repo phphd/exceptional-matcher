@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Bundle\Tests;
+namespace PhPhD\ExceptionalValidation\Middleware\Messenger;
 
+use PhPhD\ExceptionalValidation\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
-use PhPhD\ExceptionalValidation\Middleware\Messenger\ExceptionalValidationMiddleware;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Bundle\Tests\Compiler;
+namespace PhPhD\ExceptionalValidation\Bundle\Tests;
 
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use stdClass;
@@ -11,6 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
+/** @internal */
 final class TestServicesCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
