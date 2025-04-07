@@ -128,6 +128,7 @@ final class ArchitectureRuleSet
                     $this->model(),
                     Selector::inNamespace('Symfony\Component\Validator'),
                     Selector::classname(TranslatorInterface::class),
+                    Selector::classname(Assert::class),
                     Selector::inNamespace('Psr\Container'),
                 ],
             ],
