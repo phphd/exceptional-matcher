@@ -7,10 +7,11 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Com
 use LogicException;
 use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class\ExceptionClassMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchConditionFactory;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\ExceptionClass\ExceptionClassMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Origin\ExceptionOriginMatchConditionFactory;
 use Psr\Container\ContainerInterface;
 
 use function array_filter;
@@ -21,7 +22,8 @@ final class CaptureMatchConditionFactory implements MatchConditionFactory
 {
     public function __construct(
         private readonly ContainerInterface $conditionFactoryRegistry,
-        private readonly MatchConditionFactory $matchByExceptionClassConditionFactory = new ExceptionClassMatchConditionFactory(),
+        private readonly MatchConditionFactory $matchByClassConditionFactory = new ExceptionClassMatchConditionFactory(),
+        private readonly MatchConditionFactory $matchBySourceConditionFactory = new ExceptionOriginMatchConditionFactory(),
         private readonly MatchConditionFactory $matchWithClosureConditionFactory = new ClosureMatchConditionFactory(),
     ) {
     }
@@ -30,7 +32,8 @@ final class CaptureMatchConditionFactory implements MatchConditionFactory
     {
         $conditions = [];
 
-        $conditions[] = $this->matchByExceptionClassConditionFactory->getCondition($capture, $parent);
+        $conditions[] = $this->matchByClassConditionFactory->getCondition($capture, $parent);
+        $conditions[] = $this->matchBySourceConditionFactory->getCondition($capture, $parent);
         $conditions[] = $this->getConditionFromRegistry($capture, $parent);
         $conditions[] = $this->matchWithClosureConditionFactory->getCondition($capture, $parent);
 

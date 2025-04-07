@@ -52,6 +52,9 @@ final class HandleableMessageStub
 
     private array $justArray;
 
+    #[ExceptionalValidation\Capture(ValidationFailedException::class, from: Email::class)]
+    private string $email = 'matched!';
+
     #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
     #[ExceptionalValidation\Capture(ValidationFailedException::class, condition: ValidationFailedExceptionValueMatchCondition::class, formatter: ViolationListExceptionFormatter::class)]
     private string $notMatchedProperty = 'not matched';
