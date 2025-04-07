@@ -12,34 +12,46 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Delegatin
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Origin\ExceptionOriginMatchConditionFactory;
+
 use Psr\Container\ContainerInterface;
 
 use function array_filter;
 use function array_values;
+use function count;
 
 /** @internal */
 final class CaptureMatchConditionFactory implements MatchConditionFactory
 {
-    private readonly MatchConditionFactory $matchByCustomConditionFactory;
-
     public function __construct(
-        private readonly ContainerInterface $conditionFactoryRegistry,
-        private readonly MatchConditionFactory $matchByClassConditionFactory = new ExceptionClassMatchConditionFactory(),
-        private readonly MatchConditionFactory $matchBySourceConditionFactory = new ExceptionOriginMatchConditionFactory(),
-        private readonly MatchConditionFactory $matchWithClosureConditionFactory = new ClosureMatchConditionFactory(),
+        /** @var iterable<MatchConditionFactory> */
+        private readonly iterable $factories,
     ) {
-        $this->matchByCustomConditionFactory = new DelegatingMatchConditionFactory($this->conditionFactoryRegistry);
+    }
+
+    public static function create(?ContainerInterface $conditionFactoryRegistry = null): self
+    {
+        return new self([
+            new ExceptionClassMatchConditionFactory(),
+            new ExceptionOriginMatchConditionFactory(),
+            DelegatingMatchConditionFactory::create($conditionFactoryRegistry),
+            new ClosureMatchConditionFactory(),
+        ]);
     }
 
     public function getCondition(Capture $capture, CaptureRule $parent): MatchCondition
     {
         $conditions = [];
 
-        $conditions[] = $this->matchByClassConditionFactory->getCondition($capture, $parent);
-        $conditions[] = $this->matchBySourceConditionFactory->getCondition($capture, $parent);
-        $conditions[] = $this->matchByCustomConditionFactory->getCondition($capture, $parent);
-        $conditions[] = $this->matchWithClosureConditionFactory->getCondition($capture, $parent);
+        foreach ($this->factories as $factory) {
+            $conditions[] = $factory->getCondition($capture, $parent);
+        }
 
-        return (new CompositeMatchCondition(array_values(array_filter($conditions))))->compile();
+        $conditions = array_values(array_filter($conditions));
+
+        if (count($conditions) === 1) {
+            return $conditions[0];
+        }
+
+        return new CompositeMatchCondition($conditions);
     }
 }

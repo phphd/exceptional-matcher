@@ -7,8 +7,6 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Com
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use Throwable;
 
-use function count;
-
 /** @internal */
 final class CompositeMatchCondition implements MatchCondition
 {
@@ -27,14 +25,5 @@ final class CompositeMatchCondition implements MatchCondition
         }
 
         return true;
-    }
-
-    public function compile(): MatchCondition
-    {
-        if (count($this->conditions) === 1) {
-            return $this->conditions[0];
-        }
-
-        return $this;
     }
 }
