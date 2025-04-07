@@ -7,7 +7,8 @@ namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
 use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Formatter\Item\Validator\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalValidation\Formatter\Item\Validator\ValidationFailedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Formatter\Item\ViolationList\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionValueMatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CustomFormattedException;
@@ -60,7 +61,7 @@ final class HandleableMessageStub
     private string $notMatchedProperty = 'not matched';
 
     #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
-    #[ExceptionalValidation\Capture(ValidationFailedException::class, condition: ValidationFailedExceptionValueMatchCondition::class, formatter: ViolationListExceptionFormatter::class)]
+    #[ExceptionalValidation\Capture(ValidationFailedException::class, condition: ValidationFailedExceptionValueMatchCondition::class, formatter: ValidationFailedExceptionFormatter::class)]
     private string $matchedProperty = 'matched!';
 
     #[ExceptionalValidation\Capture(SomeValueException::class, 'oops')]

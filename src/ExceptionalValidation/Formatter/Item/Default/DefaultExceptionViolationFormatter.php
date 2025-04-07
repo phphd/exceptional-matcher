@@ -2,13 +2,19 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Formatter\Item;
+namespace PhPhD\ExceptionalValidation\Formatter\Item\Default;
 
+use PhPhD\ExceptionalValidation\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
-/** @internal */
+/**
+ * @internal
+ *
+ * @implements ExceptionViolationFormatter<Throwable>
+ */
 final class DefaultExceptionViolationFormatter implements ExceptionViolationFormatter
 {
     public function __construct(
