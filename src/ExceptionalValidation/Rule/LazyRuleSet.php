@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Rule;
 
 use Closure;
 use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
-use PhPhD\ExceptionalValidation\Rule\Path\PropertyPath;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 
 /** @internal */
 final class LazyRuleSet implements CaptureRule

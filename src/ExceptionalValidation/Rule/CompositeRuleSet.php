@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule;
 
 use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
-use PhPhD\ExceptionalValidation\Rule\Path\PropertyPath;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 
 /** @internal */
 final class CompositeRuleSet implements CaptureRule
