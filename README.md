@@ -195,7 +195,7 @@ Since in most cases capture conditions come down to the simple value comparison,
 implement `ValueException` interface and specify `condition: ExceptionValueMatchCondition::class` rather than
 implementing `when:` closure every time.
 
-> You can also match native Symfony's `ValidationFailedException` with `ValidationFailedExceptionValueMatchCondition`.
+> You can also match Symfony's native `ValidationFailedException` with `ValidationFailedExceptionValueMatchCondition`.
 
 This way, it's possible to avoid much of boilerplate code, keeping it clean:
 
@@ -342,12 +342,12 @@ as: `$message`, `$root`, `$propertyPath`, `$value`.
 implement `ViolationListException`
 interface. It allows to easily capture the exception that has `ConstraintViolationList` obtained from the validator.
 
-> It also supports `ValidationFailedException` from SF Validator Component.
+> You can also format Symfony's native `ValidationFailedException` with `ValidationFailedExceptionFormatter`.
 
 The typical exception class implementing `ViolationListException` interface would look like this:
 
 ```php
-use PhPhD\ExceptionalValidation\Formatter\Item\Validator\ViolationListException;
+use PhPhD\ExceptionalValidation\Formatter\Item\ViolationList\ViolationListException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 final class CardNumberValidationFailedException extends \RuntimeException implements ViolationListException
@@ -371,7 +371,7 @@ Then you can use `ViolationListExceptionFormatter` on the `#[Capture]` attribute
 ```php
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Formatter\Item\Validator\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalValidation\Formatter\Item\ViolationList\ViolationListExceptionFormatter;
 
 #[ExceptionalValidation]
 final class IssueCreditCardCommand

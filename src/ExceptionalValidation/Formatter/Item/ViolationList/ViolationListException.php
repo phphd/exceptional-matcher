@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Formatter\Item\Validator;
+namespace PhPhD\ExceptionalValidation\Formatter\Item\ViolationList;
 
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Throwable;
