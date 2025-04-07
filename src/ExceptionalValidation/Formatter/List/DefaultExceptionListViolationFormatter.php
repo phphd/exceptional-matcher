@@ -10,17 +10,20 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
+use Throwable;
+
 use function array_merge;
 
 /** @internal */
 final class DefaultExceptionListViolationFormatter implements ExceptionListViolationFormatter
 {
     public function __construct(
+        /** @var ExceptionViolationFormatter<Throwable> */
         private readonly ExceptionViolationFormatter $violationFormatter,
     ) {
     }
 
-    /** @param non-empty-list<CapturedException> $capturedExceptionList */
+    /** @param non-empty-list<CapturedException<Throwable>> $capturedExceptionList */
     public function format(array $capturedExceptionList): ConstraintViolationListInterface
     {
         /** @var list<list<ConstraintViolationInterface>> $violations */

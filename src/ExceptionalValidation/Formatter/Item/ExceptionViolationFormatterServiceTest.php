@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Formatter\Item;
 
 use PhPhD\ExceptionalValidation\Bundle\Tests\BundleTestCase;
+use PhPhD\ExceptionalValidation\Formatter\Item\Default\DefaultExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Formatter\Item\Validator\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalValidation\Formatter\Item\Validator\ValidationFailedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Formatter\Item\ViolationList\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -40,6 +42,7 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
             'default' => DefaultExceptionViolationFormatter::class,
             CustomExceptionViolationFormatter::class => CustomExceptionViolationFormatter::class,
             ViolationListExceptionFormatter::class => ViolationListExceptionFormatter::class,
+            ValidationFailedExceptionFormatter::class => ValidationFailedExceptionFormatter::class,
         ], $providedServices);
 
         self::assertSame($defaultFormatter, $formatterRegistry->get('default'));
