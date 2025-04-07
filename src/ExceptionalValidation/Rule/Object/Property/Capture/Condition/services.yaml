@@ -1,5 +1,0 @@
-services:
-    phd_exceptional_validation.match_condition_factory:
-        class: PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory
-        arguments:
-            - !tagged_locator { tag: 'exceptional_validation.match_condition_factory', index_by: 'id' }

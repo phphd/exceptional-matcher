@@ -1,5 +1,0 @@
-services:
-    phd_exceptional_validation.match_condition_factory.value:
-        class: PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchConditionFactory
-        tags:
-            - { name: 'exceptional_validation.match_condition_factory', id: 'PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition' }
