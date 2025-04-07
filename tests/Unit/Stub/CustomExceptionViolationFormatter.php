@@ -8,8 +8,11 @@ use PhPhD\ExceptionalValidation\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolation;
 
+use Throwable;
+
 use function ucfirst;
 
+/** @implements ExceptionViolationFormatter<Throwable> */
 final class CustomExceptionViolationFormatter implements ExceptionViolationFormatter
 {
     public function __construct(
