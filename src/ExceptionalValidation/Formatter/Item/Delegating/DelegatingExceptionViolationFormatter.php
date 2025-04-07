@@ -9,8 +9,13 @@ use PhPhD\ExceptionalValidation\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Throwable;
 
-/** @internal */
+/**
+ * @internal
+ *
+ * @implements ExceptionViolationFormatter<Throwable>
+ */
 final class DelegatingExceptionViolationFormatter implements ExceptionViolationFormatter
 {
     public function __construct(
@@ -28,7 +33,7 @@ final class DelegatingExceptionViolationFormatter implements ExceptionViolationF
             throw new LogicException('Violation formatter not found: '.$formatterId);
         }
 
-        /** @var ExceptionViolationFormatter $exceptionFormatter */
+        /** @var ExceptionViolationFormatter<Throwable> $exceptionFormatter */
         $exceptionFormatter = $this->formatterRegistry->get($formatterId);
 
         return $exceptionFormatter->format($capturedException);

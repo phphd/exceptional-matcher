@@ -14,7 +14,7 @@ final class ExceptionPackage
     /** @var array<int,Throwable> */
     private array $remainingExceptions;
 
-    /** @var list<CapturedException> */
+    /** @var list<CapturedException<Throwable>> */
     private array $capturedExceptions = [];
 
     /** @param list<Throwable> $exceptionList */
@@ -39,7 +39,7 @@ final class ExceptionPackage
         return [] === $this->remainingExceptions;
     }
 
-    /** @return non-empty-list<CapturedException> */
+    /** @return non-empty-list<CapturedException<Throwable>> */
     public function getCapturedExceptionsList(): array
     {
         Assert::notEmpty($this->capturedExceptions);

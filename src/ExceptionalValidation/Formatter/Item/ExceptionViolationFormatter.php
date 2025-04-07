@@ -6,10 +6,19 @@ namespace PhPhD\ExceptionalValidation\Formatter\Item;
 
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolation;
+use Throwable;
 
-/** @api */
+/**
+ * @api
+ *
+ * @template T of Throwable
+ */
 interface ExceptionViolationFormatter
 {
-    /** @return non-empty-list<ConstraintViolation> */
+    /**
+     * @param CapturedException<T> $capturedException
+     *
+     * @return non-empty-list<ConstraintViolation>
+     */
     public function format(CapturedException $capturedException): array;
 }
