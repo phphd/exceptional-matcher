@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object;
 
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
-use PhPhD\ExceptionalValidation\Rule\Path\PropertyPath;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 
 /** @internal */
 final class ObjectRuleSet implements CaptureRule

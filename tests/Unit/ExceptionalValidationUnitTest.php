@@ -31,6 +31,7 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Email;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ConditionallyCapturedException;
@@ -75,7 +76,7 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\CompositeRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\LazyRuleSet
- * @covers \PhPhD\ExceptionalValidation\Rule\Path\PropertyPath
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath
  * @covers \PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage
  * @covers \PhPhD\ExceptionalValidation\Rule\Exception\CapturedException
  * @covers \PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssembler
@@ -90,10 +91,13 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssembler
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\IterableOfObjectsRuleSetAssembler
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\CaptureExceptionRule
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\ExceptionClass\ExceptionClassMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\ExceptionClass\ExceptionClassMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class\ExceptionClassMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class\ExceptionClassMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Origin\ExceptionOriginMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Origin\ExceptionOriginMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Delegating\DelegatingMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CompositeMatchCondition
@@ -112,13 +116,14 @@ final class ExceptionalValidationUnitTest extends TestCase
         parent::setUp();
 
         $translator = $this->createMock(TranslatorInterface::class);
+        $translations = [
+            '' => '',
+            'oops' => 'oops - translated',
+            'nested.message' => 'nested.message - translated',
+            'This is the message to be used' => 'This is the message to be used',
+        ];
         $translator->method('trans')
-            ->willReturnMap([
-                ['', [], 'domain', null, ''],
-                ['oops', [], 'domain', null, 'oops - translated'],
-                ['nested.message', [], 'domain', null, 'nested.message - translated'],
-                ['This is the message to be used', [], 'domain', null, 'This is the message to be used'],
-            ])
+            ->willReturnCallback(static fn (string $id): string => $translations[$id] ?? $id)
         ;
 
         /** @var ArrayIterator<array-key,CaptureRuleSetAssembler<PropertyRulesAssemblerEnvelope>> $captureListAssemblers */
@@ -663,6 +668,35 @@ final class ExceptionalValidationUnitTest extends TestCase
             self::assertSame($constraint, $violation->getConstraint());
             self::assertSame('matchedProperty', $violation->getPropertyPath());
             self::assertSame('matched!', $violation->getInvalidValue());
+
+            throw $e;
+        }
+    }
+
+    public function testMatchExceptionBySource(): void
+    {
+        $originalException = null;
+
+        try {
+            Email::fromString('non-email');
+        } catch (ValidationFailedException $originalException) {
+        }
+
+        self::assertNotNull($originalException);
+
+        $message = HandleableMessageStub::create();
+
+        $this->expectException(ExceptionalValidationFailedException::class);
+
+        try {
+            $this->exceptionHandler->capture($message, $originalException);
+        } catch (ExceptionalValidationFailedException $e) {
+            $violationList = $e->getViolationList();
+            self::assertCount(1, $violationList);
+
+            $violation = $violationList[0];
+            self::assertInstanceOf(ConstraintViolation::class, $violation);
+            self::assertSame('email', $violation->getPropertyPath());
 
             throw $e;
         }
