@@ -14,6 +14,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services
         ->set('phd_exceptional_validation.match_condition_factory', CaptureMatchConditionFactory::class)
+        ->factory([CaptureMatchConditionFactory::class, 'create'])
         ->args([
             tagged_locator('exceptional_validation.match_condition_factory', 'id'),
         ])

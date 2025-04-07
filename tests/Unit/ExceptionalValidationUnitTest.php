@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Tests\Unit;
 
-use ArrayIterator;
 use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation\Formatter\Item\DefaultExceptionViolationFormatter;
@@ -14,22 +13,7 @@ use PhPhD\ExceptionalValidation\Formatter\Item\Validator\ViolationListExceptionF
 use PhPhD\ExceptionalValidation\Formatter\List\DefaultExceptionListViolationFormatter;
 use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\IterableOfObjectsRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRulesAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssemblerEnvelope;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionValueMatchCondition;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionValueMatchConditionFactory;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Email;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
@@ -126,32 +110,6 @@ final class ExceptionalValidationUnitTest extends TestCase
             ->willReturnCallback(static fn (string $id): string => $translations[$id] ?? $id)
         ;
 
-        /** @var ArrayIterator<array-key,CaptureRuleSetAssembler<PropertyRulesAssemblerEnvelope>> $captureListAssemblers */
-        $captureListAssemblers = new ArrayIterator();
-        $propertyRulesAssembler = new CompositeRuleSetAssembler($captureListAssemblers);
-        $propertyRuleSetAssembler = new PropertyRuleSetAssembler($propertyRulesAssembler);
-
-        $objectRulesAssembler = new ObjectRulesAssembler($propertyRuleSetAssembler);
-        $objectRuleSetAssembler = new ObjectRuleSetAssembler($objectRulesAssembler);
-
-        $conditionFactoryRegistry = $this->createMock(ContainerInterface::class);
-        $matchConditionFactories = [
-            ExceptionValueMatchCondition::class => new ExceptionValueMatchConditionFactory(),
-            ValidationFailedExceptionValueMatchCondition::class => new ValidationFailedExceptionValueMatchConditionFactory(),
-        ];
-        $conditionFactoryRegistry->method('has')
-            ->willReturnCallback(static fn (string $id): bool => isset($matchConditionFactories[$id]))
-        ;
-        $conditionFactoryRegistry->method('get')
-            ->willReturnCallback(static fn (string $id): MatchConditionFactory => $matchConditionFactories[$id])
-        ;
-
-        $captureMatchConditionFactory = new CaptureMatchConditionFactory($conditionFactoryRegistry);
-
-        $captureListAssemblers->append(new PropertyCaptureRulesAssembler($captureMatchConditionFactory));
-        $captureListAssemblers->append(new PropertyNestedValidObjectRuleAssembler($objectRuleSetAssembler));
-        $captureListAssemblers->append(new PropertyNestedValidIterableRulesAssembler(new IterableOfObjectsRuleSetAssembler($objectRuleSetAssembler)));
-
         $defaultViolationFormatter = new DefaultExceptionViolationFormatter($translator, 'domain');
         $violationListExceptionFormatter = new ViolationListExceptionFormatter();
         $customViolationFormatter = new CustomExceptionViolationFormatter($defaultViolationFormatter);
@@ -169,6 +127,7 @@ final class ExceptionalValidationUnitTest extends TestCase
             ->willReturnCallback(static fn (string $id): ExceptionViolationFormatter => $formatters[$id])
         ;
 
+        $objectRuleSetAssembler = ObjectRuleSetAssembler::create();
         $violationFormatter = new DelegatingExceptionViolationFormatter($formatterRegistry);
         $exceptionUnwrapper = new CompositeExceptionUnwrapper(new PassThroughExceptionUnwrapper());
         $violationListFormatter = new DefaultExceptionListViolationFormatter($violationFormatter);
