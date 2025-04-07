@@ -184,7 +184,7 @@ Since in most cases capture conditions come down to the simple value comparison,
 implement `ValueException` interface and specify `condition: ExceptionValueMatchCondition::class` rather than
 implementing `when:` closure every time.
 
-> It also supports `ValidationFailedException` from SF Validator Component. 
+> You can also match native Symfony's `ValidationFailedException` with `ValidationFailedExceptionValueMatchCondition`. 
 
 This way, it's possible to avoid much of boilerplate code, keeping it clean:
 

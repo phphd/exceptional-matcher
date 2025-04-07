@@ -26,6 +26,8 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRul
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionValueMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionValueMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
@@ -96,6 +98,8 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CompositeMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionValueMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionValueMatchConditionFactory
  *
  * @internal
  */
@@ -128,6 +132,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         $conditionFactoryRegistry = $this->createMock(ContainerInterface::class);
         $matchConditionFactories = [
             ExceptionValueMatchCondition::class => new ExceptionValueMatchConditionFactory(),
+            ValidationFailedExceptionValueMatchCondition::class => new ValidationFailedExceptionValueMatchConditionFactory(),
         ];
         $conditionFactoryRegistry->method('has')
             ->willReturnCallback(static fn (string $id): bool => isset($matchConditionFactories[$id]))
@@ -627,7 +632,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         }
     }
 
-    public function testValidationFailedExceptionMapping(): void
+    public function testValidationFailedExceptionCanBeCaptured(): void
     {
         $message = HandleableMessageStub::create();
 
