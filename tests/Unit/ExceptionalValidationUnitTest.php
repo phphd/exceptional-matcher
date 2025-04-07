@@ -6,10 +6,11 @@ namespace PhPhD\ExceptionalValidation\Tests\Unit;
 
 use ArrayObject;
 use LogicException;
-use PhPhD\ExceptionalValidation\Formatter\Item\DefaultExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Formatter\Item\Default\DefaultExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Formatter\Item\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Formatter\Item\Validator\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalValidation\Formatter\Item\Validator\ValidationFailedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Formatter\Item\ViolationList\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Formatter\List\DefaultExceptionListViolationFormatter;
 use PhPhD\ExceptionalValidation\Handler\DefaultExceptionHandler;
 use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
@@ -53,8 +54,10 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException
  * @covers \PhPhD\ExceptionalValidation\Formatter\List\DefaultExceptionListViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter
- * @covers \PhPhD\ExceptionalValidation\Formatter\Item\DefaultExceptionViolationFormatter
- * @covers \PhPhD\ExceptionalValidation\Formatter\Item\Validator\ViolationListExceptionFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\Item\Default\DefaultExceptionViolationFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\Item\ViolationList\ViolationListExceptionFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\Item\Validator\ValidationFailedExceptionFormatter
+ * @covers \PhPhD\ExceptionalValidation\Formatter\Item\Validator\ValidationFailedExceptionAdapter
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet
@@ -112,12 +115,14 @@ final class ExceptionalValidationUnitTest extends TestCase
 
         $defaultViolationFormatter = new DefaultExceptionViolationFormatter($translator, 'domain');
         $violationListExceptionFormatter = new ViolationListExceptionFormatter();
+        $validationFailedExceptionFormatter = new ValidationFailedExceptionFormatter($violationListExceptionFormatter);
         $customViolationFormatter = new CustomExceptionViolationFormatter($defaultViolationFormatter);
 
         $formatterRegistry = $this->createMock(ContainerInterface::class);
         $formatters = [
             'default' => $defaultViolationFormatter,
             ViolationListExceptionFormatter::class => $violationListExceptionFormatter,
+            ValidationFailedExceptionFormatter::class => $validationFailedExceptionFormatter,
             CustomExceptionViolationFormatter::class => $customViolationFormatter,
         ];
         $formatterRegistry->method('has')

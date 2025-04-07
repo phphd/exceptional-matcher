@@ -2,23 +2,29 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Formatter\Item\Validator;
+namespace PhPhD\ExceptionalValidation\Formatter\Item\ViolationList;
 
 use LogicException;
 use PhPhD\ExceptionalValidation\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Symfony\Component\Validator\Exception\ValidationFailedException;
-use Throwable;
 
 use function array_map;
 use function iterator_to_array;
 
-/** @api */
+/**
+ * @api
+ *
+ * @implements ExceptionViolationFormatter<ViolationListException>
+ */
 final class ViolationListExceptionFormatter implements ExceptionViolationFormatter
 {
+    /**
+     * @param CapturedException<ViolationListException> $capturedException
+     *
+     * @return non-empty-list<ConstraintViolation>
+     */
     public function format(CapturedException $capturedException): array
     {
         $exception = $capturedException->getException();
@@ -28,7 +34,7 @@ final class ViolationListExceptionFormatter implements ExceptionViolationFormatt
         $propertyPath = $rule->getPropertyPath()->join('.');
 
         /** @var list<ConstraintViolationInterface> $violationList */
-        $violationList = iterator_to_array($this->getViolationList($exception));
+        $violationList = iterator_to_array($exception->getViolationList());
 
         if ([] === $violationList) {
             throw new LogicException('Violation list must not be empty');
@@ -49,14 +55,5 @@ final class ViolationListExceptionFormatter implements ExceptionViolationFormatt
             ),
             $violationList,
         );
-    }
-
-    private function getViolationList(Throwable $exception): ConstraintViolationListInterface
-    {
-        return match (true) {
-            $exception instanceof ViolationListException => $exception->getViolationList(),
-            $exception instanceof ValidationFailedException => $exception->getViolations(),
-            default => throw new LogicException('Violation list formatter could only be used for exceptions that implement ViolationListException or those with built-in support'),
-        };
     }
 }
