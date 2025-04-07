@@ -1,9 +1,12 @@
 # Exceptional Validation
 
-🧰 Provides exception-to-property mapper bundled as [Symfony Messenger](https://symfony.com/doc/current/messenger.html)
-middleware. It captures thrown exceptions, matches them with the respective properties, formats violations
-in [Symfony Validator](https://symfony.com/doc/current/validation.html) format, and
-throws `ExceptionalValidationFailedException`.
+🧰 Transform domain exceptions into validation errors.
+
+This library bridges the gap between your business logic and user interface by _capturing domain exceptions_ and
+converting them into ordered validation errors.
+
+With Exceptional Validation, you don't have to duplicate validation rules in your application/ui layers,
+since it enables you _automatically map any violations to the relevant form fields_.
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/phphd/exceptional-validation/ci.yaml?branch=main)](https://github.com/phphd/exceptional-validation/actions?query=branch%3Amain)
 [![Codecov](https://codecov.io/gh/phphd/exceptional-validation/graph/badge.svg?token=GZRXWYT55Z)](https://codecov.io/gh/phphd/exceptional-validation)
@@ -11,6 +14,11 @@ throws `ExceptionalValidationFailedException`.
 [![Psalm level](https://shepherd.dev/github/phphd/exceptional-validation/level.svg)](https://shepherd.dev/github/phphd/exceptional-validation)
 [![Packagist Downloads](https://img.shields.io/packagist/dt/phphd/exceptional-validation.svg)](https://packagist.org/packages/phphd/exceptional-validation)
 [![Licence](https://img.shields.io/github/license/phphd/exceptional-validation.svg)](https://github.com/phphd/exceptional-validation/blob/main/LICENSE)
+
+It primarily works as a [Command Bus](https://symfony.com/doc/current/messenger.html#multiple-buses-command-event-buses)
+middleware that intercepts exceptions, maps them to the relevant form properties, and then formats them as
+standard [SF Validator](https://symfony.com/doc/current/validation.html) violations. Besides that, `ExceptionHandler` is
+also available for direct use, since you can use `@phd_exceptional_validation.exception_handler` service directly.
 
 ## Installation 📥
 
@@ -26,6 +34,9 @@ throws `ExceptionalValidationFailedException`.
     PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle::class => ['all' => true],
     PhPhD\ExceptionToolkit\Bundle\PhdExceptionToolkitBundle::class => ['all' => true],
     ```
+
+   > Note: The PhdExceptionToolkitBundle is a required dependency that provides exception unwrapping functionality used
+   by this library.
 
 ## Configuration ⚒️
 
@@ -184,7 +195,7 @@ Since in most cases capture conditions come down to the simple value comparison,
 implement `ValueException` interface and specify `condition: ExceptionValueMatchCondition::class` rather than
 implementing `when:` closure every time.
 
-> You can also match native Symfony's `ValidationFailedException` with `ValidationFailedExceptionValueMatchCondition`. 
+> You can also match native Symfony's `ValidationFailedException` with `ValidationFailedExceptionValueMatchCondition`.
 
 This way, it's possible to avoid much of boilerplate code, keeping it clean:
 
@@ -379,9 +390,8 @@ it is ignored in favor of the messages from `ConstraintViolationList`.
 
 #### Custom violation formatters
 
-In some cases, you might need to customize the way violations are formatted such as passing additional
-parameters to the message translation. You can achieve this by creating your own violation formatter service that
-implements `ExceptionViolationFormatter` interface:
+In some cases, you might want to customize the violations, such as passing additional parameters to the message
+translation. You can create your own violation formatter by implementing `ExceptionViolationFormatter` interface:
 
 ```php
 use PhPhD\ExceptionalValidation\Formatter\Item\ExceptionViolationFormatter;
@@ -399,8 +409,8 @@ final class RegistrationViolationsFormatter implements ExceptionViolationFormatt
     /** @return array{ConstraintViolationInterface} */
     public function format(CapturedException $capturedException): ConstraintViolationInterface
     {
-        // you can format violations with the default formatter
-        // and then slightly adjust only necessary parts
+        // format violation with the default formatter
+        // and then adjust only necessary parts
         [$violation] = $this->defaultFormatter->format($capturedException);
 
         $exception = $capturedException->getException();
