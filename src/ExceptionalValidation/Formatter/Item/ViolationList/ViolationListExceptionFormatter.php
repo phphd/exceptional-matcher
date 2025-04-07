@@ -10,6 +10,8 @@ use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
+use Webmozart\Assert\Assert;
+
 use function array_map;
 use function iterator_to_array;
 
@@ -28,6 +30,7 @@ final class ViolationListExceptionFormatter implements ExceptionViolationFormatt
     public function format(CapturedException $capturedException): array
     {
         $exception = $capturedException->getException();
+        Assert::isInstanceOf($exception, ViolationListException::class);
 
         $rule = $capturedException->getMatchedRule();
         $root = $rule->getRoot();
