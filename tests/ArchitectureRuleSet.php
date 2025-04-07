@@ -19,6 +19,7 @@ use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
@@ -133,10 +134,10 @@ final class ArchitectureRuleSet
             'captureRuleSetAssembler' => [
                 'deps' => [
                     $this->model(),
+                    $this->matchConditionFactory(),
                     Selector::classname(ExceptionalValidation::class),
                     Selector::classname(Capture::class),
                     Selector::classname(Valid::class),
-                    Selector::classname(MatchConditionFactory::class),
                     Selector::classname(Assert::class),
                 ],
             ],
@@ -146,6 +147,7 @@ final class ArchitectureRuleSet
                     Selector::classname(Capture::class),
                     Selector::classname(ValidationFailedException::class),
                     Selector::inNamespace('Psr\Container'),
+                    Selector::classname(Container::class),
                 ],
             ],
             'model' => [
