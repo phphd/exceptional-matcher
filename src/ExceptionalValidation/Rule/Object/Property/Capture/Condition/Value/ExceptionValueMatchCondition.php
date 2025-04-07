@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value;
 
+use LogicException;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
-use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Throwable;
 
 /** @api */
@@ -18,14 +18,10 @@ final class ExceptionValueMatchCondition implements MatchCondition
 
     public function matches(Throwable $exception): bool
     {
-        if ($exception instanceof ValueException) {
-            return $exception->getValue() === $this->value;
+        if (!$exception instanceof ValueException) {
+            throw new LogicException('ExceptionValueMatchCondition can only be used for exception classes that implement ValueException');
         }
 
-        if ($exception instanceof ValidationFailedException) {
-            return $exception->getValue() === $this->value;
-        }
-
-        return false;
+        return $exception->getValue() === $this->value;
     }
 }
