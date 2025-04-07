@@ -18,6 +18,8 @@ final class Capture
         private readonly string $exception,
         private readonly ?string $message = null,
         /** @var ?non-empty-string */
+        private readonly ?string $from = null,
+        /** @var ?non-empty-string */
         private readonly ?string $condition = null,
         /** @var ?array{0:object|class-string,1:string} */
         private readonly ?array $when = null,
@@ -37,6 +39,11 @@ final class Capture
     public function getMessage(): ?string
     {
         return $this->message;
+    }
+
+    public function getFrom(): ?string
+    {
+        return $this->from;
     }
 
     public function getCondition(): ?string

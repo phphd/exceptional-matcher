@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Rule\Path;
+namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Path;
 
 use LogicException;
 
@@ -34,7 +34,7 @@ final class PropertyPath
         $items = $this->items;
 
         if ([] === $items) {
-            throw new LogicException('Property path must not be empty.');
+            throw new LogicException('Path must not be empty.');
         }
 
         $lastItem = array_pop($items);

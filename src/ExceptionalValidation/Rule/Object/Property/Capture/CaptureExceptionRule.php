@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
-use PhPhD\ExceptionalValidation\Rule\Path\PropertyPath;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 use Throwable;
 
 /** @internal */

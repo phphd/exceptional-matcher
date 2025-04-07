@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\ExceptionClass;
+namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class;
 
 use LogicException;
 use PhPhD\ExceptionalValidation\Capture;
