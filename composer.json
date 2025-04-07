@@ -53,11 +53,8 @@
         }
     ],
     "autoload": {
-        "classmap": [
-            "src/ExceptionalValidation.php"
-        ],
         "psr-4": {
-            "PhPhD\\ExceptionalValidation\\": "src/ExceptionalValidation",
+            "PhPhD\\": "src",
             "PhPhD\\ExceptionalValidation\\Upgrade\\": "upgrade"
         }
     },
