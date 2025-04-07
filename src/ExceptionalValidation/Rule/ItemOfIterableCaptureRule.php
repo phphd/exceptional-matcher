@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Rule;
 
 use LogicException;
 use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
-use PhPhD\ExceptionalValidation\Rule\Path\PropertyPath;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 
 use function is_object;
 
