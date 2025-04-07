@@ -20,7 +20,6 @@ final class PhdExceptionalValidationExtension extends AbstractExtension
      */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        $container->import(__DIR__.'/../../**/services.yaml');
         $container->import(__DIR__.'/../../**/services.php');
     }
 
