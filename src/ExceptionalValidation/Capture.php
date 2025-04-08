@@ -17,7 +17,7 @@ final class Capture
         /** @var class-string<Exception> */
         private readonly string $exception,
         private readonly ?string $message = null,
-        /** @var ?non-empty-string */
+        /** @var ?class-string The origin of the exception */
         private readonly ?string $from = null,
         /** @var ?non-empty-string */
         private readonly ?string $condition = null,
