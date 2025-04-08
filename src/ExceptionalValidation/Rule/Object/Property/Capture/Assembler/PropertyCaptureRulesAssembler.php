@@ -40,11 +40,7 @@ final class PropertyCaptureRulesAssembler implements CaptureRuleSetAssembler
         ;
 
         foreach ($captureAttributes as $captureAttribute) {
-            /**
-             * @psalm-suppress UnnecessaryVarAnnotation
-             *
-             * @var Capture $capture
-             */
+            /** @var Capture $capture */
             $capture = $captureAttribute->newInstance();
 
             $rules->append(new CaptureExceptionRule(
