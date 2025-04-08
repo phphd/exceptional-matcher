@@ -15,6 +15,7 @@ final class CaptureExceptionRule implements CaptureRule
 {
     public function __construct(
         private readonly CaptureRule $parent,
+        /** @var MatchCondition<Throwable> */
         private readonly MatchCondition $condition,
         private readonly ?string $messageTemplate,
         private readonly string $formatterId,
