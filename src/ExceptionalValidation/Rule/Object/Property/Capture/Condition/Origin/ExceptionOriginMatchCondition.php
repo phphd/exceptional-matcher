@@ -7,7 +7,11 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Ori
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use Throwable;
 
-/** @internal */
+/**
+ * @internal
+ *
+ * @implements MatchCondition<Throwable>
+ */
 final class ExceptionOriginMatchCondition implements MatchCondition
 {
     public function __construct(

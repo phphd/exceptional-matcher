@@ -23,6 +23,11 @@
                 <directory name="tests"/>
             </errorLevel>
         </MissingOverrideAttribute>
+        <UnnecessaryVarAnnotation>
+            <errorLevel type="suppress">
+                <file name="src/ExceptionalValidation/Rule/Object/Property/Capture/Condition/Composite/CaptureMatchConditionFactory.php"/>
+            </errorLevel>
+        </UnnecessaryVarAnnotation>
     </issueHandlers>
     <plugins>
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
