@@ -3,6 +3,7 @@
 /**/Tests export-ignore
 /**/*Test.php export-ignore
 /.github export-ignore
+/assets export-ignore
 /bin export-ignore
 /tests export-ignore
 /stubs export-ignore
