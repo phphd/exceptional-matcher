@@ -8,7 +8,11 @@ use Closure;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use Throwable;
 
-/** @internal */
+/**
+ * @internal
+ *
+ * @implements MatchCondition<Throwable>
+ */
 final class ClosureMatchCondition implements MatchCondition
 {
     public function __construct(

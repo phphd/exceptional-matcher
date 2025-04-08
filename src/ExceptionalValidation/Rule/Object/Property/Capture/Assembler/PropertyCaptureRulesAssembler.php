@@ -14,7 +14,7 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRul
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\CaptureExceptionRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
-use Webmozart\Assert\Assert;
+use Throwable;
 
 /**
  * @internal
@@ -62,12 +62,10 @@ final class PropertyCaptureRulesAssembler implements CaptureRuleSetAssembler
         return $ruleSet;
     }
 
+    /** @return MatchCondition<Throwable> */
     private function getCondition(Capture $capture, CaptureRule $parent): MatchCondition
     {
-        $matchCondition = $this->conditionFactory->getCondition($capture, $parent);
-
-        Assert::notNull($matchCondition);
-
-        return $matchCondition;
+        /** @var MatchCondition<Throwable> */
+        return $this->conditionFactory->getCondition($capture, $parent);
     }
 }
