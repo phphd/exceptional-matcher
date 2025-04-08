@@ -154,6 +154,7 @@ final class ArchitectureRuleSet
             'model' => [
                 'deps' => [
                     Selector::classname(Assert::class),
+                    Selector::classname(ValidationFailedException::class),
                 ],
                 'description' => 'Model classes must not depend on anything else',
             ],

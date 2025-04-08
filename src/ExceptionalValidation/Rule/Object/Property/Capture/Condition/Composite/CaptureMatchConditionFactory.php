@@ -15,6 +15,8 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Origin\Ex
 
 use Psr\Container\ContainerInterface;
 
+use Throwable;
+
 use function array_filter;
 use function array_values;
 use function count;
@@ -38,6 +40,7 @@ final class CaptureMatchConditionFactory implements MatchConditionFactory
         ]);
     }
 
+    /** @return MatchCondition<Throwable> */
     public function getCondition(Capture $capture, CaptureRule $parent): MatchCondition
     {
         $conditions = [];
@@ -46,6 +49,7 @@ final class CaptureMatchConditionFactory implements MatchConditionFactory
             $conditions[] = $factory->getCondition($capture, $parent);
         }
 
+        /** @var list<MatchCondition<Throwable>> $conditions */
         $conditions = array_values(array_filter($conditions));
 
         if (count($conditions) === 1) {

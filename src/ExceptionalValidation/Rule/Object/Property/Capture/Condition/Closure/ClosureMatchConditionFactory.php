@@ -26,7 +26,7 @@ final class ClosureMatchConditionFactory implements MatchConditionFactory
             $when = [$object, $when[1]];
         }
 
-        /** @phpstan-ignore-next-line */
+        /** @phpstan-ignore callable.nonCallable */
         return new ClosureMatchCondition($when(...));
     }
 }

@@ -7,11 +7,15 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Com
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use Throwable;
 
-/** @internal */
+/**
+ * @internal
+ *
+ * @implements MatchCondition<Throwable>
+ */
 final class CompositeMatchCondition implements MatchCondition
 {
     public function __construct(
-        /** @var list<MatchCondition> */
+        /** @var list<MatchCondition<Throwable>> */
         private readonly array $conditions,
     ) {
     }

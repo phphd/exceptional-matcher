@@ -4,20 +4,30 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class;
 
+use LogicException;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use Throwable;
 
-/** @internal */
+use function is_a;
+
+/**
+ * @internal
+ *
+ * @implements MatchCondition<Throwable>
+ */
 final class ExceptionClassMatchCondition implements MatchCondition
 {
     public function __construct(
         /** @var class-string<Throwable> */
-        private readonly string $exceptionClassName,
+        private readonly string $exceptionClass,
     ) {
+        if (!is_a($this->exceptionClass, Throwable::class, true)) {
+            throw new LogicException('Exception class condition should only be used for exception classes that implement Throwable');
+        }
     }
 
     public function matches(Throwable $exception): bool
     {
-        return $exception instanceof $this->exceptionClassName;
+        return $exception instanceof $this->exceptionClass;
     }
 }
