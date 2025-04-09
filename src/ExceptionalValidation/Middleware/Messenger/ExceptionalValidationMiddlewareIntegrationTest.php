@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Middleware\Messenger;
 
 use PhPhD\ExceptionalValidation\Bundle\Tests\BundleTestCase;
-use PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException;
+use PhPhD\ExceptionalValidation\Middleware\ExceptionalValidationFailedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
@@ -20,6 +20,7 @@ use Throwable;
 
 /**
  * @covers \PhPhD\ExceptionalValidation\Middleware\Messenger\ExceptionalValidationMiddleware
+ * @covers \PhPhD\ExceptionalValidation\Middleware\ExceptionalValidationFailedException
  *
  * @internal
  */
@@ -83,7 +84,12 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
         try {
             $this->middleware->handle($envelope, $this->stack);
         } catch (ExceptionalValidationFailedException $e) {
+            self::assertSame(
+                'Message of type "PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub" has failed exceptional validation.',
+                $e->getMessage(),
+            );
             self::assertSame($messengerException, $e->getPrevious());
+            self::assertSame($envelope->getMessage(), $e->getViolatingMessage());
 
             $violations = $e->getViolationList();
             self::assertCount(2, $violations);

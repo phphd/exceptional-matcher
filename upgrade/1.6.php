@@ -12,9 +12,11 @@ return static function (RectorConfig $rectorConfig): void {
         'PhPhD\ExceptionalValidation\Model\Exception\ExceptionPackage' => 'PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage',
         'PhPhD\ExceptionalValidation\Model\Condition\Value\ValueException' => 'PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueException',
         'PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchCondition' => 'PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition',
-        'PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter' => 'PhPhD\ExceptionalValidation\Formatter\List\ExceptionListViolationFormatter',
-        'PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter' => 'PhPhD\ExceptionalValidation\Formatter\Item\ExceptionViolationFormatter',
-        'PhPhD\ExceptionalValidation\Formatter\ViolationListException' => 'PhPhD\ExceptionalValidation\Formatter\Item\ViolationList\ViolationListException',
-        'PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter' => 'PhPhD\ExceptionalValidation\Formatter\Item\ViolationList\ViolationListExceptionFormatter',
+        'PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter' => 'PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\ExceptionListViolationFormatter',
+        'PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter' => 'PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter',
+        'PhPhD\ExceptionalValidation\Formatter\ViolationListException' => 'PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListException',
+        'PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter' => 'PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListExceptionFormatter',
+        'PhPhD\ExceptionalValidation\Handler\ExceptionHandler' => 'Symfony\Component\Messenger\Middleware\MiddlewareInterface', // implement middleware instead
+        'PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException' => 'PhPhD\ExceptionalValidation\Middleware\ExceptionalValidationFailedException',
     ]);
 };

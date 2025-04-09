@@ -11,7 +11,6 @@ use Rector\ValueObject\PhpVersion;
 return RectorConfig::configure()
     ->withPaths([__DIR__.'/src', __DIR__.'/tests', __DIR__.'/upgrade'])
     ->withSkip([__DIR__.'/tests/*/Stub/*'])
-    ->withSets([PhdSetList::rector()->getPath()])
     ->withPhpVersion(PhpVersion::PHP_81)
     ->withSkip([
         ClassPropertyAssignToConstructorPromotionRector::class => [

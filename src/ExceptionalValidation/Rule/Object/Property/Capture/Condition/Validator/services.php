@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\DependencyInjection;
+namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator;
 
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionValueMatchCondition;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionValueMatchConditionFactory;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {

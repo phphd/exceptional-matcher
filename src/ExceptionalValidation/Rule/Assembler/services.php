@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\DependencyInjection;
+namespace PhPhD\ExceptionalValidation\Rule\Assembler;
 
-use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\IterableOfObjectsRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRulesAssembler;
