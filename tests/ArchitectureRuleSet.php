@@ -46,15 +46,15 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
-    public function testExceptionHandlerDependencies(): Rule
+    public function testMapperDependencies(): Rule
     {
-        return $this->layerRule('exceptionHandler');
+        return $this->layerRule('mapper');
     }
 
     #[TestRule]
-    public function testViolationFormatterDependencies(): Rule
+    public function testValidatorMapperDependencies(): Rule
     {
-        return $this->layerRule('formatter');
+        return $this->layerRule('validatorMapper');
     }
 
     #[TestRule]
@@ -99,32 +99,33 @@ final class ArchitectureRuleSet
             'bundle' => [
                 'deps' => [
                     Selector::inNamespace('Symfony\Component'),
-                    $this->formatter(),
+                    $this->validatorMapper(),
                 ],
             ],
             'middleware' => [
                 'deps' => [
                     Selector::AllOf(
                         Selector::isInterface(),
-                        $this->exceptionHandler(),
+                        $this->mapper(),
                     ),
                     Selector::inNamespace('Symfony\Component\Messenger'),
+                    Selector::classname(ConstraintViolationListInterface::class),
                 ],
             ],
-            'exceptionHandler' => [
+            'mapper' => [
                 'deps' => [
                     Selector::classname(ObjectRuleSetAssembler::class),
                     $this->model(),
                     Selector::AllOf(
                         Selector::isInterface(),
-                        $this->formatter(),
+                        $this->validatorMapper(),
                     ),
-                    Selector::classname(ConstraintViolationListInterface::class),
                     Selector::classname(ExceptionUnwrapper::class),
                 ],
             ],
-            'formatter' => [
+            'validatorMapper' => [
                 'deps' => [
+                    $this->mapper(),
                     $this->model(),
                     Selector::inNamespace('Symfony\Component\Validator'),
                     Selector::classname(TranslatorInterface::class),
@@ -176,18 +177,19 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function exceptionHandler(): SelectorInterface
+    public function mapper(): SelectorInterface
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalValidation\Handler'),
+            Selector::inNamespace('PhPhD\ExceptionalValidation\Mapper'),
+            Selector::NOT($this->validatorMapper()),
             Selector::NOT(Selector::extends(TestCase::class)),
         );
     }
 
-    public function formatter(): SelectorInterface
+    public function validatorMapper(): SelectorInterface
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalValidation\Formatter'),
+            Selector::inNamespace('PhPhD\ExceptionalValidation\Mapper\Validator'),
             Selector::NOT(Selector::extends(TestCase::class)),
         );
     }
