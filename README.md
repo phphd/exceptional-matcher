@@ -61,8 +61,8 @@ It primarily works as a [Command Bus](https://symfony.com/doc/current/messenger.
 middleware that intercepts exceptions, uses exception mapper to map them to the relevant form properties, and then
 formats captured exceptions standard [SF Validator](https://symfony.com/doc/current/validation.html) violations.
 
-> Besides that, `ExceptionHandler` is also available for direct use, since you can reference
-`@phd_exceptional_validation.exception_handler` service directly.
+> Besides that, `ExceptionMapper` is also available for direct use w/o any middleware. You can
+> reference this service as `@phd_exceptional_validation.exception_mapper.validator`.
 
 ![Exceptional Validation.svg](https://raw.githubusercontent.com/phphd/exceptional-validation/refs/heads/main/assets/Exceptional%20Validation.svg)
 
@@ -381,8 +381,8 @@ and `ViolationListExceptionFormatter`. If needed, you can create your own custom
 
 `DefaultViolationFormatter` is used by default if other formatter is not specified.
 
-It provides a very basic way to format violations, building `ConstraintViolation` with such parameters
-as: `$message`, `$root`, `$propertyPath`, `$value`.
+It provides a very basic way to format violations, building `ConstraintViolation` with these parameters: `$message`,
+`$root`, `$propertyPath`, `$value`.
 
 #### Constraint Violation List Formatter
 
@@ -395,7 +395,7 @@ interface. It allows to easily capture the exception that has `ConstraintViolati
 The typical exception class implementing `ViolationListException` interface would look like this:
 
 ```php
-use PhPhD\ExceptionalValidation\Formatter\Item\ViolationList\ViolationListException;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 final class CardNumberValidationFailedException extends \RuntimeException implements ViolationListException
@@ -419,7 +419,7 @@ Then you can use `ViolationListExceptionFormatter` on the `#[Capture]` attribute
 ```php
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Formatter\Item\ViolationList\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListExceptionFormatter;
 
 #[ExceptionalValidation]
 final class IssueCreditCardCommand
@@ -442,7 +442,7 @@ In some cases, you might want to customize the violations, such as passing addit
 translation. You can create your own violation formatter by implementing `ExceptionViolationFormatter` interface:
 
 ```php
-use PhPhD\ExceptionalValidation\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
