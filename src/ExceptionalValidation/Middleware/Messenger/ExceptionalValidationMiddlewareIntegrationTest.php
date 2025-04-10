@@ -20,7 +20,7 @@ use Throwable;
 
 /**
  * @covers \PhPhD\ExceptionalValidation\Middleware\Messenger\ExceptionalValidationMiddleware
- * @covers \PhPhD\ExceptionalValidation\Middleware\ExceptionalValidationFailedException
+ * @covers \PhPhD\ExceptionalValidation\Middleware\Messenger\ExceptionalValidationFailedMessengerException
  *
  * @internal
  */
