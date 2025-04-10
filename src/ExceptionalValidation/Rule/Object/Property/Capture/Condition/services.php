@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\DependencyInjection;
+namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition;
 
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
