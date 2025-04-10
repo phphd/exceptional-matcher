@@ -12,7 +12,7 @@ use function version_compare;
 final class ExceptionalValidationSetList
 {
     private const VERSIONS = [
-        '1.6' => __DIR__.'/1.6.php',
+        '2.0' => __DIR__.'/2.0.php',
     ];
 
     public function __construct(
