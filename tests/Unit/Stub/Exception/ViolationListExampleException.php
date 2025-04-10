@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception;
 
-use PhPhD\ExceptionalValidation\Formatter\Item\ViolationList\ViolationListException;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListException;
 use RuntimeException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 

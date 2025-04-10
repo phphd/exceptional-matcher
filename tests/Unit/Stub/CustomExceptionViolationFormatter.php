@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
 
-use PhPhD\ExceptionalValidation\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolation;
-
 use Throwable;
 
 use function ucfirst;
