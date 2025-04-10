@@ -11,6 +11,10 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_locator;
 
 return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $builder): void {
+    if (false === $builder->getParameter('phd_exceptional_validation.validator_enabled')) {
+        return;
+    }
+
     $services = $containerConfigurator->services();
 
     $services
