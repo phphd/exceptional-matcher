@@ -8,6 +8,10 @@ use Exception;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\AbstractExtension;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\Messenger\Middleware\MiddlewareInterface as MessengerMiddlewareInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
+use function interface_exists;
 
 final class PhdExceptionalValidationExtension extends AbstractExtension
 {
@@ -20,6 +24,9 @@ final class PhdExceptionalValidationExtension extends AbstractExtension
      */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
+        $builder->setParameter('phd_exceptional_validation.validator_enabled', interface_exists(ValidatorInterface::class));
+        $builder->setParameter('phd_exceptional_validation.messenger_enabled', interface_exists(MessengerMiddlewareInterface::class));
+
         $container->import(__DIR__.'/../../**/services.php');
     }
 
