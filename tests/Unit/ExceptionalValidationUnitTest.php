@@ -53,7 +53,6 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Capture
  * @covers \PhPhD\ExceptionalValidation\Mapper\DefaultExceptionMapper
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\ExceptionViolationListMapper
- * @covers \PhPhD\ExceptionalValidation\Middleware\ExceptionalValidationFailedException
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\DefaultExceptionListViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\DefaultExceptionViolationFormatter
