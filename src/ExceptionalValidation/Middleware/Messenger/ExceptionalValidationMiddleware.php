@@ -8,6 +8,7 @@ use Exception;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
 use PhPhD\ExceptionalValidation\Middleware\ExceptionalValidationFailedException;
 use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
 use Symfony\Component\Messenger\Middleware\StackInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -22,7 +23,7 @@ final class ExceptionalValidationMiddleware implements MiddlewareInterface
     ) {
     }
 
-    /** @throws ExceptionalValidationFailedException */
+    /** @throws ExceptionalValidationFailedException|ExceptionInterface */
     public function handle(Envelope $envelope, StackInterface $stack): Envelope
     {
         try {
@@ -36,7 +37,7 @@ final class ExceptionalValidationMiddleware implements MiddlewareInterface
                 throw $exception;
             }
 
-            throw new ExceptionalValidationFailedException($message, $violationList, $exception);
+            throw new ExceptionalValidationFailedMessengerException($message, $violationList, $exception);
         }
     }
 }
