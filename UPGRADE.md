@@ -1,6 +1,6 @@
 This file contains notable (mostly breaking) changes to the library, and migrating instructions.
 
-## 1.6
+## 2.0
 
 `PhPhD\ExceptionalValidation\Handler\ExceptionHandler` interface, and `phd_exceptional_validation.exception_handler`
 service were removed.

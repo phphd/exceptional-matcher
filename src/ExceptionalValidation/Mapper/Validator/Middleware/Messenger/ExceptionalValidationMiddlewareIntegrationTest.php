@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Middleware\Messenger;
+namespace PhPhD\ExceptionalValidation\Mapper\Validator\Middleware\Messenger;
 
 use PhPhD\ExceptionalValidation\Bundle\Tests\BundleTestCase;
-use PhPhD\ExceptionalValidation\Middleware\ExceptionalValidationFailedException;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Middleware\ExceptionalValidationFailedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
@@ -19,8 +19,8 @@ use Symfony\Component\Messenger\Middleware\StackMiddleware;
 use Throwable;
 
 /**
- * @covers \PhPhD\ExceptionalValidation\Middleware\Messenger\ExceptionalValidationMiddleware
- * @covers \PhPhD\ExceptionalValidation\Middleware\Messenger\ExceptionalValidationFailedMessengerException
+ * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Middleware\Messenger\ExceptionalValidationMiddleware
+ * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Middleware\Messenger\ExceptionalValidationFailedMessengerException
  *
  * @internal
  */
