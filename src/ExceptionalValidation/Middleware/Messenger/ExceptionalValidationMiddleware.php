@@ -5,22 +5,24 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Middleware\Messenger;
 
 use Exception;
-use PhPhD\ExceptionalValidation\Handler\ExceptionHandler;
+use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
+use PhPhD\ExceptionalValidation\Middleware\ExceptionalValidationFailedException;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
 use Symfony\Component\Messenger\Middleware\StackInterface;
-use Throwable;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /** @internal */
 final class ExceptionalValidationMiddleware implements MiddlewareInterface
 {
     /** @api */
     public function __construct(
-        private readonly ExceptionHandler $exceptionHandler,
+        /** @var ExceptionMapper<ConstraintViolationListInterface> */
+        private readonly ExceptionMapper $exceptionMapper,
     ) {
     }
 
-    /** @throws Throwable */
+    /** @throws ExceptionalValidationFailedException */
     public function handle(Envelope $envelope, StackInterface $stack): Envelope
     {
         try {
@@ -28,9 +30,13 @@ final class ExceptionalValidationMiddleware implements MiddlewareInterface
         } catch (Exception $exception) {
             $message = $envelope->getMessage();
 
-            $this->exceptionHandler->capture($message, $exception);
+            $violationList = $this->exceptionMapper->map($message, $exception);
 
-            throw $exception;
+            if (null === $violationList) {
+                throw $exception;
+            }
+
+            throw new ExceptionalValidationFailedException($message, $violationList, $exception);
         }
     }
 }
