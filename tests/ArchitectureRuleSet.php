@@ -40,9 +40,15 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
-    public function testMiddlewareDependencies(): Rule
+    public function testMessengerValidatorMiddlewareDependencies(): Rule
     {
-        return $this->layerRule('middleware');
+        return $this->layerRule('messengerValidatorMiddleware');
+    }
+
+    #[TestRule]
+    public function testValidatorMiddlewareDependencies(): Rule
+    {
+        return $this->layerRule('validatorMiddleware');
     }
 
     #[TestRule]
@@ -99,17 +105,32 @@ final class ArchitectureRuleSet
             'bundle' => [
                 'deps' => [
                     Selector::inNamespace('Symfony\Component'),
-                    $this->validatorMapper(),
                 ],
             ],
-            'middleware' => [
+            'messengerValidatorMiddleware' => [
                 'deps' => [
                     Selector::AllOf(
                         Selector::isInterface(),
                         $this->mapper(),
                     ),
+                    $this->validatorMiddleware(),
                     Selector::inNamespace('Symfony\Component\Messenger'),
                     Selector::classname(ConstraintViolationListInterface::class),
+                ],
+            ],
+            'validatorMiddleware' => [
+                'deps' => [
+                    Selector::inNamespace('Symfony\Component\Validator'),
+                ],
+            ],
+            'validatorMapper' => [
+                'deps' => [
+                    $this->mapper(),
+                    $this->model(),
+                    Selector::inNamespace('Symfony\Component\Validator'),
+                    Selector::classname(TranslatorInterface::class),
+                    Selector::classname(Assert::class),
+                    Selector::inNamespace('Psr\Container'),
                 ],
             ],
             'mapper' => [
@@ -121,16 +142,6 @@ final class ArchitectureRuleSet
                         $this->validatorMapper(),
                     ),
                     Selector::classname(ExceptionUnwrapper::class),
-                ],
-            ],
-            'validatorMapper' => [
-                'deps' => [
-                    $this->mapper(),
-                    $this->model(),
-                    Selector::inNamespace('Symfony\Component\Validator'),
-                    Selector::classname(TranslatorInterface::class),
-                    Selector::classname(Assert::class),
-                    Selector::inNamespace('Psr\Container'),
                 ],
             ],
             'captureRuleSetAssembler' => [
@@ -168,20 +179,11 @@ final class ArchitectureRuleSet
         return Selector::inNamespace('PhPhD\ExceptionalValidation\Bundle');
     }
 
-    /** @psalm-suppress UnusedMethod */
-    public function middleware(): SelectorInterface
-    {
-        return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalValidation\Middleware'),
-            Selector::NOT(Selector::extends(TestCase::class)),
-        );
-    }
-
     public function mapper(): SelectorInterface
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalValidation\Mapper'),
-            Selector::NOT($this->validatorMapper()),
+            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Mapper\Validator')),
             Selector::NOT(Selector::extends(TestCase::class)),
         );
     }
@@ -190,6 +192,24 @@ final class ArchitectureRuleSet
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalValidation\Mapper\Validator'),
+            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Mapper\Validator\Middleware')),
+            Selector::NOT(Selector::extends(TestCase::class)),
+        );
+    }
+
+    public function validatorMiddleware(): SelectorInterface
+    {
+        return Selector::AllOf(
+            Selector::inNamespace('PhPhD\ExceptionalValidation\Mapper\Validator\Middleware'),
+            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Mapper\Validator\Middleware\Messenger')),
+        );
+    }
+
+    /** @psalm-suppress UnusedMethod */
+    public function messengerValidatorMiddleware(): SelectorInterface
+    {
+        return Selector::AllOf(
+            Selector::inNamespace('PhPhD\ExceptionalValidation\Mapper\Validator\Middleware\Messenger'),
             Selector::NOT(Selector::extends(TestCase::class)),
         );
     }
