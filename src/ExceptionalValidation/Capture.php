@@ -9,6 +9,9 @@ use Exception;
 use Throwable;
 use Webmozart\Assert\Assert;
 
+use function is_array;
+use function is_string;
+
 /** @api */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final class Capture
@@ -17,16 +20,20 @@ final class Capture
         /** @var class-string<Exception> */
         private readonly string $exception,
         private readonly ?string $message = null,
-        /** @var ?class-string The origin of the exception */
-        private readonly ?string $from = null,
+        /** @var null|class-string|array{class-string,string} The origin of the exception */
+        private readonly null|array|string $from = null,
         /** @var ?non-empty-string */
         private readonly ?string $condition = null,
-        /** @var ?array{0:object|class-string,1:string} */
+        /** @var ?array{object|class-string,string} */
         private readonly ?array $when = null,
         private readonly string $formatter = 'default',
     ) {
         if (null !== $this->when) {
             Assert::count($this->when, 2);
+        }
+
+        if (is_array($this->from)) {
+            Assert::count($this->from, 2);
         }
     }
 
@@ -41,8 +48,13 @@ final class Capture
         return $this->message;
     }
 
-    public function getFrom(): ?string
+    /** @return ?array{class-string,?string} */
+    public function getFrom(): ?array
     {
+        if (is_string($this->from)) {
+            return [$this->from, null];
+        }
+
         return $this->from;
     }
 
@@ -51,7 +63,7 @@ final class Capture
         return $this->condition;
     }
 
-    /** @return ?array{0:object|class-string,1:string} */
+    /** @return ?array{object|class-string,string} */
     public function getWhen(): ?array
     {
         return $this->when;
