@@ -20,6 +20,6 @@ final class ExceptionOriginMatchConditionFactory implements MatchConditionFactor
             return null;
         }
 
-        return new ExceptionOriginMatchCondition($origin);
+        return new ExceptionOriginMatchCondition(...$origin);
     }
 }

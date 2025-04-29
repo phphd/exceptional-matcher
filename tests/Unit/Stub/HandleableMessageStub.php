@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
 
 use ArrayObject;
+use InvalidArgumentException;
 use LogicException;
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Validator\ValidationFailedExceptionFormatter;
@@ -17,15 +18,13 @@ use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ObjectPropertyCapturab
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\SomeValueException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 #[ExceptionalValidation]
 final class HandleableMessageStub
 {
-    #[ExceptionalValidation\Capture(LogicException::class, 'oops')]
-    private string $messageText;
-
     #[ExceptionalValidation\Capture(PropertyCapturableException::class, 'oops')]
     private int $property;
 
@@ -55,6 +54,12 @@ final class HandleableMessageStub
 
     #[ExceptionalValidation\Capture(ValidationFailedException::class, from: Email::class)]
     private string $email = 'matched!';
+
+    #[ExceptionalValidation\Capture(InvalidArgumentException::class, from: [Uuid::class, 'fromString'])]
+    private string $uid;
+
+    #[ExceptionalValidation\Capture(LogicException::class, 'oops')]
+    private string $messageText;
 
     #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
     #[ExceptionalValidation\Capture(ValidationFailedException::class, condition: ValidationFailedExceptionValueMatchCondition::class, formatter: ViolationListExceptionFormatter::class)]
