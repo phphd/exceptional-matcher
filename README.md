@@ -32,7 +32,8 @@ since this library integrates it quite well.
 Ordinarily, validation flows through two different layers - one at the HTTP/form level and another
 within domain objects - leading to duplication and potential inconsistencies.
 
-The traditional approach usually makes high use of attribute-based validation, which strips down the domain layer from most
+The traditional approach usually makes high use of attribute-based validation, which strips down the domain layer from
+most
 business logic it must've implemented on its own. Also, we don't have any other way to get a nice message on the form,
 but to create a custom validator for every special check we need. This way, the domain model ends up naked, since all
 business rules have leaked elsewhere.
@@ -236,6 +237,29 @@ class PublishMessageCommand
     public string $messageId;
 }
 ```
+
+#### Origin Place Condition
+
+Besides filtering by exception class, it's possible to filter by the origin class name and method name where the
+exception was raised from.
+
+```php
+use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Capture;
+use Symfony\Component\Uid\Uuid;
+
+#[ExceptionalValidation]
+class ConfirmPackageCommand
+{
+    #[Capture(\InvalidArgumentException::class, from: [Uuid::class, 'fromString'])]
+    public string $uid;
+}
+```
+
+In this example `InvalidArgumentException` is generic, and it can originate from multiple places.
+To catch the exceptions that particularly belong to `Uuid` class, specify `from:` clause with class / method names.
+
+Exception mapper will analyse exception trace and check whether it originated from the place specified. 
 
 #### When-Closure Condition
 
