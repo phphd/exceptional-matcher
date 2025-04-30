@@ -597,10 +597,11 @@ To upgrade a project to the latest version of `exceptional-validation`,
 you should add the following line to your `rector.php` file:
 
 ```php
-return static function (RectorConfig $rectorConfig): void {
+return RectorConfig::configure()
+    ->withPaths([ __DIR__ . '/src'])
+    ->withImportNames(removeUnusedImports: true)
     // Upgrading from the version 1.4 to the latest version
-    $rectorConfig->sets(ExceptionalValidationSetList::fromVersion('1.4')->getSetList());
-}
+    ->withSets(ExceptionalValidationSetList::fromVersion('1.4')->getSetList());
 ```
 
 Make sure to specify your current version of the library so that upgrade sets will be matched correctly.

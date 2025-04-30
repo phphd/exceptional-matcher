@@ -161,6 +161,7 @@ final class ArchitectureRuleSet
                     Selector::classname(ValidationFailedException::class),
                     Selector::inNamespace('Psr\Container'),
                     Selector::classname(Container::class),
+                    Selector::classname(Assert::class),
                 ],
             ],
             'model' => [

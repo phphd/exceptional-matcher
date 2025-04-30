@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Tests\Unit;
 
 use ArrayObject;
+use InvalidArgumentException;
 use LogicException;
 use PhPhD\ExceptionalValidation\Mapper\DefaultExceptionMapper;
 use PhPhD\ExceptionalValidation\Mapper\Validator\ExceptionViolationListMapper;
@@ -37,6 +38,7 @@ use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use stdClass;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -541,7 +543,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertSame('matched!', $violation->getInvalidValue());
     }
 
-    public function testMatchExceptionBySource(): void
+    public function testMatchExceptionByOriginClass(): void
     {
         $originalException = null;
 
@@ -562,5 +564,28 @@ final class ExceptionalValidationUnitTest extends TestCase
         $violation = $violationList[0];
         self::assertInstanceOf(ConstraintViolation::class, $violation);
         self::assertSame('email', $violation->getPropertyPath());
+    }
+
+    public function testMatchExceptionByOriginClassMethod(): void
+    {
+        $message = HandleableMessageStub::create();
+
+        $originalException = null;
+
+        try {
+            Uuid::fromString('invalid-uuid');
+        } catch (InvalidArgumentException $originalException) {
+        }
+
+        self::assertNotNull($originalException);
+
+        $violationList = $this->exceptionMapper->map($message, $originalException);
+
+        self::assertNotNull($violationList);
+        self::assertCount(1, $violationList);
+
+        $violation = $violationList[0];
+        self::assertInstanceOf(ConstraintViolation::class, $violation);
+        self::assertSame('uid', $violation->getPropertyPath());
     }
 }

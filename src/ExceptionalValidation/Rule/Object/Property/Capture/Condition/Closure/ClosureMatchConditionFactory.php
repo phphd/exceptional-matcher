@@ -8,6 +8,7 @@ use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
+use Webmozart\Assert\Assert;
 
 /** @internal */
 final class ClosureMatchConditionFactory implements MatchConditionFactory
@@ -19,6 +20,8 @@ final class ClosureMatchConditionFactory implements MatchConditionFactory
         if (null === $when) {
             return null;
         }
+
+        Assert::methodExists(...$when);
 
         $object = $parent->getEnclosingObject();
 
