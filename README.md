@@ -352,18 +352,18 @@ class BlockedCardException extends DomainException implements ValueException
 This is very similar to ValueException Condition with the difference that it integrates Symfony's native
 `ValidationFailedException`.
 
-You can specify `ValidationFailedExceptionValueMatchCondition` to match validation exception based on the value:
+You can specify `ValidationFailedExceptionMatchCondition` to match validation exception based on value:
 
 ```php
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionValueMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchCondition;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 #[ExceptionalValidation]
 class RegisterUserCommand
 {
-    #[Capture(ValidationFailedException::class, from: Password::class, condition: ValidationFailedExceptionValueMatchCondition::class)]
+    #[Capture(ValidationFailedException::class, from: Password::class, condition: ValidationFailedExceptionMatchCondition::class)]
     public string $password;
 }
 ```
