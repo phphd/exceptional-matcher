@@ -7,8 +7,8 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition;
 use PhPhD\ExceptionalValidation\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Delegating\DelegatingMatchConditionFactory;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionValueMatchCondition;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionValueMatchConditionFactory;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchConditionFactory;
 use Psr\Container\ContainerInterface;
@@ -36,7 +36,7 @@ final class MatchConditionFactoryServiceTest extends BundleTestCase
 
         self::assertSame([
             ExceptionValueMatchCondition::class => ExceptionValueMatchConditionFactory::class,
-            ValidationFailedExceptionValueMatchCondition::class => ValidationFailedExceptionValueMatchConditionFactory::class,
+            ValidationFailedExceptionMatchCondition::class => ValidationFailedExceptionMatchConditionFactory::class,
         ], $providedServices);
     }
 

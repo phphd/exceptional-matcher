@@ -9,8 +9,8 @@ use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionValueMatchCondition;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionValueMatchConditionFactory;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchConditionFactory;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchConditionFactory;
 use Psr\Container\ContainerInterface;
@@ -33,7 +33,7 @@ final class DelegatingMatchConditionFactory implements MatchConditionFactory
         $conditionFactoryRegistry = new Container();
 
         $conditionFactoryRegistry->set(ExceptionValueMatchCondition::class, new ExceptionValueMatchConditionFactory());
-        $conditionFactoryRegistry->set(ValidationFailedExceptionValueMatchCondition::class, new ValidationFailedExceptionValueMatchConditionFactory());
+        $conditionFactoryRegistry->set(ValidationFailedExceptionMatchCondition::class, new ValidationFailedExceptionMatchConditionFactory());
 
         return new self($conditionFactoryRegistry);
     }
