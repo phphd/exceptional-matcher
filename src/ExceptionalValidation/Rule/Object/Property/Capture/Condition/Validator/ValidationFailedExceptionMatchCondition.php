@@ -16,13 +16,13 @@ use Throwable;
 final class ValidationFailedExceptionMatchCondition implements MatchCondition
 {
     public function __construct(
-        private readonly mixed $value,
+        private readonly mixed $propertyValue,
     ) {
     }
 
     /** @param ValidationFailedException $exception */
     public function matches(Throwable $exception): bool
     {
-        return $exception->getValue() === $this->value;
+        return $exception->getValue() === $this->propertyValue;
     }
 }
