@@ -16,6 +16,7 @@ use Throwable;
 final class ClosureMatchCondition implements MatchCondition
 {
     public function __construct(
+        /** @var Closure(Throwable): bool */
         private readonly Closure $condition,
     ) {
     }
