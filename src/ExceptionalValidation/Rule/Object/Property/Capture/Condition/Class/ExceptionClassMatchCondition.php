@@ -21,7 +21,7 @@ final class ExceptionClassMatchCondition implements MatchCondition
         /** @var class-string<Throwable> */
         private readonly string $exceptionClass,
     ) {
-        if (!is_a($this->exceptionClass, Throwable::class, true)) {
+        if (!is_a($this->exceptionClass, Throwable::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('Exception class condition should only be used for exception classes that implement Throwable');
         }
     }

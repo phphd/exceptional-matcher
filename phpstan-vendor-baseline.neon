@@ -7,3 +7,10 @@ parameters:
         -
             message: "#^Call to an undefined method Symfony\\\\Component\\\\Validator\\\\ConstraintViolationInterface\\:\\:getConstraint\\(\\)\\.$#"
             reportUnmatched: false
+
+        -
+            message: '#^Parameter \#9 \$constraint of class Symfony\\Component\\Validator\\ConstraintViolation constructor expects Symfony\\Component\\Validator\\Constraint\|null, mixed given\.$#'
+            identifier: argument.type
+            count: 1
+            path: src/ExceptionalValidation/Mapper/Validator/Formatter/Item/ViolationList/ViolationListExceptionFormatter.php
+            reportUnmatched: false

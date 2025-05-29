@@ -85,15 +85,16 @@ final class ArchitectureRuleSet
     {
         $layer = $this->layers()[$name];
 
-        $layerClasses = $this->{$name}();
+        /** @var SelectorInterface $layerClassesSelector */
+        $layerClassesSelector = $this->{$name}();
 
         return PHPat::rule()
             ->classes(Selector::AllOf(
-                $layerClasses,
+                $layerClassesSelector,
                 Selector::NOT(Selector::classname('/\\\Tests\\\/', true)),
             ))
             ->canOnlyDependOn()
-            ->classes($layerClasses, ...$layer['deps'])
+            ->classes($layerClassesSelector, ...$layer['deps'])
             ->because($layer['description'] ?? 'See its dependency rules in '.self::class.'::layers()')
         ;
     }

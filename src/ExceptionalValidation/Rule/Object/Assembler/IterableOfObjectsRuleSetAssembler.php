@@ -22,7 +22,7 @@ final class IterableOfObjectsRuleSetAssembler
     ) {
     }
 
-    /** @param iterable<array-key,mixed> $items */
+    /** @param iterable<mixed> $items */
     public function assemble(iterable $items, CaptureRule $parent): ?CaptureRule
     {
         /** @var array<array-key,object> $objects */
@@ -73,7 +73,7 @@ final class IterableOfObjectsRuleSetAssembler
     }
 
     /**
-     * @param iterable<array-key,mixed> $iterable
+     * @param iterable<mixed> $iterable
      *
      * @return array<array-key,mixed>
      */
