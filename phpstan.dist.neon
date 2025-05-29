@@ -6,8 +6,10 @@ includes:
     - phpstan-vendor-baseline.neon
 
 parameters:
-    level: 9
-    phpVersion: 80127
+    level: max
+    phpVersion:
+        min: 80100
+        max: 80499
     editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
     paths:
         - src
