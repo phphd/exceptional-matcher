@@ -6,6 +6,8 @@ namespace PhPhD\ExceptionalValidation;
 
 use Attribute;
 use Exception;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use Throwable;
 use Webmozart\Assert\Assert;
 
@@ -22,10 +24,11 @@ final class Capture
         private readonly ?string $message = null,
         /** @var null|class-string|array{class-string,string} The origin of the exception */
         private readonly null|array|string $from = null,
-        /** @var ?non-empty-string */
+        /** @var null|class-string<MatchCondition>|non-empty-string */
         private readonly ?string $condition = null,
         /** @var ?array{object|class-string,string} */
         private readonly ?array $when = null,
+        /** @var class-string<ExceptionViolationFormatter>|non-empty-string */
         private readonly string $formatter = 'default',
     ) {
         if (null !== $this->when) {
