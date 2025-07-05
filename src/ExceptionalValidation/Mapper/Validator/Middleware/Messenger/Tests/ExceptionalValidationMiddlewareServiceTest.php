@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Mapper\Validator\Middleware\Messenger;
+namespace PhPhD\ExceptionalValidation\Mapper\Validator\Middleware\Messenger\Tests;
 
 use PhPhD\ExceptionalValidation\Bundle\Tests\BundleTestCase;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Middleware\Messenger\ExceptionalValidationMiddleware;
 
 /**
  * @coversNothing
