@@ -29,10 +29,10 @@ final class PropertyCaptureRulesAssembler implements CaptureRuleSetAssembler
     }
 
     /** @param PropertyRulesAssemblerEnvelope $envelope */
-    public function assemble(CaptureRule $parent, CaptureRuleSetAssemblerEnvelope $envelope): ?CompositeRuleSet
+    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssemblerEnvelope $envelope): ?CompositeRuleSet
     {
         $rules = new ArrayIterator();
-        $ruleSet = new CompositeRuleSet($parent, $rules);
+        $ruleSet = new CompositeRuleSet($parentRule, $rules);
 
         $captureAttributes = $envelope
             ->getReflectionProperty()
@@ -45,7 +45,7 @@ final class PropertyCaptureRulesAssembler implements CaptureRuleSetAssembler
 
             $rules->append(new CaptureExceptionRule(
                 $ruleSet,
-                $this->getCondition($capture, $parent),
+                $this->getCondition($capture, $parentRule),
                 $capture->getMessage(),
                 $capture->getFormatter(),
             ));

@@ -25,9 +25,9 @@ final class PropertyNestedValidObjectRuleAssembler implements CaptureRuleSetAsse
     }
 
     /** @param PropertyRulesAssemblerEnvelope $envelope */
-    public function assemble(CaptureRule $parent, CaptureRuleSetAssemblerEnvelope $envelope): ?CaptureRule
+    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssemblerEnvelope $envelope): ?CaptureRule
     {
-        $propertyValue = $parent->getValue();
+        $propertyValue = $parentRule->getValue();
 
         if (!is_object($propertyValue)) {
             return null;
@@ -39,6 +39,6 @@ final class PropertyNestedValidObjectRuleAssembler implements CaptureRuleSetAsse
             return null;
         }
 
-        return $this->objectRuleSetAssembler->assemble($propertyValue, $parent);
+        return $this->objectRuleSetAssembler->assemble($propertyValue, $parentRule);
     }
 }

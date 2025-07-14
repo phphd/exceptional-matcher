@@ -14,5 +14,5 @@ use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 interface CaptureRuleSetAssembler
 {
     /** @param TEnvelope&CaptureRuleSetAssemblerEnvelope $envelope */
-    public function assemble(CaptureRule $parent, CaptureRuleSetAssemblerEnvelope $envelope): ?CaptureRule;
+    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssemblerEnvelope $envelope): ?CaptureRule;
 }

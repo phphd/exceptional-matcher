@@ -24,10 +24,10 @@ final class CompositeRuleSetAssembler implements CaptureRuleSetAssembler
     }
 
     /** @param T $envelope */
-    public function assemble(CaptureRule $parent, CaptureRuleSetAssemblerEnvelope $envelope): ?CompositeRuleSet
+    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssemblerEnvelope $envelope): ?CompositeRuleSet
     {
         $rules = new ArrayIterator();
-        $ruleSet = new CompositeRuleSet($parent, $rules);
+        $ruleSet = new CompositeRuleSet($parentRule, $rules);
 
         foreach ($this->assemblers as $assembler) {
             $innerRuleSet = $assembler->assemble($ruleSet, $envelope);

@@ -10,7 +10,6 @@ use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\LazyRuleSet;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet;
-use ReflectionProperty;
 
 /**
  * @internal
@@ -26,14 +25,10 @@ final class PropertyRuleSetAssembler implements CaptureRuleSetAssembler
     }
 
     /** @param PropertyRuleSetAssemblerEnvelope $envelope */
-    public function assemble(CaptureRule $parent, CaptureRuleSetAssemblerEnvelope $envelope): ?PropertyRuleSet
+    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssemblerEnvelope $envelope): ?PropertyRuleSet
     {
         /** @var object $object */
-        $object = $parent->getValue();
-        $reflectionProperty = $envelope->getReflectionProperty();
-
-        $name = $reflectionProperty->getName();
-        $value = $this->getPropertyValue($object, $reflectionProperty);
+        $object = $parentRule->getValue();
 
         $rules = null;
         $rulesSet = new LazyRuleSet(static function () use (&$rules): CaptureRule {
@@ -41,8 +36,8 @@ final class PropertyRuleSetAssembler implements CaptureRuleSetAssembler
             return $rules;
         });
 
-        $propertyRuleSet = new PropertyRuleSet($parent, $name, $value, $rulesSet);
-        $propertyEnvelope = new PropertyRulesAssemblerEnvelope($reflectionProperty);
+        $propertyRuleSet = new PropertyRuleSet($parentRule, $envelope->getName(), $envelope->getValue($object), $rulesSet);
+        $propertyEnvelope = new PropertyRulesAssemblerEnvelope($envelope->getReflectionProperty());
 
         $rules = $this->captureListAssembler->assemble($propertyRuleSet, $propertyEnvelope);
 
@@ -51,14 +46,5 @@ final class PropertyRuleSetAssembler implements CaptureRuleSetAssembler
         }
 
         return $propertyRuleSet;
-    }
-
-    private function getPropertyValue(object $message, ReflectionProperty $property): mixed
-    {
-        if (!$property->isInitialized($message)) {
-            return null;
-        }
-
-        return $property->getValue($message);
     }
 }

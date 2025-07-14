@@ -28,7 +28,7 @@ final class ObjectRulesAssembler implements CaptureRuleSetAssembler
     }
 
     /** @param ObjectRulesAssemblerEnvelope $envelope */
-    public function assemble(CaptureRule $parent, CaptureRuleSetAssemblerEnvelope $envelope): ?CaptureRule
+    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssemblerEnvelope $envelope): ?CaptureRule
     {
         $reflectionClass = $envelope->getReflectionClass();
 
@@ -36,10 +36,10 @@ final class ObjectRulesAssembler implements CaptureRuleSetAssembler
             return null;
         }
 
-        return new LazyRuleSet(function (LazyRuleSet $ruleSet) use ($parent, $reflectionClass): CompositeRuleSet {
+        return new LazyRuleSet(function (LazyRuleSet $ruleSet) use ($parentRule, $reflectionClass): CompositeRuleSet {
             $propertyRules = $this->getPropertyRules($reflectionClass, $ruleSet);
 
-            return new CompositeRuleSet($parent, $propertyRules);
+            return new CompositeRuleSet($parentRule, $propertyRules);
         });
     }
 
