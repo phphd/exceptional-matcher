@@ -19,4 +19,18 @@ final class PropertyRuleSetAssemblerEnvelope implements CaptureRuleSetAssemblerE
     {
         return $this->reflectionProperty;
     }
+
+    public function getName(): string
+    {
+        return $this->reflectionProperty->getName();
+    }
+
+    public function getValue(object $message): mixed
+    {
+        if (!$this->reflectionProperty->isInitialized($message)) {
+            return null;
+        }
+
+        return $this->reflectionProperty->getValue($message);
+    }
 }
