@@ -25,9 +25,9 @@ final class PropertyNestedValidIterableRulesAssembler implements CaptureRuleSetA
     }
 
     /** @param PropertyRulesAssemblerEnvelope $envelope */
-    public function assemble(CaptureRule $parent, CaptureRuleSetAssemblerEnvelope $envelope): ?CaptureRule
+    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssemblerEnvelope $envelope): ?CaptureRule
     {
-        $propertyValue = $parent->getValue();
+        $propertyValue = $parentRule->getValue();
 
         if (!is_iterable($propertyValue)) {
             return null;
@@ -39,6 +39,6 @@ final class PropertyNestedValidIterableRulesAssembler implements CaptureRuleSetA
             return null;
         }
 
-        return $this->iterableObjectsRuleSetAssembler->assemble($propertyValue, $parent);
+        return $this->iterableObjectsRuleSetAssembler->assemble($propertyValue, $parentRule);
     }
 }
