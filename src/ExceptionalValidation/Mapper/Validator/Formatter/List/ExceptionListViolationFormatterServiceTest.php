@@ -16,7 +16,7 @@ final class ExceptionListViolationFormatterServiceTest extends BundleTestCase
 {
     public function testViolationsListFormatter(): void
     {
-        $violationsListFormatter = self::getContainer()->get('phd_exceptional_validation.violations_list_formatter');
+        $violationsListFormatter = self::getContainer()->get(ExceptionListViolationFormatter::class);
         self::assertInstanceOf(ExceptionListViolationFormatter::class, $violationsListFormatter);
         self::assertNotInstanceOf(DefaultExceptionListViolationFormatter::class, $violationsListFormatter);
         self::assertInstanceOf(LazyObjectInterface::class, $violationsListFormatter);

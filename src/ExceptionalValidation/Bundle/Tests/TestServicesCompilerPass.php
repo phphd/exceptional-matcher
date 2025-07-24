@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Bundle\Tests;
 
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use stdClass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -29,7 +30,7 @@ final class TestServicesCompilerPass implements CompilerPassInterface
             CustomExceptionViolationFormatter::class,
             new Definition(
                 CustomExceptionViolationFormatter::class,
-                [new Reference('phd_exceptional_validation.violation_formatter.default')],
+                [new Reference(ExceptionViolationFormatter::class.'<Throwable>')],
             ),
         )->setAutoconfigured(true);
     }

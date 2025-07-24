@@ -18,14 +18,14 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
     $services = $containerConfigurator->services();
 
     $services
-        ->set('phd_exceptional_validation.violation_formatter', DelegatingExceptionViolationFormatter::class)
+        ->set(ExceptionViolationFormatter::class, DelegatingExceptionViolationFormatter::class)
         ->args([
-            tagged_locator('exceptional_validation.violation_formatter', 'id'),
+            tagged_locator(ExceptionViolationFormatter::class, 'id'),
         ])
     ;
 
     $builder
         ->registerForAutoconfiguration(ExceptionViolationFormatter::class)
-        ->addTag('exceptional_validation.violation_formatter')
+        ->addTag(ExceptionViolationFormatter::class)
     ;
 };

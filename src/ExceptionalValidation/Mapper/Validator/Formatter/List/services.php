@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List;
 
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -17,9 +18,9 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
     $services = $containerConfigurator->services();
 
     $services
-        ->set('phd_exceptional_validation.violations_list_formatter', DefaultExceptionListViolationFormatter::class)
+        ->set(ExceptionListViolationFormatter::class, DefaultExceptionListViolationFormatter::class)
         ->args([
-            service('phd_exceptional_validation.violation_formatter'),
+            service(ExceptionViolationFormatter::class),
         ])
         ->lazy()
         ->tag('proxy', ['interface' => ExceptionListViolationFormatter::class])

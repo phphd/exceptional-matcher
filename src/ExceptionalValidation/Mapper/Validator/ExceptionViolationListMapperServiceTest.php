@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator;
 
 use PhPhD\ExceptionalValidation\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\VarExporter\LazyObjectInterface;
 
 /**
@@ -17,7 +18,7 @@ final class ExceptionViolationListMapperServiceTest extends BundleTestCase
 {
     public function testExceptionHandlerService(): void
     {
-        $exceptionHandler = self::getContainer()->get('phd_exceptional_validation.exception_mapper.validator');
+        $exceptionHandler = self::getContainer()->get(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>');
         self::assertInstanceOf(ExceptionMapper::class, $exceptionHandler);
         self::assertNotInstanceOf(ExceptionViolationListMapper::class, $exceptionHandler);
         self::assertInstanceOf(LazyObjectInterface::class, $exceptionHandler);
