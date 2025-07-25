@@ -192,10 +192,10 @@ This should provide you with a list, similar to this:
 [1] PhPhD\ExceptionalValidation\Mapper\ExceptionMapper<non-empty-list<PhPhD\ExceptionalValidation\Rule\Exception\CapturedException<Throwable>>>
 ```
 
-All these mappers allow you to map Exception to any available format.
+All these mappers allow you to map Exception to any available format, specified as a generic parameter.
 It could be `ConstraintViolationList`, or `CapturedException` list, or anything else.
 
-Thus, you can use these services in your own code:
+Therefore, you can inject these services in your own code:
 
 ```php
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
@@ -217,6 +217,7 @@ class SignDocumentActivity
         try {
             return $message->process();
         } catch (Exception $e) {
+            /** @var ConstraintViolationListInterface $violationList */
             $violationList = $this->exceptionMapper->map($message, $e);
 
             if (null === $violationList) {
@@ -225,8 +226,6 @@ class SignDocumentActivity
 
             throw new ApplicationFailure(
                 'Validation Failed',
-                'validation',
-                true,
                 $this->encode($violationList),
                 previous: $e,
             );
@@ -235,8 +234,8 @@ class SignDocumentActivity
 }
 ```
 
-In this example, we use `ExceptionMapper` to relate the exception to `ConstraintViolationListInterface` for this
-particular `$message`. Then, `ConstraintViolationList` is used specifically to the logic of application. 
+In this example, we use `ExceptionMapper` to relate the exception to some property of the `$message`, which results in
+`ConstraintViolationListInterface` that is used specifically to the logic of application.
 
 ### How is this different from the standard validation? ⚖️
 
