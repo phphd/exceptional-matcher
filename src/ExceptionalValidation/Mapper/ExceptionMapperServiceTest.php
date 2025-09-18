@@ -16,13 +16,13 @@ use Symfony\Component\VarExporter\LazyObjectInterface;
  */
 final class ExceptionMapperServiceTest extends BundleTestCase
 {
-    public function testExceptionHandlerService(): void
+    public function testExceptionMapperService(): void
     {
-        $exceptionHandler = self::getContainer()->get(ExceptionMapper::class.'<non-empty-list<'.CapturedException::class.'<Throwable>>>');
-        self::assertInstanceOf(ExceptionMapper::class, $exceptionHandler);
-        self::assertNotInstanceOf(DefaultExceptionMapper::class, $exceptionHandler);
-        self::assertInstanceOf(LazyObjectInterface::class, $exceptionHandler);
-        self::assertInstanceOf(DefaultExceptionMapper::class, $exceptionHandler->initializeLazyObject());
+        $exceptionMapper = self::getContainer()->get(ExceptionMapper::class.'<non-empty-list<'.CapturedException::class.'<Throwable>>>');
+        self::assertInstanceOf(ExceptionMapper::class, $exceptionMapper);
+        self::assertNotInstanceOf(DefaultExceptionMapper::class, $exceptionMapper);
+        self::assertInstanceOf(LazyObjectInterface::class, $exceptionMapper);
+        self::assertInstanceOf(DefaultExceptionMapper::class, $exceptionMapper->initializeLazyObject());
     }
 
     public function testExceptionUnwrapper(): void
