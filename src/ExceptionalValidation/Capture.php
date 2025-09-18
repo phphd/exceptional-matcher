@@ -23,7 +23,7 @@ final class Capture
         private readonly string $exception,
         private readonly ?string $message = null,
         /** @var null|class-string|array{class-string,string} The origin of the exception */
-        private readonly null|array|string $from = null,
+        private readonly array|string|null $from = null,
         /** @var null|class-string<MatchCondition>|non-empty-string */
         private readonly ?string $condition = null,
         /** @var ?array{object|class-string,string} */
