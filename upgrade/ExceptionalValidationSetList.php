@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Upgrade;
 
+use LogicException;
+use Rector\Application\VersionResolver;
+
 use function array_filter;
 use function array_values;
+use function sprintf;
 use function version_compare;
 
 /** @api */
@@ -19,6 +23,10 @@ final class ExceptionalValidationSetList
         /** @var array<string,string> */
         private readonly array $setList,
     ) {
+        if (version_compare(VersionResolver::PACKAGE_VERSION, '2.0', '<') // @phpstan-ignore booleanOr.leftAlwaysFalse
+            || version_compare(VersionResolver::PACKAGE_VERSION, '3.0', '>=')) { // @phpstan-ignore booleanOr.rightAlwaysFalse
+            throw new LogicException(sprintf('Version %s of rector is not supported by this version of library', VersionResolver::PACKAGE_VERSION));
+        }
     }
 
     public static function fromVersion(string $version): self

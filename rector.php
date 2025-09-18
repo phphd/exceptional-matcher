@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use PhPhD\CodingStandard\ValueObject\Set\PhdSetList;
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector\If_\ReduceAlwaysFalseIfOrRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\ValueObject\PhpVersion;
@@ -20,4 +21,7 @@ return RectorConfig::configure()
         StringClassNameToClassConstantRector::class => [
             __DIR__.'/upgrade',
         ],
+        ReduceAlwaysFalseIfOrRector::class => [
+            __DIR__.'/upgrade',
+        ]
     ]);
