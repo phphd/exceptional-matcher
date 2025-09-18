@@ -12,9 +12,9 @@ use Throwable;
 interface MatchConditionFactory
 {
     /**
-     * @psalm-return ?MatchCondition<Throwable>
-     *
      * @phpstan-return ?MatchCondition<covariant Throwable>
+     *
+     * @psalm-return ?MatchCondition<Throwable>
      */
     public function getCondition(Capture $capture, CaptureRule $parent): ?MatchCondition;
 }
