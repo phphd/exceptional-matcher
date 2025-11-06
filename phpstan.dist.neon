@@ -1,7 +1,8 @@
 includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/tomasvotruba/type-coverage/config/extension.neon
     - vendor/phpstan/phpstan-phpunit/extension.neon
     - vendor/phpstan/phpstan-phpunit/rules.neon
-    - vendor/tomasvotruba/type-coverage/config/extension.neon
     - vendor/phpat/phpat/extension.neon
     - phpstan-vendor-baseline.neon
 

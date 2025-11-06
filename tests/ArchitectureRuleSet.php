@@ -86,7 +86,7 @@ final class ArchitectureRuleSet
         $layer = $this->layers()[$name];
 
         /** @var SelectorInterface $layerClassesSelector */
-        $layerClassesSelector = $this->{$name}();
+        $layerClassesSelector = $this->{$name}(); // @phpstan-ignore method.dynamicName
 
         return PHPat::rule()
             ->classes(Selector::AllOf(
