@@ -12,7 +12,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=8.1",
-        "webmozart/assert": "^1.11",
+        "webmozart/assert": "^1.12.1",
         "phphd/exception-toolkit": "^1.0"
     },
     "conflict": {
