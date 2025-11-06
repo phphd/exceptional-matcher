@@ -29,7 +29,7 @@ final class ViolationListExceptionFormatter implements ExceptionViolationFormatt
     public function format(CapturedException $capturedException): array
     {
         $exception = $capturedException->getException();
-        Assert::isInstanceOf($exception, ViolationListException::class);
+        Assert::isInstanceOf($exception, ViolationListException::class); // @phpstan-ignore staticMethod.alreadyNarrowedType
 
         $rule = $capturedException->getMatchedRule();
         $root = $rule->getRoot();
