@@ -21,11 +21,11 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite
 use ReflectionClass;
 
 /** @internal */
-final class ObjectRuleSetAssembler
+final readonly class ObjectRuleSetAssembler
 {
-    /** @param CaptureRuleSetAssembler< ObjectRulesAssemblerEnvelope> $objectRulesAssembler */
+    /** @param CaptureRuleSetAssembler<ObjectRulesAssemblerEnvelope> $objectRulesAssembler */
     public function __construct(
-        private readonly CaptureRuleSetAssembler $objectRulesAssembler,
+        private CaptureRuleSetAssembler $objectRulesAssembler,
     ) {
     }
 

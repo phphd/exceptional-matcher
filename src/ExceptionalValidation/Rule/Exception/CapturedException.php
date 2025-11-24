@@ -12,12 +12,12 @@ use Throwable;
  *
  * @template-covariant T of Throwable
  */
-final class CapturedException
+final readonly class CapturedException
 {
     public function __construct(
         /** @var T */
-        private readonly Throwable $exception,
-        private readonly CaptureExceptionRule $matchedRule,
+        private Throwable $exception,
+        private CaptureExceptionRule $matchedRule,
     ) {
     }
 

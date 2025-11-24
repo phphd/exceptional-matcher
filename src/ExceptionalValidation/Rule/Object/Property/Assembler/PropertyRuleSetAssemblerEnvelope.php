@@ -8,10 +8,10 @@ use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerEnvelope;
 use ReflectionProperty;
 
 /** @internal */
-final class PropertyRuleSetAssemblerEnvelope implements CaptureRuleSetAssemblerEnvelope
+final readonly class PropertyRuleSetAssemblerEnvelope implements CaptureRuleSetAssemblerEnvelope
 {
     public function __construct(
-        private readonly ReflectionProperty $reflectionProperty,
+        private ReflectionProperty $reflectionProperty,
     ) {
     }
 

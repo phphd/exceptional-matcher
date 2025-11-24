@@ -15,12 +15,12 @@ use Throwable;
  *
  * @implements ExceptionMapper<ConstraintViolationListInterface>
  */
-final class ExceptionViolationListMapper implements ExceptionMapper
+final readonly class ExceptionViolationListMapper implements ExceptionMapper
 {
     public function __construct(
         /** @var ExceptionMapper<non-empty-list<CapturedException<Throwable>>> */
-        private readonly ExceptionMapper $mapper,
-        private readonly ExceptionListViolationFormatter $violationListFormatter,
+        private ExceptionMapper $mapper,
+        private ExceptionListViolationFormatter $violationListFormatter,
     ) {
     }
 

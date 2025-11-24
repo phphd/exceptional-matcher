@@ -19,11 +19,11 @@ use ReflectionClass;
  *
  * @implements CaptureRuleSetAssembler< ObjectRulesAssemblerEnvelope>
  */
-final class ObjectRulesAssembler implements CaptureRuleSetAssembler
+final readonly class ObjectRulesAssembler implements CaptureRuleSetAssembler
 {
     /** @param CaptureRuleSetAssembler<PropertyRuleSetAssemblerEnvelope> $propertyRuleSetAssembler */
     public function __construct(
-        private readonly CaptureRuleSetAssembler $propertyRuleSetAssembler,
+        private CaptureRuleSetAssembler $propertyRuleSetAssembler,
     ) {
     }
 

@@ -15,11 +15,11 @@ use function is_a;
  *
  * @implements MatchCondition<Throwable>
  */
-final class ExceptionClassMatchCondition implements MatchCondition
+final readonly class ExceptionClassMatchCondition implements MatchCondition
 {
     public function __construct(
         /** @var class-string<Throwable> */
-        private readonly string $exceptionClass,
+        private string $exceptionClass,
     ) {
         if (!is_a($this->exceptionClass, Throwable::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('Exception class condition should only be used for exception classes that implement Throwable');

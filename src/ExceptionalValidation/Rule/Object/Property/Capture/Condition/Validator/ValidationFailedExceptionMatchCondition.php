@@ -13,10 +13,10 @@ use Throwable;
  *
  * @implements MatchCondition<ValidationFailedException>
  */
-final class ValidationFailedExceptionMatchCondition implements MatchCondition
+final readonly class ValidationFailedExceptionMatchCondition implements MatchCondition
 {
     public function __construct(
-        private readonly mixed $propertyValue,
+        private mixed $propertyValue,
     ) {
     }
 

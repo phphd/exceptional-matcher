@@ -16,11 +16,11 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet;
  *
  * @implements CaptureRuleSetAssembler<PropertyRuleSetAssemblerEnvelope>
  */
-final class PropertyRuleSetAssembler implements CaptureRuleSetAssembler
+final readonly class PropertyRuleSetAssembler implements CaptureRuleSetAssembler
 {
     /** @param CaptureRuleSetAssembler<PropertyRulesAssemblerEnvelope> $captureListAssembler */
     public function __construct(
-        private readonly CaptureRuleSetAssembler $captureListAssembler,
+        private CaptureRuleSetAssembler $captureListAssembler,
     ) {
     }
 

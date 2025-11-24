@@ -15,11 +15,11 @@ use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
  *
  * @implements CaptureRuleSetAssembler<T>
  */
-final class CompositeRuleSetAssembler implements CaptureRuleSetAssembler
+final readonly class CompositeRuleSetAssembler implements CaptureRuleSetAssembler
 {
     public function __construct(
         /** @var iterable<CaptureRuleSetAssembler<T>> */
-        private readonly iterable $assemblers,
+        private iterable $assemblers,
     ) {
     }
 

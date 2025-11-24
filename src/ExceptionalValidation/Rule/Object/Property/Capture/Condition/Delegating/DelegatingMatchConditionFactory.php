@@ -17,10 +17,10 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Container;
 
 /** @internal */
-final class DelegatingMatchConditionFactory implements MatchConditionFactory
+final readonly class DelegatingMatchConditionFactory implements MatchConditionFactory
 {
     public function __construct(
-        private readonly ContainerInterface $conditionFactoryRegistry,
+        private ContainerInterface $conditionFactoryRegistry,
     ) {
     }
 

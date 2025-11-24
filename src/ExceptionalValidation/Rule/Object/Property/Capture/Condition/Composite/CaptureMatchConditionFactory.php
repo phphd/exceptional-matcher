@@ -22,11 +22,11 @@ use function array_values;
 use function count;
 
 /** @internal */
-final class CaptureMatchConditionFactory implements MatchConditionFactory
+final readonly class CaptureMatchConditionFactory implements MatchConditionFactory
 {
     public function __construct(
         /** @var iterable<MatchConditionFactory> */
-        private readonly iterable $factories,
+        private iterable $factories,
     ) {
     }
 
