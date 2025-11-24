@@ -77,7 +77,7 @@
         ],
         "ci:ecs": "vendor/bin/ecs check",
         "ci:ecs-fix": "vendor/bin/ecs check --fix",
-        "ci:rector": "vendor/bin/rector process --dry-run -vv",
+        "ci:rector": "vendor/bin/rector process --dry-run",
         "ci:rector-fix": "vendor/bin/rector process",
         "ci:phpstan": "vendor/bin/phpstan analyze",
         "ci:psalm": "vendor/bin/psalm",

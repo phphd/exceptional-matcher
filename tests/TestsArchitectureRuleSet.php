@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Tests;
 
 use PHPat\Selector\Selector;
 use PHPat\Test\Attributes\TestRule;
-use PHPat\Test\Builder\Rule;
+use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\PHPat;
 use PHPUnit\Framework\TestCase;
 
@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 final class TestsArchitectureRuleSet
 {
     #[TestRule]
-    public function testsMustBeIncludedForPHPUnit(): Rule
+    public function testsMustBeIncludedForPHPUnit(): BuildStep
     {
         return PHPat::rule()
             ->classes(Selector::AllOf(
