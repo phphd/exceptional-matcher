@@ -11,6 +11,7 @@ use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
 use PhPhD\ExceptionalValidation\Rule\LazyRuleSet;
+use PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssemblerEnvelope;
 use ReflectionClass;
 use ReflectionProperty;
@@ -18,18 +19,15 @@ use ReflectionProperty;
 use function array_map;
 
 /** @internal */
-final readonly class ObjectRulesAssemblerEnvelope implements CaptureRuleSetAssemblerEnvelope
+final readonly class ObjectRuleSetAssemblerEnvelope implements CaptureRuleSetAssemblerEnvelope
 {
-    public function __construct(
-        /** @var ReflectionClass<object> */
-        private ReflectionClass $reflectionClass,
-    ) {
-    }
+    /** @var ReflectionClass<object> */
+    private ReflectionClass $reflectionClass;
 
-    /** @return ReflectionClass<object> */
-    public function getReflectionClass(): ReflectionClass
-    {
-        return $this->reflectionClass;
+    public function __construct(
+        private object $message,
+    ) {
+        $this->reflectionClass = new ReflectionClass($this->message::class);
     }
 
     /**
@@ -37,16 +35,22 @@ final readonly class ObjectRulesAssemblerEnvelope implements CaptureRuleSetAssem
      *
      * @internal
      */
-    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssembler $propertyRuleSetAssembler): ?CaptureRule
+    public function assemble(?CaptureRule $parent, CaptureRuleSetAssembler $propertyRuleSetAssembler): ?CaptureRule
     {
         if (!$this->isMarkedWithAnAttribute()) {
             return null;
         }
 
-        return new LazyRuleSet(fn (LazyRuleSet $ruleSet): CompositeRuleSet => new CompositeRuleSet(
-            $parentRule,
-            $this->getPropertyRules($ruleSet, $propertyRuleSetAssembler),
-        ));
+        return new LazyRuleSet(
+            fn (LazyRuleSet $objectRuleSet): CaptureRule => new ObjectRuleSet(
+                $this->message,
+                $parent,
+                new CompositeRuleSet(
+                    $objectRuleSet,
+                    $this->getPropertyRules($objectRuleSet, $propertyRuleSetAssembler),
+                ),
+            ),
+        );
     }
 
     private function isMarkedWithAnAttribute(): bool

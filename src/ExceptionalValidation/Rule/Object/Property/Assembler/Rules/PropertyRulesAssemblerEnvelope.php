@@ -31,7 +31,6 @@ final readonly class PropertyRulesAssemblerEnvelope implements CaptureRuleSetAss
         $captureAttributes = $this->reflectionProperty->getAttributes(Capture::class);
 
         foreach ($captureAttributes as $captureAttribute) {
-            /** @var Capture $capture */
             $capture = $captureAttribute->newInstance();
 
             /** @var MatchCondition<Throwable> $condition */
