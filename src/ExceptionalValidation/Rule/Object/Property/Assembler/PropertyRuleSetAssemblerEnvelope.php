@@ -33,9 +33,9 @@ final readonly class PropertyRuleSetAssemblerEnvelope implements CaptureRuleSetA
         });
 
         $propertyRuleSet = new PropertyRuleSet($parentRule, $this->getName(), $this->getValue($object), $rulesSet);
-        $propertyEnvelope = new PropertyRulesAssemblerEnvelope($this->reflectionProperty);
+        $propertyRulesEnvelope = new PropertyRulesAssemblerEnvelope($this->reflectionProperty);
 
-        $rules = $captureListAssembler->assemble($propertyRuleSet, $propertyEnvelope);
+        $rules = $captureListAssembler->assemble($propertyRuleSet, $propertyRulesEnvelope);
 
         if (null === $rules) {
             return null;
