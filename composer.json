@@ -13,24 +13,24 @@
     "require": {
         "php": ">=8.1",
         "webmozart/assert": "^1.12.1",
-        "phphd/exception-toolkit": "^1.0"
+        "phphd/exception-toolkit": "^1.0.1"
     },
     "conflict": {
-        "symfony/validator": "<6.0 || >=8.0",
-        "symfony/http-kernel": "<6.0 || >=8.0",
-        "symfony/dependency-injection": "<6.2 || >=8.0",
-        "symfony/config": "<6.0 || >=8.0",
-        "symfony/messenger": "<6.4 || >=8.0"
+        "symfony/validator": "<6.0 || >8.4",
+        "symfony/http-kernel": "<6.0 || >8.4",
+        "symfony/dependency-injection": "<6.2 || >8.4",
+        "symfony/config": "<6.0 || >8.4",
+        "symfony/messenger": "<6.4 || >8.4"
     },
     "require-dev": {
-        "symfony/validator": "^6.0 || ^7.0",
-        "symfony/http-kernel": "^6.0 || ^7.0",
-        "symfony/dependency-injection": "^6.2 || ^7.0",
-        "symfony/config": "^6.0 || ^7.0",
-        "symfony/messenger": "^6.4 || ^7.0",
-        "symfony/uid": "^6.0 || ^7.0",
+        "symfony/validator": ">=6.0",
+        "symfony/http-kernel": ">=6.0",
+        "symfony/dependency-injection": ">=6.2",
+        "symfony/config": ">=6.0",
+        "symfony/messenger": ">=6.4",
+        "symfony/uid": ">=6.0",
+        "symfony/var-dumper": ">=6.0",
         "phphd/coding-standard": "~0.6.2",
-        "symfony/var-dumper": "^6.0 || ^7.0",
         "tomasvotruba/type-coverage": "^2.0.2",
         "phpstan/phpstan-phpunit": "^2.0.7",
         "psalm/plugin-phpunit": "^0.19.5",
