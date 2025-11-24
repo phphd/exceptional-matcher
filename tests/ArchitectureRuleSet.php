@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Tests;
 
 use PHPat\Selector\ClassNamespace;
+use PHPat\Selector\Modifier\AllOfSelectorModifier;
+use PHPat\Selector\Modifier\AnyOfSelectorModifier;
 use PHPat\Selector\Selector;
 use PHPat\Selector\SelectorInterface;
 use PHPat\Test\Attributes\TestRule;
 use PHPat\Test\Builder\BuildStep;
-use PHPat\Test\Builder\Rule;
 use PHPat\Test\PHPat;
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Capture;
@@ -34,49 +35,49 @@ use Webmozart\Assert\Assert;
 final class ArchitectureRuleSet
 {
     #[TestRule]
-    public function testBundleDependencies(): Rule
+    public function testBundleDependencies(): BuildStep
     {
         return $this->layerRule('bundle');
     }
 
     #[TestRule]
-    public function testMessengerValidatorMiddlewareDependencies(): Rule
+    public function testMessengerValidatorMiddlewareDependencies(): BuildStep
     {
         return $this->layerRule('messengerValidatorMiddleware');
     }
 
     #[TestRule]
-    public function testValidatorMiddlewareDependencies(): Rule
+    public function testValidatorMiddlewareDependencies(): BuildStep
     {
         return $this->layerRule('validatorMiddleware');
     }
 
     #[TestRule]
-    public function testMapperDependencies(): Rule
+    public function testMapperDependencies(): BuildStep
     {
         return $this->layerRule('mapper');
     }
 
     #[TestRule]
-    public function testValidatorMapperDependencies(): Rule
+    public function testValidatorMapperDependencies(): BuildStep
     {
         return $this->layerRule('validatorMapper');
     }
 
     #[TestRule]
-    public function testMatchConditionFactoryDependencies(): Rule
+    public function testMatchConditionFactoryDependencies(): BuildStep
     {
         return $this->layerRule('matchConditionFactory');
     }
 
     #[TestRule]
-    public function testCaptureRuleSetAssemblerDependencies(): Rule
+    public function testCaptureRuleSetAssemblerDependencies(): BuildStep
     {
         return $this->layerRule('captureRuleSetAssembler');
     }
 
     #[TestRule]
-    public function testModelDependencies(): Rule
+    public function testModelDependencies(): BuildStep
     {
         return $this->layerRule('model');
     }
@@ -181,7 +182,7 @@ final class ArchitectureRuleSet
         return Selector::inNamespace('PhPhD\ExceptionalValidation\Bundle');
     }
 
-    public function mapper(): SelectorInterface
+    public function mapper(): AllOfSelectorModifier
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalValidation\Mapper'),
@@ -190,7 +191,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function validatorMapper(): SelectorInterface
+    public function validatorMapper(): AllOfSelectorModifier
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalValidation\Mapper\Validator'),
@@ -199,7 +200,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function validatorMiddleware(): SelectorInterface
+    public function validatorMiddleware(): AllOfSelectorModifier
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalValidation\Mapper\Validator\Middleware'),
@@ -208,7 +209,7 @@ final class ArchitectureRuleSet
     }
 
     /** @psalm-suppress UnusedMethod */
-    public function messengerValidatorMiddleware(): SelectorInterface
+    public function messengerValidatorMiddleware(): AllOfSelectorModifier
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalValidation\Mapper\Validator\Middleware\Messenger'),
@@ -216,7 +217,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function captureRuleSetAssembler(): SelectorInterface
+    public function captureRuleSetAssembler(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
             Selector::classname(CaptureRuleSetAssembler::class),
@@ -226,7 +227,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function matchConditionFactory(): SelectorInterface
+    public function matchConditionFactory(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
             Selector::classname(MatchConditionFactory::class),
@@ -234,7 +235,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function model(): SelectorInterface
+    public function model(): AllOfSelectorModifier
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalValidation\Rule'),
