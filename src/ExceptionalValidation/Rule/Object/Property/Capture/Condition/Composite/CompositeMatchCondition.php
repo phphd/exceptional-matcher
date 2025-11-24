@@ -12,11 +12,11 @@ use Throwable;
  *
  * @implements MatchCondition<Throwable>
  */
-final class CompositeMatchCondition implements MatchCondition
+final readonly class CompositeMatchCondition implements MatchCondition
 {
     public function __construct(
         /** @var list<MatchCondition<Throwable>> */
-        private readonly array $conditions,
+        private array $conditions,
     ) {
     }
 

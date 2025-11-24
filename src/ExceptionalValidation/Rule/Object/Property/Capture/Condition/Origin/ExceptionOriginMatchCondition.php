@@ -16,12 +16,12 @@ use function function_exists;
  *
  * @implements MatchCondition<Throwable>
  */
-final class ExceptionOriginMatchCondition implements MatchCondition
+final readonly class ExceptionOriginMatchCondition implements MatchCondition
 {
     public function __construct(
         /** @var ?class-string */
-        private readonly ?string $originClassName = null,
-        private readonly ?string $originFunctionName = null,
+        private ?string $originClassName = null,
+        private ?string $originFunctionName = null,
     ) {
         if (null !== $this->originClassName && null !== $this->originFunctionName) {
             Assert::methodExists($this->originClassName, $this->originFunctionName);

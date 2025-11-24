@@ -16,20 +16,20 @@ use function is_string;
 
 /** @api */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class Capture
+final readonly class Capture
 {
     public function __construct(
         /** @var class-string<Exception> */
-        private readonly string $exception,
-        private readonly ?string $message = null,
+        private string $exception,
+        private ?string $message = null,
         /** @var null|class-string|array{class-string,string} The origin of the exception */
-        private readonly array|string|null $from = null,
+        private array|string|null $from = null,
         /** @var null|class-string<MatchCondition>|non-empty-string */
-        private readonly ?string $condition = null,
+        private ?string $condition = null,
         /** @var ?array{object|class-string,string} */
-        private readonly ?array $when = null,
+        private ?array $when = null,
         /** @var class-string<ExceptionViolationFormatter>|non-empty-string */
-        private readonly string $formatter = 'default',
+        private string $formatter = 'default',
     ) {
         if (null !== $this->when) {
             Assert::count($this->when, 2);

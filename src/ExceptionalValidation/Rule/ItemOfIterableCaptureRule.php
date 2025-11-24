@@ -11,12 +11,12 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 use function is_object;
 
 /** @internal */
-final class ItemOfIterableCaptureRule implements CaptureRule
+final readonly class ItemOfIterableCaptureRule implements CaptureRule
 {
     public function __construct(
-        private readonly int|string $key,
-        private readonly CaptureRule $parent,
-        private readonly CaptureRule $objectRuleSet,
+        private int|string $key,
+        private CaptureRule $parent,
+        private CaptureRule $objectRuleSet,
     ) {
     }
 

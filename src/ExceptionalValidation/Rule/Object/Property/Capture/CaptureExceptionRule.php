@@ -11,14 +11,14 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 use Throwable;
 
 /** @internal */
-final class CaptureExceptionRule implements CaptureRule
+final readonly class CaptureExceptionRule implements CaptureRule
 {
     public function __construct(
-        private readonly CaptureRule $parent,
+        private CaptureRule $parent,
         /** @var MatchCondition<Throwable> */
-        private readonly MatchCondition $condition,
-        private readonly ?string $messageTemplate,
-        private readonly string $formatterId,
+        private MatchCondition $condition,
+        private ?string $messageTemplate,
+        private string $formatterId,
     ) {
     }
 

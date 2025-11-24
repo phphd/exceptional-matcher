@@ -8,11 +8,11 @@ use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerEnvelope;
 use ReflectionClass;
 
 /** @internal */
-final class ObjectRulesAssemblerEnvelope implements CaptureRuleSetAssemblerEnvelope
+final readonly class ObjectRulesAssemblerEnvelope implements CaptureRuleSetAssemblerEnvelope
 {
     public function __construct(
         /** @var ReflectionClass<object> */
-        private readonly ReflectionClass $reflectionClass,
+        private ReflectionClass $reflectionClass,
     ) {
     }
 
