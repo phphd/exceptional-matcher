@@ -6,8 +6,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Assembler;
 
 use PhPhD\ExceptionalValidation\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\IterableOfObjectsRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRulesAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssembler;
@@ -28,8 +27,6 @@ final class CaptureRuleSetAssemblerServiceTest extends BundleTestCase
 
         $this->checkObjectRuleSetAssembler();
 
-        $this->checkObjectRulesAssembler();
-
         $this->checkPropertyRuleSetAssembler();
 
         $this->checkPropertyRulesAssemblers();
@@ -45,12 +42,6 @@ final class CaptureRuleSetAssemblerServiceTest extends BundleTestCase
     {
         $objectRuleSetAssembler = self::getContainer()->get('phd_exceptional_validation.rule_set_assembler.object');
         self::assertInstanceOf(ObjectRuleSetAssembler::class, $objectRuleSetAssembler);
-    }
-
-    private function checkObjectRulesAssembler(): void
-    {
-        $objectRulesAssembler = self::getContainer()->get('phd_exceptional_validation.rule_set_assembler.object.rules');
-        self::assertInstanceOf(ObjectRulesAssembler::class, $objectRulesAssembler);
     }
 
     private function checkPropertyRuleSetAssembler(): void

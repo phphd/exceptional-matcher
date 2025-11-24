@@ -15,7 +15,7 @@ use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolati
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Validator\ValidationFailedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\DefaultExceptionListViolationFormatter;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Email;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
@@ -70,9 +70,9 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage
  * @covers \PhPhD\ExceptionalValidation\Rule\Exception\CapturedException
  * @covers \PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRulesAssemblerEnvelope
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRulesAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssemblerEnvelope
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssembler
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssemblerEnvelope
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssembler
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssemblerEnvelope

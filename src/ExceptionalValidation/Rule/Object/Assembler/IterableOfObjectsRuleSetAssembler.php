@@ -9,6 +9,7 @@ use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
 use PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule;
 use PhPhD\ExceptionalValidation\Rule\LazyRuleSet;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssembler;
 
 use function array_filter;
 use function is_array;
@@ -63,7 +64,7 @@ final readonly class IterableOfObjectsRuleSetAssembler
 
         $iterableItemRule = new ItemOfIterableCaptureRule($key, $parentIterableRuleSet, $rulesSet);
 
-        $rules = $this->objectRuleSetAssembler->assemble($object, $iterableItemRule);
+        $rules = $this->objectRuleSetAssembler->assembleForMessage($object, $iterableItemRule);
 
         if (null === $rules) {
             return null;

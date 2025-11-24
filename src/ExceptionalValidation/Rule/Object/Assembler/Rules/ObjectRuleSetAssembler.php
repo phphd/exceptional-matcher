@@ -2,30 +2,32 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Rule\Object\Assembler;
+namespace PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules;
 
 use ArrayIterator;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
-use PhPhD\ExceptionalValidation\Rule\LazyRuleSet;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRulesAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRulesAssemblerEnvelope;
-use PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\IterableOfObjectsRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory;
-use ReflectionClass;
 
-/** @internal */
-final readonly class ObjectRuleSetAssembler
+/**
+ * @internal
+ *
+ * @implements CaptureRuleSetAssembler<ObjectRuleSetAssemblerEnvelope>
+ */
+final readonly class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
 {
-    /** @param CaptureRuleSetAssembler<ObjectRulesAssemblerEnvelope> $objectRulesAssembler */
+    /** @param CaptureRuleSetAssembler<PropertyRuleSetAssemblerEnvelope> $propertyRuleSetAssembler */
     public function __construct(
-        private CaptureRuleSetAssembler $objectRulesAssembler,
+        private CaptureRuleSetAssembler $propertyRuleSetAssembler,
     ) {
     }
 
@@ -36,8 +38,7 @@ final readonly class ObjectRuleSetAssembler
         $propertyRulesAssembler = new CompositeRuleSetAssembler($captureListAssemblers);
         $propertyRuleSetAssembler = new PropertyRuleSetAssembler($propertyRulesAssembler);
 
-        $objectRulesAssembler = new ObjectRulesAssembler($propertyRuleSetAssembler);
-        $objectRuleSetAssembler = new self($objectRulesAssembler);
+        $objectRuleSetAssembler = new self($propertyRuleSetAssembler);
 
         $captureListAssemblers->append(new PropertyCaptureRulesAssembler(CaptureMatchConditionFactory::create()));
         $captureListAssemblers->append(new PropertyNestedValidObjectRuleAssembler($objectRuleSetAssembler));
@@ -46,23 +47,16 @@ final readonly class ObjectRuleSetAssembler
         return $objectRuleSetAssembler;
     }
 
-    public function assemble(object $message, ?CaptureRule $parent = null): ?CaptureRule
+    public function assembleForMessage(object $message, ?CaptureRule $parentRule = null): ?CaptureRule
     {
-        $rules = null;
-        $ruleSet = new LazyRuleSet(static function () use (&$rules): CaptureRule {
-            /** @var CaptureRule $rules */
-            return $rules;
-        });
+        $envelope = new ObjectRuleSetAssemblerEnvelope($message);
 
-        $objectRuleSet = new ObjectRuleSet($message, $parent, $ruleSet);
-        $envelope = new ObjectRulesAssemblerEnvelope(new ReflectionClass($message::class));
+        return $this->assemble($parentRule, $envelope);
+    }
 
-        $rules = $this->objectRulesAssembler->assemble($objectRuleSet, $envelope);
-
-        if (null === $rules) {
-            return null;
-        }
-
-        return $objectRuleSet;
+    /** @param ObjectRuleSetAssemblerEnvelope $envelope */
+    public function assemble(?CaptureRule $parentRule, CaptureRuleSetAssemblerEnvelope $envelope): ?CaptureRule
+    {
+        return $envelope->assemble($parentRule, $this->propertyRuleSetAssembler);
     }
 }

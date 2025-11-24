@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssembler;
 use Symfony\Component\Validator\Constraints\Valid;
 
 use function is_object;
@@ -39,6 +39,6 @@ final readonly class PropertyNestedValidObjectRuleAssembler implements CaptureRu
             return null;
         }
 
-        return $this->objectRuleSetAssembler->assemble($propertyValue, $parentRule);
+        return $this->objectRuleSetAssembler->assembleForMessage($propertyValue, $parentRule);
     }
 }

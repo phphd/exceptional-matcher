@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Mapper;
 
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssembler;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Throwable;
 
@@ -25,7 +25,7 @@ final readonly class DefaultExceptionMapper implements ExceptionMapper
 
     public function map(object $message, Throwable $exception): ?array
     {
-        $ruleSet = $this->ruleSetAssembler->assemble($message);
+        $ruleSet = $this->ruleSetAssembler->assembleForMessage($message);
 
         if (null === $ruleSet) {
             return null;
