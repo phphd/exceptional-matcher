@@ -16,10 +16,10 @@ use Throwable;
  *
  * @implements ExceptionViolationFormatter<Throwable>
  */
-final class DelegatingExceptionViolationFormatter implements ExceptionViolationFormatter
+final readonly class DelegatingExceptionViolationFormatter implements ExceptionViolationFormatter
 {
     public function __construct(
-        private readonly ContainerInterface $formatterRegistry,
+        private ContainerInterface $formatterRegistry,
     ) {
     }
 

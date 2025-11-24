@@ -15,11 +15,11 @@ use Throwable;
  *
  * @implements ExceptionMapper<non-empty-list<CapturedException<Throwable>>>
  */
-final class DefaultExceptionMapper implements ExceptionMapper
+final readonly class DefaultExceptionMapper implements ExceptionMapper
 {
     public function __construct(
-        private readonly ObjectRuleSetAssembler $ruleSetAssembler,
-        private readonly ExceptionUnwrapper $exceptionUnwrapper,
+        private ObjectRuleSetAssembler $ruleSetAssembler,
+        private ExceptionUnwrapper $exceptionUnwrapper,
     ) {
     }
 

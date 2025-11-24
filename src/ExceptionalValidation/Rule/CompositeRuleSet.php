@@ -8,12 +8,12 @@ use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 
 /** @internal */
-final class CompositeRuleSet implements CaptureRule
+final readonly class CompositeRuleSet implements CaptureRule
 {
     public function __construct(
-        private readonly CaptureRule $parent,
+        private CaptureRule $parent,
         /** @var iterable<CaptureRule> $rules */
-        private readonly iterable $rules,
+        private iterable $rules,
     ) {
     }
 

@@ -17,10 +17,10 @@ use function is_object;
  *
  * @implements CaptureRuleSetAssembler<PropertyRulesAssemblerEnvelope>
  */
-final class PropertyNestedValidObjectRuleAssembler implements CaptureRuleSetAssembler
+final readonly class PropertyNestedValidObjectRuleAssembler implements CaptureRuleSetAssembler
 {
     public function __construct(
-        private readonly ObjectRuleSetAssembler $objectRuleSetAssembler,
+        private ObjectRuleSetAssembler $objectRuleSetAssembler,
     ) {
     }
 

@@ -13,7 +13,7 @@ return RectorConfig::configure()
     ->withPaths([__DIR__.'/src', __DIR__.'/tests', __DIR__.'/upgrade'])
     ->withSkip([__DIR__.'/tests/*/Stub/*'])
     ->withSets([PhdSetList::rector()->getPath()])
-    ->withPhpVersion(PhpVersion::PHP_81)
+    ->withPhpVersion(PhpVersion::PHP_82)
     ->withSkip([
         ClassPropertyAssignToConstructorPromotionRector::class => [
             __DIR__.'/src/ExceptionalValidation/Rule/Exception/ExceptionPackage.php',

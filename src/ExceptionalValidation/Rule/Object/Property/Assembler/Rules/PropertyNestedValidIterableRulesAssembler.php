@@ -17,10 +17,10 @@ use function is_iterable;
  *
  * @implements CaptureRuleSetAssembler<PropertyRulesAssemblerEnvelope>
  */
-final class PropertyNestedValidIterableRulesAssembler implements CaptureRuleSetAssembler
+final readonly class PropertyNestedValidIterableRulesAssembler implements CaptureRuleSetAssembler
 {
     public function __construct(
-        private readonly IterableOfObjectsRuleSetAssembler $iterableObjectsRuleSetAssembler,
+        private IterableOfObjectsRuleSetAssembler $iterableObjectsRuleSetAssembler,
     ) {
     }
 

@@ -9,7 +9,7 @@ includes:
 parameters:
     level: max
     phpVersion:
-        min: 80100
+        min: 80200
         max: 80499
     editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
     paths:

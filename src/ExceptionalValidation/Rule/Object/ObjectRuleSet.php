@@ -9,12 +9,12 @@ use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 
 /** @internal */
-final class ObjectRuleSet implements CaptureRule
+final readonly class ObjectRuleSet implements CaptureRule
 {
     public function __construct(
-        private readonly object $object,
-        private readonly ?CaptureRule $parent,
-        private readonly CaptureRule $ruleSet,
+        private object $object,
+        private ?CaptureRule $parent,
+        private CaptureRule $ruleSet,
     ) {
     }
 

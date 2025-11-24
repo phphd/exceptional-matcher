@@ -14,11 +14,11 @@ use Throwable;
 use function array_merge;
 
 /** @internal */
-final class DefaultExceptionListViolationFormatter implements ExceptionListViolationFormatter
+final readonly class DefaultExceptionListViolationFormatter implements ExceptionListViolationFormatter
 {
     public function __construct(
         /** @var ExceptionViolationFormatter<Throwable> */
-        private readonly ExceptionViolationFormatter $violationFormatter,
+        private ExceptionViolationFormatter $violationFormatter,
     ) {
     }
 

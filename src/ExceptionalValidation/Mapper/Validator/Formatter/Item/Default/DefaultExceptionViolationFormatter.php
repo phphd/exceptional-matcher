@@ -15,11 +15,11 @@ use Throwable;
  *
  * @implements ExceptionViolationFormatter<Throwable>
  */
-final class DefaultExceptionViolationFormatter implements ExceptionViolationFormatter
+final readonly class DefaultExceptionViolationFormatter implements ExceptionViolationFormatter
 {
     public function __construct(
-        private readonly TranslatorInterface $translator,
-        private readonly string $translationDomain,
+        private TranslatorInterface $translator,
+        private string $translationDomain,
     ) {
     }
 

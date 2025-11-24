@@ -15,10 +15,10 @@ use function is_array;
 use function iterator_to_array;
 
 /** @internal */
-final class IterableOfObjectsRuleSetAssembler
+final readonly class IterableOfObjectsRuleSetAssembler
 {
     public function __construct(
-        private readonly ObjectRuleSetAssembler $objectRuleSetAssembler,
+        private ObjectRuleSetAssembler $objectRuleSetAssembler,
     ) {
     }
 

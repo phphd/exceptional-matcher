@@ -21,10 +21,10 @@ use Throwable;
  *
  * @implements CaptureRuleSetAssembler<PropertyRulesAssemblerEnvelope>
  */
-final class PropertyCaptureRulesAssembler implements CaptureRuleSetAssembler
+final readonly class PropertyCaptureRulesAssembler implements CaptureRuleSetAssembler
 {
     public function __construct(
-        private readonly MatchConditionFactory $conditionFactory,
+        private MatchConditionFactory $conditionFactory,
     ) {
     }
 
