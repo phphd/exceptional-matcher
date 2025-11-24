@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Assembler;
 
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\IterableOfObjectsRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRulesAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssembler;
@@ -20,13 +19,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services
         ->set('phd_exceptional_validation.rule_set_assembler.object', ObjectRuleSetAssembler::class)
-        ->args([
-            service('phd_exceptional_validation.rule_set_assembler.object.rules'),
-        ])
-    ;
-
-    $services
-        ->set('phd_exceptional_validation.rule_set_assembler.object.rules', ObjectRulesAssembler::class)
         ->args([
             service('phd_exceptional_validation.rule_set_assembler.property'),
         ])
