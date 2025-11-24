@@ -55,7 +55,7 @@ final readonly class ObjectRuleSetAssembler
         });
 
         $objectRuleSet = new ObjectRuleSet($message, $parent, $ruleSet);
-        $envelope = new ObjectRulesAssemblerEnvelope(new ReflectionClass($message));
+        $envelope = new ObjectRulesAssemblerEnvelope(new ReflectionClass($message::class));
 
         $rules = $this->objectRulesAssembler->assemble($objectRuleSet, $envelope);
 
