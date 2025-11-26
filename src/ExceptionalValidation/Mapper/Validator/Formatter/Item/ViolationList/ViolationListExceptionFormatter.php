@@ -32,7 +32,7 @@ final class ViolationListExceptionFormatter implements ExceptionViolationFormatt
         Assert::isInstanceOf($exception, ViolationListException::class); // @phpstan-ignore staticMethod.alreadyNarrowedType
 
         $rule = $capturedException->getMatchedRule();
-        $root = $rule->getRoot();
+        $root = $rule->getRootObject();
         $propertyPath = $rule->getPropertyPath()->join('.');
 
         /** @var list<ConstraintViolationInterface> $violationList */
