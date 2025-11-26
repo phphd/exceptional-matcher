@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules;
 
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerEnvelope;
+use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
 use Symfony\Component\Validator\Constraints\Valid;
 
 use function is_object;
@@ -15,17 +15,17 @@ use function is_object;
 /**
  * @internal
  *
- * @implements CaptureRuleSetAssembler<PropertyRulesAssemblerEnvelope>
+ * @implements CaptureRuleSetAssemblerService<PropertyRulesAssembler>
  */
-final readonly class PropertyNestedValidObjectRuleAssembler implements CaptureRuleSetAssembler
+final readonly class PropertyNestedValidObjectRuleAssemblerService implements CaptureRuleSetAssemblerService
 {
     public function __construct(
-        private ObjectRuleSetAssembler $objectRuleSetAssembler,
+        private ObjectRuleSetAssemblerService $objectRuleSetAssembler,
     ) {
     }
 
-    /** @param PropertyRulesAssemblerEnvelope $envelope */
-    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssemblerEnvelope $envelope): ?CaptureRule
+    /** @param PropertyRulesAssembler $assembler */
+    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssembler $assembler): ?CaptureRule
     {
         $propertyValue = $parentRule->getValue();
 
@@ -33,7 +33,7 @@ final readonly class PropertyNestedValidObjectRuleAssembler implements CaptureRu
             return null;
         }
 
-        $validAttributes = $envelope->getReflectionProperty()->getAttributes(Valid::class);
+        $validAttributes = $assembler->getReflectionProperty()->getAttributes(Valid::class);
 
         if ([] === $validAttributes) {
             return null;
