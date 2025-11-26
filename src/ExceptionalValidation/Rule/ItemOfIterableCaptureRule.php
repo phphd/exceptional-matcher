@@ -25,6 +25,11 @@ final readonly class ItemOfIterableCaptureRule implements CaptureRule
         return $this->objectRuleSet->process($package);
     }
 
+    public function getParent(): CaptureRule
+    {
+        return $this->parent;
+    }
+
     public function getPropertyPath(): PropertyPath
     {
         return $this->parent->getPropertyPath()->at($this->key);
@@ -35,9 +40,9 @@ final readonly class ItemOfIterableCaptureRule implements CaptureRule
         return $this->parent->getEnclosingObject();
     }
 
-    public function getRoot(): object
+    public function getRootObject(): object
     {
-        return $this->parent->getRoot();
+        return $this->parent->getRootObject();
     }
 
     public function getValue(): object

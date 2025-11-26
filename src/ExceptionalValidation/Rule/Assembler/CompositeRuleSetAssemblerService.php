@@ -11,26 +11,26 @@ use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
 /**
  * @internal
  *
- * @template T of CaptureRuleSetAssemblerEnvelope
+ * @template T of CaptureRuleSetAssembler
  *
- * @implements CaptureRuleSetAssembler<T>
+ * @implements CaptureRuleSetAssemblerService<T>
  */
-final readonly class CompositeRuleSetAssembler implements CaptureRuleSetAssembler
+final readonly class CompositeRuleSetAssemblerService implements CaptureRuleSetAssemblerService
 {
     public function __construct(
-        /** @var iterable<CaptureRuleSetAssembler<T>> */
+        /** @var iterable<CaptureRuleSetAssemblerService<T>> */
         private iterable $assemblers,
     ) {
     }
 
-    /** @param T $envelope */
-    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssemblerEnvelope $envelope): ?CompositeRuleSet
+    /** @param T $assembler */
+    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssembler $assembler): ?CompositeRuleSet
     {
         $rules = new ArrayIterator();
         $ruleSet = new CompositeRuleSet($parentRule, $rules);
 
-        foreach ($this->assemblers as $assembler) {
-            $innerRuleSet = $assembler->assemble($ruleSet, $envelope);
+        foreach ($this->assemblers as $a) {
+            $innerRuleSet = $a->assemble($parentRule, $assembler);
 
             if (null !== $innerRuleSet) {
                 $rules->append($innerRuleSet);

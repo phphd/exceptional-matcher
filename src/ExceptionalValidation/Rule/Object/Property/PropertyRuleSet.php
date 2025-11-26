@@ -24,6 +24,11 @@ final readonly class PropertyRuleSet implements CaptureRule
         return $this->ruleSet->process($package);
     }
 
+    public function getParent(): CaptureRule
+    {
+        return $this->parent;
+    }
+
     public function getPropertyPath(): PropertyPath
     {
         return $this->parent->getPropertyPath()->with($this->name);
@@ -34,9 +39,9 @@ final readonly class PropertyRuleSet implements CaptureRule
         return $this->parent->getEnclosingObject();
     }
 
-    public function getRoot(): object
+    public function getRootObject(): object
     {
-        return $this->parent->getRoot();
+        return $this->parent->getRootObject();
     }
 
     public function getValue(): mixed

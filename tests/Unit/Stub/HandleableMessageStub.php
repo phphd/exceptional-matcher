@@ -22,6 +22,7 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
+/** @template T of object */
 #[ExceptionalValidation]
 final class HandleableMessageStub
 {
@@ -42,15 +43,16 @@ final class HandleableMessageStub
     #[Valid]
     private NestedHandleableMessage $nestedObject;
 
-    /** @var array<array-key,NestedItem> */
+    private array $notTypedArray;
+
+    /** @var NotHandleableMessageStub[] */
+    private array $typedNotHandleableArray;
+
     #[Valid]
     private array $nestedArrayItems;
 
-    /** @var ArrayObject<array-key,NestedItem> */
     #[Valid]
     private ArrayObject $nestedIterableItems;
-
-    private array $justArray;
 
     #[ExceptionalValidation\Capture(ValidationFailedException::class, from: Email::class)]
     private string $email = 'matched!';
@@ -144,11 +146,20 @@ final class HandleableMessageStub
         return $message;
     }
 
-    /** @param array<array-key,NestedItem> $justArray */
-    public function withJustArray(array $justArray): self
+    /** @param array<array-key,NestedItem> $array */
+    public function withNotTypedArray(array $array): self
     {
         $message = clone $this;
-        $message->justArray = $justArray;
+        $message->notTypedArray = $array;
+
+        return $message;
+    }
+
+    /** @param NotHandleableMessageStub[] $array */
+    public function withTypedNotHandleableArray(array $array): self
+    {
+        $message = clone $this;
+        $message->typedNotHandleableArray = $array;
 
         return $message;
     }
