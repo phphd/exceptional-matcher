@@ -13,6 +13,8 @@ interface CaptureRule
     /** Returns TRUE if all given exceptions were captured, or FALSE if not */
     public function process(ExceptionPackage $package): bool;
 
+    public function getParent(): ?self;
+
     public function getPropertyPath(): PropertyPath;
 
     public function getEnclosingObject(): object;

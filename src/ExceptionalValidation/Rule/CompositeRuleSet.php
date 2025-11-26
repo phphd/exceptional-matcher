@@ -28,6 +28,11 @@ final readonly class CompositeRuleSet implements CaptureRule
         return false;
     }
 
+    public function getParent(): CaptureRule
+    {
+        return $this->parent;
+    }
+
     public function getPropertyPath(): PropertyPath
     {
         return $this->parent->getPropertyPath();
