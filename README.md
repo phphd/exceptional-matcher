@@ -87,15 +87,15 @@ A simple diagram representing the concept:
     composer require phphd/exceptional-validation
     ```
 
-2. Enable the bundles in the `bundles.php`
+2. Enable these bundles in the `bundles.php`
 
     ```php
     PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle::class => ['all' => true],
     PhPhD\ExceptionToolkit\Bundle\PhdExceptionToolkitBundle::class => ['all' => true],
     ```
 
-   > Note: The PhdExceptionToolkitBundle is a required dependency that provides exception unwrapping functionality used
-   by this library.
+   > Note: `PhdExceptionToolkitBundle` is a required dependency that gives exception unwrapping functionality for this
+   library.
 
 ## Configuration 🔧
 
@@ -232,7 +232,7 @@ class SignDocumentActivity
 }
 ```
 
-In this example, we use `ExceptionMapper` to relate the caught exception to some property of the `$message`, 
+In this example, we use `ExceptionMapper` to relate the caught exception to some property of the `$message`,
 producing `ConstraintViolationListInterface` that can be used however you want to.
 
 ### How is this different from the standard validation? ⚖️
