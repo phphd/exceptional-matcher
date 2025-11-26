@@ -38,9 +38,9 @@ final readonly class ObjectRuleSet implements CaptureRule
         return $this->object;
     }
 
-    public function getRoot(): object
+    public function getRootObject(): object
     {
-        return $this->parent?->getRoot() ?? $this->object;
+        return $this->parent?->getRootObject() ?? $this->object;
     }
 
     public function getValue(): object

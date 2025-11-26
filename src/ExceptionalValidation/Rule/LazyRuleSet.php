@@ -49,9 +49,9 @@ final class LazyRuleSet implements CaptureRule
         return $this->innerRule()->getEnclosingObject();
     }
 
-    public function getRoot(): object
+    public function getRootObject(): object
     {
-        return $this->innerRule()->getRoot();
+        return $this->innerRule()->getRootObject();
     }
 
     public function getValue(): mixed

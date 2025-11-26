@@ -19,7 +19,7 @@ interface CaptureRule
 
     public function getEnclosingObject(): object;
 
-    public function getRoot(): object;
+    public function getRootObject(): object;
 
     public function getValue(): mixed;
 }
