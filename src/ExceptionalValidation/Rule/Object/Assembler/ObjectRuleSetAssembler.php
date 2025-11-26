@@ -4,65 +4,85 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule\Object\Assembler;
 
-use ArrayIterator;
+use Generator;
+use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
+use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
 use PhPhD\ExceptionalValidation\Rule\LazyRuleSet;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRulesAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRulesAssemblerEnvelope;
 use PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssemblerEnvelope;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory;
 use ReflectionClass;
 
 /** @internal */
-final readonly class ObjectRuleSetAssembler
+final readonly class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
 {
-    /** @param CaptureRuleSetAssembler<ObjectRulesAssemblerEnvelope> $objectRulesAssembler */
-    public function __construct(
-        private CaptureRuleSetAssembler $objectRulesAssembler,
+    /** @var ReflectionClass<object> */
+    private ReflectionClass $reflectionClass;
+
+    private function __construct(
+        private object $message,
     ) {
+        $this->reflectionClass = new ReflectionClass($this->message::class);
     }
 
-    public static function create(): self
+    public static function createForMessage(object $message): ?self
     {
-        /** @var ArrayIterator<array-key,CaptureRuleSetAssembler<PropertyRulesAssemblerEnvelope>> $captureListAssemblers */
-        $captureListAssemblers = new ArrayIterator();
-        $propertyRulesAssembler = new CompositeRuleSetAssembler($captureListAssemblers);
-        $propertyRuleSetAssembler = new PropertyRuleSetAssembler($propertyRulesAssembler);
+        $envelope = new self($message);
 
-        $objectRulesAssembler = new ObjectRulesAssembler($propertyRuleSetAssembler);
-        $objectRuleSetAssembler = new self($objectRulesAssembler);
-
-        $captureListAssemblers->append(new PropertyCaptureRulesAssembler(CaptureMatchConditionFactory::create()));
-        $captureListAssemblers->append(new PropertyNestedValidObjectRuleAssembler($objectRuleSetAssembler));
-        $captureListAssemblers->append(new PropertyNestedValidIterableRulesAssembler(new IterableOfObjectsRuleSetAssembler($objectRuleSetAssembler)));
-
-        return $objectRuleSetAssembler;
-    }
-
-    public function assemble(object $message, ?CaptureRule $parent = null): ?CaptureRule
-    {
-        $rules = null;
-        $ruleSet = new LazyRuleSet(static function () use (&$rules): CaptureRule {
-            /** @var CaptureRule $rules */
-            return $rules;
-        });
-
-        $objectRuleSet = new ObjectRuleSet($message, $parent, $ruleSet);
-        $envelope = new ObjectRulesAssemblerEnvelope(new ReflectionClass($message));
-
-        $rules = $this->objectRulesAssembler->assemble($objectRuleSet, $envelope);
-
-        if (null === $rules) {
+        if (!$envelope->isMarkedWithAnAttribute()) {
             return null;
         }
 
-        return $objectRuleSet;
+        return $envelope;
+    }
+
+    /**
+     * @param CaptureRuleSetAssemblerService<PropertyRuleSetAssembler> $propertyRuleSetAssembler
+     *
+     * @internal
+     */
+    public function assemble(?CaptureRule $parent, CaptureRuleSetAssemblerService $propertyRuleSetAssembler): ?CaptureRule
+    {
+        $wrappedRuleSet = (new LazyRuleSet(
+            /** @param LazyRuleSet<CompositeRuleSet> $lazyWrappedRuleSet */
+            function (LazyRuleSet $lazyWrappedRuleSet) use ($parent, $propertyRuleSetAssembler): CompositeRuleSet {
+                $objectRuleSet = new ObjectRuleSet(
+                    $this->message,
+                    $parent,
+                    $lazyWrappedRuleSet,
+                );
+
+                return new CompositeRuleSet(
+                    $objectRuleSet,
+                    $this->getPropertyRules($objectRuleSet, $propertyRuleSetAssembler),
+                );
+            },
+        ));
+
+        return $wrappedRuleSet->build()?->getParent();
+    }
+
+    private function isMarkedWithAnAttribute(): bool
+    {
+        return [] !== $this->reflectionClass->getAttributes(ExceptionalValidation::class);
+    }
+
+    /** @param CaptureRuleSetAssemblerService<PropertyRuleSetAssembler> $propertyRuleSetAssembler */
+    private function getPropertyRules(ObjectRuleSet $objectRuleSet, CaptureRuleSetAssemblerService $propertyRuleSetAssembler): Generator
+    {
+        foreach ($this->reflectionClass->getProperties() as $reflectionProperty) {
+            $propertyRuleSetAssemblerEnvelope = new PropertyRuleSetAssembler($reflectionProperty);
+
+            $propertyRuleSet = $propertyRuleSetAssembler->assemble(
+                $objectRuleSet,
+                $propertyRuleSetAssemblerEnvelope,
+            );
+
+            if (null !== $propertyRuleSet) {
+                yield $propertyRuleSet;
+            }
+        }
     }
 }

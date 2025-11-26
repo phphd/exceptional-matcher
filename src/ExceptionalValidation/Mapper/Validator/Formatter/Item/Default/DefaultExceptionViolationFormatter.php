@@ -30,7 +30,7 @@ final readonly class DefaultExceptionViolationFormatter implements ExceptionViol
         $rule = $capturedException->getMatchedRule();
 
         $messageTemplate = $rule->getMessageTemplate() ?? $exception->getMessage();
-        $root = $rule->getRoot();
+        $root = $rule->getRootObject();
         $propertyPath = $rule->getPropertyPath();
         $value = $rule->getValue();
 
