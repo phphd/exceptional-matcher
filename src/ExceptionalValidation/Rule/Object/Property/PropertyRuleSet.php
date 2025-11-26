@@ -39,9 +39,9 @@ final readonly class PropertyRuleSet implements CaptureRule
         return $this->parent->getEnclosingObject();
     }
 
-    public function getRoot(): object
+    public function getRootObject(): object
     {
-        return $this->parent->getRoot();
+        return $this->parent->getRootObject();
     }
 
     public function getValue(): mixed
