@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules;
 
 use ArrayIterator;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerEnvelope;
+use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\CaptureExceptionRule;
@@ -16,7 +16,7 @@ use ReflectionProperty;
 use Throwable;
 
 /** @internal */
-final readonly class PropertyRulesAssemblerEnvelope implements CaptureRuleSetAssemblerEnvelope
+final readonly class PropertyRulesAssembler implements CaptureRuleSetAssembler
 {
     public function __construct(
         private ReflectionProperty $reflectionProperty,

@@ -23,6 +23,11 @@ final readonly class ObjectRuleSet implements CaptureRule
         return $this->ruleSet->process($package);
     }
 
+    public function getParent(): ?CaptureRule
+    {
+        return $this->parent;
+    }
+
     public function getPropertyPath(): PropertyPath
     {
         return $this->parent?->getPropertyPath() ?? PropertyPath::empty();

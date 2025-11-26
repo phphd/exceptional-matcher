@@ -15,9 +15,8 @@ use PHPat\Test\PHPat;
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerEnvelope;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\IterableOfObjectsRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
@@ -138,7 +137,7 @@ final class ArchitectureRuleSet
             ],
             'mapper' => [
                 'deps' => [
-                    Selector::classname(ObjectRuleSetAssembler::class),
+                    Selector::classname(ObjectRuleSetAssemblerService::class),
                     $this->model(),
                     Selector::AllOf(
                         Selector::isInterface(),
@@ -221,12 +220,11 @@ final class ArchitectureRuleSet
     public function captureRuleSetAssembler(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
-            Selector::classname(CaptureRuleSetAssemblerEnvelope::class),
-            Selector::implements(CaptureRuleSetAssemblerEnvelope::class),
             Selector::classname(CaptureRuleSetAssembler::class),
             Selector::implements(CaptureRuleSetAssembler::class),
-            Selector::classname(IterableOfObjectsRuleSetAssembler::class),
-            Selector::classname(ObjectRuleSetAssembler::class),
+            Selector::classname(CaptureRuleSetAssemblerService::class),
+            Selector::implements(CaptureRuleSetAssemblerService::class),
+            Selector::classname(ObjectRuleSetAssemblerService::class),
         );
     }
 

@@ -26,7 +26,6 @@
         <UnnecessaryVarAnnotation>
             <errorLevel type="suppress">
                 <file name="src/ExceptionalValidation/Rule/Object/Property/Capture/Condition/Composite/CaptureMatchConditionFactory.php"/>
-                <file name="src/ExceptionalValidation/Rule/Object/Property/Capture/Assembler/PropertyCaptureRulesAssembler.php"/>
             </errorLevel>
         </UnnecessaryVarAnnotation>
     </issueHandlers>

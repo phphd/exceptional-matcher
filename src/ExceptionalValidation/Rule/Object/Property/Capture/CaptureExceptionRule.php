@@ -29,6 +29,11 @@ final readonly class CaptureExceptionRule implements CaptureRule
         return $package->isProcessed();
     }
 
+    public function getParent(): CaptureRule
+    {
+        return $this->parent;
+    }
+
     public function getPropertyPath(): PropertyPath
     {
         return $this->parent->getPropertyPath();

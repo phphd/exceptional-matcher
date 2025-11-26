@@ -25,6 +25,11 @@ final readonly class ItemOfIterableCaptureRule implements CaptureRule
         return $this->objectRuleSet->process($package);
     }
 
+    public function getParent(): CaptureRule
+    {
+        return $this->parent;
+    }
+
     public function getPropertyPath(): PropertyPath
     {
         return $this->parent->getPropertyPath()->at($this->key);

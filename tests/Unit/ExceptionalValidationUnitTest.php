@@ -15,7 +15,7 @@ use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolati
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Validator\ValidationFailedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\DefaultExceptionListViolationFormatter;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Email;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
@@ -69,17 +69,16 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath
  * @covers \PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage
  * @covers \PhPhD\ExceptionalValidation\Rule\Exception\CapturedException
- * @covers \PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssemblerEnvelope
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\Rules\ObjectRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssemblerEnvelope
+ * @covers \PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssemblerService
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssemblerEnvelope
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\IterableOfObjectsRuleSetAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssemblerService
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssemblerService
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssemblerService
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssemblerService
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\CaptureExceptionRule
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class\ExceptionClassMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class\ExceptionClassMatchConditionFactory
@@ -135,7 +134,7 @@ final class ExceptionalValidationUnitTest extends TestCase
             ->willReturnCallback(static fn (string $id): ExceptionViolationFormatter => $formatters[$id])
         ;
 
-        $objectRuleSetAssembler = ObjectRuleSetAssembler::create();
+        $objectRuleSetAssembler = ObjectRuleSetAssemblerService::create();
         $exceptionUnwrapper = new CompositeExceptionUnwrapper(new PassThroughExceptionUnwrapper());
         $mapper = new DefaultExceptionMapper($objectRuleSetAssembler, $exceptionUnwrapper);
         $violationFormatter = new DelegatingExceptionViolationFormatter($formatterRegistry);
@@ -143,7 +142,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         $this->exceptionMapper = new ExceptionViolationListMapper($mapper, $violationListFormatter);
     }
 
-    public function testDoesNotCaptureExceptionForMessageWithoutExceptionalValidationAttribute(): void
+    public function testExceptionIsNotCapturedForMessageWithoutExceptionalValidationAttribute(): void
     {
         $message = new NotHandleableMessageStub(123);
 
@@ -283,9 +282,9 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertSame(41, $violation->getInvalidValue());
     }
 
-    public function testDoesNotCaptureExceptionOnNestedItemsWhenPropertyIsWithoutValidAttribute(): void
+    public function testExceptionIsNotCapturedWhenNestedItemsPropertyIsWithoutGenericType(): void
     {
-        $message = HandleableMessageStub::create()->withJustArray([
+        $message = HandleableMessageStub::create()->withNotTypedArray([
             new NestedItem(1),
             new NestedItem(2),
             new NestedItem(3),
@@ -298,7 +297,27 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertNull($violationList);
     }
 
-    public function testCaptureExceptionOnNestedArrayItem(): void
+    public function testExceptionIsNotCapturedWhenNestedItemsValueTypeClassIsNotMarkedWithExceptionalValidationAttribute(): void
+    {
+        /**
+         * @noinspection PhpParamsInspection
+         *
+         * @psalm-suppress InvalidArgument
+         */
+        $message = HandleableMessageStub::create()->withTypedNotHandleableArray([ // @phpstan-ignore argument.type
+            new NestedItem(1), // deliberately passing incorrect objects
+            new NestedItem(2),
+            new NestedItem(3),
+        ]);
+
+        $originalException = new NestedItemCapturedException(code: 2);
+
+        $violationList = $this->exceptionMapper->map($message, $originalException);
+
+        self::assertNull($violationList);
+    }
+
+    public function testCanCaptureExceptionOnNestedArrayItemWhenPropertyIsMarkedWithValidAttribute(): void
     {
         $message = HandleableMessageStub::create()->withNestedArrayItems([
             new NestedItem(41),
@@ -318,7 +337,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertSame('nestedArrayItems[1].property', $violation->getPropertyPath());
     }
 
-    public function testCaptureExceptionOnNestedIterableItem(): void
+    public function testCanCaptureExceptionOnANestedIterableItemWhenPropertyIsMarkedWithValidAttribute(): void
     {
         $message = HandleableMessageStub::create()->withNestedIterableItems(new ArrayObject([
             'first' => new NestedItem(1),
@@ -339,7 +358,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertSame('nestedIterableItems[second].property', $firstViolation->getPropertyPath());
     }
 
-    public function testNotASingleUnhandledExceptionIsAllowed(): void
+    public function testUncaughtExceptionsAreNotAllowed(): void
     {
         $message = HandleableMessageStub::create()
             ->withNestedArrayItems([
@@ -350,7 +369,7 @@ final class ExceptionalValidationUnitTest extends TestCase
 
         $exceptionAdapter = new CompositeException([
             new NestedItemCapturedException(code: 1),
-            new NestedItemCapturedException(code: 3),
+            new NestedItemCapturedException(code: 3), // not caught
         ]);
 
         $violationList = $this->exceptionMapper->map($message, $exceptionAdapter);
