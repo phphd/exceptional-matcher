@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalValidation\Bundle\DependencyInjection;
 
 use Composer\InstalledVersions;
 use Exception;
+use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\Compiler\ResolveChildDefinitionsPass;
@@ -89,11 +90,9 @@ final class PhdExceptionalValidationExtension extends AbstractExtension implemen
 
     public function process(ContainerBuilder $container): void
     {
-        if ($container->has('translator')) {
-            return;
-        }
-
-        $container->removeDefinition('phd_exceptional_validation.translator');
+        $this->checkTranslatorDependency($container);
+        /** @psalm-suppress DeprecatedMethod */
+        $this->checkUnwrapperDependency($container);
     }
 
     public function lazyProxy(string $interface): bool|string
@@ -120,5 +119,25 @@ final class PhdExceptionalValidationExtension extends AbstractExtension implemen
                 '7.3',
                 '>=',
             );
+    }
+
+    private function checkTranslatorDependency(ContainerBuilder $container): void
+    {
+        if ($container->has('translator')) {
+            return;
+        }
+
+        $container->removeDefinition('phd_exceptional_validation.translator');
+        $container->getParameterBag()->remove('phd_exceptional_validation.translation_domain');
+    }
+
+    /** @deprecated - it should not be the case */
+    private function checkUnwrapperDependency(ContainerBuilder $container): void
+    {
+        if ($container->has('phd_exception_toolkit.exception_unwrapper')) {
+            return;
+        }
+
+        $container->register('phd_exceptional_validation.exception_unwrapper', PassThroughExceptionUnwrapper::class);
     }
 }
