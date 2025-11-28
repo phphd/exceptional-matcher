@@ -21,6 +21,7 @@ final class Email
         return new self($validate($uuid));
     }
 
+    /** @psalm-suppress PossiblyUnusedReturnValue */
     public function getEmail(): string
     {
         return $this->email;
