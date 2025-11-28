@@ -19,7 +19,6 @@ use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedExce
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\SomeValueException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ViolationListExampleException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
@@ -74,8 +73,6 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\CaptureExceptionRule
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class\ExceptionClassMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class\ExceptionClassMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Delegating\DelegatingMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchConditionFactory
@@ -422,31 +419,6 @@ final class ExceptionalValidationUnitTest extends TestCase
             'custom' => 'param',
         ], $violation->getParameters());
         self::assertSame('customFormatted', $violation->getPropertyPath());
-    }
-
-    public function testValueExceptionCondition(): void
-    {
-        $message = HandleableMessageStub::create();
-
-        $exceptionAdapter = new CompositeException([
-            new SomeValueException('matched!'),
-            new SomeValueException('whatever'),
-        ]);
-
-        $violationList = $this->exceptionMapper->map($message, $exceptionAdapter);
-
-        self::assertNotNull($violationList);
-        self::assertCount(2, $violationList);
-
-        /** @var ConstraintViolationInterface $violation1 */
-        $violation1 = $violationList[0];
-
-        self::assertSame('matchedProperty', $violation1->getPropertyPath());
-
-        /** @var ConstraintViolationInterface $violation2 */
-        $violation2 = $violationList[1];
-
-        self::assertSame('anotherMatchedAsNoCondition', $violation2->getPropertyPath());
     }
 
     public function testViolationMessageFallsBackToExceptionMessage(): void

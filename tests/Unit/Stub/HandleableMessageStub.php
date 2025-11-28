@@ -12,11 +12,11 @@ use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Validator\Valida
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\Tests\Stub\SomeValueException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\MessageContainingException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\SomeValueException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints\Valid;
