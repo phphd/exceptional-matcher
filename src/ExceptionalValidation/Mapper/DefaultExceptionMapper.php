@@ -17,6 +17,7 @@ use Throwable;
  */
 final readonly class DefaultExceptionMapper implements ExceptionMapper
 {
+    /** @api */
     public function __construct(
         private ObjectRuleSetAssemblerService $ruleSetAssembler,
         private ExceptionUnwrapper $exceptionUnwrapper,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default;
 
+use Closure;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -17,10 +18,23 @@ use Throwable;
  */
 final readonly class DefaultExceptionViolationFormatter implements ExceptionViolationFormatter
 {
-    public function __construct(
-        private TranslatorInterface $translator,
-        private string $translationDomain,
-    ) {
+    /** @var Closure(string):string */
+    private Closure $translate;
+
+    /**
+     * @api
+     *
+     * @param ?Closure(string):string $translate
+     */
+    public function __construct(?Closure $translate = null)
+    {
+        $this->translate = $translate ?? static fn (string $message): string => $message;
+    }
+
+    /** @api */
+    public static function translator(TranslatorInterface $translator, string $translationDomain): Closure
+    {
+        return static fn (string $messageTemplate): string => $translator->trans($messageTemplate, domain: $translationDomain);
     }
 
     /** @return array{ConstraintViolation} */
@@ -30,11 +44,10 @@ final readonly class DefaultExceptionViolationFormatter implements ExceptionViol
         $rule = $capturedException->getMatchedRule();
 
         $messageTemplate = $rule->getMessageTemplate() ?? $exception->getMessage();
+        $message = ($this->translate)($messageTemplate);
         $root = $rule->getRootObject();
         $propertyPath = $rule->getPropertyPath();
         $value = $rule->getValue();
-
-        $message = $this->translator->trans($messageTemplate, domain: $this->translationDomain);
 
         return [
             new ConstraintViolation(

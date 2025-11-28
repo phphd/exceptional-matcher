@@ -17,6 +17,7 @@ use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
  */
 final readonly class CompositeRuleSetAssemblerService implements CaptureRuleSetAssemblerService
 {
+    /** @api */
     public function __construct(
         /** @var iterable<CaptureRuleSetAssemblerService<T>> */
         private iterable $assemblers,

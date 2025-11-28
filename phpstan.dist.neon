@@ -21,6 +21,8 @@ parameters:
             - tests/*/Stub/*
     fileExtensions:
         - 'php'
+    ignoreErrors:
+        - identifier: ternary.shortNotAllowed
     type_coverage:
         declare: 100
         return_type: 100
