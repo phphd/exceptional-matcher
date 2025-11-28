@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception;
+namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\Tests\Stub;
 
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListException;
 use RuntimeException;
