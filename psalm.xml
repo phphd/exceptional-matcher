@@ -13,6 +13,7 @@
         <ignoreFiles>
             <directory name="vendor"/>
             <directory name="tests/Unit/Stub"/>
+            <directory name="src/ExceptionalValidation/**/Tests/Stub"/>
             <file name="rector.php"/>
         </ignoreFiles>
     </projectFiles>

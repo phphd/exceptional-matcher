@@ -39,7 +39,7 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
         ])
     ;
 
-    $parameters
+    $parameters // is removed if @translator is not found
         ->set('phd_exceptional_validation.translation_domain', param('validator.translation_domain'))
     ;
 };

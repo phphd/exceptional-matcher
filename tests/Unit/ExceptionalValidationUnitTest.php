@@ -5,23 +5,19 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Tests\Unit;
 
 use ArrayObject;
-use InvalidArgumentException;
 use LogicException;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Email;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ConditionallyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\MessageContainingException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\SomeValueException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ViolationListExampleException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
@@ -32,12 +28,10 @@ use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validation;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -54,8 +48,6 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\DefaultExceptionViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListExceptionFormatter
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Validator\ValidationFailedExceptionFormatter
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Validator\ValidationFailedExceptionAdapter
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet
@@ -77,17 +69,9 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\CaptureExceptionRule
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class\ExceptionClassMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class\ExceptionClassMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Origin\ExceptionOriginMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Origin\ExceptionOriginMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Delegating\DelegatingMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CompositeMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchConditionFactory
  *
  * @internal
  */
@@ -243,34 +227,6 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertSame('nested.message', $violation->getMessageTemplate());
         self::assertSame('nestedObject.nestedProperty', $violation->getPropertyPath());
         self::assertNull($violation->getInvalidValue());
-    }
-
-    public function testDoesntCaptureConditionalExceptionWhenConditionIsNotMet(): void
-    {
-        $message = HandleableMessageStub::create()->withConditionalMessage(11, 41);
-
-        $originalException = new ConditionallyCapturedException(12);
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNull($violationList);
-    }
-
-    public function testCaptureConditionalException(): void
-    {
-        $message = HandleableMessageStub::create()->withConditionalMessage(11, 41);
-
-        $originalException = new ConditionallyCapturedException(41);
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNotNull($violationList);
-        self::assertCount(1, $violationList);
-
-        /** @var ConstraintViolationInterface $violation */
-        $violation = $violationList[0];
-        self::assertSame('nestedObject.conditionalMessage.secondProperty', $violation->getPropertyPath());
-        self::assertSame(41, $violation->getInvalidValue());
     }
 
     public function testExceptionIsNotCapturedWhenNestedItemsPropertyIsWithoutGenericType(): void
@@ -429,31 +385,6 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertSame('customFormatted', $violation->getPropertyPath());
     }
 
-    public function testValueExceptionCondition(): void
-    {
-        $message = HandleableMessageStub::create();
-
-        $exceptionAdapter = new CompositeException([
-            new SomeValueException('matched!'),
-            new SomeValueException('whatever'),
-        ]);
-
-        $violationList = $this->exceptionMapper->map($message, $exceptionAdapter);
-
-        self::assertNotNull($violationList);
-        self::assertCount(2, $violationList);
-
-        /** @var ConstraintViolationInterface $violation1 */
-        $violation1 = $violationList[0];
-
-        self::assertSame('matchedProperty', $violation1->getPropertyPath());
-
-        /** @var ConstraintViolationInterface $violation2 */
-        $violation2 = $violationList[1];
-
-        self::assertSame('anotherMatchedAsNoCondition', $violation2->getPropertyPath());
-    }
-
     public function testViolationMessageFallsBackToExceptionMessage(): void
     {
         $message = HandleableMessageStub::create();
@@ -521,81 +452,5 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertSame(Length::TOO_LONG_ERROR, $violation->getCode());
         self::assertSame($constraint, $violation->getConstraint());
         self::assertNull($violation->getCause());
-    }
-
-    public function testValidationFailedExceptionCanBeCaptured(): void
-    {
-        $message = HandleableMessageStub::create();
-
-        $validation = Validation::createCallable($constraint = new Length(min: 11));
-        $originalException = null;
-
-        try {
-            $validation('matched!');
-        } catch (ValidationFailedException $originalException) {
-        }
-
-        self::assertNotNull($originalException);
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNotNull($violationList);
-        self::assertCount(1, $violationList);
-
-        $violation = $violationList[0];
-        self::assertInstanceOf(ConstraintViolation::class, $violation);
-        self::assertSame(
-            'This value is too short. It should have 11 characters or more.',
-            $violation->getMessage(),
-        );
-        self::assertSame($constraint, $violation->getConstraint());
-        self::assertSame('matchedProperty', $violation->getPropertyPath());
-        self::assertSame('matched!', $violation->getInvalidValue());
-    }
-
-    public function testMatchExceptionByOriginClass(): void
-    {
-        $originalException = null;
-
-        try {
-            Email::fromString('non-email');
-        } catch (ValidationFailedException $originalException) {
-        }
-
-        self::assertNotNull($originalException);
-
-        $message = HandleableMessageStub::create();
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNotNull($violationList);
-        self::assertCount(1, $violationList);
-
-        $violation = $violationList[0];
-        self::assertInstanceOf(ConstraintViolation::class, $violation);
-        self::assertSame('email', $violation->getPropertyPath());
-    }
-
-    public function testMatchExceptionByOriginClassMethod(): void
-    {
-        $message = HandleableMessageStub::create();
-
-        $originalException = null;
-
-        try {
-            Uuid::fromString('invalid-uuid');
-        } catch (InvalidArgumentException $originalException) {
-        }
-
-        self::assertNotNull($originalException);
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNotNull($violationList);
-        self::assertCount(1, $violationList);
-
-        $violation = $violationList[0];
-        self::assertInstanceOf(ConstraintViolation::class, $violation);
-        self::assertSame('uid', $violation->getPropertyPath());
     }
 }
