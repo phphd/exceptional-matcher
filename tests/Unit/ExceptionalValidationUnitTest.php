@@ -8,18 +8,14 @@ use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\MessageContainingException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ViolationListExampleException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedHandleableMessage;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedItem;
@@ -27,16 +23,9 @@ use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NotHandleableMessageStub;
 use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Symfony\Component\Validator\Validation;
 use Symfony\Contracts\Translation\TranslatorInterface;
-
-use function array_flip;
-use function array_intersect_key;
 
 /**
  * @covers \PhPhD\ExceptionalValidation
@@ -45,9 +34,7 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Mapper\DefaultExceptionMapper
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\ExceptionViolationListMapper
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\DefaultExceptionListViolationFormatter
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\DefaultExceptionViolationFormatter
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListExceptionFormatter
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet
@@ -101,11 +88,6 @@ final class ExceptionalValidationUnitTest extends TestCase
             ->willReturnCallback(static fn (string $id): string => $translations[$id] ?? $id)
         ;
         $container->set('translator', $translator);
-
-        $container->register(CustomExceptionViolationFormatter::class, CustomExceptionViolationFormatter::class)
-            ->setArguments([new Reference(ExceptionViolationFormatter::class.'<Throwable>')])
-            ->setAutoconfigured(true)
-        ;
 
         $exceptionUnwrapper = new CompositeExceptionUnwrapper(new PassThroughExceptionUnwrapper());
         $container->set('phd_exception_toolkit.exception_unwrapper', $exceptionUnwrapper);
@@ -364,27 +346,6 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertSame('nestedIterableItems[second].property', $fourthViolation->getPropertyPath());
     }
 
-    public function testCustomViolationFormatter(): void
-    {
-        $message = HandleableMessageStub::create();
-
-        $originalException = new CustomFormattedException();
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNotNull($violationList);
-        self::assertCount(1, $violationList);
-
-        /** @var ConstraintViolationInterface $violation */
-        $violation = $violationList[0];
-        self::assertSame('custom - oops - translated', $violation->getMessage());
-        self::assertSame('custom.oops', $violation->getMessageTemplate());
-        self::assertSame([
-            'custom' => 'param',
-        ], $violation->getParameters());
-        self::assertSame('customFormatted', $violation->getPropertyPath());
-    }
-
     public function testViolationMessageFallsBackToExceptionMessage(): void
     {
         $message = HandleableMessageStub::create();
@@ -410,47 +371,5 @@ final class ExceptionalValidationUnitTest extends TestCase
         // When the message is specified as an empty string, empty message is used (w/o fallback)
         self::assertSame('emptyTranslationMessage', $violation2->getPropertyPath());
         self::assertSame('', $violation2->getMessage());
-    }
-
-    public function testValidatorViolationListExceptionMapping(): void
-    {
-        $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());
-
-        $violationList = Validation::createValidator()->validate('123', [$constraint = new Length(max: 2)]);
-
-        $originalException = new ViolationListExampleException($violationList);
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNotNull($violationList);
-        self::assertCount(1, $violationList);
-
-        $violation = $violationList[0];
-        self::assertInstanceOf(ConstraintViolation::class, $violation);
-        self::assertSame(
-            'This value is too long. It should have 2 characters or less.',
-            $violation->getMessage(),
-        );
-        self::assertSame(
-            'This value is too long. It should have {{ limit }} character or less.|This value is too long. It should have {{ limit }} characters or less.',
-            $violation->getMessageTemplate(),
-        );
-
-        $parameters = array_intersect_key(
-            $violation->getParameters(),
-            array_flip(['{{ value }}', '{{ limit }}']),
-        );
-        self::assertSame([
-            '{{ value }}' => '"123"',
-            '{{ limit }}' => '2',
-        ], $parameters);
-
-        self::assertSame(2, $violation->getPlural());
-        self::assertSame($message, $violation->getRoot());
-        self::assertSame('nestedObject.violationListCapturedProperty', $violation->getPropertyPath());
-        self::assertSame('123', $violation->getInvalidValue());
-        self::assertSame(Length::TOO_LONG_ERROR, $violation->getCode());
-        self::assertSame($constraint, $violation->getConstraint());
-        self::assertNull($violation->getCause());
     }
 }
