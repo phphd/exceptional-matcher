@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Mapper\Validator;
 
+use Closure;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\ExceptionListViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
@@ -18,15 +19,18 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
         return;
     }
 
+    /** @var Closure(class-string):((bool|class-string)) $lazy */
+    $lazy = $builder->get('phd_exceptional_validation.lazy_proxy');
+
     $services = $containerConfigurator->services();
 
     $services
         ->set(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>', ExceptionViolationListMapper::class)
+        ->public()
         ->args([
             service(ExceptionMapper::class.'<non-empty-list<'.CapturedException::class.'<Throwable>>>'),
             service(ExceptionListViolationFormatter::class),
         ])
-        ->lazy()
-        ->tag('proxy', ['interface' => ExceptionMapper::class])
+        ->lazy($lazy(ExceptionMapper::class))
     ;
 };

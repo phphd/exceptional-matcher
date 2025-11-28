@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule\Assembler;
 
+use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssemblerService;
@@ -52,19 +53,22 @@ final class CaptureRuleSetAssemblerServiceTest extends BundleTestCase
     private function checkPropertyRulesAssemblers(): void
     {
         $propertyRulesAssembler = self::getContainer()->get('phd_exceptional_validation.rule_set_assembler.property.rules');
-        self::assertInstanceOf(CompositeRuleSetAssemblerService::class, $propertyRulesAssembler);
+        self::assertInstanceOf(CaptureRuleSetAssemblerService::class, $propertyRulesAssembler);
+
+        if (PhdExceptionalValidationExtension::nativeProxiesAreSupported()) {
+            self::assertInstanceOf(CompositeRuleSetAssemblerService::class, $propertyRulesAssembler);
+        } else {
+            self::assertInstanceOf(LazyObjectInterface::class, $propertyRulesAssembler);
+            self::assertInstanceOf(CompositeRuleSetAssemblerService::class, $propertyRulesAssembler->initializeLazyObject());
+        }
 
         $propertyCaptureRulesAssembler = self::getContainer()->get('phd_exceptional_validation.rule_set_assembler.property.rules.captures');
         self::assertInstanceOf(PropertyCaptureRulesAssemblerService::class, $propertyCaptureRulesAssembler);
 
         $propertyNestedValidObjectRuleAssembler = self::getContainer()->get('phd_exceptional_validation.rule_set_assembler.property.rules.nested_valid_object');
-        self::assertInstanceOf(CaptureRuleSetAssemblerService::class, $propertyNestedValidObjectRuleAssembler);
-        self::assertInstanceOf(LazyObjectInterface::class, $propertyNestedValidObjectRuleAssembler);
-        self::assertInstanceOf(PropertyNestedValidObjectRuleAssemblerService::class, $propertyNestedValidObjectRuleAssembler->initializeLazyObject());
+        self::assertInstanceOf(PropertyNestedValidObjectRuleAssemblerService::class, $propertyNestedValidObjectRuleAssembler);
 
         $propertyNestedValidIterableRuleAssembler = self::getContainer()->get('phd_exceptional_validation.rule_set_assembler.property.rules.nested_valid_iterable');
-        self::assertInstanceOf(CaptureRuleSetAssemblerService::class, $propertyNestedValidIterableRuleAssembler);
-        self::assertInstanceOf(LazyObjectInterface::class, $propertyNestedValidIterableRuleAssembler);
-        self::assertInstanceOf(PropertyNestedValidIterableRulesAssemblerService::class, $propertyNestedValidIterableRuleAssembler->initializeLazyObject());
+        self::assertInstanceOf(PropertyNestedValidIterableRulesAssemblerService::class, $propertyNestedValidIterableRuleAssembler);
     }
 }

@@ -18,6 +18,7 @@ use Throwable;
  */
 final readonly class DelegatingExceptionViolationFormatter implements ExceptionViolationFormatter
 {
+    /** @api */
     public function __construct(
         private ContainerInterface $formatterRegistry,
     ) {

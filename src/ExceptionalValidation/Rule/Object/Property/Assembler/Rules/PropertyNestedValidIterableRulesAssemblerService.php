@@ -26,6 +26,7 @@ use function is_object;
  */
 final readonly class PropertyNestedValidIterableRulesAssemblerService implements CaptureRuleSetAssemblerService
 {
+    /** @api */
     public function __construct(
         private ObjectRuleSetAssemblerService $objectRuleSetAssembler,
     ) {
