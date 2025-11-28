@@ -12,10 +12,10 @@ use Throwable;
 use function ucfirst;
 
 /** @implements ExceptionViolationFormatter<Throwable> */
-final class CustomExceptionViolationFormatter implements ExceptionViolationFormatter
+final readonly class CustomExceptionViolationFormatter implements ExceptionViolationFormatter
 {
     public function __construct(
-        private readonly ExceptionViolationFormatter $formatter,
+        private ExceptionViolationFormatter $formatter,
     ) {
     }
 

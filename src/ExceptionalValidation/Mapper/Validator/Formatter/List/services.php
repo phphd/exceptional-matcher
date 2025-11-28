@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List;
 
+use Closure;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -15,6 +16,9 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
         return;
     }
 
+    /** @var Closure(class-string):((bool|class-string)) $lazy */
+    $lazy = $builder->get('phd_exceptional_validation.lazy_proxy');
+
     $services = $containerConfigurator->services();
 
     $services
@@ -22,7 +26,6 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
         ->args([
             service(ExceptionViolationFormatter::class),
         ])
-        ->lazy()
-        ->tag('proxy', ['interface' => ExceptionListViolationFormatter::class])
+        ->lazy($lazy(ExceptionListViolationFormatter::class))
     ;
 };

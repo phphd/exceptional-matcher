@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Tests;
 
+use Composer\InstalledVersions;
 use PHPat\Selector\ClassNamespace;
 use PHPat\Selector\Modifier\AllOfSelectorModifier;
 use PHPat\Selector\Modifier\AnyOfSelectorModifier;
@@ -107,6 +108,7 @@ final class ArchitectureRuleSet
             'bundle' => [
                 'deps' => [
                     Selector::inNamespace('Symfony\Component'),
+                    Selector::classname(InstalledVersions::class),
                 ],
             ],
             'messengerValidatorMiddleware' => [

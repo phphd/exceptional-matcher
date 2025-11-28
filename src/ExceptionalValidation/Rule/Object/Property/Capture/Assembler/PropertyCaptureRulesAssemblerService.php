@@ -18,6 +18,7 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCond
  */
 final readonly class PropertyCaptureRulesAssemblerService implements CaptureRuleSetAssemblerService
 {
+    /** @api */
     public function __construct(
         private MatchConditionFactory $conditionFactory,
     ) {
