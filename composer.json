@@ -13,7 +13,8 @@
     "require": {
         "php": ">=8.2",
         "webmozart/assert": "^1.12.1",
-        "phphd/exception-toolkit": "^1.0.1"
+        "phphd/exception-toolkit": "^1.0.1",
+        "composer-runtime-api": "^2.0"
     },
     "conflict": {
         "symfony/validator": "<6.0 || >8.4",
@@ -39,7 +40,8 @@
         "phpstan/phpstan-strict-rules": "^2.0.7",
         "phpat/phpat": "^0.11.10",
         "vimeo/psalm": "^6.13.1",
-        "phpunit/phpunit": "^10.5.46"
+        "phpunit/phpunit": "^10.5.46",
+        "phpbench/phpbench": "^1.2.6"
     },
     "suggest": {
         "symfony/validator": "Install Validator component to use constraint violations mapper",

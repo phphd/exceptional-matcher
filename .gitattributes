@@ -13,3 +13,4 @@
 /phpunit.xml.dist export-ignore
 /psalm.xml export-ignore
 /rector.php export-ignore
+/phpbench.json export-ignore

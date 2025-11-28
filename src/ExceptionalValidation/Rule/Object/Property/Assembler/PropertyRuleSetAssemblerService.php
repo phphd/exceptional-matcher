@@ -16,7 +16,11 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRul
  */
 final readonly class PropertyRuleSetAssemblerService implements CaptureRuleSetAssemblerService
 {
-    /** @param CaptureRuleSetAssemblerService<PropertyRulesAssembler> $captureListAssembler */
+    /**
+     * @api
+     *
+     * @param CaptureRuleSetAssemblerService<PropertyRulesAssembler> $captureListAssembler
+     */
     public function __construct(
         private CaptureRuleSetAssemblerService $captureListAssembler,
     ) {
