@@ -32,7 +32,6 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validation;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -49,8 +48,6 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\DefaultExceptionViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListExceptionFormatter
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Validator\ValidationFailedExceptionFormatter
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Validator\ValidationFailedExceptionAdapter
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet
@@ -75,8 +72,6 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Delegating\DelegatingMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CompositeMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchConditionFactory
  *
  * @internal
  */
@@ -457,35 +452,5 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertSame(Length::TOO_LONG_ERROR, $violation->getCode());
         self::assertSame($constraint, $violation->getConstraint());
         self::assertNull($violation->getCause());
-    }
-
-    public function testValidationFailedExceptionCanBeCaptured(): void
-    {
-        $message = HandleableMessageStub::create();
-
-        $validation = Validation::createCallable($constraint = new Length(min: 11));
-        $originalException = null;
-
-        try {
-            $validation('matched!');
-        } catch (ValidationFailedException $originalException) {
-        }
-
-        self::assertNotNull($originalException);
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNotNull($violationList);
-        self::assertCount(1, $violationList);
-
-        $violation = $violationList[0];
-        self::assertInstanceOf(ConstraintViolation::class, $violation);
-        self::assertSame(
-            'This value is too short. It should have 11 characters or more.',
-            $violation->getMessage(),
-        );
-        self::assertSame($constraint, $violation->getConstraint());
-        self::assertSame('matchedProperty', $violation->getPropertyPath());
-        self::assertSame('matched!', $violation->getInvalidValue());
     }
 }
