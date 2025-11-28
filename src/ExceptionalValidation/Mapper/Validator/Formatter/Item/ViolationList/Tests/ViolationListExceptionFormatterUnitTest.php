@@ -20,7 +20,6 @@ use function array_intersect_key;
 
 /**
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListExceptionFormatter
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter
  *
  * @internal
  */

@@ -25,11 +25,13 @@ final class ConditionalMessage
         return $message;
     }
 
+    /** @api */
     public function firstPropertyMatchesException(ConditionallyCapturedException $exception): bool
     {
         return $exception->getConditionValue() === $this->firstProperty;
     }
 
+    /** @api */
     public function secondPropertyMatchesException(ConditionallyCapturedException $exception): bool
     {
         return $exception->getConditionValue() === $this->secondProperty;

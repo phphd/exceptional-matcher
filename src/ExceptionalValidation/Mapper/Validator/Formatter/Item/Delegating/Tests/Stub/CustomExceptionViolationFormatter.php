@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
+namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\Tests\Stub;
 
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Throwable;
 
-use function ucfirst;
-
 /** @implements ExceptionViolationFormatter<Throwable> */
 final readonly class CustomExceptionViolationFormatter implements ExceptionViolationFormatter
 {
+    /** @api */
     public function __construct(
+        /** @var ExceptionViolationFormatter<Throwable> */
         private ExceptionViolationFormatter $formatter,
     ) {
     }
@@ -24,6 +24,7 @@ final readonly class CustomExceptionViolationFormatter implements ExceptionViola
     {
         [$violation] = $this->formatter->format($capturedException);
 
+        /** @psalm-suppress ImplicitToStringCast */
         return [
             new ConstraintViolation(
                 'custom - '.$violation->getMessage(),
@@ -32,7 +33,7 @@ final readonly class CustomExceptionViolationFormatter implements ExceptionViola
                     'custom' => 'param',
                 ],
                 $violation->getRoot(),
-                'custom'.ucfirst($violation->getPropertyPath()),
+                'custom.'.$violation->getPropertyPath(),
                 $violation->getInvalidValue(),
             ),
         ];

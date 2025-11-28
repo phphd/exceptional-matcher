@@ -8,11 +8,8 @@ use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\MessageContainingException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedPropertyCapturableException;
@@ -26,7 +23,6 @@ use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NotHandleableMessageStub;
 use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -38,7 +34,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Mapper\DefaultExceptionMapper
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\ExceptionViolationListMapper
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\DefaultExceptionListViolationFormatter
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\DefaultExceptionViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule
@@ -93,11 +88,6 @@ final class ExceptionalValidationUnitTest extends TestCase
             ->willReturnCallback(static fn (string $id): string => $translations[$id] ?? $id)
         ;
         $container->set('translator', $translator);
-
-        $container->register(CustomExceptionViolationFormatter::class, CustomExceptionViolationFormatter::class)
-            ->setArguments([new Reference(ExceptionViolationFormatter::class.'<Throwable>')])
-            ->setAutoconfigured(true)
-        ;
 
         $exceptionUnwrapper = new CompositeExceptionUnwrapper(new PassThroughExceptionUnwrapper());
         $container->set('phd_exception_toolkit.exception_unwrapper', $exceptionUnwrapper);
@@ -354,27 +344,6 @@ final class ExceptionalValidationUnitTest extends TestCase
         /** @var ConstraintViolationInterface $fourthViolation */
         $fourthViolation = $violationList[3];
         self::assertSame('nestedIterableItems[second].property', $fourthViolation->getPropertyPath());
-    }
-
-    public function testCustomViolationFormatter(): void
-    {
-        $message = HandleableMessageStub::create();
-
-        $originalException = new CustomFormattedException();
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNotNull($violationList);
-        self::assertCount(1, $violationList);
-
-        /** @var ConstraintViolationInterface $violation */
-        $violation = $violationList[0];
-        self::assertSame('custom - oops - translated', $violation->getMessage());
-        self::assertSame('custom.oops', $violation->getMessageTemplate());
-        self::assertSame([
-            'custom' => 'param',
-        ], $violation->getParameters());
-        self::assertSame('customFormatted', $violation->getPropertyPath());
     }
 
     public function testViolationMessageFallsBackToExceptionMessage(): void

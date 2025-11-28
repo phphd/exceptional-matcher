@@ -18,6 +18,7 @@ final class NestedItem
         $this->property = $property;
     }
 
+    /** @api */
     public function matchesValue(NestedItemCapturedException $exception): bool
     {
         return $exception->getCode() === $this->property;
