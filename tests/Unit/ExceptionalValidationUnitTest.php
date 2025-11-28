@@ -12,7 +12,6 @@ use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolati
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ConditionallyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\MessageContainingException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
@@ -74,8 +73,6 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class\ExceptionClassMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class\ExceptionClassMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Delegating\DelegatingMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CompositeMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CaptureMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchCondition
@@ -235,34 +232,6 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertSame('nested.message', $violation->getMessageTemplate());
         self::assertSame('nestedObject.nestedProperty', $violation->getPropertyPath());
         self::assertNull($violation->getInvalidValue());
-    }
-
-    public function testDoesntCaptureConditionalExceptionWhenConditionIsNotMet(): void
-    {
-        $message = HandleableMessageStub::create()->withConditionalMessage(11, 41);
-
-        $originalException = new ConditionallyCapturedException(12);
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNull($violationList);
-    }
-
-    public function testCaptureConditionalException(): void
-    {
-        $message = HandleableMessageStub::create()->withConditionalMessage(11, 41);
-
-        $originalException = new ConditionallyCapturedException(41);
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNotNull($violationList);
-        self::assertCount(1, $violationList);
-
-        /** @var ConstraintViolationInterface $violation */
-        $violation = $violationList[0];
-        self::assertSame('nestedObject.conditionalMessage.secondProperty', $violation->getPropertyPath());
-        self::assertSame(41, $violation->getInvalidValue());
     }
 
     public function testExceptionIsNotCapturedWhenNestedItemsPropertyIsWithoutGenericType(): void

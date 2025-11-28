@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
+namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\Tests\Stub;
 
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ConditionallyCapturedException;
+use PhPhD\ExceptionalValidation\Capture;
 
 #[ExceptionalValidation]
 final class ConditionalMessage
 {
-    #[ExceptionalValidation\Capture(ConditionallyCapturedException::class, 'oops', when: [self::class, 'firstPropertyMatchesException'])]
+    #[Capture(ConditionallyCapturedException::class, 'oops', when: [self::class, 'firstPropertyMatchesException'])]
     private int $firstProperty;
 
-    #[ExceptionalValidation\Capture(ConditionallyCapturedException::class, 'oops', when: [self::class, 'secondPropertyMatchesException'])]
+    #[Capture(ConditionallyCapturedException::class, 'oops', when: [self::class, 'secondPropertyMatchesException'])]
     private int $secondProperty;
 
     public static function createWithConditionalProperties(int $firstConditionalProperty, int $secondConditionalProperty): self
