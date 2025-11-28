@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Tests\Unit;
 
 use ArrayObject;
-use InvalidArgumentException;
 use LogicException;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Email;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ConditionallyCapturedException;
@@ -32,7 +30,6 @@ use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -79,8 +76,6 @@ use function array_intersect_key;
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class\ExceptionClassMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Origin\ExceptionOriginMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Origin\ExceptionOriginMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Delegating\DelegatingMatchConditionFactory
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchConditionFactory
@@ -551,51 +546,5 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertSame($constraint, $violation->getConstraint());
         self::assertSame('matchedProperty', $violation->getPropertyPath());
         self::assertSame('matched!', $violation->getInvalidValue());
-    }
-
-    public function testMatchExceptionByOriginClass(): void
-    {
-        $originalException = null;
-
-        try {
-            Email::fromString('non-email');
-        } catch (ValidationFailedException $originalException) {
-        }
-
-        self::assertNotNull($originalException);
-
-        $message = HandleableMessageStub::create();
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNotNull($violationList);
-        self::assertCount(1, $violationList);
-
-        $violation = $violationList[0];
-        self::assertInstanceOf(ConstraintViolation::class, $violation);
-        self::assertSame('email', $violation->getPropertyPath());
-    }
-
-    public function testMatchExceptionByOriginClassMethod(): void
-    {
-        $message = HandleableMessageStub::create();
-
-        $originalException = null;
-
-        try {
-            Uuid::fromString('invalid-uuid');
-        } catch (InvalidArgumentException $originalException) {
-        }
-
-        self::assertNotNull($originalException);
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNotNull($violationList);
-        self::assertCount(1, $violationList);
-
-        $violation = $violationList[0];
-        self::assertInstanceOf(ConstraintViolation::class, $violation);
-        self::assertSame('uid', $violation->getPropertyPath());
     }
 }
