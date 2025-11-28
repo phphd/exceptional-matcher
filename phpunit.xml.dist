@@ -11,6 +11,7 @@
          failOnWarning="true">
     <testsuites>
         <testsuite name="Unit">
+            <directory suffix="UnitTest.php">src</directory>
             <directory suffix="UnitTest.php">tests</directory>
         </testsuite>
         <testsuite name="Integration">
