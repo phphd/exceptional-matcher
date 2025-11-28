@@ -24,18 +24,19 @@ use function count;
 /** @internal */
 final readonly class CaptureMatchConditionFactory implements MatchConditionFactory
 {
-    public function __construct(
+    private function __construct(
         /** @var iterable<MatchConditionFactory> */
         private iterable $factories,
     ) {
     }
 
-    public static function create(?ContainerInterface $conditionFactoryRegistry = null): self
+    /** @api */
+    public static function create(ContainerInterface $conditionFactoryRegistry): self
     {
         return new self([
             new ExceptionClassMatchConditionFactory(),
             new ExceptionOriginMatchConditionFactory(),
-            DelegatingMatchConditionFactory::create($conditionFactoryRegistry),
+            new DelegatingMatchConditionFactory($conditionFactoryRegistry),
             new ClosureMatchConditionFactory(),
         ]);
     }

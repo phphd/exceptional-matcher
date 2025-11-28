@@ -7,15 +7,9 @@ namespace PhPhD\ExceptionalValidation\Tests\Unit;
 use ArrayObject;
 use InvalidArgumentException;
 use LogicException;
-use PhPhD\ExceptionalValidation\Mapper\DefaultExceptionMapper;
-use PhPhD\ExceptionalValidation\Mapper\Validator\ExceptionViolationListMapper;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\DefaultExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
+use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Validator\ValidationFailedExceptionFormatter;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListExceptionFormatter;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\DefaultExceptionListViolationFormatter;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Email;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
@@ -36,8 +30,8 @@ use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedItem;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NotHandleableMessageStub;
 use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
 use stdClass;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -53,6 +47,7 @@ use function array_intersect_key;
 /**
  * @covers \PhPhD\ExceptionalValidation
  * @covers \PhPhD\ExceptionalValidation\Capture
+ * @covers \PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension
  * @covers \PhPhD\ExceptionalValidation\Mapper\DefaultExceptionMapper
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\ExceptionViolationListMapper
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\DefaultExceptionListViolationFormatter
@@ -98,11 +93,18 @@ use function array_intersect_key;
  */
 final class ExceptionalValidationUnitTest extends TestCase
 {
-    private ExceptionViolationListMapper $exceptionMapper;
+    /** @var ExceptionMapper<ConstraintViolationListInterface> */
+    private ExceptionMapper $exceptionMapper;
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        $container = PhdExceptionalValidationExtension::getContainer([
+            'kernel.environment' => 'test',
+            'kernel.build_dir' => __DIR__.'/var',
+            'phd_exceptional_validation.translation_domain' => 'domain',
+        ], true);
 
         $translator = $this->createMock(TranslatorInterface::class);
         $translations = [
@@ -114,32 +116,21 @@ final class ExceptionalValidationUnitTest extends TestCase
         $translator->method('trans')
             ->willReturnCallback(static fn (string $id): string => $translations[$id] ?? $id)
         ;
+        $container->set('translator', $translator);
 
-        $defaultViolationFormatter = new DefaultExceptionViolationFormatter($translator, 'domain');
-        $violationListExceptionFormatter = new ViolationListExceptionFormatter();
-        $validationFailedExceptionFormatter = new ValidationFailedExceptionFormatter($violationListExceptionFormatter);
-        $customViolationFormatter = new CustomExceptionViolationFormatter($defaultViolationFormatter);
-
-        $formatterRegistry = $this->createMock(ContainerInterface::class);
-        $formatters = [
-            'default' => $defaultViolationFormatter,
-            ViolationListExceptionFormatter::class => $violationListExceptionFormatter,
-            ValidationFailedExceptionFormatter::class => $validationFailedExceptionFormatter,
-            CustomExceptionViolationFormatter::class => $customViolationFormatter,
-        ];
-        $formatterRegistry->method('has')
-            ->willReturnCallback(static fn (string $id): bool => isset($formatters[$id]))
-        ;
-        $formatterRegistry->method('get')
-            ->willReturnCallback(static fn (string $id): ExceptionViolationFormatter => $formatters[$id])
+        $container->register(CustomExceptionViolationFormatter::class, CustomExceptionViolationFormatter::class)
+            ->setArguments([new Reference(ExceptionViolationFormatter::class.'<Throwable>')])
+            ->setAutoconfigured(true)
         ;
 
-        $objectRuleSetAssembler = ObjectRuleSetAssemblerService::create();
         $exceptionUnwrapper = new CompositeExceptionUnwrapper(new PassThroughExceptionUnwrapper());
-        $mapper = new DefaultExceptionMapper($objectRuleSetAssembler, $exceptionUnwrapper);
-        $violationFormatter = new DelegatingExceptionViolationFormatter($formatterRegistry);
-        $violationListFormatter = new DefaultExceptionListViolationFormatter($violationFormatter);
-        $this->exceptionMapper = new ExceptionViolationListMapper($mapper, $violationListFormatter);
+        $container->set('phd_exception_toolkit.exception_unwrapper', $exceptionUnwrapper);
+
+        $container->compile();
+
+        /** @var ExceptionMapper<ConstraintViolationListInterface> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>');
+        $this->exceptionMapper = $mapper;
     }
 
     public function testExceptionIsNotCapturedForMessageWithoutExceptionalValidationAttribute(): void
