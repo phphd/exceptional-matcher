@@ -12,23 +12,33 @@
         <directory name="./"/>
         <ignoreFiles>
             <directory name="vendor"/>
-            <directory name="tests/Unit/Stub"/>
-            <directory name="src/ExceptionalValidation/**/Tests/Stub"/>
             <file name="rector.php"/>
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
+        <UnusedProperty>
+            <errorLevel type="suppress">
+                <directory name="tests/Unit/Stub"/>
+                <directory name="src/ExceptionalValidation/**/Tests/Stub"/>
+            </errorLevel>
+        </UnusedProperty>
+        <PropertyNotSetInConstructor>
+            <errorLevel type="suppress">
+                <directory name="tests/Unit/Stub"/>
+                <directory name="src/ExceptionalValidation/**/Tests/Stub"/>
+            </errorLevel>
+        </PropertyNotSetInConstructor>
+        <UnnecessaryVarAnnotation>
+            <errorLevel type="suppress">
+                <file name="src/ExceptionalValidation/Rule/Object/Property/Capture/Condition/Composite/CaptureMatchConditionFactory.php"/>
+            </errorLevel>
+        </UnnecessaryVarAnnotation>
         <MissingOverrideAttribute>
             <errorLevel type="suppress">
                 <directory name="src"/>
                 <directory name="tests"/>
             </errorLevel>
         </MissingOverrideAttribute>
-        <UnnecessaryVarAnnotation>
-            <errorLevel type="suppress">
-                <file name="src/ExceptionalValidation/Rule/Object/Property/Capture/Condition/Composite/CaptureMatchConditionFactory.php"/>
-            </errorLevel>
-        </UnnecessaryVarAnnotation>
     </issueHandlers>
     <plugins>
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>

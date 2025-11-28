@@ -48,7 +48,8 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
         $originalException = null;
 
         try {
-            Email::fromString('non-email');
+            /** @psalm-suppress UnusedMethodCall */
+            Email::fromString('non-email')->getEmail();
         } catch (ValidationFailedException $originalException) {
         }
 
