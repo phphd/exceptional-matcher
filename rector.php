@@ -7,6 +7,7 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\If_\ReduceAlwaysFalseIfOrRector;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
+use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\ValueObject\PhpVersion;
 
 return RectorConfig::configure()
@@ -15,6 +16,9 @@ return RectorConfig::configure()
     ->withSets([PhdSetList::rector()->getPath()])
     ->withPhpVersion(PhpVersion::PHP_82)
     ->withSkip([
+        FirstClassCallableRector::class => [
+            __DIR__.'/src/*/services.php',
+        ],
         ClassPropertyAssignToConstructorPromotionRector::class => [
             __DIR__.'/src/ExceptionalValidation/Rule/Exception/ExceptionPackage.php',
             __DIR__.'/src/ExceptionalValidation/Rule/LazyRuleSet.php',

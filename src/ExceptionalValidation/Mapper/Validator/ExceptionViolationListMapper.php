@@ -17,6 +17,7 @@ use Throwable;
  */
 final readonly class ExceptionViolationListMapper implements ExceptionMapper
 {
+    /** @api */
     public function __construct(
         /** @var ExceptionMapper<non-empty-list<CapturedException<Throwable>>> */
         private ExceptionMapper $mapper,

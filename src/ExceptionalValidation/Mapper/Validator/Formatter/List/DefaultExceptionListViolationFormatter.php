@@ -16,6 +16,7 @@ use function array_merge;
 /** @internal */
 final readonly class DefaultExceptionListViolationFormatter implements ExceptionListViolationFormatter
 {
+    /** @api */
     public function __construct(
         /** @var ExceptionViolationFormatter<Throwable> */
         private ExceptionViolationFormatter $violationFormatter,
