@@ -7,11 +7,11 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules;
 use ArrayIterator;
 use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\CaptureExceptionRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet;
 use ReflectionProperty;
 use Throwable;
 
@@ -19,14 +19,15 @@ use Throwable;
 final readonly class PropertyRulesAssembler implements CaptureRuleSetAssembler
 {
     public function __construct(
+        private PropertyRuleSet $parentRule,
         private ReflectionProperty $reflectionProperty,
     ) {
     }
 
-    public function assembleCaptureRules(CaptureRule $parentRule, MatchConditionFactory $conditionFactory): ?CompositeRuleSet
+    public function assembleCaptureRules(MatchConditionFactory $conditionFactory): ?CompositeRuleSet
     {
         $rules = new ArrayIterator();
-        $ruleSet = new CompositeRuleSet($parentRule, $rules);
+        $ruleSet = new CompositeRuleSet($this->parentRule, $rules);
 
         $captureAttributes = $this->reflectionProperty->getAttributes(Capture::class);
 
@@ -34,7 +35,7 @@ final readonly class PropertyRulesAssembler implements CaptureRuleSetAssembler
             $capture = $captureAttribute->newInstance();
 
             /** @var MatchCondition<Throwable> $condition */
-            $condition = $conditionFactory->getCondition($capture, $parentRule);
+            $condition = $conditionFactory->getCondition($capture, $this->parentRule);
 
             $rules->append(new CaptureExceptionRule(
                 $ruleSet,
@@ -49,6 +50,11 @@ final readonly class PropertyRulesAssembler implements CaptureRuleSetAssembler
         }
 
         return $ruleSet;
+    }
+
+    public function getParentRule(): PropertyRuleSet
+    {
+        return $this->parentRule;
     }
 
     public function getReflectionProperty(): ReflectionProperty

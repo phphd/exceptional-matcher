@@ -16,24 +16,16 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAs
  */
 final readonly class ObjectRuleSetAssemblerService implements CaptureRuleSetAssemblerService
 {
-    /**
-     * @api
-     *
-     * @param CaptureRuleSetAssemblerService<PropertyRuleSetAssembler> $propertyRuleSetAssemblerService
-     */
+    /** @api */
     public function __construct(
+        /** @var CaptureRuleSetAssemblerService<PropertyRuleSetAssembler> */
         private CaptureRuleSetAssemblerService $propertyRuleSetAssemblerService,
     ) {
     }
 
-    public function assembleForMessage(object $message, ?CaptureRule $parentRule = null): ?CaptureRule
-    {
-        return $this->assemble($parentRule, new ObjectRuleSetAssembler($message));
-    }
-
     /** @param ObjectRuleSetAssembler $assembler */
-    public function assemble(?CaptureRule $parentRule, CaptureRuleSetAssembler $assembler): ?CaptureRule
+    public function assemble(CaptureRuleSetAssembler $assembler): ?CaptureRule
     {
-        return $assembler->assemble($parentRule, $this->propertyRuleSetAssemblerService);
+        return $assembler->assemble($this->propertyRuleSetAssemblerService);
     }
 }

@@ -23,6 +23,7 @@ final readonly class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
 
     public function __construct(
         private object $message,
+        private ?CaptureRule $parentRule = null,
     ) {
         $this->reflectionClass = new ReflectionClass($this->message::class);
     }
@@ -32,7 +33,7 @@ final readonly class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
      *
      * @internal
      */
-    public function assemble(?CaptureRule $parent, CaptureRuleSetAssemblerService $propertyRuleSetAssemblerService): ?CaptureRule
+    public function assemble(CaptureRuleSetAssemblerService $propertyRuleSetAssemblerService): ?CaptureRule
     {
         if (!$this->isMarkedWithAnAttribute()) {
             return null;
@@ -40,10 +41,10 @@ final readonly class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
 
         $wrappedRuleSet = (new LazyRuleSet(
             /** @param LazyRuleSet<CompositeRuleSet> $lazyWrappedRuleSet */
-            function (LazyRuleSet $lazyWrappedRuleSet) use ($parent, $propertyRuleSetAssemblerService): CompositeRuleSet {
+            function (LazyRuleSet $lazyWrappedRuleSet) use ($propertyRuleSetAssemblerService): CompositeRuleSet {
                 $objectRuleSet = new ObjectRuleSet(
                     $this->message,
-                    $parent,
+                    $this->parentRule,
                     $lazyWrappedRuleSet,
                 );
 
@@ -57,6 +58,11 @@ final readonly class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
         return $wrappedRuleSet->build()?->getParent();
     }
 
+    public function getParentRule(): ?CaptureRule
+    {
+        return $this->parentRule;
+    }
+
     private function isMarkedWithAnAttribute(): bool
     {
         return [] !== $this->reflectionClass->getAttributes(ExceptionalValidation::class);
@@ -66,10 +72,9 @@ final readonly class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
     private function getPropertyRules(ObjectRuleSet $objectRuleSet, CaptureRuleSetAssemblerService $propertyRuleSetAssemblerService): Generator
     {
         foreach ($this->reflectionClass->getProperties() as $reflectionProperty) {
-            $propertyRuleSet = $propertyRuleSetAssemblerService->assemble(
-                $objectRuleSet,
-                new PropertyRuleSetAssembler($reflectionProperty),
-            );
+            $propertyRuleSet = $propertyRuleSetAssemblerService
+                ->assemble(new PropertyRuleSetAssembler($objectRuleSet, $reflectionProperty))
+            ;
 
             if (null !== $propertyRuleSet) {
                 yield $propertyRuleSet;
