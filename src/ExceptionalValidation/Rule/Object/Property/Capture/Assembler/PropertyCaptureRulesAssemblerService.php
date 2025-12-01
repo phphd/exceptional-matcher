@@ -6,7 +6,6 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler;
 
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
-use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
@@ -25,8 +24,8 @@ final readonly class PropertyCaptureRulesAssemblerService implements CaptureRule
     }
 
     /** @param PropertyRulesAssembler $assembler */
-    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssembler $assembler): ?CompositeRuleSet
+    public function assemble(CaptureRuleSetAssembler $assembler): ?CompositeRuleSet
     {
-        return $assembler->assembleCaptureRules($parentRule, $this->conditionFactory);
+        return $assembler->assembleCaptureRules($this->conditionFactory);
     }
 }

@@ -8,6 +8,7 @@ use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\LazyRuleSet;
+use PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet;
 use ReflectionProperty;
@@ -16,39 +17,46 @@ use ReflectionProperty;
 final readonly class PropertyRuleSetAssembler implements CaptureRuleSetAssembler
 {
     public function __construct(
+        private ObjectRuleSet $parentRule,
         private ReflectionProperty $reflectionProperty,
     ) {
     }
 
     /** @param CaptureRuleSetAssemblerService<PropertyRulesAssembler> $captureListAssemblerService */
-    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssemblerService $captureListAssemblerService): ?CaptureRule
+    public function assemble(CaptureRuleSetAssemblerService $captureListAssemblerService): ?CaptureRule
     {
-        /** @var object $object */
-        $object = $parentRule->getValue();
-
         $captureRuleSet = new LazyRuleSet(
             /** @param LazyRuleSet<CaptureRule> $lazyCaptureRuleSet */
-            function (LazyRuleSet $lazyCaptureRuleSet) use ($parentRule, $object, $captureListAssemblerService): ?CaptureRule {
+            function (LazyRuleSet $lazyCaptureRuleSet) use ($captureListAssemblerService): ?CaptureRule {
+                $object = $this->parentRule->getValue();
+
                 $propertyRuleSet = new PropertyRuleSet(
-                    $parentRule,
+                    $this->parentRule,
                     $this->getName(),
-                    $this->getValue($object),
+                    $this->getPropertyValue($object),
                     $lazyCaptureRuleSet,
                 );
 
-                return $captureListAssemblerService->assemble($propertyRuleSet, new PropertyRulesAssembler($this->reflectionProperty));
+                return $captureListAssemblerService
+                    ->assemble(new PropertyRulesAssembler($propertyRuleSet, $this->reflectionProperty))
+                ;
             },
         );
 
         return $captureRuleSet->build()?->getParent();
     }
 
-    public function getName(): string
+    public function getParentRule(): ObjectRuleSet
+    {
+        return $this->parentRule;
+    }
+
+    private function getName(): string
     {
         return $this->reflectionProperty->getName();
     }
 
-    public function getValue(object $message): mixed
+    private function getPropertyValue(object $message): mixed
     {
         if (!$this->reflectionProperty->isInitialized($message)) {
             return null;
