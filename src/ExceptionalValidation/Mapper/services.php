@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Mapper;
 
 use Closure;
+use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -21,13 +23,11 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
         ->set(ExceptionMapper::class.'<non-empty-list<'.CapturedException::class.'<Throwable>>>', DefaultExceptionMapper::class)
         ->public()
         ->args([
-            service('phd_exceptional_validation.rule_set_assembler'),
+            service(CaptureRuleSetAssemblerService::class.'<'.ObjectRuleSetAssembler::class.'>'),
             service('phd_exceptional_validation.exception_unwrapper'),
         ])
         ->lazy($lazy(ExceptionMapper::class))
     ;
 
     $services->alias('phd_exceptional_validation.exception_unwrapper', 'phd_exception_toolkit.exception_unwrapper');
-
-    $services->alias('phd_exceptional_validation.rule_set_assembler', 'phd_exceptional_validation.rule_set_assembler.object');
 };
