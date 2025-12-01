@@ -6,9 +6,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Val
 
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
-use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -34,13 +32,10 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
     {
         parent::setUp();
 
-        $container = PhdExceptionalValidationExtension::getContainer([
+        $container = (new PhdExceptionalValidationExtension())->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
-        ], true);
-
-        $exceptionUnwrapper = new CompositeExceptionUnwrapper(new PassThroughExceptionUnwrapper());
-        $container->set('phd_exception_toolkit.exception_unwrapper', $exceptionUnwrapper);
+        ]);
 
         $container->compile();
 

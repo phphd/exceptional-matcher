@@ -29,10 +29,10 @@ final class DelegatingExceptionViolationFormatterUnitTest extends TestCase
     {
         parent::setUp();
 
-        $container = PhdExceptionalValidationExtension::getContainer([
+        $container = (new PhdExceptionalValidationExtension())->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
-        ], true);
+        ]);
 
         $container->register(CustomExceptionViolationFormatter::class, CustomExceptionViolationFormatter::class)
             ->setArguments([new Reference(ExceptionViolationFormatter::class.'<Throwable>')])

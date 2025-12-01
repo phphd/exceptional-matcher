@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Bundle\DependencyInjection;
 
 use Composer\InstalledVersions;
 use Exception;
-use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
+use PhPhD\ExceptionToolkit\Bundle\DependencyInjection\PhdExceptionToolkitExtension;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\Compiler\ResolveChildDefinitionsPass;
@@ -31,7 +31,7 @@ final class PhdExceptionalValidationExtension extends AbstractExtension implemen
     private readonly bool $nativeProxiesSupported;
 
     public function __construct(
-        private readonly bool $allowGeneratedProxies = true,
+        private readonly bool $allowGeneratedProxies = false,
     ) {
         $this->nativeProxiesSupported = self::nativeProxiesAreSupported();
     }
@@ -41,7 +41,7 @@ final class PhdExceptionalValidationExtension extends AbstractExtension implemen
      *                                        - kernel.environment
      *                                        - kernel.build_dir
      */
-    public static function getContainer(array $parameters, bool $allowGeneratedProxies = false): ContainerBuilder
+    public function getContainer(array $parameters): ContainerBuilder
     {
         $container = new ContainerBuilder();
 
@@ -51,17 +51,25 @@ final class PhdExceptionalValidationExtension extends AbstractExtension implemen
         $container->getCompilerPassConfig()->setRemovingPasses([]);
         $container->getCompilerPassConfig()->setAfterRemovingPasses([]);
 
-        $container->registerExtension($extension = new self($allowGeneratedProxies));
-        $container->loadFromExtension($extension->getAlias());
+        array_map($container->setParameter(...), array_keys($parameters), $parameters); // @phpstan-ignore argument.type
 
-        $container->addCompilerPass($extension, PassConfig::TYPE_BEFORE_OPTIMIZATION, -1000);
+        $this->configureContainer($container);
+
+        return $container;
+    }
+
+    /** @internal PhPhD */
+    public function configureContainer(ContainerBuilder $container): void
+    {
+        $container->registerExtension($this);
+        $container->loadFromExtension($this->getAlias());
+
+        $container->addCompilerPass($this, PassConfig::TYPE_BEFORE_OPTIMIZATION, -1000);
         $container->addCompilerPass(new ResolveInstanceofConditionalsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 100);
         $container->addCompilerPass(new ResolveChildDefinitionsPass(), PassConfig::TYPE_OPTIMIZE);
         $container->addCompilerPass(new ServiceLocatorTagPass(), PassConfig::TYPE_OPTIMIZE);
 
-        array_map($container->setParameter(...), array_keys($parameters), $parameters); // @phpstan-ignore argument.type
-
-        return $container;
+        (new PhdExceptionToolkitExtension())->configureContainer($container);
     }
 
     /**
@@ -91,8 +99,6 @@ final class PhdExceptionalValidationExtension extends AbstractExtension implemen
     public function process(ContainerBuilder $container): void
     {
         $this->checkTranslatorDependency($container);
-        /** @psalm-suppress DeprecatedMethod */
-        $this->checkUnwrapperDependency($container);
     }
 
     public function lazyProxy(string $interface): bool|string
@@ -129,15 +135,5 @@ final class PhdExceptionalValidationExtension extends AbstractExtension implemen
 
         $container->removeDefinition('phd_exceptional_validation.translator');
         $container->getParameterBag()->remove('phd_exceptional_validation.translation_domain');
-    }
-
-    /** @deprecated - it should not be the case */
-    private function checkUnwrapperDependency(ContainerBuilder $container): void
-    {
-        if ($container->has('phd_exception_toolkit.exception_unwrapper')) {
-            return;
-        }
-
-        $container->register('phd_exceptional_validation.exception_unwrapper', PassThroughExceptionUnwrapper::class);
     }
 }

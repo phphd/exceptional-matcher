@@ -28,10 +28,10 @@ final class ClosureMatchConditionUnitTest extends TestCase
     {
         parent::setUp();
 
-        $container = PhdExceptionalValidationExtension::getContainer([
+        $container = (new PhdExceptionalValidationExtension())->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
-        ], true);
+        ]);
 
         $container->compile();
 
