@@ -20,14 +20,12 @@
         "symfony/validator": "<6.0 || >8.4",
         "symfony/http-kernel": "<6.0 || >8.4",
         "symfony/dependency-injection": "<6.2 || >8.4",
-        "symfony/config": "<6.0 || >8.4",
         "symfony/messenger": "<6.4 || >8.4"
     },
     "require-dev": {
         "symfony/validator": ">=6.0",
         "symfony/http-kernel": ">=6.0",
         "symfony/dependency-injection": ">=6.2",
-        "symfony/config": ">=6.0",
         "symfony/messenger": ">=6.4",
         "symfony/uid": ">=6.0",
         "symfony/var-dumper": ">=6.0",
