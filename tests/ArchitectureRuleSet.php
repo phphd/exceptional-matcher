@@ -142,7 +142,7 @@ final class ArchitectureRuleSet
             ],
             'mapper' => [
                 'deps' => [
-                    Selector::classname(ObjectRuleSetAssemblerService::class),
+                    Selector::classname(CaptureRuleSetAssemblerService::class),
                     Selector::classname(ObjectRuleSetAssembler::class),
                     $this->model(),
                     Selector::AllOf(
