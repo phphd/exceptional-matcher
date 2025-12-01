@@ -11,8 +11,8 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\Tes
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
-use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Reference;
 use Throwable;
 
 /**
@@ -36,8 +36,11 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ], true);
 
-        $exceptionUnwrapper = new CompositeExceptionUnwrapper(new PassThroughExceptionUnwrapper());
-        $container->set('phd_exception_toolkit.exception_unwrapper', $exceptionUnwrapper);
+        $container
+            ->register(CompositeExceptionUnwrapper::class, CompositeExceptionUnwrapper::class)
+            ->setArguments([new Reference('.inner')])
+            ->setDecoratedService('phd_exception_toolkit.exception_unwrapper.stack')
+        ;
 
         $container->compile();
 

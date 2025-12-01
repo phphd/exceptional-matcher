@@ -6,8 +6,10 @@ namespace PhPhD\ExceptionalValidation\Bundle\DependencyInjection;
 
 use Composer\InstalledVersions;
 use Exception;
-use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
+use PhPhD\ExceptionToolkit\Bundle\DependencyInjection\PhdExceptionToolkitExtension;
+use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Compiler\DecoratorServicePass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\Compiler\ResolveChildDefinitionsPass;
 use Symfony\Component\DependencyInjection\Compiler\ResolveInstanceofConditionalsPass;
@@ -58,6 +60,7 @@ final class PhdExceptionalValidationExtension extends AbstractExtension implemen
         $container->addCompilerPass(new ResolveInstanceofConditionalsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 100);
         $container->addCompilerPass(new ResolveChildDefinitionsPass(), PassConfig::TYPE_OPTIMIZE);
         $container->addCompilerPass(new ServiceLocatorTagPass(), PassConfig::TYPE_OPTIMIZE);
+        $container->addCompilerPass(new DecoratorServicePass(), PassConfig::TYPE_OPTIMIZE);
 
         array_map($container->setParameter(...), array_keys($parameters), $parameters); // @phpstan-ignore argument.type
 
@@ -91,8 +94,7 @@ final class PhdExceptionalValidationExtension extends AbstractExtension implemen
     public function process(ContainerBuilder $container): void
     {
         $this->checkTranslatorDependency($container);
-        /** @psalm-suppress DeprecatedMethod */
-        $this->checkUnwrapperDependency($container);
+        $this->checkToolkitDependency($container);
     }
 
     public function lazyProxy(string $interface): bool|string
@@ -131,13 +133,16 @@ final class PhdExceptionalValidationExtension extends AbstractExtension implemen
         $container->getParameterBag()->remove('phd_exceptional_validation.translation_domain');
     }
 
-    /** @deprecated - it should not be the case */
-    private function checkUnwrapperDependency(ContainerBuilder $container): void
+    private function checkToolkitDependency(ContainerBuilder $container): void
     {
-        if ($container->has('phd_exception_toolkit.exception_unwrapper')) {
+        if ($container->has(ExceptionUnwrapper::class)) {
             return;
         }
 
-        $container->register('phd_exceptional_validation.exception_unwrapper', PassThroughExceptionUnwrapper::class);
+        $toolkitContainer = PhdExceptionToolkitExtension::getContainer($container->getParameterBag()->all()); // @phpstan-ignore argument.type
+
+        $toolkitContainer->compile();
+
+        $container->merge($toolkitContainer);
     }
 }

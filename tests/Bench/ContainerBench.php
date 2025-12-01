@@ -8,13 +8,11 @@ use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedItem;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NotHandleableMessageStub;
-use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -116,11 +114,7 @@ final readonly class ContainerBench
         $container = PhdExceptionalValidationExtension::getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
-            'phd_exceptional_validation.translation_domain' => 'domain',
         ], $allowGeneratedProxies);
-
-        $exceptionUnwrapper = new CompositeExceptionUnwrapper(new PassThroughExceptionUnwrapper());
-        $container->set('phd_exception_toolkit.exception_unwrapper', $exceptionUnwrapper);
 
         $container->compile();
 

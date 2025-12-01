@@ -13,7 +13,7 @@
     "require": {
         "php": ">=8.2",
         "webmozart/assert": "^1.12.1",
-        "phphd/exception-toolkit": "^1.0.1",
+        "phphd/exception-toolkit": "^1.2",
         "composer-runtime-api": "^2.0"
     },
     "conflict": {

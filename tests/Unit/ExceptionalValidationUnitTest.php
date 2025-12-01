@@ -18,8 +18,8 @@ use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedHandleableMessage;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedItem;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NotHandleableMessageStub;
-use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -84,8 +84,11 @@ final class ExceptionalValidationUnitTest extends TestCase
         ;
         $container->set('translator', $translator);
 
-        $exceptionUnwrapper = new CompositeExceptionUnwrapper(new PassThroughExceptionUnwrapper());
-        $container->set('phd_exception_toolkit.exception_unwrapper', $exceptionUnwrapper);
+        $container
+            ->register(CompositeExceptionUnwrapper::class, CompositeExceptionUnwrapper::class)
+            ->setArguments([new Reference('.inner')])
+            ->setDecoratedService('phd_exception_toolkit.exception_unwrapper.stack')
+        ;
 
         $container->compile();
 
