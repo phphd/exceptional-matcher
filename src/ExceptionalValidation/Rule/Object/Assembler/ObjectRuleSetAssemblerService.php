@@ -17,29 +17,23 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAs
 final readonly class ObjectRuleSetAssemblerService implements CaptureRuleSetAssemblerService
 {
     /**
-     *@api
+     * @api
      *
-     * @param CaptureRuleSetAssemblerService<PropertyRuleSetAssembler> $propertyRuleSetAssembler
+     * @param CaptureRuleSetAssemblerService<PropertyRuleSetAssembler> $propertyRuleSetAssemblerService
      */
     public function __construct(
-        private CaptureRuleSetAssemblerService $propertyRuleSetAssembler,
+        private CaptureRuleSetAssemblerService $propertyRuleSetAssemblerService,
     ) {
     }
 
     public function assembleForMessage(object $message, ?CaptureRule $parentRule = null): ?CaptureRule
     {
-        $envelope = ObjectRuleSetAssembler::createForMessage($message);
-
-        if (null === $envelope) {
-            return null;
-        }
-
-        return $this->assemble($parentRule, $envelope);
+        return $this->assemble($parentRule, new ObjectRuleSetAssembler($message));
     }
 
     /** @param ObjectRuleSetAssembler $assembler */
     public function assemble(?CaptureRule $parentRule, CaptureRuleSetAssembler $assembler): ?CaptureRule
     {
-        return $assembler->assemble($parentRule, $this->propertyRuleSetAssembler);
+        return $assembler->assemble($parentRule, $this->propertyRuleSetAssemblerService);
     }
 }

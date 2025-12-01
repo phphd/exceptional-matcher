@@ -19,14 +19,14 @@ final readonly class DefaultExceptionMapper implements ExceptionMapper
 {
     /** @api */
     public function __construct(
-        private ObjectRuleSetAssemblerService $ruleSetAssembler,
+        private ObjectRuleSetAssemblerService $ruleSetAssemblerService,
         private ExceptionUnwrapper $exceptionUnwrapper,
     ) {
     }
 
     public function map(object $message, Throwable $exception): ?array
     {
-        $ruleSet = $this->ruleSetAssembler->assembleForMessage($message);
+        $ruleSet = $this->ruleSetAssemblerService->assembleForMessage($message);
 
         if (null === $ruleSet) {
             return null;
