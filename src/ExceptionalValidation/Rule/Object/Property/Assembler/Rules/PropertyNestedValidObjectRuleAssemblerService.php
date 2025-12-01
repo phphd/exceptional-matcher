@@ -21,7 +21,7 @@ final readonly class PropertyNestedValidObjectRuleAssemblerService implements Ca
 {
     /** @api */
     public function __construct(
-        private ObjectRuleSetAssemblerService $objectRuleSetAssembler,
+        private ObjectRuleSetAssemblerService $objectRuleSetAssemblerService,
     ) {
     }
 
@@ -40,6 +40,6 @@ final readonly class PropertyNestedValidObjectRuleAssemblerService implements Ca
             return null;
         }
 
-        return $this->objectRuleSetAssembler->assembleForMessage($propertyValue, $parentRule);
+        return $this->objectRuleSetAssemblerService->assembleForMessage($propertyValue, $parentRule);
     }
 }
