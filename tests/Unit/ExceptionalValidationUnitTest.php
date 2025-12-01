@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Tests\Unit;
 
 use ArrayObject;
-use LogicException;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\Tests\Stub\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\MessageContainingException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedPropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
@@ -22,7 +20,6 @@ use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedItem;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NotHandleableMessageStub;
 use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
-use stdClass;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -34,7 +31,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Mapper\DefaultExceptionMapper
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\ExceptionViolationListMapper
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\DefaultExceptionListViolationFormatter
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\DefaultExceptionViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet
@@ -79,13 +75,12 @@ final class ExceptionalValidationUnitTest extends TestCase
 
         $translator = $this->createMock(TranslatorInterface::class);
         $translations = [
-            '' => '',
-            'oops' => 'oops - translated',
-            'nested.message' => 'nested.message - translated',
-            'This is the message to be used' => 'This is the message to be used',
+            'domain' => [
+                'nested.message' => 'nested.message - translated',
+            ],
         ];
         $translator->method('trans')
-            ->willReturnCallback(static fn (string $id): string => $translations[$id] ?? $id)
+            ->willReturnCallback(static fn (string $id, array $params, string $domain): string => $translations[$domain][$id] ?? $id)
         ;
         $container->set('translator', $translator);
 
@@ -121,39 +116,6 @@ final class ExceptionalValidationUnitTest extends TestCase
         /** @var ConstraintViolationInterface $violation */
         $violation = $violationList[0];
         self::assertSame('property', $violation->getPropertyPath());
-        self::assertSame('oops - translated', $violation->getMessage());
-        self::assertSame('oops', $violation->getMessageTemplate());
-        self::assertSame($message, $violation->getRoot());
-        self::assertSame([], $violation->getParameters());
-        self::assertNull($violation->getInvalidValue());
-    }
-
-    public function testCollectsInitializedPropertyValue(): void
-    {
-        $message = HandleableMessageStub::create()->withMessageText('invalid text value');
-
-        /** @var ConstraintViolationListInterface $violationList */
-        $violationList = $this->exceptionMapper->map($message, new LogicException());
-
-        /** @var ConstraintViolationInterface $violation */
-        [$violation] = $violationList;
-
-        self::assertSame('invalid text value', $violation->getInvalidValue());
-    }
-
-    public function testCollectsObjectInvalidValue(): void
-    {
-        $message = HandleableMessageStub::create()->withObjectProperty($object = new stdClass());
-
-        $originalException = new ObjectPropertyCapturableException();
-
-        /** @var ConstraintViolationListInterface $violationList */
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        /** @var ConstraintViolationInterface $violation */
-        [$violation] = $violationList;
-
-        self::assertSame($object, $violation->getInvalidValue());
     }
 
     public function testCaptureExceptionMappedToStaticProperty(): void
@@ -344,32 +306,5 @@ final class ExceptionalValidationUnitTest extends TestCase
         /** @var ConstraintViolationInterface $fourthViolation */
         $fourthViolation = $violationList[3];
         self::assertSame('nestedIterableItems[second].property', $fourthViolation->getPropertyPath());
-    }
-
-    public function testViolationMessageFallsBackToExceptionMessage(): void
-    {
-        $message = HandleableMessageStub::create();
-        $exceptionAdapter = new CompositeException([
-            new MessageContainingException(),
-            new MessageContainingException(),
-        ]);
-
-        $violationList = $this->exceptionMapper->map($message, $exceptionAdapter);
-
-        self::assertNotNull($violationList);
-        self::assertCount(2, $violationList);
-
-        /** @var ConstraintViolationInterface $violation1 */
-        $violation1 = $violationList[0];
-
-        self::assertSame('fallBackToExceptionMessage', $violation1->getPropertyPath());
-        self::assertSame('This is the message to be used', $violation1->getMessage());
-
-        /** @var ConstraintViolationInterface $violation2 */
-        $violation2 = $violationList[1];
-
-        // When the message is specified as an empty string, empty message is used (w/o fallback)
-        self::assertSame('emptyTranslationMessage', $violation2->getPropertyPath());
-        self::assertSame('', $violation2->getMessage());
     }
 }
