@@ -13,6 +13,7 @@ use function array_merge;
 /** @internal */
 final readonly class CompositeExceptionUnwrapper implements ExceptionUnwrapper
 {
+    /** @api */
     public function __construct(
         private ExceptionUnwrapper $innerUnwrapper,
     ) {
