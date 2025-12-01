@@ -45,7 +45,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssembler
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssemblerService
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssemblerService
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssemblerService
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssemblerService
@@ -103,7 +103,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertNull($violationList);
     }
 
-    public function testCapturesExceptionMappedToProperty(): void
+    public function testCaptureExceptionMappedToProperty(): void
     {
         $message = HandleableMessageStub::create();
         $originalException = new PropertyCapturableException();
@@ -133,7 +133,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertSame('foo', $violation->getInvalidValue());
     }
 
-    public function testDoesNotCaptureNestedObjectPropertyWhenNotInitialized(): void
+    public function testNestedObjectIsNotCapturedWhenPropertyIsNotInitialized(): void
     {
         $message = HandleableMessageStub::create();
         $exception = new NestedPropertyCapturableException();
@@ -143,7 +143,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertNull($violationList);
     }
 
-    public function testDoesNotCaptureNestedObjectWhenValidAttributeIsMissing(): void
+    public function testNestedObjectIsNotCapturedWhenValidAttributeIsMissing(): void
     {
         $message = HandleableMessageStub::create()->withOrdinaryObject(new NestedHandleableMessage());
         $exception = new NestedPropertyCapturableException();
