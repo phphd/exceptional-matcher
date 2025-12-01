@@ -19,13 +19,13 @@ final readonly class ObjectRuleSetAssemblerService implements CaptureRuleSetAsse
     /** @api */
     public function __construct(
         /** @var CaptureRuleSetAssemblerService<PropertyRuleSetAssembler> */
-        private CaptureRuleSetAssemblerService $propertyRuleSetAssemblerService,
+        public CaptureRuleSetAssemblerService $propertyRuleSetAssemblerService,
     ) {
     }
 
     /** @param ObjectRuleSetAssembler $assembler */
     public function assemble(CaptureRuleSetAssembler $assembler): ?CaptureRule
     {
-        return $assembler->assemble($this->propertyRuleSetAssemblerService);
+        return $assembler->assemble($this);
     }
 }

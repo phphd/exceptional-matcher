@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler;
 
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\LazyRuleSet;
 use PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet;
 use ReflectionProperty;
 
@@ -22,12 +21,11 @@ final readonly class PropertyRuleSetAssembler implements CaptureRuleSetAssembler
     ) {
     }
 
-    /** @param CaptureRuleSetAssemblerService<PropertyRulesAssembler> $captureListAssemblerService */
-    public function assemble(CaptureRuleSetAssemblerService $captureListAssemblerService): ?CaptureRule
+    public function assemble(PropertyRuleSetAssemblerService $service): ?CaptureRule
     {
         $captureRuleSet = new LazyRuleSet(
             /** @param LazyRuleSet<CaptureRule> $lazyCaptureRuleSet */
-            function (LazyRuleSet $lazyCaptureRuleSet) use ($captureListAssemblerService): ?CaptureRule {
+            function (LazyRuleSet $lazyCaptureRuleSet) use ($service): ?CaptureRule {
                 $object = $this->parentRule->getValue();
 
                 $propertyRuleSet = new PropertyRuleSet(
@@ -37,8 +35,8 @@ final readonly class PropertyRuleSetAssembler implements CaptureRuleSetAssembler
                     $lazyCaptureRuleSet,
                 );
 
-                return $captureListAssemblerService
-                    ->assemble(new PropertyRulesAssembler($propertyRuleSet, $this->reflectionProperty))
+                return $service->captureListAssemblerService
+                    ->assemble(new PropertyCaptureRulesAssembler($propertyRuleSet, $this->reflectionProperty))
                 ;
             },
         );

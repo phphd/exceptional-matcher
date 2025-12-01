@@ -9,6 +9,7 @@ use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
 use Symfony\Component\Validator\Constraints\Valid;
 
 use function is_object;
@@ -16,7 +17,7 @@ use function is_object;
 /**
  * @internal
  *
- * @implements CaptureRuleSetAssemblerService<PropertyRulesAssembler>
+ * @implements CaptureRuleSetAssemblerService<PropertyCaptureRulesAssembler>
  */
 final readonly class PropertyNestedValidObjectRuleAssemblerService implements CaptureRuleSetAssemblerService
 {
@@ -26,7 +27,7 @@ final readonly class PropertyNestedValidObjectRuleAssemblerService implements Ca
     ) {
     }
 
-    /** @param PropertyRulesAssembler $assembler */
+    /** @param PropertyCaptureRulesAssembler $assembler */
     public function assemble(CaptureRuleSetAssembler $assembler): ?CaptureRule
     {
         $propertyValue = $assembler->getParentRule()->getValue();
