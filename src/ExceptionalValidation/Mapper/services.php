@@ -8,6 +8,7 @@ use Closure;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
+use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -29,5 +30,5 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
         ->lazy($lazy(ExceptionMapper::class))
     ;
 
-    $services->alias('phd_exceptional_validation.exception_unwrapper', 'phd_exception_toolkit.exception_unwrapper');
+    $services->alias('phd_exceptional_validation.exception_unwrapper', ExceptionUnwrapper::class);
 };
