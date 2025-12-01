@@ -18,7 +18,6 @@ use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
@@ -229,7 +228,6 @@ final class ArchitectureRuleSet
             Selector::implements(CaptureRuleSetAssembler::class),
             Selector::classname(CaptureRuleSetAssemblerService::class),
             Selector::implements(CaptureRuleSetAssemblerService::class),
-            Selector::classname(ObjectRuleSetAssemblerService::class),
         );
     }
 
