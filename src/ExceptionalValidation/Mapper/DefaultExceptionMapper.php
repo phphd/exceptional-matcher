@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Mapper;
 
+use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Throwable;
 
@@ -19,14 +20,15 @@ final readonly class DefaultExceptionMapper implements ExceptionMapper
 {
     /** @api */
     public function __construct(
-        private ObjectRuleSetAssemblerService $ruleSetAssembler,
+        /** @var CaptureRuleSetAssemblerService<ObjectRuleSetAssembler> */
+        private CaptureRuleSetAssemblerService $ruleSetAssemblerService,
         private ExceptionUnwrapper $exceptionUnwrapper,
     ) {
     }
 
     public function map(object $message, Throwable $exception): ?array
     {
-        $ruleSet = $this->ruleSetAssembler->assembleForMessage($message);
+        $ruleSet = $this->ruleSetAssemblerService->assemble(new ObjectRuleSetAssembler($message));
 
         if (null === $ruleSet) {
             return null;

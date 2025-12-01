@@ -7,7 +7,9 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
 use Symfony\Component\Validator\Constraints\Valid;
 
 use function is_object;
@@ -15,20 +17,20 @@ use function is_object;
 /**
  * @internal
  *
- * @implements CaptureRuleSetAssemblerService<PropertyRulesAssembler>
+ * @implements CaptureRuleSetAssemblerService<PropertyCaptureRulesAssembler>
  */
 final readonly class PropertyNestedValidObjectRuleAssemblerService implements CaptureRuleSetAssemblerService
 {
     /** @api */
     public function __construct(
-        private ObjectRuleSetAssemblerService $objectRuleSetAssembler,
+        private ObjectRuleSetAssemblerService $objectRuleSetAssemblerService,
     ) {
     }
 
-    /** @param PropertyRulesAssembler $assembler */
-    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssembler $assembler): ?CaptureRule
+    /** @param PropertyCaptureRulesAssembler $assembler */
+    public function assemble(CaptureRuleSetAssembler $assembler): ?CaptureRule
     {
-        $propertyValue = $parentRule->getValue();
+        $propertyValue = $assembler->getParentRule()->getValue();
 
         if (!is_object($propertyValue)) {
             return null;
@@ -40,6 +42,8 @@ final readonly class PropertyNestedValidObjectRuleAssemblerService implements Ca
             return null;
         }
 
-        return $this->objectRuleSetAssembler->assembleForMessage($propertyValue, $parentRule);
+        return $this->objectRuleSetAssemblerService
+            ->assemble(new ObjectRuleSetAssembler($propertyValue, $assembler->getParentRule()))
+        ;
     }
 }

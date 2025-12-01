@@ -11,10 +11,11 @@ use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
 use PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule;
 use PhPhD\ExceptionalValidation\Rule\LazyRuleSet;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet;
 use Symfony\Component\Validator\Constraints\Valid;
-use Webmozart\Assert\Assert;
 
 use function is_iterable;
 use function is_object;
@@ -22,22 +23,20 @@ use function is_object;
 /**
  * @internal
  *
- * @implements CaptureRuleSetAssemblerService<PropertyRulesAssembler>
+ * @implements CaptureRuleSetAssemblerService<PropertyCaptureRulesAssembler>
  */
 final readonly class PropertyNestedValidIterableRulesAssemblerService implements CaptureRuleSetAssemblerService
 {
     /** @api */
     public function __construct(
-        private ObjectRuleSetAssemblerService $objectRuleSetAssembler,
+        private ObjectRuleSetAssemblerService $objectRuleSetAssemblerService,
     ) {
     }
 
-    /** @param PropertyRulesAssembler $assembler */
-    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssembler $assembler): ?CaptureRule
+    /** @param PropertyCaptureRulesAssembler $assembler */
+    public function assemble(CaptureRuleSetAssembler $assembler): ?CaptureRule
     {
-        Assert::isInstanceOf($parentRule, PropertyRuleSet::class);
-
-        $propertyValue = $parentRule->getValue();
+        $propertyValue = $assembler->getParentRule()->getValue();
 
         if (!is_iterable($propertyValue)) {
             return null;
@@ -53,18 +52,18 @@ final readonly class PropertyNestedValidIterableRulesAssemblerService implements
 
         /** @var iterable<array-key,mixed> $propertyValue */
 
-        return $this->createRuleSet($propertyValue, $parentRule);
+        return $this->createRuleSet($propertyValue, $assembler->getParentRule());
     }
 
-    private function isMarkedWithValidAttribute(PropertyRulesAssembler $envelope): bool
+    private function isMarkedWithValidAttribute(PropertyCaptureRulesAssembler $assembler): bool
     {
-        $validAttributes = $envelope->getReflectionProperty()->getAttributes(Valid::class);
+        $validAttributes = $assembler->getReflectionProperty()->getAttributes(Valid::class);
 
         return [] !== $validAttributes;
     }
 
     /** @param iterable<array-key,mixed> $items */
-    private function createRuleSet(iterable $items, CaptureRule $parent): CompositeRuleSet
+    private function createRuleSet(iterable $items, PropertyRuleSet $parent): CompositeRuleSet
     {
         return new CompositeRuleSet(
             $parent,
@@ -73,7 +72,7 @@ final readonly class PropertyNestedValidIterableRulesAssemblerService implements
     }
 
     /** @param iterable<array-key,mixed> $items */
-    private function getRules(iterable $items, CaptureRule $parentRuleSet): Generator
+    private function getRules(iterable $items, PropertyRuleSet $parentRuleSet): Generator
     {
         foreach ($items as $key => $item) {
             if (!is_object($item)) {
@@ -88,12 +87,13 @@ final readonly class PropertyNestedValidIterableRulesAssemblerService implements
         }
     }
 
-    private function getIterableItemCaptureRule(CaptureRule $parentRuleSet, int|string $key, object $object): ?CaptureRule
+    private function getIterableItemCaptureRule(PropertyRuleSet $parentRuleSet, int|string $key, object $object): ?CaptureRule
     {
         return (new LazyRuleSet(
             /** @param LazyRuleSet<ItemOfIterableCaptureRule> $itemOfIterableRule */
             function (LazyRuleSet $itemOfIterableRule) use ($key, $parentRuleSet, $object): ?ItemOfIterableCaptureRule {
-                $objectRuleSet = $this->objectRuleSetAssembler->assembleForMessage($object, $itemOfIterableRule);
+                $objectRuleSetAssembler = new ObjectRuleSetAssembler($object, $itemOfIterableRule);
+                $objectRuleSet = $this->objectRuleSetAssemblerService->assemble($objectRuleSetAssembler);
 
                 if (null === $objectRuleSet) {
                     return null;
