@@ -8,7 +8,6 @@ use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
 use Symfony\Component\Validator\Constraints\Valid;
 
@@ -23,7 +22,8 @@ final readonly class PropertyNestedValidObjectRuleAssemblerService implements Ca
 {
     /** @api */
     public function __construct(
-        private ObjectRuleSetAssemblerService $objectRuleSetAssemblerService,
+        /** @var CaptureRuleSetAssemblerService<ObjectRuleSetAssembler> */
+        private CaptureRuleSetAssemblerService $objectRuleSetAssemblerService,
     ) {
     }
 
