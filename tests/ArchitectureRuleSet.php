@@ -21,7 +21,6 @@ use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
-use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Validator\Constraints\Valid;
@@ -111,7 +110,7 @@ final class ArchitectureRuleSet
                 'deps' => [
                     Selector::inNamespace('Symfony\Component'),
                     Selector::classname(InstalledVersions::class),
-                    Selector::classname(PassThroughExceptionUnwrapper::class),
+                    Selector::inNamespace('PhPhD\ExceptionToolkit'),
                 ],
             ],
             'messengerValidatorMiddleware' => [

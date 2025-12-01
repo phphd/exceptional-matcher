@@ -12,6 +12,6 @@ final class PhdExceptionalValidationBundle extends Bundle
     /** @override */
     protected function createContainerExtension(): PhdExceptionalValidationExtension
     {
-        return new PhdExceptionalValidationExtension();
+        return new PhdExceptionalValidationExtension(true);
     }
 }
