@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRulesAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
 
 /**
  * @internal
@@ -16,19 +16,16 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyRul
  */
 final readonly class PropertyRuleSetAssemblerService implements CaptureRuleSetAssemblerService
 {
-    /**
-     * @api
-     *
-     * @param CaptureRuleSetAssemblerService<PropertyRulesAssembler> $captureListAssembler
-     */
+    /** @api */
     public function __construct(
-        private CaptureRuleSetAssemblerService $captureListAssembler,
+        /** @var CaptureRuleSetAssemblerService<PropertyCaptureRulesAssembler> */
+        public CaptureRuleSetAssemblerService $captureListAssemblerService,
     ) {
     }
 
     /** @param PropertyRuleSetAssembler $assembler */
-    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssembler $assembler): ?CaptureRule
+    public function assemble(CaptureRuleSetAssembler $assembler): ?CaptureRule
     {
-        return $assembler->assemble($parentRule, $this->captureListAssembler);
+        return $assembler->assemble($this);
     }
 }

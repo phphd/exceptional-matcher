@@ -17,6 +17,7 @@ use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
@@ -141,7 +142,8 @@ final class ArchitectureRuleSet
             ],
             'mapper' => [
                 'deps' => [
-                    Selector::classname(ObjectRuleSetAssemblerService::class),
+                    Selector::classname(CaptureRuleSetAssemblerService::class),
+                    Selector::classname(ObjectRuleSetAssembler::class),
                     $this->model(),
                     Selector::AllOf(
                         Selector::isInterface(),

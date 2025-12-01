@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Rule\Assembler;
+namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules;
 
 use Closure;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssemblerService;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssemblerService;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -20,40 +22,32 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
     $lazy = $builder->get('phd_exceptional_validation.lazy_proxy');
 
     $services
-        ->set('phd_exceptional_validation.rule_set_assembler.property.rules', CompositeRuleSetAssemblerService::class)
-        ->args([
+        ->set(
+            CaptureRuleSetAssemblerService::class.'<'.PropertyCaptureRulesAssembler::class.'>',
+            CompositeRuleSetAssemblerService::class,
+        )->args([
             [
-                service('phd_exceptional_validation.rule_set_assembler.property.rules.captures'),
-                service('phd_exceptional_validation.rule_set_assembler.property.rules.nested_valid_object'),
-                service('phd_exceptional_validation.rule_set_assembler.property.rules.nested_valid_iterable'),
+                service(PropertyCaptureRulesAssemblerService::class),
+                service(PropertyNestedValidObjectRuleAssemblerService::class),
+                service(PropertyNestedValidIterableRulesAssemblerService::class),
             ],
         ])->lazy($lazy(CaptureRuleSetAssemblerService::class) ?: CaptureRuleSetAssemblerService::class)
     ;
 
     // Deliberately making these non-lazy
-    // since all of them are traversed anyway
+    // as all these are traversed anyway
 
     $services
-        ->set('phd_exceptional_validation.rule_set_assembler.property.rules.captures', PropertyCaptureRulesAssemblerService::class)
+        ->set(PropertyNestedValidObjectRuleAssemblerService::class, PropertyNestedValidObjectRuleAssemblerService::class)
         ->args([
-            service('phd_exceptional_validation.match_condition_factory'),
+            service(CaptureRuleSetAssemblerService::class.'<'.ObjectRuleSetAssembler::class.'>'),
         ])
     ;
 
     $services
-        ->set('phd_exceptional_validation.rule_set_assembler.property.rules.nested_valid_object', PropertyNestedValidObjectRuleAssemblerService::class)
+        ->set(PropertyNestedValidIterableRulesAssemblerService::class, PropertyNestedValidIterableRulesAssemblerService::class)
         ->args([
-            service('phd_exceptional_validation.rule_set_assembler.object'),
-        ])
-    ;
-
-    $services
-        ->set(
-            'phd_exceptional_validation.rule_set_assembler.property.rules.nested_valid_iterable',
-            PropertyNestedValidIterableRulesAssemblerService::class,
-        )
-        ->args([
-            service('phd_exceptional_validation.rule_set_assembler.object'),
+            service(CaptureRuleSetAssemblerService::class.'<'.ObjectRuleSetAssembler::class.'>'),
         ])
     ;
 };
