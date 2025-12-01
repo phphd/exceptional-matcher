@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
 use Symfony\Component\Validator\Constraints\Valid;
 
@@ -26,9 +27,9 @@ final readonly class PropertyNestedValidObjectRuleAssemblerService implements Ca
     }
 
     /** @param PropertyRulesAssembler $assembler */
-    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssembler $assembler): ?CaptureRule
+    public function assemble(CaptureRuleSetAssembler $assembler): ?CaptureRule
     {
-        $propertyValue = $parentRule->getValue();
+        $propertyValue = $assembler->getParentRule()->getValue();
 
         if (!is_object($propertyValue)) {
             return null;
@@ -40,6 +41,8 @@ final readonly class PropertyNestedValidObjectRuleAssemblerService implements Ca
             return null;
         }
 
-        return $this->objectRuleSetAssemblerService->assembleForMessage($propertyValue, $parentRule);
+        return $this->objectRuleSetAssemblerService
+            ->assemble(new ObjectRuleSetAssembler($propertyValue, $assembler->getParentRule()))
+        ;
     }
 }
