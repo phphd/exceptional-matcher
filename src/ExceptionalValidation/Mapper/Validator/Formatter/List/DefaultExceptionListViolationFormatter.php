@@ -8,7 +8,6 @@ use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolati
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Throwable;
 
 use function array_merge;
@@ -24,7 +23,7 @@ final readonly class DefaultExceptionListViolationFormatter implements Exception
     }
 
     /** @param non-empty-list<CapturedException<Throwable>> $capturedExceptionList */
-    public function format(array $capturedExceptionList): ConstraintViolationListInterface
+    public function format(array $capturedExceptionList): ConstraintViolationList
     {
         /** @var list<list<ConstraintViolationInterface>> $violations */
         $violations = [];
