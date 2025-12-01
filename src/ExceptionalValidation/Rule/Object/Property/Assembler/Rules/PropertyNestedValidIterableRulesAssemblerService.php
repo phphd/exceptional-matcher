@@ -28,7 +28,7 @@ final readonly class PropertyNestedValidIterableRulesAssemblerService implements
 {
     /** @api */
     public function __construct(
-        private ObjectRuleSetAssemblerService $objectRuleSetAssembler,
+        private ObjectRuleSetAssemblerService $objectRuleSetAssemblerService,
     ) {
     }
 
@@ -93,7 +93,7 @@ final readonly class PropertyNestedValidIterableRulesAssemblerService implements
         return (new LazyRuleSet(
             /** @param LazyRuleSet<ItemOfIterableCaptureRule> $itemOfIterableRule */
             function (LazyRuleSet $itemOfIterableRule) use ($key, $parentRuleSet, $object): ?ItemOfIterableCaptureRule {
-                $objectRuleSet = $this->objectRuleSetAssembler->assembleForMessage($object, $itemOfIterableRule);
+                $objectRuleSet = $this->objectRuleSetAssemblerService->assembleForMessage($object, $itemOfIterableRule);
 
                 if (null === $objectRuleSet) {
                     return null;

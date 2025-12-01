@@ -20,15 +20,15 @@ final readonly class PropertyRuleSetAssembler implements CaptureRuleSetAssembler
     ) {
     }
 
-    /** @param CaptureRuleSetAssemblerService<PropertyRulesAssembler> $captureListAssembler */
-    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssemblerService $captureListAssembler): ?CaptureRule
+    /** @param CaptureRuleSetAssemblerService<PropertyRulesAssembler> $captureListAssemblerService */
+    public function assemble(CaptureRule $parentRule, CaptureRuleSetAssemblerService $captureListAssemblerService): ?CaptureRule
     {
         /** @var object $object */
         $object = $parentRule->getValue();
 
         $captureRuleSet = new LazyRuleSet(
             /** @param LazyRuleSet<CaptureRule> $lazyCaptureRuleSet */
-            function (LazyRuleSet $lazyCaptureRuleSet) use ($parentRule, $object, $captureListAssembler): ?CaptureRule {
+            function (LazyRuleSet $lazyCaptureRuleSet) use ($parentRule, $object, $captureListAssemblerService): ?CaptureRule {
                 $propertyRuleSet = new PropertyRuleSet(
                     $parentRule,
                     $this->getName(),
@@ -36,9 +36,7 @@ final readonly class PropertyRuleSetAssembler implements CaptureRuleSetAssembler
                     $lazyCaptureRuleSet,
                 );
 
-                $propertyRulesEnvelope = new PropertyRulesAssembler($this->reflectionProperty);
-
-                return $captureListAssembler->assemble($propertyRuleSet, $propertyRulesEnvelope);
+                return $captureListAssemblerService->assemble($propertyRuleSet, new PropertyRulesAssembler($this->reflectionProperty));
             },
         );
 

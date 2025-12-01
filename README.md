@@ -20,7 +20,7 @@ and yield validation failed response as you do normally.
 
 ## A Validation Library? 🤔
 
-It's not a validation library. Not even intended to be.\
+It's not a validation library. Not ever intended to be.\
 It doesn't provide validation rules, constraints, or validators.
 
 Instead, it provides **exception handling** functionality, specific to a validation task.
