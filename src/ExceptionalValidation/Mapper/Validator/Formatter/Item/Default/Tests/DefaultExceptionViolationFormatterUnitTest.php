@@ -13,9 +13,9 @@ use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
-use PhPhD\ExceptionToolkit\Unwrapper\PassThroughExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -37,10 +37,10 @@ final class DefaultExceptionViolationFormatterUnitTest extends TestCase
     {
         parent::setUp();
 
-        $container = PhdExceptionalValidationExtension::getContainer([
+        $container = (new PhdExceptionalValidationExtension())->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
-        ], true);
+        ]);
 
         $translator = $this->createMock(TranslatorInterface::class);
         $translations = [
@@ -54,8 +54,11 @@ final class DefaultExceptionViolationFormatterUnitTest extends TestCase
         $container->set('translator', $translator);
         $container->setParameter('validator.translation_domain', 'domain');
 
-        $exceptionUnwrapper = new CompositeExceptionUnwrapper(new PassThroughExceptionUnwrapper());
-        $container->set('phd_exception_toolkit.exception_unwrapper', $exceptionUnwrapper);
+        $container
+            ->register(CompositeExceptionUnwrapper::class, CompositeExceptionUnwrapper::class)
+            ->setArguments([new Reference('.inner')])
+            ->setDecoratedService('phd_exception_toolkit.exception_unwrapper.stack')
+        ;
 
         $container->compile();
 
