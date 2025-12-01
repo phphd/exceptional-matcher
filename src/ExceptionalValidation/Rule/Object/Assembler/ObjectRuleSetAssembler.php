@@ -7,7 +7,6 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Assembler;
 use Generator;
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
 use PhPhD\ExceptionalValidation\Rule\LazyRuleSet;
@@ -28,12 +27,7 @@ final readonly class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
         $this->reflectionClass = new ReflectionClass($this->message::class);
     }
 
-    /**
-     * @param CaptureRuleSetAssemblerService<PropertyRuleSetAssembler> $propertyRuleSetAssemblerService
-     *
-     * @internal
-     */
-    public function assemble(CaptureRuleSetAssemblerService $propertyRuleSetAssemblerService): ?CaptureRule
+    public function assemble(ObjectRuleSetAssemblerService $service): ?CaptureRule
     {
         if (!$this->isMarkedWithAnAttribute()) {
             return null;
@@ -41,7 +35,7 @@ final readonly class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
 
         $wrappedRuleSet = (new LazyRuleSet(
             /** @param LazyRuleSet<CompositeRuleSet> $lazyWrappedRuleSet */
-            function (LazyRuleSet $lazyWrappedRuleSet) use ($propertyRuleSetAssemblerService): CompositeRuleSet {
+            function (LazyRuleSet $lazyWrappedRuleSet) use ($service): CompositeRuleSet {
                 $objectRuleSet = new ObjectRuleSet(
                     $this->message,
                     $this->parentRule,
@@ -50,7 +44,7 @@ final readonly class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
 
                 return new CompositeRuleSet(
                     $objectRuleSet,
-                    $this->getPropertyRules($objectRuleSet, $propertyRuleSetAssemblerService),
+                    $this->getPropertyRules($objectRuleSet, $service),
                 );
             },
         ));
@@ -68,11 +62,10 @@ final readonly class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
         return [] !== $this->reflectionClass->getAttributes(ExceptionalValidation::class);
     }
 
-    /** @param CaptureRuleSetAssemblerService<PropertyRuleSetAssembler> $propertyRuleSetAssemblerService */
-    private function getPropertyRules(ObjectRuleSet $objectRuleSet, CaptureRuleSetAssemblerService $propertyRuleSetAssemblerService): Generator
+    private function getPropertyRules(ObjectRuleSet $objectRuleSet, ObjectRuleSetAssemblerService $service): Generator
     {
         foreach ($this->reflectionClass->getProperties() as $reflectionProperty) {
-            $propertyRuleSet = $propertyRuleSetAssemblerService
+            $propertyRuleSet = $service->propertyRuleSetAssemblerService
                 ->assemble(new PropertyRuleSetAssembler($objectRuleSet, $reflectionProperty))
             ;
 

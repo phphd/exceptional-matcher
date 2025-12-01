@@ -13,6 +13,7 @@ use PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule;
 use PhPhD\ExceptionalValidation\Rule\LazyRuleSet;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet;
 use Symfony\Component\Validator\Constraints\Valid;
 
@@ -22,7 +23,7 @@ use function is_object;
 /**
  * @internal
  *
- * @implements CaptureRuleSetAssemblerService<PropertyRulesAssembler>
+ * @implements CaptureRuleSetAssemblerService<PropertyCaptureRulesAssembler>
  */
 final readonly class PropertyNestedValidIterableRulesAssemblerService implements CaptureRuleSetAssemblerService
 {
@@ -32,7 +33,7 @@ final readonly class PropertyNestedValidIterableRulesAssemblerService implements
     ) {
     }
 
-    /** @param PropertyRulesAssembler $assembler */
+    /** @param PropertyCaptureRulesAssembler $assembler */
     public function assemble(CaptureRuleSetAssembler $assembler): ?CaptureRule
     {
         $propertyValue = $assembler->getParentRule()->getValue();
@@ -54,9 +55,9 @@ final readonly class PropertyNestedValidIterableRulesAssemblerService implements
         return $this->createRuleSet($propertyValue, $assembler->getParentRule());
     }
 
-    private function isMarkedWithValidAttribute(PropertyRulesAssembler $envelope): bool
+    private function isMarkedWithValidAttribute(PropertyCaptureRulesAssembler $assembler): bool
     {
-        $validAttributes = $envelope->getReflectionProperty()->getAttributes(Valid::class);
+        $validAttributes = $assembler->getReflectionProperty()->getAttributes(Valid::class);
 
         return [] !== $validAttributes;
     }
