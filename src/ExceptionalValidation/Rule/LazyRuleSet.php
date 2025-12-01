@@ -75,6 +75,6 @@ final class LazyRuleSet implements CaptureRule
     /** @return T */
     private function innerRule(): CaptureRule
     {
-        return $this->innerRule ?? $this->build() ?? throw new RuntimeException('Lazy rule set is not initialized yet.');
+        return $this->innerRule ?? $this->build() ?? throw new RuntimeException('Lazy rule set is not initialized.');
     }
 }

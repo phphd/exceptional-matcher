@@ -12,7 +12,6 @@ use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
 use PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule;
 use PhPhD\ExceptionalValidation\Rule\LazyRuleSet;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet;
 use Symfony\Component\Validator\Constraints\Valid;
@@ -29,7 +28,8 @@ final readonly class PropertyNestedValidIterableRulesAssemblerService implements
 {
     /** @api */
     public function __construct(
-        private ObjectRuleSetAssemblerService $objectRuleSetAssemblerService,
+        /** @var CaptureRuleSetAssemblerService<ObjectRuleSetAssembler> */
+        private CaptureRuleSetAssemblerService $objectRuleSetAssemblerService,
     ) {
     }
 
