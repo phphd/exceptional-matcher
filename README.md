@@ -1,6 +1,6 @@
 # Exceptional Validation 🏹
 
-🧰 Transform Domain Exceptions Into Validation Errors
+🧰 Correlate Domain Exceptions with Object Properties
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/phphd/exceptional-validation/ci.yaml?branch=main&logo=github&logoColor=024C1A&cacheSeconds=3600)](https://github.com/phphd/exceptional-validation/actions?query=branch%3Amain)
 [![Codecov](https://codecov.io/gh/phphd/exceptional-validation/graph/badge.svg?token=GZRXWYT55Z)](https://codecov.io/gh/phphd/exceptional-validation)
@@ -10,126 +10,111 @@
 [![Packagist downloads](https://img.shields.io/packagist/dt/phphd/exceptional-validation?logo=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAMAAAApWqozAAAC%2FVBMVEUAAAAFBQVVWF8DBAQAAAABAQEMDAy1u8slJioDBAQCAQEAAAAAAAAAAACPk6CDg4RJS1I6PEFjZ28uLzMmEQIlDwAJCAgKCAcDBAQAAAABAQEAAAAAAAAAAAAAAABxdX4oDgAjDgAfHyEcHSAXFxgWFhYEBAUZGRwdHiAJBAEHAgAODg8EBAUEBQUAAABMTEyYnatxdYCJjpqFipV9gYwhIiUdHR5scHlmanN8gIsfDABucnthZG0bHB5DRUsvMTUTBgBWWWBDRktMT1YRERMkDQAkJSkVFhgrEAA3OT5ERkwrLDBSVVwuMDMqEQEGAQAfHyIRBwAGBgYpFAYsEAAKCgsNDQ8xMzgmJysODxATBwAICAkZGh0fHyI5O0ArLTEXFxoHBwdOTk7Z4PPZ4fTb4vXQ1%2BnW3e%2FU2%2B3CyNnc4%2FbY3%2FLX3vDN1OXM0uSUmaZfYmra4fXIz%2BHGzN2lq7mBOADT2uzEy9y%2Fxtaorr2Wm6h%2Bgo1bXmZQU1o2OD0CAQDHzt%2B9w9S5vs%2Bxt8ado7Can6yMkJ1scHhnanNhZG5dYGhGSU8%2FQkhfKAD%2F%2F%2F%2FS2erK0OK2vMuvtcW8vLyiqLeepLKIjJeEiJSBhZF1eYRwdH5kaHFSVVxJS1FDRUs%2BQEU9PkIwMTYlJipSIwBEHQDd5Pfw8PDU2%2B7P1efDytm%2BxNK7wdG5wNCus8OsssGTl6OJjZl7f4p6foh5fIZ2e4V%2BfoBgYmVhYWJWWWFOUFhLTlUfHyEUFBYODg4DBghtLgBXJAD29fXs7Oy0ucmhp7SoqKiQkJF2eoJ4eXpqbXZycnIPQl1KTFNOTk8FNU9KS046PEE0NDchIiUYGx8CEBlwMABkKgBZJgD6%2Bvrd5fff39%2FU0tHIycisscAAeLeysrOsrKwGcqmmpKMEaaCQk52YmJkAYZWHiYtxdYAGT3YmU2sVTmsfTWZdXV0AOVgySldVVVYDK0IbMD0AJTssLjIqKiopIyWGOwB8NgB4NABLIABBGQA8GQA3FgAsEgCoWa7%2BAAAAY3RSTlMACf5REQ4H%2FpiQgkQtIf7%2B7ejm1aqainFjXTkzJRsW%2Fv38sKainZyQfn5zbmtNNQr9%2B%2Fr4%2BPf39vbz8%2B7u7uzr6%2Bbj4N%2Fd29XV0s7My8vKyr29ubi4s6ypo5ycmJOLeHNsXg8rMEp9AAAD%2FElEQVQ4y6WUZXDbUBCElaRtmqTMzMzMzMzM7T2Z2a4ZQmY7nIY5ZWZuU2ZmZmbmTiXbsV1wnJnujzen0aedu5V02L%2FUel5rrJAqNndM%2BZEzSxaK9WnQLkQiuDHIrzBw8TA%2BEArtGFi0AKpkk0YlsBIN4wCRMKJoyzVu5QEtMaOcP7d3vV5asAsBUxhTtqVf8SmVqhT7w3VqD%2FlaZQxFSE0ysmwwX5tmoES192dHRWdW%2FY31K1uKp088%2FV4MQNXxKCQsN7GJk5ayVbEvdIB790UGL9sWiUO0iRGi3S%2BV0BEhKgvEdHbw9nWqs6LEQDe4Zl%2BZHAE%2FWZSwKTZ24wLc1jNTt%2FHgYcXxxbjQuKRMdTe4u4SGYGH6shOL9lxbtFlog7kH9%2B65XHobUa5aI2rhgmt0xsnp01eXvv783tPDOhJemKo%2FduzRVR75XFRYU7fYapMwx7z%2F6KubJ5%2Bd44ZzZRJQvzt558ndUxwyxRWVXHC12jhCEJ1Jy3jzctfOXdv0hrTTmdmanW8ffsjaggAhemMXHHSEdFZuwP3P7dJoNlDJzMKyNJrz57dSLGsIH0Fxt5j1OPBXEylEblHz4pD9dQefMabIcFieLUawZLILnh5O3E2iAUpW4Ay6SCalko2u5B1iI2CkcBCw%2BtfKZ2v1ZANQlTSIVFNiTMnhIWwWCQMzTk0BhoFNlG1a5sNVVQwAvjGeY96hsLBtnP24khUNFPViopQ4m26gIydeoVZtPJNtSwrZBMylO1RSE5esWeXzv7yG8aQTg3ciYvNqAJdzcMbRA9mJthKV9XHAlRXkJVr3IOKFv50L1Yn4AEtOLYo10QVkOjSncytfMT0GGMbYiNfr7bCYrreEsaibDmSaN6TKCJhe3%2Fk7%2B81qPq7UUtWtiM2PkaMNxoLtlvU7zCtxJNzCZSFuZcxNNefMbl567yblQsdwXEPY%2Bp1rWETJFNwvM6JJEewP1bt9SLmUiJeMOARwldyWjLRDmRY%2B2F%2Bq1ilh31b6WoojjSjipIb3q1LDhbqrWQKeeFYG4MyPciSjqsfNUQ44aTQXHGlY0bWGx801jImS5M6XQvOViod6Xkv12SCxCB2BCFLkaPkkzKOCfFmwjBeC275n5XKAUlUwzwrgUUHg6xsvoGuPhxIDDi%2BKFaBGqcSAoYrkpLXBCPAuQQVv54C25Gw4vli0gBEX4G2XT4znI1iVnprAkX6s5gUuMmQ7B0CYTkWcrG%2FNvMBN69ZJC1%2B1zrxSlKH5OcGLcUBdqzXna05e3iXrhTpjixZMB1789Hm3NSf3e651d26QF%2BfRA%2Fv8yM3Z%2FeXCxbxulap76bkWFnhpvl2jfDCvqj6tYsWKFSpUGF8Z%2Bx%2F9Aipg0qzWNVY9AAAAAElFTkSuQmCC&color=%23F28D1A&cacheSeconds=3600)](https://packagist.org/packages/phphd/exceptional-validation)
 [![Licence](https://img.shields.io/github/license/phphd/exceptional-validation.svg?color=3DA639)](https://github.com/phphd/exceptional-validation/blob/main/LICENSE)
 
-Exceptional Validation bridges your domain validation exceptions with the user interface by _capturing business
-exceptions_ and converting them into ordered validation errors. You don't have to run duplicate validation in your
-application/ui layers, nor even create custom validators, since you can _declaratively map the exceptions to
-their relevant form fields_ by the means of this library instead.
+A library that captures validation exceptions and maps them to validated object properties.
 
-## Another Validation Library? 🤔
+No longer do you need custom validators in your object\
+nor any validation in application/ui layers.
 
-No, it's not a validation library and never intended to be. It doesn't provide any validation rules, validators,
-constraints whatsoever. Instead, it is more of an exception handling library that formats exceptions in the validator
-format.
+Instead, **declaratively _relate_ domain exceptions** with their relevant form fields\
+and yield validation failed response as you do normally.
 
-Your domain validation logic could be implemented with any kind of third-party library, or even plain PHP, while
-Exceptional Validation will provide an easy way to accurately map validation exceptions to the particular properties
-they relate to.
+## A Validation Library? 🤔
 
-Even though it's not a strict requirement, it's recommended to use Symfony Validator as the main validation tool,
-since this library integrates it quite well.
+It's not a validation library. Not even intended to be.\
+It doesn't provide validation rules, constraints, or validators.
+
+Instead, it provides **exception handling** functionality, specific to a validation task.
+
+You can validate business logic with any third-party library (or even plain PHP),\
+while the library will be **_correlating_** these **validation exceptions** to the specific properties\
+whose invalid values caused them.
+
+It's not a strict requirement to use Symfony Validator as a validation component,\
+though this library integrates it well.
 
 ## Why Exceptional Validation? ✨
 
-Ordinarily, validation flows through two different layers - one at the HTTP/form level and another
-within domain objects - leading to duplication and potential inconsistencies.
+Ordinarily, validation flows through two different layers:
+- HTTP/form level;
+- domain layer.
 
-The traditional approach usually makes high use of attribute-based validation, which strips down the domain layer from
-most
-business logic it must've implemented on its own. Also, we don't have any other way to get a nice message on the form,
-but to create a custom validator for every special check we need. This way, the domain model ends up naked, since all
-business rules have leaked elsewhere.
+It leads to duplication and potential inconsistencies of validation rules.
 
-On the other hand, there's a common practice in DDD that domain objects should be responsible for their own validation
-rules. `Email` value object validates its own format by itself, and it naturally throws an exception that represents
-validation failure. `RegisterUserService` normally verifies that there's no duplicate user in the system and naturally
-throws an exception. That is the kind of code that consummately expresses the model of the business, and therefore it
-should not be stripped down.
+### Traditional Validation 🕯️
 
-Yet, with this domain-driven approach, it's a good question how to make these validation errors get shown to the user?
-In order for us to be able to return a neat Frontend response with `email` as a property path, it's necessary to match
-`EmailAlreadyTakenException` with `$email` property of the original `RegisterUserCommand`.
+The traditional validation uses an attribute-based approach,\
+which strips the domain layer from most business logic.
 
-That's exactly what Exceptional Validation is intended to do.
+Besides that, any custom validation you'd normally implement in a service\
+must be wrapped in a custom validator attribute and moved away from the service.
 
-By capturing exceptions like `EmailValidationFailedException` and mapping them to their particular form fields as
-`$email`, you maintain a single source of truth for domain validation logic. Your domain enforces its invariants through
-value objects and services, while this library ensures that any validation failures will appear properly in your forms
-and API responses.
+It's all for the sake of being able to display a nice validation message on the form. 
 
-This approach:
+Thus, the domain services and model end up naked,\
+all business rules having been leaked elsewhere.
 
-- Eliminates duplicate validation code across HTTP/application and domain layers;
-- Keeps business rules where they belong - in the domain;
+### Exceptional Validation 💡
+
+On the other hand, it's a common practice in DDD for domain objects to be responsible for their own validation rules.
+
+- `Email` value object validates its own format and naturally throws an exception that represents validation failure.
+- `RegisterUserService` normally verifies email is not yet taken and naturally throws an exception.
+
+That is the kind of code that utterly expresses the model of the business,\
+which should not be stripped down.
+
+Yet, with a domain-driven approach, it's not possible to use standard validation tools,\
+as these drain domain from all logic.
+
+How then do we show contextual validation errors to the users?\
+It's a task of relating thrown exception with the property which value caused this exception. 
+
+To return a neat json-response with `email` as a property path and validation error description,\
+it's necessary to match `EmailAlreadyTakenException` with a `$email` property of the original `RegisterUserCommand`.
+
+This is what Exceptional Validation was designed for.
+
+Capturing exceptions like `EmailValidationFailedException` and mapping them to the particular form fields as `$email`,\
+you maintain a single source of truth for the domain validation logic.
+
+Domain enforces its invariants through value objects and services,\
+while this library ensures that validation failures will properly appear in your forms and API responses.
+
+### Bottom line
+
+Exceptional Validation:
+
+- Eliminates duplicate validation across HTTP/application and domain layers;
+- Keeps business rules where they belong — in the domain;
 - Makes validation logic easily unit-testable;
-- Simplifies complex nested validation scenarios;
-- Eliminates the need for validation groups.
-
-## How it works ⚙️
-
-Primarily, it works as
-a [Command Bus](https://symfony.com/doc/current/messenger.html#multiple-buses-command-event-buses)
-middleware that intercepts exceptions and uses exception mapper to perform their mapping to the relevant form
-properties, eventually formatting captured exceptions as
-standard [SF Validator](https://symfony.com/doc/current/validation.html) violations.
-
-> Besides that, `ExceptionMapper` is also available for direct use w/o any middleware. You can
-> reference it as `ExceptionMapper<ConstraintViolationListInterface>` service.
-
-A simple diagram representing the concept:
-
-![Exceptional Validation.svg](https://raw.githubusercontent.com/phphd/exceptional-validation/refs/heads/main/assets/Exceptional%20Validation.svg)
+- Reduces complexity of nested validation scenarios;
+- Eliminates the need for validation groups and custom validators.
 
 ## Installation 📥
 
-1. Install via composer
+1. Install via composer:
 
     ```sh
     composer require phphd/exceptional-validation
     ```
 
-2. Enable these bundles in the `bundles.php`
+2. Enable bundles in the `bundles.php`:
 
     ```php
     PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle::class => ['all' => true],
     PhPhD\ExceptionToolkit\Bundle\PhdExceptionToolkitBundle::class => ['all' => true],
     ```
 
-   > Note: `PhdExceptionToolkitBundle` is a required dependency that gives exception unwrapping functionality for this
-   library.
+   > Note: `PhdExceptionToolkitBundle` is a required dependency\
+   > that provides exception unwrapping needful for this library.
 
-## Configuration 🔧
+## Get Started 🎯
 
-If you are using Symfony Messenger as a Command Bus, the recommended way to use this package is
-with [Symfony Messenger Middleware](https://symfony.com/doc/current/messenger.html#middleware).
+Mark a message with `#[ExceptionalValidation]` attribute.\
+It's used by mapper to include this object for processing.
 
-You should add `phd_exceptional_validation` middleware to the list:
-
-```diff
-framework:
-    messenger:
-        buses:
-            command.bus:
-                middleware:
-                    - validation
-+                   - phd_exceptional_validation
-                    - doctrine_transaction
-```
-
-Once you have done this, the middleware will take care of capturing exceptions and processing them.
-
-> If you are not using `Messenger` component, you can still leverage features of this package, as it provides a
-> rigorously structured set of tools w/o any particular implementation dependencies. Installation of `symfony/messenger`
-> is optional, and it won't be installed automatically if you don't need it.
-
-## Quick Start 🎯
-
-First of all, you should mark a message with `#[ExceptionalValidation]` attribute. Mapper uses this to include the
-object for processing.
-
-Then you should define exceptions-to-the-properties mapping with `#[Capture]` attributes.
-These declaratively describe what exceptions should match to what properties and under what conditions.
-
-The basic example looks like this:
+Then, define `#[Capture]` exception mappings on your properties.\
+These declaratively describe what exceptions correlate to what properties:
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -146,18 +131,129 @@ class RegisterUserCommand
 }
 ```
 
-In this example we say that whenever `LoginAlreadyTakenException` is thrown, it will be mapped to `login` property,
-resulting in `ConstraintViolation` object with `login` as a property path, and `auth.login.already_taken` as a
-message.
+Here, we say that `LoginAlreadyTakenException` is related to `login` property,\
+while `WeakPasswordException` is related to `password` property.
 
-The same comes to `WeakPasswordException` at `password` property path as well.
+The actual mapping takes place when the mapper is used:
 
-> Please note that the default messages translation domain is `validators`, since it is inherited from
-> `validator.translation_domain` parameter. You can change it by setting `phd_exceptional_validation.translation_domain`
-> parameter.
+```php
+use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
 
-Finally, when `phd_exceptional_validation` middleware processes the exception, it throws
-`ExceptionalValidationFailedException` so that you can catch it and process as needed:
+/** @var ExceptionMapper<ConstraintViolationListInterface> $mapper */
+
+try {
+    $command = new RegisterUserCommand($login, $password);
+
+    $this->service->register($command);
+} catch (DomainException $exception) {
+    $violationList = $mapper->map($command, $exception);
+
+    return new JsonResponse($violationList, 422);
+}
+```
+
+Each exception, when mapped, results in a `ConstraintViolation` object,\
+which contains a property path, and an exception message translation.
+
+You can use it to render form with validation errors or serialize these into a json-response.
+
+> Note that the default messages translation domain is `validators`,\
+> being inherited from `validator.translation_domain` parameter.
+> 
+> You can change it by setting `phd_exceptional_validation.translation_domain` parameter.
+
+## How is this different from a standard validation? ⚖️
+
+You might be wondering why we wouldn't just use simple validation asserts right in the command?
+
+This is a logical question. A simple answer is that this's not always convenient / best.
+
+For example, let's take the same `RegisterUserCommand` as used before.
+
+A comparison of the approaches would look something like this:
+
+```diff
++#[ExceptionalValidation]
+ class RegisterUserCommand
+ {
+-    #[App\Assert\UniqueLogin]
++    #[Capture(LoginAlreadyTakenException::class, 'auth.login.already_taken')]
+     public string $login;
+
+-    #[Assert\PasswordStrength(minScore: 2)]
++    #[Capture(WeakPasswordException::class, 'auth.password.weak')]
+     public string $password;
+ }
+```
+
+The main difference between the two is that standard validation runs before your actual business logic. \
+This alone means that for every domain-specific rule like "login must be unique" it's necessary to create \
+a custom validation constraint and a validator that implements this business logic.
+
+Thereby, the main problem with the standard approach is that domain leaks into validators. \
+That code, which you would've normally implemented in the service, you are obliged to wrap into the validator.
+
+One more point is that oftentimes there are multiple actions that use the same validations.
+
+For example, login uniqueness is validated both during registration and during profile update. \
+Even though a "login is unique" rule is conceptually obvious, \
+a validator approach is fraught with problems to check that a user's own login isn't taken into account when validating.
+
+Exceptional validation doesn't force you to write business logic in any validators. \
+Instead, you can throw an instance of exception in whatever scenario you would like to, \
+and then the library will retroactively analyse it.
+
+Another example is a password validation, which's used both during registration and during password reset. \
+Using the validation attributes results in duplicated asserts between the two, \
+while this business conceptually belongs to `Password`, \
+which most properly would be represented as a value object, used in both actions.
+
+With exceptional validation you just write business logic in your domain and then retroactively map violations. \
+Retroactively — after your business logic has worked out. \
+Representation of the errors to the user is separate from the business logic concern which's managed by this library.
+
+Finally, this approach gives a lot of flexibility, \
+removing the need for custom validators, validation groups, duplicate validation rules, \
+allowing you to keep the domain code in the domain objects, \
+resulting in a better design of the system.
+
+Focus on the domain and let the library take care of the exception representation:
+
+```php
+// RegisterUserService
+
+if ($this->userRepository->loginExists($command->login)) {
+    throw new LoginAlreadyTakenException($command->login);
+}
+```
+
+## Usage with Command Bus 🖨
+
+If you are using Symfony Messenger as a Command Bus, \
+the recommended way to use this package is with [Symfony Messenger Middleware](https://symfony.com/doc/current/messenger.html#middleware).
+
+> If you are not using `Messenger` component, you can still leverage features of this library, \
+> as it provides a rigorously structured set of tools w/o depending on any particular implementation. \
+> Installation of any third-party is optional — it won't be installed automatically if you don't need it.
+
+Add `phd_exceptional_validation` middleware to the list:
+
+```diff
+framework:
+    messenger:
+        buses:
+            command.bus:
+                middleware:
+                    - validation
++                   - phd_exceptional_validation
+                    - doctrine_transaction
+```
+
+Once you have done this, the middleware will take care
+of capturing exceptions and re-throwing `ExceptionalValidationFailedException`.
+
+When middleware is in place, it will analyse the exceptions and then throw
+`ExceptionalValidationFailedException` which you can catch and process as needed:
 
 ```php
 $command = new RegisterUserCommand($login, $password);
@@ -171,10 +267,24 @@ try {
 } 
 ```
 
-Exception object contains both message and respectively mapped `ConstraintViolationList`.
-This violation list can be used, for example, to render form with errors or to serialize them into a json-response.
+This exception just wraps respectively mapped `ConstraintViolationList` with all your messages and property paths.
 
-### Custom usage
+### How it works ⚙️
+
+Primarily, it works as
+a [Command Bus](https://symfony.com/doc/current/messenger.html#multiple-buses-command-event-buses)
+middleware that intercepts exceptions and uses exception mapper to perform their mapping to the relevant form
+properties, eventually formatting captured exceptions as
+standard [SF Validator](https://symfony.com/doc/current/validation.html) violations.
+
+> Besides that, `ExceptionMapper` is also available for direct use w/o any middleware. You can
+> reference it as `ExceptionMapper<ConstraintViolationListInterface>` service.
+
+This diagram represents the concept:
+
+![Exceptional Validation.svg](https://raw.githubusercontent.com/phphd/exceptional-validation/refs/heads/main/assets/Exceptional%20Validation.svg)
+
+## Custom Usage 🔧
 
 It's possible to use features of this bundle without necessarily depending on Command Bus middleware, nor on the
 Messenger component.
@@ -215,7 +325,7 @@ class SignDocumentActivity
         try {
             return $command->process();
         } catch (Exception $e) {
-            /** @var ConstraintViolationListInterface $violationList */
+            /** @var ?ConstraintViolationListInterface $violationList */
             $violationList = $this->exceptionMapper->map($message, $e);
 
             if (null === $violationList) {
@@ -232,68 +342,21 @@ class SignDocumentActivity
 }
 ```
 
-In this example, we use `ExceptionMapper` to relate the caught exception to some property of the `$message`,
+In this example, we use `ExceptionMapper` to relate the caught exception to some property of the `$message`, \
 producing `ConstraintViolationListInterface` that can be used however you want to.
-
-### How is this different from the standard validation? ⚖️
-
-You might be wondering why we would not just use simple validation asserts right in the command?
-
-This is a logical question. A simple answer is that this's not always convenient / best.
-
-Let's see it with the same `RegisterUserCommand` from the example above.
-The traditional validation approach for the same rules would look something like this:
-
-```php
-use Symfony\Component\Validator\Constraints as Assert;
-use App\Validator\Constraints as AppAssert;
-
-class RegisterUserCommand
-{
-    #[AppAssert\UniqueLogin]
-    public string $login;
-
-    #[Assert\PasswordStrength(minScore: 2)]
-    public string $password;
-}
-```
-
-The main difference between the two is that standard validation runs before your actual business logic. This alone
-means that for every domain-specific rule like "login must be unique" it's necessary to create a custom
-validation constraint and a validator to implement this business logic. Thereby domain leaks into validators.
-That code, which you would've normally implemented in the service, you have to implement in the validator.
-
-One more point is that oftentimes multiple actions duplicate subset of validations. For example, password reset
-action normally validates password in the same way as registration action, usually resulting in validation asserts being
-duplicated between the two, while this business logic should've belonged to `Password` concept, properly represented as
-a value object, being used in both actions.
-
-With exceptional validation, you just retroactively map violations dictated by the domain. Herewith business logic
-has already worked out, and all you have to do is display its result to the end user. This gives a lot of flexibility,
-removing the need for custom validators, validation groups, and allowing you to keep the domain code in
-the domain objects, resulting in overall improvement of the design of the system.
-
-Thus, you focus on the domain and let the library take care of the exception presentation:
-
-```php
-// RegisterUserService
-
-if ($this->userRepository->loginExists($command->login)) {
-    throw new LoginAlreadyTakenException($command->login);
-}
-```
 
 ## Features 📖
 
-`#[ExceptionalValidation]` and `#[Capture]` attributes allow you to implement very flexible mappings.
-Here are examples of how you can use them.
+`#[ExceptionalValidation]` and `#[Capture]` attributes allow you to implement very flexible mappings. \
+Here are the examples of how you can use them.
 
 ### Capture Conditions
 
 #### Exception Class Condition
 
-A minimum required condition. Matches the exception by its class name using `instanceof` operator, making it
-similar to `catch` block.
+A minimum required condition.  
+Matches the exception by its class name using `instanceof` operator,    
+making it similar to `catch` block.
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -325,16 +388,16 @@ class ConfirmPackageCommand
 }
 ```
 
-In this example `InvalidArgumentException` is generic, and it can originate from multiple places.
+In this example `InvalidArgumentException` is generic, and it can originate from multiple places. \
 To catch the exceptions that particularly belong to `Uuid` class, specify `from:` clause with class / method names.
 
 Exception mapper will analyse exception trace and check whether it originated from the place specified.
 
 #### When-Closure Condition
 
-`#[Capture]` attribute allows to specify `when:` argument with a callback function to be used to determine whether
-particular instance of the exception should be captured for a given property or not. This is particularly useful when
-the same exception could be originated from multiple places:
+`#[Capture]` attribute allows to specify `when:` argument with a callback function to be used to determine \
+whether particular instance of the exception should be captured for a given property or not. \
+This is particularly useful when the same exception could be originated from multiple places:
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -365,8 +428,8 @@ In this example, once we've matched `BlockedCardException` by class, custom clos
 
 If `isWithdrawalCardBlocked()` callback returns `true`, then exception is captured for `withdrawalCardId` property.
 
-Otherwise, we analyse `depositCardId`, and if `isDepositCardBlocked()` callback returns `true`, then the exception is
-captured on this property.
+Otherwise, we analyse `depositCardId`, and if `isDepositCardBlocked()` callback returns `true`, \
+then the exception is captured on this property.
 
 If neither of them returned `true`, then exception is re-thrown upper in the stack.
 
@@ -394,8 +457,8 @@ class TransferMoneyCommand
 }
 ```
 
-In this example `BlockedCardException` could be captured either to `withdrawalCardId` or `depositCardId`, depending on
-the `cardId` value from the exception.
+In this example `BlockedCardException` could be captured either to `withdrawalCardId` or `depositCardId`, \
+depending on the `cardId` value from the exception.
 
 And `BlockedCardException` itself must implement `ValueException` interface:
 
@@ -439,8 +502,10 @@ class RegisterUserCommand
 
 ### Capturing for nested structures
 
-`#[ExceptionalValidation]` attribute works side-by-side with Symfony Validator's `#[Valid]` attribute. Once you
-define `#[Valid]` on an object/iterable property, the mapper will pick it up for the nested exception mapping analysis,
+`#[ExceptionalValidation]` attribute works side-by-side with Symfony Validator's `#[Valid]` attribute.
+
+Once you define `#[Valid]` on an object/iterable property, \
+the mapper will pick it up for the nested exception mapping analysis, \
 providing a respective property path for the created violations.
 
 ```php
