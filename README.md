@@ -12,29 +12,30 @@
 
 A library that captures validation exceptions and maps them to validated object properties.
 
-No longer do you need custom validators in your object\
+No longer do you need custom validators in your object \
 nor any validation in application/ui layers.
 
-Instead, **declaratively _relate_ domain exceptions** with their relevant form fields\
+Instead, **declaratively _relate_ domain exceptions** with their relevant form fields \
 and yield validation failed response as you do normally.
 
 ## A Validation Library? 🤔
 
-It's not a validation library. Not ever intended to be.\
+It's not a validation library. Not ever intended to be. \
 It doesn't provide validation rules, constraints, or validators.
 
 Instead, it provides **exception handling** functionality, specific to a validation task.
 
-You can validate business logic with any third-party library (or even plain PHP),\
-while the library will be **_correlating_** these **validation exceptions** to the specific properties\
+You can validate business logic with any third-party library (or even plain PHP), \
+while the library will be **_correlating_** these **validation exceptions** to the specific properties \
 whose invalid values caused them.
 
-It's not a strict requirement to use Symfony Validator as a validation component,\
+It's not a strict requirement to use Symfony Validator as a validation component, \
 though this library integrates it well.
 
 ## Why Exceptional Validation? ✨
 
 Ordinarily, validation flows through two different layers:
+
 - HTTP/form level;
 - domain layer.
 
@@ -42,15 +43,15 @@ It leads to duplication and potential inconsistencies of validation rules.
 
 ### Traditional Validation 🕯️
 
-The traditional validation uses an attribute-based approach,\
+The traditional validation uses an attribute-based approach, \
 which strips the domain layer from most business logic.
 
-Besides that, any custom validation you'd normally implement in a service\
+Besides that, any custom validation you'd normally implement in a service \
 must be wrapped in a custom validator attribute and moved away from the service.
 
-It's all for the sake of being able to display a nice validation message on the form. 
+It's all for the sake of being able to display a nice validation message on the form.
 
-Thus, the domain services and model end up naked,\
+Thus, the domain services and model end up naked, \
 all business rules having been leaked elsewhere.
 
 ### Exceptional Validation 💡
@@ -60,24 +61,24 @@ On the other hand, it's a common practice in DDD for domain objects to be respon
 - `Email` value object validates its own format and naturally throws an exception that represents validation failure.
 - `RegisterUserService` normally verifies email is not yet taken and naturally throws an exception.
 
-That is the kind of code that utterly expresses the model of the business,\
+That is the kind of code that utterly expresses the model of the business, \
 which should not be stripped down.
 
-Yet, with a domain-driven approach, it's not possible to use standard validation tools,\
+Yet, with a domain-driven approach, it's not possible to use standard validation tools, \
 as these drain domain from all logic.
 
-How then do we show contextual validation errors to the users?\
-It's a task of relating thrown exception with the property which value caused this exception. 
+How then do we show contextual validation errors to the users? \
+It's a task of relating thrown exception with the property which value caused this exception.
 
-To return a neat json-response with `email` as a property path and validation error description,\
+To return a neat json-response with `email` as a property path and validation error description, \
 it's necessary to match `EmailAlreadyTakenException` with a `$email` property of the original `RegisterUserCommand`.
 
 This is what Exceptional Validation was designed for.
 
-Capturing exceptions like `EmailValidationFailedException` and mapping them to the particular form fields as `$email`,\
+Capturing exceptions like `EmailValidationFailedException` and mapping them to the particular form fields as `$email`, \
 you maintain a single source of truth for the domain validation logic.
 
-Domain enforces its invariants through value objects and services,\
+Domain enforces its invariants through value objects and services, \
 while this library ensures that validation failures will properly appear in your forms and API responses.
 
 ### Bottom line
@@ -110,10 +111,10 @@ Exceptional Validation:
 
 ## Get Started 🎯
 
-Mark a message with `#[ExceptionalValidation]` attribute.\
+Mark a message with `#[ExceptionalValidation]` attribute. \
 It's used by mapper to include this object for processing.
 
-Then, define `#[Capture]` exception mappings on your properties.\
+Then, define `#[Capture]` exception mappings on your properties. \
 These declaratively describe what exceptions correlate to what properties:
 
 ```php
@@ -131,7 +132,7 @@ class RegisterUserCommand
 }
 ```
 
-Here, we say that `LoginAlreadyTakenException` is related to `login` property,\
+Here, we say that `LoginAlreadyTakenException` is related to `login` property, \
 while `WeakPasswordException` is related to `password` property.
 
 The actual mapping takes place when the mapper is used:
@@ -152,14 +153,14 @@ try {
 }
 ```
 
-Each exception, when mapped, results in a `ConstraintViolation` object,\
+Each exception, when mapped, results in a `ConstraintViolation` object, \
 which contains a property path, and an exception message translation.
 
 You can use it to render form with validation errors or serialize these into a json-response.
 
-> Note that the default messages translation domain is `validators`,\
+> Note that the default messages translation domain is `validators`, \
 > being inherited from `validator.translation_domain` parameter.
-> 
+>
 > You can change it by setting `phd_exceptional_validation.translation_domain` parameter.
 
 ## How is this different from a standard validation? ⚖️
@@ -227,33 +228,33 @@ if ($this->userRepository->loginExists($command->login)) {
 }
 ```
 
-## Usage with Command Bus 🖨
+## Usage with Command Bus 📇
 
 If you are using Symfony Messenger as a Command Bus, \
-the recommended way to use this package is with [Symfony Messenger Middleware](https://symfony.com/doc/current/messenger.html#middleware).
+it's recommended to use this package
+as [Symfony Messenger Middleware](https://symfony.com/doc/current/messenger.html#middleware).
 
 > If you are not using `Messenger` component, you can still leverage features of this library, \
 > as it provides a rigorously structured set of tools w/o depending on any particular implementation. \
-> Installation of any third-party is optional — it won't be installed automatically if you don't need it.
+> Installation of third-party dependencies is optional — they won't be installed unless you need it.
 
 Add `phd_exceptional_validation` middleware to the list:
 
 ```diff
-framework:
-    messenger:
-        buses:
-            command.bus:
-                middleware:
-                    - validation
-+                   - phd_exceptional_validation
-                    - doctrine_transaction
+ framework:
+     messenger:
+         buses:
+             command.bus:
+                 middleware:
+                     - validation
++                    - phd_exceptional_validation
+                     - doctrine_transaction
 ```
 
-Once you have done this, the middleware will take care
-of capturing exceptions and re-throwing `ExceptionalValidationFailedException`.
+Once you have done this, the middleware will take care of capturing exceptions and re-throwing
+`ExceptionalValidationFailedException`.
 
-When middleware is in place, it will analyse the exceptions and then throw
-`ExceptionalValidationFailedException` which you can catch and process as needed:
+You can use it to catch and process it:
 
 ```php
 $command = new RegisterUserCommand($login, $password);
@@ -284,7 +285,7 @@ This diagram represents the concept:
 
 ![Exceptional Validation.svg](https://raw.githubusercontent.com/phphd/exceptional-validation/refs/heads/main/assets/Exceptional%20Validation.svg)
 
-## Custom Usage 🔧
+## Custom Usage 🔌
 
 It's possible to use features of this bundle without necessarily depending on Command Bus middleware, nor on the
 Messenger component.
@@ -324,13 +325,9 @@ class SignDocumentActivity
     {
         try {
             return $command->process();
-        } catch (Exception $e) {
-            /** @var ?ConstraintViolationListInterface $violationList */
+        } catch (DomainException $e) {
+            /** @var ConstraintViolationListInterface $violationList */
             $violationList = $this->exceptionMapper->map($message, $e);
-
-            if (null === $violationList) {
-                throw $e;
-            }
 
             throw new ApplicationFailure(
                 'Validation Failed',
@@ -345,7 +342,30 @@ class SignDocumentActivity
 In this example, we use `ExceptionMapper` to relate the caught exception to some property of the `$message`, \
 producing `ConstraintViolationListInterface` that can be used however you want to.
 
-## Features 📖
+## Standalone Usage 🔧
+
+If you are not using Symfony framework, you can still take advantage of this library.
+
+Create a Service Container (`symfony/dependency-injection` is required) with a DI Extension \
+and then use it to create necessary services:
+
+```php
+use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
+
+$container = (new PhdExceptionalValidationExtension())->getContainer([
+    'kernel.environment' => 'prod',
+    'kernel.build_dir' => __DIR__.'/var/cache',
+]);
+
+$container->compile();
+
+/** @var ExceptionMapper<ConstraintViolationListInterface> $mapper */
+$mapper = $container->get(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>');
+```
+
+Herein, you create a Container, compile it, and use it to retrieve `ExceptionMapper`.
+
+## Features 📙
 
 `#[ExceptionalValidation]` and `#[Capture]` attributes allow you to implement very flexible mappings. \
 Here are the examples of how you can use them.
@@ -354,9 +374,9 @@ Here are the examples of how you can use them.
 
 #### Exception Class Condition
 
-A minimum required condition.  
-Matches the exception by its class name using `instanceof` operator,    
-making it similar to `catch` block.
+A minimum required condition. \
+Matches the exception by its class name using `instanceof` check, \
+making it similar to `catch` operation.
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -372,8 +392,9 @@ class PublishMessageCommand
 
 #### Origin Source Condition
 
-Besides filtering by exception class, it's possible to filter by the origin class name and method name whence the
-exception was raised from.
+Besides filtering by exception class, \
+it's possible to filter by the origin class and method name \
+whence the exception raised from.
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -388,10 +409,11 @@ class ConfirmPackageCommand
 }
 ```
 
-In this example `InvalidArgumentException` is generic, and it can originate from multiple places. \
-To catch the exceptions that particularly belong to `Uuid` class, specify `from:` clause with class / method names.
+In this example `InvalidArgumentException` is a generic one, which can originate from multiple places. \
+To catch only those exceptions that belong to `Uuid` class, `from:` clause specifies class and method names.
 
-Exception mapper will analyse exception trace and check whether it originated from the place specified.
+Thus, Exception Mapper will analyse the exception trace \
+and check whether it was originated from the `from:` place.
 
 #### When-Closure Condition
 
@@ -481,10 +503,10 @@ class BlockedCardException extends DomainException implements ValueException
 
 #### ValidationFailedException Condition
 
-This is very similar to ValueException Condition with the difference that it integrates Symfony's native
-`ValidationFailedException`.
+This one is very similar to `ValueException` condition \
+with the difference that it integrates Symfony's native `ValidationFailedException`.
 
-You can specify `ValidationFailedExceptionMatchCondition` to match validation exception based on value:
+Specify `ValidationFailedExceptionMatchCondition` to correlate validation exception's value with a property value:
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -495,12 +517,16 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 #[ExceptionalValidation]
 class RegisterUserCommand
 {
-    #[Capture(ValidationFailedException::class, from: Password::class, condition: ValidationFailedExceptionMatchCondition::class)]
+    #[Capture(
+        exception: ValidationFailedException::class,
+        from: Password::class,
+        condition: ValidationFailedExceptionMatchCondition::class,
+    )]
     public string $password;
 }
 ```
 
-### Capturing for nested structures
+### In-depth analysis
 
 `#[ExceptionalValidation]` attribute works side-by-side with Symfony Validator's `#[Valid]` attribute.
 
@@ -596,10 +622,12 @@ exceptions inside.
 Since the library is capable of processing composite exceptions (with unwrappers for Amp and Messenger exceptions), all
 of our thrown exceptions will be processed, and the user will get the complete stack of validation errors at hand.
 
-### Violation formatters
+### Violation Formatters 🎨
 
-There are two built-in violation formatters that you can use - `DefaultExceptionViolationFormatter`
-and `ViolationListExceptionFormatter`. If needed, you can create your own custom violation formatter as described below.
+There are two main built-in violation formatters you can use: `DefaultExceptionViolationFormatter` and
+`ViolationListExceptionFormatter`.
+
+If needed, create a custom violation formatter as described below.
 
 #### Default
 
@@ -610,13 +638,15 @@ It provides a very basic way to format violations, building `ConstraintViolation
 
 #### Constraint Violation List Formatter
 
-`ViolationListExceptionFormatter` is used to format violations for the exceptions that implement
-`ViolationListException` interface. It allows you to easily capture the exception that has a `ConstraintViolationList`
-obtained from the validator.
+`ViolationListExceptionFormatter` allows formatting the exceptions \
+that contain a `ConstraintViolationList` obtained from the validator.
 
-> You can also format Symfony's native `ValidationFailedException` with `ValidationFailedExceptionFormatter`.
+Such exceptions must implement `ViolationListException` interface.
 
-The typical exception class implementing `ViolationListException` interface would look like this:
+> You can also use `ValidationFailedExceptionFormatter` \
+> to format Symfony's native `ValidationFailedException`.
+
+A typical exception class would be something like this:
 
 ```php
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListException;
@@ -628,7 +658,7 @@ final class CardNumberValidationFailedException extends \RuntimeException implem
         private readonly string $cardNumber,
         private readonly ConstraintViolationListInterface $violationList,
     ) {
-        parent::__construct((string)$this->violationList);
+        parent::__construct('Card Validation Failed');
     }
 
     public function getViolationList(): ConstraintViolationListInterface
@@ -638,7 +668,7 @@ final class CardNumberValidationFailedException extends \RuntimeException implem
 }
 ```
 
-Then you can use `ViolationListExceptionFormatter` on the `#[Capture]` attribute of the property:
+Then, specify `ViolationListExceptionFormatter` as `formatter:` on the `#[Capture]` attribute of the property:
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -656,14 +686,18 @@ class IssueCreditCardCommand
 }
 ```
 
-In this example, `CardNumberValidationFailedException` is captured on the `cardNumber` property and all the constraint
-violations from this exception are mapped to this property. If there's a message specified on the `#[Capture]`
-attribute, it is ignored in favour of the messages from `ConstraintViolationList`.
+In this example, `CardNumberValidationFailedException` is captured on a `cardNumber` property, \
+and all constraint violations of this exception are mapped to this property.
 
-#### Custom violation formatters
+> If `#[Capture]` attribute specifies a message, \
+> it is ignored in favour of `ConstraintViolationList` messages.
 
-In some cases, you might want to customize the violations, such as passing additional parameters to the message
-translation. You can create your own violation formatter by implementing `ExceptionViolationFormatter` interface:
+#### Custom Violation Formatters
+
+In some cases, you might want to customize the created violations. \
+For example, pass additional parameters to the message translation.
+
+You can create custom violation formatter by implementing `ExceptionViolationFormatter` interface:
 
 ```php
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
@@ -705,7 +739,7 @@ final class RegistrationViolationsFormatter implements ExceptionViolationFormatt
 }
 ```
 
-Then you should register your custom formatter as a service:
+Then, register it as a service:
 
 ```yaml
 services:
@@ -713,12 +747,14 @@ services:
         autoconfigure: true
 ```
 
-> In order for your custom violation formatter to be recognized by this bundle, its service must be tagged
-> with `ExceptionViolationFormatter` class-name tag. If you
-> use [autoconfiguration](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option), this is done
-> automatically by the service container owing to the fact that `ExceptionViolationFormatter` interface is implemented.
+> In order for violation formatter to be recognized by the bundle, \
+> its service must be tagged with `ExceptionViolationFormatter` class-name tag.
+>
+> If you are using [autoconfiguration](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option),
+> this will be done automatically by the service container, \
+> owing to the fact that `ExceptionViolationFormatter` interface is implemented.
 
-Finally, you can specify formatter in the `#[Capture]` attribute:
+Finally, specify formatter in the `#[Capture]` attribute:
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -727,41 +763,35 @@ use PhPhD\ExceptionalValidation\Capture;
 #[ExceptionalValidation]
 final class RegisterUserCommand
 {
-    #[Capture(
-        LoginAlreadyTakenException::class, 
-        'auth.login.already_taken', 
-        formatter: RegistrationViolationsFormatter::class,
-    )]
+    #[Capture(LoginAlreadyTakenException::class, formatter: RegistrationViolationsFormatter::class)]
     private string $login;
 
-    #[Capture(
-        WeakPasswordException::class, 
-        'auth.password.weak', 
-        formatter: RegistrationViolationsFormatter::class,
-    )]
+    #[Capture(WeakPasswordException::class, formatter: RegistrationViolationsFormatter::class)]
     private string $password;
 }
 ```
 
-In this example, `RegistrationViolationsFormatter` is used to format constraint violations for
-both `LoginAlreadyTakenException` and `WeakPasswordException` (though you are perfectly fine to use separate
-formatters), enriching them with additional context.
+In this example, `RegistrationViolationsFormatter` is used to format constraint violations \
+for both `LoginAlreadyTakenException` and `WeakPasswordException` \
+(though it's perfectly fine to use separate formatters), \
+enriching them with the context.
 
-## Upgrading
+## Upgrading 👻
 
-Project comes with `ExceptionalValidationSetList` class that containing rules for automatic upgrade.
+The basic upgrade can be performed by [Rector](https://getrector.com/documentation) using `ExceptionalValidationSetList` \
+that comes with the library and contains automatic upgrade rules.
 
-To upgrade a project to the latest version of `exceptional-validation`,
-you should add the following line to your `rector.php` file:
+To upgrade a project to the latest version of `exceptional-validation`, \
+add the following configuration to your `rector.php` file:
 
 ```php
 return RectorConfig::configure()
     ->withPaths([ __DIR__ . '/src'])
     ->withImportNames(removeUnusedImports: true)
-    // Upgrading from the version 1.4 to the latest version
+    // Upgrading from your version (e.g. 1.4) to the latest version
     ->withSets(ExceptionalValidationSetList::fromVersion('1.4')->getSetList());
 ```
 
 Make sure to specify your current version of the library so that upgrade sets will be matched correctly.
 
-You should also check [UPGRADE.md](UPGRADE.md) file for additional upgrade instructions and breaking changes.
+You should also check [UPGRADE.md](UPGRADE.md) for additional instructions and breaking changes.
