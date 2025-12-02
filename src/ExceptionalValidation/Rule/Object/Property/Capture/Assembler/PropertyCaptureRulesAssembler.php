@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler;
 
 use ArrayIterator;
+use Generator;
 use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
@@ -29,11 +30,7 @@ final readonly class PropertyCaptureRulesAssembler implements CaptureRuleSetAsse
         $rules = new ArrayIterator();
         $ruleSet = new CompositeRuleSet($this->parentRule, $rules);
 
-        $captureAttributes = $this->reflectionProperty->getAttributes(Capture::class);
-
-        foreach ($captureAttributes as $captureAttribute) {
-            $capture = $captureAttribute->newInstance();
-
+        foreach ($this->getCaptures() as $capture) {
             /** @var MatchCondition<Throwable> $condition */
             $condition = $conditionFactory->getCondition($capture, $this->parentRule);
 
@@ -60,5 +57,15 @@ final readonly class PropertyCaptureRulesAssembler implements CaptureRuleSetAsse
     public function getReflectionProperty(): ReflectionProperty
     {
         return $this->reflectionProperty;
+    }
+
+    /** @return Generator<Capture<Throwable>> */
+    private function getCaptures(): Generator
+    {
+        $captureAttributes = $this->reflectionProperty->getAttributes(Capture::class);
+
+        foreach ($captureAttributes as $captureAttribute) {
+            yield $captureAttribute->newInstance();
+        }
     }
 }

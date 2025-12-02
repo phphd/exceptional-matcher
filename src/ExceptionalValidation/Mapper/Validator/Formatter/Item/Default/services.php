@@ -27,11 +27,11 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
         ->args([
             new Reference('phd_exceptional_validation.translator', ContainerInterface::IGNORE_ON_INVALID_REFERENCE),
         ])
-        ->tag(ExceptionViolationFormatter::class, ['id' => 'default'])
+        ->tag(ExceptionViolationFormatter::class, ['id' => DefaultExceptionViolationFormatter::class])
     ;
 
     $services
-        ->set('phd_exceptional_validation.translator', Closure::class) // is removed if @translator is not found
+        ->set('phd_exceptional_validation.translator', Closure::class) // removed if @translator is not found
         ->factory([DefaultExceptionViolationFormatter::class, 'translator'])
         ->args([
             service('translator'),
@@ -39,7 +39,7 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
         ])
     ;
 
-    $parameters // is removed if @translator is not found
+    $parameters // removed if @translator is not found
         ->set('phd_exceptional_validation.translation_domain', param('validator.translation_domain'))
     ;
 };

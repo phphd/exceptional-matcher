@@ -44,13 +44,13 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
         $providedServices = $formatterRegistry->getProvidedServices();
         krsort($providedServices);
         self::assertSame([
-            'default' => DefaultExceptionViolationFormatter::class,
             ViolationListExceptionFormatter::class => ViolationListExceptionFormatter::class,
             ValidationFailedExceptionFormatter::class => ValidationFailedExceptionFormatter::class,
             CustomExceptionViolationFormatter::class => CustomExceptionViolationFormatter::class,
+            DefaultExceptionViolationFormatter::class => DefaultExceptionViolationFormatter::class,
         ], $providedServices);
 
-        self::assertSame($defaultFormatter, $formatterRegistry->get('default'));
+        self::assertSame($defaultFormatter, $formatterRegistry->get(DefaultExceptionViolationFormatter::class));
     }
 
     private function get(string $id): mixed
