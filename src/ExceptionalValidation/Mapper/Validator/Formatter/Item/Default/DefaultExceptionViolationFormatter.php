@@ -28,7 +28,7 @@ final readonly class DefaultExceptionViolationFormatter implements ExceptionViol
      */
     public function __construct(?Closure $translate = null)
     {
-        $this->translate = $translate ?? static fn (string $message): string => $message;
+        $this->translate = $translate ?? static fn (string $messageTemplate): string => $messageTemplate;
     }
 
     /** @api */

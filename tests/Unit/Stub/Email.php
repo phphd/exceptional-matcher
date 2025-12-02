@@ -18,7 +18,10 @@ final class Email
     {
         $validate = Validation::createCallable(new EmailConstraint());
 
-        return new self($validate($uuid));
+        /** @var string $email */
+        $email = $validate($uuid);
+
+        return new self($email);
     }
 
     /** @psalm-suppress PossiblyUnusedReturnValue */

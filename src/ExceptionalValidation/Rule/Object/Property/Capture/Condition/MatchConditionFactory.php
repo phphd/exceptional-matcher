@@ -12,6 +12,8 @@ use Throwable;
 interface MatchConditionFactory
 {
     /**
+     * @param Capture<Throwable> $capture
+     *
      * @phpstan-return ?MatchCondition<covariant Throwable>
      *
      * @psalm-return ?MatchCondition<Throwable>

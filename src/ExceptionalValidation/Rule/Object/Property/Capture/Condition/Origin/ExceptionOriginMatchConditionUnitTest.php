@@ -49,7 +49,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
         try {
             /** @psalm-suppress UnusedMethodCall */
-            Email::fromString('non-email')->getEmail();
+            Email::fromString('non-email')->getEmail(); // @phpstan-ignore method.resultUnused
         } catch (ValidationFailedException $originalException) {
         }
 

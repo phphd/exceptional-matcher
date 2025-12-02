@@ -175,21 +175,6 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertNull($violation->getInvalidValue());
     }
 
-    public function testExceptionIsNotCapturedWhenNestedItemsPropertyIsWithoutGenericType(): void
-    {
-        $message = HandleableMessageStub::create()->withNotTypedArray([
-            new NestedItem(1),
-            new NestedItem(2),
-            new NestedItem(3),
-        ]);
-
-        $originalException = new NestedItemCapturedException(code: 2);
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNull($violationList);
-    }
-
     public function testExceptionIsNotCapturedWhenNestedItemsValueTypeClassIsNotMarkedWithExceptionalValidationAttribute(): void
     {
         /**

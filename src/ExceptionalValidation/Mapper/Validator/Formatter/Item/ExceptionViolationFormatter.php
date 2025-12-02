@@ -11,7 +11,9 @@ use Throwable;
 /**
  * @api
  *
- * @template T of Throwable
+ * @phpstan-template-contravariant T of Throwable
+ *
+ * @psalm-template-covariant T of Throwable
  */
 interface ExceptionViolationFormatter
 {
