@@ -16,13 +16,14 @@ parameters:
         - src
         - tests
         - upgrade
-    excludePaths:
-        analyseAndScan:
-            - tests/*/Stub/*
     fileExtensions:
         - 'php'
     ignoreErrors:
         - identifier: ternary.shortNotAllowed
+        - identifier: property.unused
+          message: '/^Property PhPhD\\ExceptionalValidation\\Tests\\Unit\\Stub\\\w+::\$\w+ is unused\.$/'
+        - identifier: property.onlyWritten
+          message: '/^(Static )?(Property|property) PhPhD\\ExceptionalValidation\\Tests\\Unit\\Stub\\\w+::\$\w+ is never read, only written\.$/'
     type_coverage:
         declare: 100
         return_type: 100
