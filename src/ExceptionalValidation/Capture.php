@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation;
 
 use Attribute;
-use Exception;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\DefaultExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use Throwable;
@@ -14,12 +14,21 @@ use Webmozart\Assert\Assert;
 use function is_array;
 use function is_string;
 
-/** @api */
+/**
+ * @api
+ *
+ * @template-covariant T of Throwable
+ */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 final readonly class Capture
 {
+    /**
+     * @phpstan-param class-string<ExceptionViolationFormatter<T>> $formatter
+     *
+     * @psalm-param class-string<ExceptionViolationFormatter<Throwable>> $formatter
+     */
     public function __construct(
-        /** @var class-string<Exception> */
+        /** @var class-string<T> */
         private string $exception,
         private ?string $message = null,
         /** @var null|class-string|array{class-string,string} The origin of the exception */
@@ -28,8 +37,8 @@ final readonly class Capture
         private ?string $condition = null,
         /** @var ?array{object|class-string,string} */
         private ?array $when = null,
-        /** @var class-string<ExceptionViolationFormatter>|non-empty-string */
-        private string $formatter = 'default',
+        /** @note formatter type is contravariant to the exception */
+        private string $formatter = DefaultExceptionViolationFormatter::class,
     ) {
         if (null !== $this->when) {
             Assert::count($this->when, 2);
@@ -40,7 +49,7 @@ final readonly class Capture
         }
     }
 
-    /** @return class-string<Throwable> */
+    /** @return class-string<T> */
     public function getExceptionClass(): string
     {
         return $this->exception;
@@ -72,6 +81,7 @@ final readonly class Capture
         return $this->when;
     }
 
+    /** @return class-string */
     public function getFormatter(): string
     {
         return $this->formatter;
