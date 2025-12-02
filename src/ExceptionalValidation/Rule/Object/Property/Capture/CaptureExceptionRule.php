@@ -18,6 +18,7 @@ final readonly class CaptureExceptionRule implements CaptureRule
         /** @var MatchCondition<Throwable> */
         private MatchCondition $condition,
         private ?string $messageTemplate,
+        /** @var class-string */
         private string $formatterId,
     ) {
     }

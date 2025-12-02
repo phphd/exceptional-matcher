@@ -13,7 +13,6 @@ use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\Tests\St
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\Tests\Stub\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Validator\ValidationFailedExceptionFormatter;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\Tests\Stub\ConditionalMessage;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
@@ -24,7 +23,6 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-/** @template T of object */
 #[ExceptionalValidation]
 final class HandleableMessageStub
 {
@@ -45,16 +43,14 @@ final class HandleableMessageStub
     #[Valid]
     private NestedHandleableMessage $nestedObject;
 
-    private array $notTypedArray;
-
     /** @var NotHandleableMessageStub[] */
     private array $typedNotHandleableArray;
 
     #[Valid]
-    private array $nestedArrayItems;
+    private array $nestedArrayItems; // @phpstan-ignore missingType.iterableValue
 
     #[Valid]
-    private ArrayObject $nestedIterableItems;
+    private ArrayObject $nestedIterableItems; // @phpstan-ignore missingType.generics
 
     #[ExceptionalValidation\Capture(ValidationFailedException::class, from: Email::class)]
     private string $email = 'matched!';
@@ -66,7 +62,7 @@ final class HandleableMessageStub
     private string $messageText;
 
     #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
-    #[ExceptionalValidation\Capture(ValidationFailedException::class, condition: ValidationFailedExceptionMatchCondition::class, formatter: ViolationListExceptionFormatter::class)]
+    #[ExceptionalValidation\Capture(ValidationFailedException::class, condition: ValidationFailedExceptionMatchCondition::class)]
     private string $notMatchedProperty = 'not matched';
 
     #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
@@ -144,15 +140,6 @@ final class HandleableMessageStub
     {
         $message = clone $this;
         $message->nestedIterableItems = $items;
-
-        return $message;
-    }
-
-    /** @param array<array-key,NestedItem> $array */
-    public function withNotTypedArray(array $array): self
-    {
-        $message = clone $this;
-        $message->notTypedArray = $array;
 
         return $message;
     }
