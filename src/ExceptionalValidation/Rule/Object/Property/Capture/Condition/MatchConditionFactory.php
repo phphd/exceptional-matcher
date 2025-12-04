@@ -12,7 +12,7 @@ use Throwable;
 interface MatchConditionFactory
 {
     /**
-     * @param Capture<Throwable,Throwable> $capture
+     * @param Capture<T,T> $capture
      *
      * @return ?MatchCondition<T>
      */
