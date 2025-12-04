@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationL
 
 use LogicException;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Webmozart\Assert\Assert;
@@ -22,16 +22,16 @@ use function iterator_to_array;
 final class ViolationListExceptionFormatter implements ExceptionViolationFormatter
 {
     /**
-     * @param CapturedException<ViolationListException> $capturedException
+     * @param PropriatedException<ViolationListException> $propriatedException
      *
      * @return non-empty-list<ConstraintViolation>
      */
-    public function format(CapturedException $capturedException): array
+    public function format(PropriatedException $propriatedException): array
     {
-        $exception = $capturedException->getException();
+        $exception = $propriatedException->getException();
         Assert::isInstanceOf($exception, ViolationListException::class); // @phpstan-ignore staticMethod.alreadyNarrowedType
 
-        $rule = $capturedException->getMatchedRule();
+        $rule = $propriatedException->getMatchedRule();
         $root = $rule->getRootObject();
         $propertyPath = $rule->getPropertyPath()->join('.');
 

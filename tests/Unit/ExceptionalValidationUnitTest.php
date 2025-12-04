@@ -37,8 +37,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Rule\CompositeRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\LazyRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath
- * @covers \PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage
- * @covers \PhPhD\ExceptionalValidation\Rule\Exception\CapturedException
+ * @covers \PhPhD\ExceptionalValidation\Rule\Exception\ExceptionReciprocal
+ * @covers \PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException
  * @covers \PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssemblerService
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService

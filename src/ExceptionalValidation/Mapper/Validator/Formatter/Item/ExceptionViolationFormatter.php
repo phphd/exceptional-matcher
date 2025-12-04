@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item;
 
-use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Throwable;
 
@@ -20,9 +20,9 @@ use Throwable;
 interface ExceptionViolationFormatter
 {
     /**
-     * @param CapturedException<T> $capturedException
+     * @param PropriatedException<T> $propriatedException
      *
      * @return non-empty-list<ConstraintViolation>
      */
-    public function format(CapturedException $capturedException): array;
+    public function format(PropriatedException $propriatedException): array;
 }

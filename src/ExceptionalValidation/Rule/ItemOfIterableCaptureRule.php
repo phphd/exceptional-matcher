@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule;
 
 use LogicException;
-use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
+use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 
 use function is_object;
@@ -20,9 +20,9 @@ final readonly class ItemOfIterableCaptureRule implements CaptureRule
     ) {
     }
 
-    public function process(ExceptionPackage $package): bool
+    public function process(ExceptionReciprocal $reciprocal): bool
     {
-        return $this->objectRuleSet->process($package);
+        return $this->objectRuleSet->process($reciprocal);
     }
 
     public function getParent(): CaptureRule

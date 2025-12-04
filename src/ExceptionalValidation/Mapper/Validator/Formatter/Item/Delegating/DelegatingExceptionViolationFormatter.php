@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating
 
 use LogicException;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Psr\Container\ContainerInterface;
 use Throwable;
 
@@ -34,13 +34,13 @@ final readonly class DelegatingExceptionViolationFormatter implements ExceptionV
     /**
      * @template T of Throwable
      *
-     * @param CapturedException<T> $capturedException
+     * @param PropriatedException<T> $propriatedException
      *
      * @psalm-suppress MoreSpecificImplementedParamType, LessSpecificImplementedReturnType
      */
-    public function format(CapturedException $capturedException): array
+    public function format(PropriatedException $propriatedException): array
     {
-        $matchedRule = $capturedException->getMatchedRule();
+        $matchedRule = $propriatedException->getMatchedRule();
 
         /** @var class-string<ExceptionViolationFormatter<T>> $formatterId */ // FIXME: use real type
         $formatterId = $matchedRule->getFormatterId();
@@ -52,6 +52,6 @@ final readonly class DelegatingExceptionViolationFormatter implements ExceptionV
         $exceptionFormatter = $this->formatterRegistry->get($formatterId);
 
         /** @psalm-var ExceptionViolationFormatter<T> $exceptionFormatter */
-        return $exceptionFormatter->format($capturedException);
+        return $exceptionFormatter->format($propriatedException);
     }
 }
