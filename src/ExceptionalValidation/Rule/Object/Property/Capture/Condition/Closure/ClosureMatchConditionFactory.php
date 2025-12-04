@@ -8,9 +8,14 @@ use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
+use Throwable;
 use Webmozart\Assert\Assert;
 
-/** @internal */
+/**
+ * @internal
+ *
+ * @implements MatchConditionFactory<Throwable>
+ */
 final class ClosureMatchConditionFactory implements MatchConditionFactory
 {
     public function getCondition(Capture $capture, CaptureRule $parent): ?MatchCondition
