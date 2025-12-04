@@ -33,7 +33,7 @@ final readonly class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
             return null;
         }
 
-        $wrappedRuleSet = (new LazyRuleSet(
+        $wrappedRuleSet = new LazyRuleSet(
             /** @param LazyRuleSet<CompositeRuleSet> $lazyWrappedRuleSet */
             function (LazyRuleSet $lazyWrappedRuleSet) use ($service): CompositeRuleSet {
                 $objectRuleSet = new ObjectRuleSet(
@@ -47,7 +47,7 @@ final readonly class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
                     $this->getPropertyRules($objectRuleSet, $service),
                 );
             },
-        ));
+        );
 
         return $wrappedRuleSet->build()?->getParent();
     }
