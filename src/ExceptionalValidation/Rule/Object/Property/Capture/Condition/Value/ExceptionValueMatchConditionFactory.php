@@ -20,7 +20,7 @@ final class ExceptionValueMatchConditionFactory implements MatchConditionFactory
 {
     public function getCondition(Capture $capture, CaptureRule $parent): ExceptionValueMatchCondition
     {
-        if (!is_a($capture->getExceptionClass(), ValueException::class, true)) {
+        if (!is_a($capture->getExceptionClass(), ValueException::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('ExceptionValueMatchCondition can only be used for exception classes that implement ValueException');
         }
 
