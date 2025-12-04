@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating;
 
 use LogicException;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\PropriatedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Psr\Container\ContainerInterface;
 use Throwable;
@@ -13,18 +13,18 @@ use Throwable;
 /**
  * @internal
  *
- * @implements ExceptionViolationFormatter<Throwable>
+ * @implements PropriatedExceptionFormatter<Throwable>
  */
-final readonly class DelegatingExceptionViolationFormatter implements ExceptionViolationFormatter
+final readonly class DelegatingPropriatedExceptionFormatter implements PropriatedExceptionFormatter
 {
     /**
      * @api
      *
      * @template T of Throwable
      *
-     * @phpstan-param ContainerInterface<class-string<ExceptionViolationFormatter<T>>,ExceptionViolationFormatter<T>> $formatterRegistry
+     * @phpstan-param ContainerInterface<class-string<PropriatedExceptionFormatter<T>>,PropriatedExceptionFormatter<T>> $formatterRegistry
      *
-     * @psalm-param ContainerInterface<class-string<ExceptionViolationFormatter>,ExceptionViolationFormatter> $formatterRegistry
+     * @psalm-param ContainerInterface<class-string<PropriatedExceptionFormatter>,PropriatedExceptionFormatter> $formatterRegistry
      */
     public function __construct(
         private ContainerInterface $formatterRegistry,
@@ -42,7 +42,7 @@ final readonly class DelegatingExceptionViolationFormatter implements ExceptionV
     {
         $matchedRule = $propriatedException->getMatchedRule();
 
-        /** @var class-string<ExceptionViolationFormatter<T>> $formatterId */ // FIXME: use real type
+        /** @var class-string<PropriatedExceptionFormatter<T>> $formatterId */ // FIXME: use real type
         $formatterId = $matchedRule->getFormatterId();
 
         if (!$this->formatterRegistry->has($formatterId)) {
@@ -51,7 +51,7 @@ final readonly class DelegatingExceptionViolationFormatter implements ExceptionV
 
         $exceptionFormatter = $this->formatterRegistry->get($formatterId);
 
-        /** @psalm-var ExceptionViolationFormatter<T> $exceptionFormatter */
+        /** @psalm-var PropriatedExceptionFormatter<T> $exceptionFormatter */
         return $exceptionFormatter->format($propriatedException);
     }
 }

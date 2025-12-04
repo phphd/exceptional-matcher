@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List;
 
 use Closure;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\PropriatedExceptionFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -27,7 +27,7 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
             PropriatedExceptionListFormatter::class.'<'.ConstraintViolationListInterface::class.'>',
             PropriatedExceptionListToViolationListFormatter::class,
         )->args([
-            service(ExceptionViolationFormatter::class),
+            service(PropriatedExceptionFormatter::class),
         ])
         ->lazy($lazy(PropriatedExceptionListFormatter::class))
     ;

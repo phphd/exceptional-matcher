@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation;
 
 use Attribute;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\DefaultExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\PropriatedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use Throwable;
 use Webmozart\Assert\Assert;
@@ -25,10 +25,10 @@ final readonly class Capture
 {
     /**
      * @phpstan-param ?class-string<MatchCondition<T1>> $condition
-     * @phpstan-param class-string<ExceptionViolationFormatter<T2>> $formatter
+     * @phpstan-param class-string<PropriatedExceptionFormatter<T2>> $formatter
      *
      * @psalm-param ?class-string<MatchCondition> $condition
-     * @psalm-param class-string<ExceptionViolationFormatter> $formatter
+     * @psalm-param class-string<PropriatedExceptionFormatter> $formatter
      */
     public function __construct(
         /** @var class-string<T1&T2> */
@@ -90,9 +90,9 @@ final readonly class Capture
     }
 
     /**
-     * @phpstan-return class-string<ExceptionViolationFormatter<T2>>
+     * @phpstan-return class-string<PropriatedExceptionFormatter<T2>>
      *
-     * @psalm-return class-string<ExceptionViolationFormatter>
+     * @psalm-return class-string<PropriatedExceptionFormatter>
      */
     public function getFormatter(): string
     {

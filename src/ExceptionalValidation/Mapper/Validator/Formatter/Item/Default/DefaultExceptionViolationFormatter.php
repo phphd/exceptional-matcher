@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default;
 
 use Closure;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\PropriatedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -14,9 +14,9 @@ use Throwable;
 /**
  * @internal
  *
- * @implements ExceptionViolationFormatter<Throwable>
+ * @implements PropriatedExceptionFormatter<Throwable>
  */
-final readonly class DefaultExceptionViolationFormatter implements ExceptionViolationFormatter
+final readonly class DefaultExceptionViolationFormatter implements PropriatedExceptionFormatter
 {
     /** @var Closure(string):string */
     private Closure $translate;

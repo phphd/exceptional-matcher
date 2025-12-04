@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\Tests\Stub;
 
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\PropriatedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Throwable;
 
-/** @implements ExceptionViolationFormatter<Throwable> */
-final readonly class CustomExceptionViolationFormatter implements ExceptionViolationFormatter
+/** @implements PropriatedExceptionFormatter<Throwable> */
+final readonly class CustomExceptionFormatter implements PropriatedExceptionFormatter
 {
     /** @api */
     public function __construct(
-        /** @var ExceptionViolationFormatter<Throwable> */
-        private ExceptionViolationFormatter $formatter,
+        /** @var PropriatedExceptionFormatter<Throwable> */
+        private PropriatedExceptionFormatter $formatter,
     ) {
     }
 

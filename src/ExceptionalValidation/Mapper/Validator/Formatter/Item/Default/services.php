@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default;
 
 use Closure;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\PropriatedExceptionFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -23,11 +23,11 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
     $services = $containerConfigurator->services();
 
     $services
-        ->set(ExceptionViolationFormatter::class.'<Throwable>', DefaultExceptionViolationFormatter::class)
+        ->set(PropriatedExceptionFormatter::class.'<Throwable>', DefaultExceptionViolationFormatter::class)
         ->args([
             new Reference('phd_exceptional_validation.translator', ContainerInterface::IGNORE_ON_INVALID_REFERENCE),
         ])
-        ->tag(ExceptionViolationFormatter::class, ['id' => DefaultExceptionViolationFormatter::class])
+        ->tag(PropriatedExceptionFormatter::class, ['id' => DefaultExceptionViolationFormatter::class])
     ;
 
     $services
