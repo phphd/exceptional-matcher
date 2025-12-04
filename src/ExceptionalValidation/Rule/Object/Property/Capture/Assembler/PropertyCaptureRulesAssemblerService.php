@@ -8,6 +8,7 @@ use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
+use Throwable;
 
 /**
  * @internal
@@ -18,6 +19,7 @@ final readonly class PropertyCaptureRulesAssemblerService implements CaptureRule
 {
     /** @api */
     public function __construct(
+        /** @var MatchConditionFactory<Throwable> */
         private MatchConditionFactory $conditionFactory,
     ) {
     }

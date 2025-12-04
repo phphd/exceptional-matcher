@@ -7,7 +7,6 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating
 use LogicException;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Throwable;
 
@@ -18,25 +17,41 @@ use Throwable;
  */
 final readonly class DelegatingExceptionViolationFormatter implements ExceptionViolationFormatter
 {
-    /** @api */
+    /**
+     * @api
+     *
+     * @template T of Throwable
+     *
+     * @phpstan-param ContainerInterface<class-string<ExceptionViolationFormatter<T>>,ExceptionViolationFormatter<T>> $formatterRegistry
+     *
+     * @psalm-param ContainerInterface<class-string<ExceptionViolationFormatter>,ExceptionViolationFormatter> $formatterRegistry
+     */
     public function __construct(
         private ContainerInterface $formatterRegistry,
     ) {
     }
 
-    /** @throws ContainerExceptionInterface */
+    /**
+     * @template T of Throwable
+     *
+     * @param CapturedException<T> $capturedException
+     *
+     * @psalm-suppress MoreSpecificImplementedParamType, LessSpecificImplementedReturnType
+     */
     public function format(CapturedException $capturedException): array
     {
         $matchedRule = $capturedException->getMatchedRule();
+
+        /** @var class-string<ExceptionViolationFormatter<T>> $formatterId */ // FIXME: use real type
         $formatterId = $matchedRule->getFormatterId();
 
         if (!$this->formatterRegistry->has($formatterId)) {
             throw new LogicException('Violation formatter not found: '.$formatterId);
         }
 
-        /** @var ExceptionViolationFormatter<Throwable> $exceptionFormatter */
         $exceptionFormatter = $this->formatterRegistry->get($formatterId);
 
+        /** @psalm-var ExceptionViolationFormatter<T> $exceptionFormatter */
         return $exceptionFormatter->format($capturedException);
     }
 }
