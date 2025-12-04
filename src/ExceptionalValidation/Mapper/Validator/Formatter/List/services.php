@@ -22,10 +22,10 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
     $services = $containerConfigurator->services();
 
     $services
-        ->set(ExceptionListViolationFormatter::class, DefaultExceptionListViolationFormatter::class)
+        ->set(PropriatedExceptionListFormatter::class, PropriatedExceptionListToViolationListFormatter::class)
         ->args([
             service(ExceptionViolationFormatter::class),
         ])
-        ->lazy($lazy(ExceptionListViolationFormatter::class))
+        ->lazy($lazy(PropriatedExceptionListFormatter::class))
     ;
 };
