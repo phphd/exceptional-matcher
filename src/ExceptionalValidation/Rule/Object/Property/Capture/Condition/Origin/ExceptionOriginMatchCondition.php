@@ -21,6 +21,7 @@ final readonly class ExceptionOriginMatchCondition implements MatchCondition
     public function __construct(
         /** @var ?class-string */
         private ?string $originClassName = null,
+        /** @var ?non-empty-string */
         private ?string $originFunctionName = null,
     ) {
         if (null !== $this->originClassName && null !== $this->originFunctionName) {
