@@ -9,7 +9,11 @@ use Throwable;
 /**
  * @internal
  *
- * @template T of Throwable
+ * @phpstan-template-contravariant T of Throwable
+ *
+ * @psalm-template-covariant T of Throwable (psalm doesn't support contravariant templates)
+ *
+ * @psalm-immutable
  */
 interface MatchCondition
 {

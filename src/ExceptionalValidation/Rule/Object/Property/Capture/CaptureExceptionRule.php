@@ -65,6 +65,7 @@ final readonly class CaptureExceptionRule implements CaptureRule
         return $this->messageTemplate;
     }
 
+    /** @return class-string */
     public function getFormatterId(): string
     {
         return $this->formatterId;

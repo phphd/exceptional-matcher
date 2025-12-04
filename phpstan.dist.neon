@@ -18,6 +18,8 @@ parameters:
         - upgrade
     fileExtensions:
         - 'php'
+    stubFiles:
+        - stubs/ContainerInterface.stub
     ignoreErrors:
         - identifier: ternary.shortNotAllowed
         - identifier: property.unused

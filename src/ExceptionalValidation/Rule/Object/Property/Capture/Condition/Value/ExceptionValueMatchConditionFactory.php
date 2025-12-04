@@ -11,7 +11,11 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCond
 
 use function is_a;
 
-/** @internal */
+/**
+ * @internal
+ *
+ * @implements MatchConditionFactory<ValueException>
+ */
 final class ExceptionValueMatchConditionFactory implements MatchConditionFactory
 {
     public function getCondition(Capture $capture, CaptureRule $parent): ExceptionValueMatchCondition
