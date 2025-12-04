@@ -1,0 +1,24 @@
+<?php
+
+namespace Psr\Container;
+
+/**
+ * @template TKey of string
+ * @template TVal of mixed
+ */
+interface ContainerInterface
+{
+    /**
+     * @param TKey $id
+     *
+     * @return TVal
+     */
+    public function get(string $id): mixed;
+
+    /**
+     * @param TKey $id
+     *
+     * @return bool
+     */
+    public function has(string $id): bool;
+}

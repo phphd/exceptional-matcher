@@ -62,7 +62,7 @@ final class HandleableMessageStub
     private string $messageText;
 
     #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
-    #[ExceptionalValidation\Capture(ValidationFailedException::class, condition: ValidationFailedExceptionMatchCondition::class)]
+    #[ExceptionalValidation\Capture(ValidationFailedException::class, condition: ValidationFailedExceptionMatchCondition::class, formatter: ValidationFailedExceptionFormatter::class)]
     private string $notMatchedProperty = 'not matched';
 
     #[ExceptionalValidation\Capture(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
