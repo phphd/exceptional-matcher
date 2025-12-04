@@ -21,6 +21,7 @@ final readonly class ExceptionViolationListMapper implements ExceptionMapper
     public function __construct(
         /** @var ExceptionMapper<non-empty-list<PropriatedException<Throwable>>> */
         private ExceptionMapper $mapper,
+        /** @var PropriatedExceptionListFormatter<ConstraintViolationListInterface> */
         private PropriatedExceptionListFormatter $exceptionListFormatter,
     ) {
     }

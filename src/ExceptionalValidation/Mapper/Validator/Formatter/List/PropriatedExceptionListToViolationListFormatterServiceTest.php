@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List;
 
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Bundle\Tests\BundleTestCase;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\VarExporter\LazyObjectInterface;
 
 /**
@@ -17,7 +18,7 @@ final class PropriatedExceptionListToViolationListFormatterServiceTest extends B
 {
     public function testViolationsListFormatter(): void
     {
-        $violationsListFormatter = self::getContainer()->get(PropriatedExceptionListFormatter::class);
+        $violationsListFormatter = self::getContainer()->get(PropriatedExceptionListFormatter::class.'<'.ConstraintViolationListInterface::class.'>');
         self::assertInstanceOf(PropriatedExceptionListFormatter::class, $violationsListFormatter);
 
         if (PhdExceptionalValidationExtension::nativeProxiesAreSupported()) {
