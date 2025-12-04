@@ -15,7 +15,7 @@ use Symfony\Component\VarExporter\LazyObjectInterface;
  *
  * @internal
  */
-final class ExceptionMapperServiceTest extends BundleTestCase
+final class MainExceptionMapperServiceTest extends BundleTestCase
 {
     public function testExceptionMapperService(): void
     {
@@ -23,11 +23,11 @@ final class ExceptionMapperServiceTest extends BundleTestCase
         self::assertInstanceOf(ExceptionMapper::class, $exceptionMapper);
 
         if (PhdExceptionalValidationExtension::nativeProxiesAreSupported()) {
-            self::assertInstanceOf(DefaultExceptionMapper::class, $exceptionMapper);
+            self::assertInstanceOf(MainExceptionMapper::class, $exceptionMapper);
         } else {
-            self::assertNotInstanceOf(DefaultExceptionMapper::class, $exceptionMapper);
+            self::assertNotInstanceOf(MainExceptionMapper::class, $exceptionMapper);
             self::assertInstanceOf(LazyObjectInterface::class, $exceptionMapper);
-            self::assertInstanceOf(DefaultExceptionMapper::class, $exceptionMapper->initializeLazyObject());
+            self::assertInstanceOf(MainExceptionMapper::class, $exceptionMapper->initializeLazyObject());
         }
     }
 
