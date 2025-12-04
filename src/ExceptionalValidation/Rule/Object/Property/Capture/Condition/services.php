@@ -25,7 +25,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                 inline_service(ExceptionOriginMatchConditionFactory::class),
                 inline_service(DelegatingMatchConditionFactory::class)
                     ->args([
-                        tagged_locator('exceptional_validation.match_condition_factory', 'id'),
+                        tagged_locator(MatchConditionFactory::class, 'id'),
                     ]),
                 inline_service(ClosureMatchConditionFactory::class),
             ],
