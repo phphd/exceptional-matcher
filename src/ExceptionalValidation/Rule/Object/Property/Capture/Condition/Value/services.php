@@ -11,7 +11,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services
-        ->set('phd_exceptional_validation.match_condition_factory.value', ExceptionValueMatchConditionFactory::class)
+        ->set(MatchConditionFactory::class.'<'.ValueException::class.'>', ExceptionValueMatchConditionFactory::class)
         ->tag(MatchConditionFactory::class, ['id' => ExceptionValueMatchCondition::class])
     ;
 };
