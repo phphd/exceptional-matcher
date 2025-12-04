@@ -5,12 +5,19 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List;
 
 use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Throwable;
 
-/** @api */
+/**
+ * @api
+ *
+ * @template-covariant T of object|array
+ */
 interface PropriatedExceptionListFormatter
 {
-    /** @param non-empty-list<PropriatedException<Throwable>> $propriatedExceptionList */
-    public function format(array $propriatedExceptionList): ConstraintViolationListInterface;
+    /**
+     * @param non-empty-list<PropriatedException<Throwable>> $propriatedExceptionList
+     *
+     * @return ?T
+     */
+    public function format(array $propriatedExceptionList): mixed;
 }

@@ -12,7 +12,7 @@ use Throwable;
  *
  * @api
  *
- * @template T of object|array
+ * @template-covariant T of object|array
  */
 interface ExceptionMapper
 {

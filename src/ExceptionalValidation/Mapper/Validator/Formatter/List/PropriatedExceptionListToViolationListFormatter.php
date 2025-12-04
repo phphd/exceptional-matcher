@@ -8,11 +8,16 @@ use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolati
 use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Throwable;
 
 use function array_merge;
 
-/** @internal */
+/**
+ * @internal
+ *
+ * @implements PropriatedExceptionListFormatter<ConstraintViolationListInterface>
+ */
 final readonly class PropriatedExceptionListToViolationListFormatter implements PropriatedExceptionListFormatter
 {
     /** @api */

@@ -29,7 +29,7 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
         ->public()
         ->args([
             service(ExceptionMapper::class.'<non-empty-list<'.PropriatedException::class.'<Throwable>>>'),
-            service(PropriatedExceptionListFormatter::class),
+            service(PropriatedExceptionListFormatter::class.'<'.ConstraintViolationListInterface::class.'>'),
         ])
         ->lazy($lazy(ExceptionMapper::class))
     ;
