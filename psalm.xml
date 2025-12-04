@@ -28,9 +28,15 @@
                 <directory name="src/ExceptionalValidation/**/Tests/Stub"/>
             </errorLevel>
         </PropertyNotSetInConstructor>
+        <MissingImmutableAnnotation>
+            <errorLevel type="suppress">
+                <!-- classes are readonly anyway  -->
+                <directory name="src"/>
+            </errorLevel>
+        </MissingImmutableAnnotation>
         <UnnecessaryVarAnnotation>
             <errorLevel type="suppress">
-                <file name="src/ExceptionalValidation/Rule/Object/Property/Capture/Condition/Composite/CaptureMatchConditionFactory.php"/>
+                <file name="src/ExceptionalValidation/Rule/Object/Property/Capture/Condition/Composite/CompositeMatchConditionFactory.php"/>
             </errorLevel>
         </UnnecessaryVarAnnotation>
         <MissingOverrideAttribute>
@@ -45,6 +51,7 @@
     </plugins>
     <stubs>
         <file name="stubs/WrappedExceptionsInterface.stub"/>
+        <file name="stubs/ContainerInterface.stub"/>
         <file name="stubs/ConstraintViolationInterface.stub"/>
     </stubs>
 </psalm>
