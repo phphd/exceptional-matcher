@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List;
 
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Throwable;
@@ -22,14 +22,14 @@ final readonly class DefaultExceptionListViolationFormatter implements Exception
     ) {
     }
 
-    /** @param non-empty-list<CapturedException<Throwable>> $capturedExceptionList */
-    public function format(array $capturedExceptionList): ConstraintViolationList
+    /** @param non-empty-list<PropriatedException<Throwable>> $propriatedExceptionList */
+    public function format(array $propriatedExceptionList): ConstraintViolationList
     {
         /** @var list<list<ConstraintViolationInterface>> $violations */
         $violations = [];
 
-        foreach ($capturedExceptionList as $capturedException) {
-            $violations[] = $this->violationFormatter->format($capturedException);
+        foreach ($propriatedExceptionList as $propriatedException) {
+            $violations[] = $this->violationFormatter->format($propriatedException);
         }
 
         return new ConstraintViolationList(array_merge(...$violations));

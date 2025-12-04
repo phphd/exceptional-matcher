@@ -8,8 +8,8 @@ use Rector\Renaming\Rector\Name\RenameClassRector;
 return static function (RectorConfig $rectorConfig): void {
     /** @noinspection ClassConstantCanBeUsedInspection */
     $rectorConfig->ruleWithConfiguration(RenameClassRector::class, [
-        'PhPhD\ExceptionalValidation\Model\Exception\CapturedException' => 'PhPhD\ExceptionalValidation\Rule\Exception\CapturedException',
-        'PhPhD\ExceptionalValidation\Model\Exception\ExceptionPackage' => 'PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage',
+        'PhPhD\ExceptionalValidation\Model\Exception\CapturedException' => 'PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException',
+        'PhPhD\ExceptionalValidation\Model\Exception\ExceptionPackage' => 'PhPhD\ExceptionalValidation\Rule\Exception\ExceptionReciprocal',
         'PhPhD\ExceptionalValidation\Model\Condition\Value\ValueException' => 'PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueException',
         'PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchCondition' => 'PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition',
         'PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter' => 'PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\ExceptionListViolationFormatter',

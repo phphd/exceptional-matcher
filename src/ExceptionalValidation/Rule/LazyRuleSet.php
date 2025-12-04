@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule;
 
 use Closure;
-use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
+use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 use RuntimeException;
 
@@ -29,9 +29,9 @@ final class LazyRuleSet implements CaptureRule
         $this->ruleSetFactory = $ruleSetFactory;
     }
 
-    public function process(ExceptionPackage $package): bool
+    public function process(ExceptionReciprocal $reciprocal): bool
     {
-        return $this->innerRule()->process($package);
+        return $this->innerRule()->process($reciprocal);
     }
 
     public function getParent(): ?CaptureRule

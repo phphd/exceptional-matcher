@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule;
 
-use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
+use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 
 /** @internal */
@@ -17,10 +17,10 @@ final readonly class CompositeRuleSet implements CaptureRule
     ) {
     }
 
-    public function process(ExceptionPackage $package): bool
+    public function process(ExceptionReciprocal $reciprocal): bool
     {
         foreach ($this->rules as $rule) {
-            if ($rule->process($package)) {
+            if ($rule->process($reciprocal)) {
                 return true;
             }
         }

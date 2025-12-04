@@ -12,7 +12,7 @@ use Throwable;
  *
  * @template-covariant T of Throwable
  */
-final readonly class CapturedException
+final readonly class PropriatedException
 {
     public function __construct(
         /** @var T */
