@@ -21,7 +21,7 @@ final class ValidationFailedExceptionMatchConditionFactory implements MatchCondi
 {
     public function getCondition(Capture $capture, CaptureRule $parent): ValidationFailedExceptionMatchCondition
     {
-        if (!is_a($capture->getExceptionClass(), ValidationFailedException::class, true)) {
+        if (!is_a($capture->getExceptionClass(), ValidationFailedException::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('ValidationFailedExceptionMatchCondition can only be used for ValidationFailedException');
         }
 
