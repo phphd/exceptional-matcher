@@ -13,6 +13,7 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\Exc
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchConditionFactory;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
+use Throwable;
 
 use function krsort;
 
@@ -25,7 +26,7 @@ final class MatchConditionFactoryServiceTest extends BundleTestCase
 {
     public function testConditionFactory(): void
     {
-        $matchConditionFactory = self::getContainer()->get('phd_exceptional_validation.match_condition_factory');
+        $matchConditionFactory = self::getContainer()->get(MatchConditionFactory::class.'<'.Throwable::class.'>');
         self::assertInstanceOf(CompositeMatchConditionFactory::class, $matchConditionFactory);
 
         $conditionFactoryRegistry = $this->getConditionFactoryRegistry($matchConditionFactory);
