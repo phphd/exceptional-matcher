@@ -6,9 +6,9 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating
 
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\Tests\Stub\CustomExceptionFormatter;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\Tests\Stub\CustomFormattedException;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\PropriatedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Reference;
@@ -16,11 +16,11 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter
+ * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\DelegatingPropriatedExceptionFormatter
  *
  * @internal
  */
-final class DelegatingExceptionViolationFormatterUnitTest extends TestCase
+final class DelegatingPropriatedExceptionFormatterUnitTest extends TestCase
 {
     /** @var ExceptionMapper<ConstraintViolationListInterface> */
     private ExceptionMapper $mapper;
@@ -34,8 +34,8 @@ final class DelegatingExceptionViolationFormatterUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->register(CustomExceptionViolationFormatter::class, CustomExceptionViolationFormatter::class)
-            ->setArguments([new Reference(ExceptionViolationFormatter::class.'<Throwable>')])
+        $container->register(CustomExceptionFormatter::class, CustomExceptionFormatter::class)
+            ->setArguments([new Reference(PropriatedExceptionFormatter::class.'<Throwable>')])
             ->setAutoconfigured(true)
         ;
 

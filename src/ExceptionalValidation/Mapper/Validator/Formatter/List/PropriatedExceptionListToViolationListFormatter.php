@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List;
 
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\PropriatedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -22,8 +22,8 @@ final readonly class PropriatedExceptionListToViolationListFormatter implements 
 {
     /** @api */
     public function __construct(
-        /** @var ExceptionViolationFormatter<Throwable> */
-        private ExceptionViolationFormatter $violationFormatter,
+        /** @var PropriatedExceptionFormatter<Throwable> */
+        private PropriatedExceptionFormatter $violationFormatter,
     ) {
     }
 
