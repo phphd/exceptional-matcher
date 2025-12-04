@@ -34,7 +34,7 @@ final readonly class Capture
         /** @var class-string<T1&T2> */
         private string $exception,
         private ?string $message = null,
-        /** @var null|class-string|array{class-string,string} The origin of the exception */
+        /** @var null|class-string|array{class-string,non-empty-string} The origin of the exception */
         private array|string|null $from = null,
         /** @note condition type is contravariant to the exception */
         private ?string $condition = null,
@@ -63,7 +63,7 @@ final readonly class Capture
         return $this->message;
     }
 
-    /** @return ?array{class-string,?string} */
+    /** @return ?array{class-string,?non-empty-string} */
     public function getFrom(): ?array
     {
         if (is_string($this->from)) {
