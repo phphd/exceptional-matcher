@@ -17,10 +17,10 @@ final class ExceptionReciprocal
     /** @var list<PropriatedException<Throwable>> */
     private array $propriatedExceptions = [];
 
-    /** @param non-empty-list<Throwable> $exceptionList */
-    public function __construct(array $exceptionList)
+    /** @param non-empty-list<Throwable> $remainingExceptions */
+    public function __construct(array $remainingExceptions)
     {
-        $this->remainingExceptions = $exceptionList;
+        $this->remainingExceptions = $remainingExceptions;
     }
 
     public function process(CaptureExceptionRule $rule): void
