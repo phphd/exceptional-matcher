@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Mapper;
 
 use Closure;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
-use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -21,7 +21,7 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
     $lazy = $builder->get('phd_exceptional_validation.lazy_proxy');
 
     $services
-        ->set(ExceptionMapper::class.'<non-empty-list<'.CapturedException::class.'<Throwable>>>', DefaultExceptionMapper::class)
+        ->set(ExceptionMapper::class.'<non-empty-list<'.PropriatedException::class.'<Throwable>>>', DefaultExceptionMapper::class)
         ->public()
         ->args([
             service(CaptureRuleSetAssemblerService::class.'<'.ObjectRuleSetAssembler::class.'>'),

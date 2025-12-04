@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Mapper;
 
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
-use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
-use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
+use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionReciprocal;
+use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Throwable;
@@ -14,7 +14,7 @@ use Throwable;
 /**
  * @internal
  *
- * @implements ExceptionMapper<non-empty-list<CapturedException<Throwable>>>
+ * @implements ExceptionMapper<non-empty-list<PropriatedException<Throwable>>>
  */
 final readonly class DefaultExceptionMapper implements ExceptionMapper
 {
@@ -36,12 +36,12 @@ final readonly class DefaultExceptionMapper implements ExceptionMapper
 
         $exceptionList = $this->exceptionUnwrapper->unwrap($exception);
 
-        $exceptionPackage = new ExceptionPackage($exceptionList);
+        $reciprocal = new ExceptionReciprocal($exceptionList);
 
-        if (!$ruleSet->process($exceptionPackage)) {
+        if (!$ruleSet->process($reciprocal)) {
             return null;
         }
 
-        return $exceptionPackage->getCapturedExceptionsList();
+        return $reciprocal->getPropriatedExceptionList();
     }
 }

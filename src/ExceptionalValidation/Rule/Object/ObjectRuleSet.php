@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Object;
 
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
-use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
+use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 
 /** @internal */
@@ -18,9 +18,9 @@ final readonly class ObjectRuleSet implements CaptureRule
     ) {
     }
 
-    public function process(ExceptionPackage $package): bool
+    public function process(ExceptionReciprocal $reciprocal): bool
     {
-        return $this->ruleSet->process($package);
+        return $this->ruleSet->process($reciprocal);
     }
 
     public function getParent(): ?CaptureRule
