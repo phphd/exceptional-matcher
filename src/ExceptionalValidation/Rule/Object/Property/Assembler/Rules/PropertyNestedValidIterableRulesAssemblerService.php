@@ -89,18 +89,17 @@ final readonly class PropertyNestedValidIterableRulesAssemblerService implements
 
     private function getIterableItemCaptureRule(PropertyRuleSet $parentRuleSet, int|string $key, object $object): ?CaptureRule
     {
-        return (new LazyRuleSet(
-            /** @param LazyRuleSet<ItemOfIterableCaptureRule> $itemOfIterableRule */
-            function (LazyRuleSet $itemOfIterableRule) use ($key, $parentRuleSet, $object): ?ItemOfIterableCaptureRule {
-                $objectRuleSetAssembler = new ObjectRuleSetAssembler($object, $itemOfIterableRule);
-                $objectRuleSet = $this->objectRuleSetAssemblerService->assemble($objectRuleSetAssembler);
+        $wrappedObjectRuleSet = new LazyRuleSet(
+            /** @param LazyRuleSet<CaptureRule> $lazyObjectRuleSet */
+            function (LazyRuleSet $lazyObjectRuleSet) use ($key, $parentRuleSet, $object): ?CaptureRule {
+                $itemOfIterableRule = new ItemOfIterableCaptureRule($key, $parentRuleSet, $lazyObjectRuleSet);
 
-                if (null === $objectRuleSet) {
-                    return null;
-                }
-
-                return new ItemOfIterableCaptureRule($key, $parentRuleSet, $objectRuleSet);
+                return $this->objectRuleSetAssemblerService
+                    ->assemble(new ObjectRuleSetAssembler($object, $itemOfIterableRule))
+                ;
             },
-        ))->build();
+        );
+
+        return $wrappedObjectRuleSet->build()?->getParent();
     }
 }
