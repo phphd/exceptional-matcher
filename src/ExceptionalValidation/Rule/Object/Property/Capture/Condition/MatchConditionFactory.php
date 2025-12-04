@@ -8,15 +8,13 @@ use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use Throwable;
 
-/** @internal */
+/** @template T of Throwable */
 interface MatchConditionFactory
 {
     /**
-     * @param Capture<Throwable> $capture
+     * @param Capture<Throwable,Throwable> $capture
      *
-     * @phpstan-return ?MatchCondition<covariant Throwable>
-     *
-     * @psalm-return ?MatchCondition<Throwable>
+     * @return ?MatchCondition<T>
      */
     public function getCondition(Capture $capture, CaptureRule $parent): ?MatchCondition;
 }

@@ -12,7 +12,11 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 use function is_a;
 
-/** @internal */
+/**
+ * @internal
+ *
+ * @implements MatchConditionFactory<ValidationFailedException>
+ */
 final class ValidationFailedExceptionMatchConditionFactory implements MatchConditionFactory
 {
     public function getCondition(Capture $capture, CaptureRule $parent): ValidationFailedExceptionMatchCondition

@@ -58,14 +58,11 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
         return self::getContainer()->get($id);
     }
 
-    private function getFormatterRegistry(DelegatingExceptionViolationFormatter $violationFormatter): ?ContainerInterface
+    private function getFormatterRegistry(DelegatingExceptionViolationFormatter $violationFormatter): ?ContainerInterface // @phpstan-ignore missingType.generics
     {
-        /**
-         * @psalm-suppress InternalProperty
-         * @psalm-suppress InaccessibleProperty
-         */
+        /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */
         return (static fn (): ContainerInterface => $violationFormatter->formatterRegistry) // @phpstan-ignore-line
-            ->bindTo(null, DelegatingExceptionViolationFormatter::class)?->__invoke()
+            ->bindTo(null, DelegatingExceptionViolationFormatter::class)->__invoke()
         ;
     }
 }

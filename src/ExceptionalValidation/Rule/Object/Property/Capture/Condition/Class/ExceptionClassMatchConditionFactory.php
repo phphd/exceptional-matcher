@@ -7,8 +7,13 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Cla
 use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
+use Throwable;
 
-/** @internal */
+/**
+ * @internal
+ *
+ * @implements MatchConditionFactory<Throwable>
+ */
 final class ExceptionClassMatchConditionFactory implements MatchConditionFactory
 {
     public function getCondition(Capture $capture, CaptureRule $parent): ExceptionClassMatchCondition
