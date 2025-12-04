@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\Tests\Stub;
 
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Throwable;
 
@@ -20,9 +20,9 @@ final readonly class CustomExceptionViolationFormatter implements ExceptionViola
     }
 
     /** @return array{ConstraintViolation} */
-    public function format(CapturedException $capturedException): array
+    public function format(PropriatedException $propriatedException): array
     {
-        [$violation] = $this->formatter->format($capturedException);
+        [$violation] = $this->formatter->format($propriatedException);
 
         /** @psalm-suppress ImplicitToStringCast */
         return [
