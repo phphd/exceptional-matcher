@@ -28,7 +28,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation
  * @covers \PhPhD\ExceptionalValidation\Capture
  * @covers \PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension
- * @covers \PhPhD\ExceptionalValidation\Mapper\DefaultExceptionMapper
+ * @covers \PhPhD\ExceptionalValidation\Mapper\MainExceptionMapper
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\ExceptionViolationListMapper
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\DefaultExceptionListViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet

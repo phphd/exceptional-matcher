@@ -16,7 +16,7 @@ use Throwable;
  *
  * @implements ExceptionMapper<non-empty-list<PropriatedException<Throwable>>>
  */
-final readonly class DefaultExceptionMapper implements ExceptionMapper
+final readonly class MainExceptionMapper implements ExceptionMapper
 {
     /** @api */
     public function __construct(
