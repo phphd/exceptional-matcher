@@ -13,7 +13,7 @@ use Throwable;
 use function array_merge;
 
 /** @internal */
-final readonly class DefaultExceptionListViolationFormatter implements ExceptionListViolationFormatter
+final readonly class PropriatedExceptionListToViolationListFormatter implements PropriatedExceptionListFormatter
 {
     /** @api */
     public function __construct(
