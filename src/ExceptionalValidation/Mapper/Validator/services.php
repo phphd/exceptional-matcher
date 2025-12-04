@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator;
 use Closure;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\ExceptionListViolationFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -28,7 +28,7 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
         ->set(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>', ExceptionViolationListMapper::class)
         ->public()
         ->args([
-            service(ExceptionMapper::class.'<non-empty-list<'.CapturedException::class.'<Throwable>>>'),
+            service(ExceptionMapper::class.'<non-empty-list<'.PropriatedException::class.'<Throwable>>>'),
             service(ExceptionListViolationFormatter::class),
         ])
         ->lazy($lazy(ExceptionMapper::class))

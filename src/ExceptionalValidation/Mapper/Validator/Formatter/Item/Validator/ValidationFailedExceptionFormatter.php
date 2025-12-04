@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Validator;
 
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListException;
-use PhPhD\ExceptionalValidation\Rule\Exception\CapturedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
@@ -24,17 +24,17 @@ final readonly class ValidationFailedExceptionFormatter implements ExceptionViol
     }
 
     /**
-     * @param CapturedException<ValidationFailedException> $capturedException
+     * @param PropriatedException<ValidationFailedException> $propriatedException
      *
      * @return non-empty-list<ConstraintViolation>
      */
-    public function format(CapturedException $capturedException): array
+    public function format(PropriatedException $propriatedException): array
     {
-        $exception = $capturedException->getException();
+        $exception = $propriatedException->getException();
 
-        $targetException = new CapturedException(
+        $targetException = new PropriatedException(
             new ValidationFailedExceptionAdapter($exception),
-            $capturedException->getMatchedRule(),
+            $propriatedException->getMatchedRule(),
         );
 
         return $this->violationListExceptionFormatter->format($targetException);
