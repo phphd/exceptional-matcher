@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value;
 
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
@@ -11,6 +12,6 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $services
         ->set('phd_exceptional_validation.match_condition_factory.value', ExceptionValueMatchConditionFactory::class)
-        ->tag('exceptional_validation.match_condition_factory', ['id' => ExceptionValueMatchCondition::class])
+        ->tag(MatchConditionFactory::class, ['id' => ExceptionValueMatchCondition::class])
     ;
 };
