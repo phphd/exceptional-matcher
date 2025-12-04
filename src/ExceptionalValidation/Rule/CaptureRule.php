@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule;
 
-use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionPackage;
+use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 
 /** @internal */
 interface CaptureRule
 {
-    /** Returns TRUE if all given exceptions were captured, or FALSE if not */
-    public function process(ExceptionPackage $package): bool;
+    /** Returns TRUE if all exceptions were propriated; FALSE otherwise */
+    public function process(ExceptionReciprocal $reciprocal): bool;
 
     public function getParent(): ?self;
 
