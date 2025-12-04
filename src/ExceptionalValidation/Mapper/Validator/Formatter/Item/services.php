@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item;
 
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\DelegatingPropriatedExceptionFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -18,14 +18,14 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
     $services = $containerConfigurator->services();
 
     $services
-        ->set(ExceptionViolationFormatter::class, DelegatingExceptionViolationFormatter::class)
+        ->set(PropriatedExceptionFormatter::class, DelegatingPropriatedExceptionFormatter::class)
         ->args([
-            tagged_locator(ExceptionViolationFormatter::class, 'id'),
+            tagged_locator(PropriatedExceptionFormatter::class, 'id'),
         ])
     ;
 
     $builder
-        ->registerForAutoconfiguration(ExceptionViolationFormatter::class)
-        ->addTag(ExceptionViolationFormatter::class)
+        ->registerForAutoconfiguration(PropriatedExceptionFormatter::class)
+        ->addTag(PropriatedExceptionFormatter::class)
     ;
 };

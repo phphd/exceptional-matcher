@@ -17,7 +17,7 @@ use Throwable;
  *
  * @psalm-immutable
  */
-interface ExceptionViolationFormatter
+interface PropriatedExceptionFormatter
 {
     /**
      * @param PropriatedException<T> $propriatedException

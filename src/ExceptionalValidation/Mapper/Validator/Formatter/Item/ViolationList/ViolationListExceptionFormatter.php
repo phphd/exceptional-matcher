@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList;
 
 use LogicException;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\PropriatedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -17,9 +17,9 @@ use function iterator_to_array;
 /**
  * @api
  *
- * @implements ExceptionViolationFormatter<ViolationListException>
+ * @implements PropriatedExceptionFormatter<ViolationListException>
  */
-final class ViolationListExceptionFormatter implements ExceptionViolationFormatter
+final class ViolationListExceptionFormatter implements PropriatedExceptionFormatter
 {
     /**
      * @param PropriatedException<ViolationListException> $propriatedException

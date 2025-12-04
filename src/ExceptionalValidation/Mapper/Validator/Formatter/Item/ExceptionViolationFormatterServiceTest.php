@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item;
 
 use PhPhD\ExceptionalValidation\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\DefaultExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\DelegatingExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\DelegatingPropriatedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating\Tests\Stub\CustomExceptionFormatter;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Validator\ValidationFailedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListException;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListExceptionFormatter;
@@ -26,16 +26,16 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
 {
     public function testViolationFormatter(): void
     {
-        $violationFormatter = $this->get(ExceptionViolationFormatter::class);
-        self::assertInstanceOf(DelegatingExceptionViolationFormatter::class, $violationFormatter);
+        $violationFormatter = $this->get(PropriatedExceptionFormatter::class);
+        self::assertInstanceOf(DelegatingPropriatedExceptionFormatter::class, $violationFormatter);
 
-        $defaultFormatter = $this->get(ExceptionViolationFormatter::class.'<Throwable>');
+        $defaultFormatter = $this->get(PropriatedExceptionFormatter::class.'<Throwable>');
         self::assertInstanceOf(DefaultExceptionViolationFormatter::class, $defaultFormatter);
 
-        $violationListExceptionFormatter = $this->get(ExceptionViolationFormatter::class.'<'.ViolationListException::class.'>');
+        $violationListExceptionFormatter = $this->get(PropriatedExceptionFormatter::class.'<'.ViolationListException::class.'>');
         self::assertInstanceOf(ViolationListExceptionFormatter::class, $violationListExceptionFormatter);
 
-        $validationFailedExceptionFormatter = $this->get(ExceptionViolationFormatter::class.'<'.ValidationFailedException::class.'>');
+        $validationFailedExceptionFormatter = $this->get(PropriatedExceptionFormatter::class.'<'.ValidationFailedException::class.'>');
         self::assertInstanceOf(ValidationFailedExceptionFormatter::class, $validationFailedExceptionFormatter);
 
         $formatterRegistry = $this->getFormatterRegistry($violationFormatter);
@@ -46,7 +46,7 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
         self::assertSame([
             ViolationListExceptionFormatter::class => ViolationListExceptionFormatter::class,
             ValidationFailedExceptionFormatter::class => ValidationFailedExceptionFormatter::class,
-            CustomExceptionViolationFormatter::class => CustomExceptionViolationFormatter::class,
+            CustomExceptionFormatter::class => CustomExceptionFormatter::class,
             DefaultExceptionViolationFormatter::class => DefaultExceptionViolationFormatter::class,
         ], $providedServices);
 
@@ -58,11 +58,11 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
         return self::getContainer()->get($id);
     }
 
-    private function getFormatterRegistry(DelegatingExceptionViolationFormatter $violationFormatter): ?ContainerInterface // @phpstan-ignore missingType.generics
+    private function getFormatterRegistry(DelegatingPropriatedExceptionFormatter $violationFormatter): ?ContainerInterface // @phpstan-ignore missingType.generics
     {
         /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */
         return (static fn (): ContainerInterface => $violationFormatter->formatterRegistry) // @phpstan-ignore-line
-            ->bindTo(null, DelegatingExceptionViolationFormatter::class)->__invoke()
+            ->bindTo(null, DelegatingPropriatedExceptionFormatter::class)->__invoke()
         ;
     }
 }
