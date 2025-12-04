@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator;
 
 use Closure;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\ExceptionListViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\PropriatedExceptionListFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -29,7 +29,7 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
         ->public()
         ->args([
             service(ExceptionMapper::class.'<non-empty-list<'.PropriatedException::class.'<Throwable>>>'),
-            service(ExceptionListViolationFormatter::class),
+            service(PropriatedExceptionListFormatter::class),
         ])
         ->lazy($lazy(ExceptionMapper::class))
     ;

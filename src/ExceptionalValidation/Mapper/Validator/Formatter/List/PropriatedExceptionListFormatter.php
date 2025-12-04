@@ -9,7 +9,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Throwable;
 
 /** @api */
-interface ExceptionListViolationFormatter
+interface PropriatedExceptionListFormatter
 {
     /** @param non-empty-list<PropriatedException<Throwable>> $propriatedExceptionList */
     public function format(array $propriatedExceptionList): ConstraintViolationListInterface;

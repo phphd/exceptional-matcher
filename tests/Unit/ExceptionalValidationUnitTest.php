@@ -30,7 +30,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension
  * @covers \PhPhD\ExceptionalValidation\Mapper\MainExceptionMapper
  * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\ExceptionViolationListMapper
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\DefaultExceptionListViolationFormatter
+ * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\PropriatedExceptionListToViolationListFormatter
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet
