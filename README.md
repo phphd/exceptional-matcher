@@ -299,8 +299,8 @@ bin/console debug:container ExceptionMapper
 This should provide you with a list, similar to this:
 
 ```text
-[0] PhPhD\ExceptionalValidation\Mapper\ExceptionMapper<Symfony\Component\Validator\ConstraintViolationListInterface>
-[1] PhPhD\ExceptionalValidation\Mapper\ExceptionMapper<non-empty-list<PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException<Throwable>>>
+[0] PhPhD\ExceptionalValidation\Mapper\ExceptionMapper<PhPhD\ExceptionalValidation\Rule\Exception\PropriatedExceptionList>
+[1] PhPhD\ExceptionalValidation\Mapper\ExceptionMapper<Symfony\Component\Validator\ConstraintViolationListInterface>
 ```
 
 These mappers allow you to map the Exception to any available format, specified as a generic parameter.
@@ -629,27 +629,27 @@ There are two main built-in violation formatters you can use: `DefaultExceptionV
 
 If needed, create a custom violation formatter as described below.
 
-#### Default
+#### Main
 
-`DefaultViolationFormatter` is used by default if another formatter is not specified.
+`MainExceptionViolationFormatter` is used by default if another formatter is not specified.
 
-It provides a very basic way to format violations, building `ConstraintViolation` with these parameters: `$message`,
-`$root`, `$propertyPath`, `$value`.
+It provides a basic way to create a `ConstraintViolation` with these parameters: \
+`$message`, `$root`, `$propertyPath`, `$value`.
 
 #### Constraint Violation List Formatter
 
 `ViolationListExceptionFormatter` allows formatting the exceptions \
 that contain a `ConstraintViolationList` obtained from the validator.
 
-Such exceptions must implement `ViolationListException` interface.
+Such exceptions should implement `ViolationListException` interface.
 
-> You can also use `ValidationFailedExceptionFormatter` \
-> to format Symfony's native `ValidationFailedException`.
+> Besides that, it's also possible to use `ValidationFailedExceptionFormatter`, \
+> which can format Symfony's native `ValidationFailedException`.
 
-A typical exception class would be something like this:
+A typical exception class would look like this:
 
 ```php
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListException;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\ViolationListException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 final class CardNumberValidationFailedException extends \RuntimeException implements ViolationListException
@@ -658,7 +658,7 @@ final class CardNumberValidationFailedException extends \RuntimeException implem
         private readonly string $cardNumber,
         private readonly ConstraintViolationListInterface $violationList,
     ) {
-        parent::__construct('Card Validation Failed');
+        parent::__construct('Card Number Validation Failed');
     }
 
     public function getViolationList(): ConstraintViolationListInterface
@@ -668,12 +668,12 @@ final class CardNumberValidationFailedException extends \RuntimeException implem
 }
 ```
 
-Then, specify `ViolationListExceptionFormatter` as `formatter:` on the `#[Capture]` attribute of the property:
+Then, specify `ViolationListExceptionFormatter` as a `formatter:` for the `#[Capture]` attribute:
 
 ```php
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
 
 #[ExceptionalValidation]
 class IssueCreditCardCommand
@@ -686,11 +686,11 @@ class IssueCreditCardCommand
 }
 ```
 
-In this example, `CardNumberValidationFailedException` is captured on a `cardNumber` property, \
-and all constraint violations of this exception are mapped to this property.
+Thus, `CardNumberValidationFailedException` is captured on a `cardNumber` property, \
+and formatter makes sure all its constraint violations are mapped for this property.
 
-> If `#[Capture]` attribute specifies a message, \
-> it is ignored in favour of `ConstraintViolationList` messages.
+> If `#[Capture]` attribute specified a message, \
+> it would've been ignored in favour of `ConstraintViolationList` messages.
 
 #### Custom Violation Formatters
 
@@ -700,7 +700,7 @@ For example, pass additional parameters to the message translation.
 You can create custom violation formatter by implementing `ExceptionViolationFormatter` interface:
 
 ```php
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
@@ -743,7 +743,7 @@ Then, register it as a service:
 
 ```yaml
 services:
-    App\Auth\User\Features\Registration\ViolationFormatter\RegistrationViolationsFormatter:
+    App\Auth\User\Features\Registration\Validation\RegistrationViolationsFormatter:
         autoconfigure: true
 ```
 
