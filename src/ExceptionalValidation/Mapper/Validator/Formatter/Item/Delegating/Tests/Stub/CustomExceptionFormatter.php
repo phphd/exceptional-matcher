@@ -7,14 +7,15 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Delegating
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\PropriatedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Throwable;
 
-/** @implements PropriatedExceptionFormatter<Throwable> */
+/** @implements PropriatedExceptionFormatter<Throwable,ConstraintViolationInterface> */
 final readonly class CustomExceptionFormatter implements PropriatedExceptionFormatter
 {
     /** @api */
     public function __construct(
-        /** @var PropriatedExceptionFormatter<Throwable> */
+        /** @var PropriatedExceptionFormatter<Throwable,ConstraintViolationInterface> */
         private PropriatedExceptionFormatter $formatter,
     ) {
     }

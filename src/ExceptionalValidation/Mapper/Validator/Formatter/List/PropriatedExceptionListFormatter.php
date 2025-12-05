@@ -10,7 +10,7 @@ use Throwable;
 /**
  * @api
  *
- * @template-covariant T of object|array
+ * @template-covariant T of mixed
  */
 interface PropriatedExceptionListFormatter
 {

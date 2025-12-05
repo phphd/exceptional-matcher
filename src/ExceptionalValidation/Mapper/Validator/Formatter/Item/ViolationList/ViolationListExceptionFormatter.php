@@ -17,7 +17,7 @@ use function iterator_to_array;
 /**
  * @api
  *
- * @implements PropriatedExceptionFormatter<ViolationListException>
+ * @implements PropriatedExceptionFormatter<ViolationListException,ConstraintViolationInterface>
  */
 final class ViolationListExceptionFormatter implements PropriatedExceptionFormatter
 {

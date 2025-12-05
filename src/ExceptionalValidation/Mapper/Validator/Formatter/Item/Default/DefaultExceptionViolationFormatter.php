@@ -8,13 +8,14 @@ use Closure;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\PropriatedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
 use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
 /**
  * @internal
  *
- * @implements PropriatedExceptionFormatter<Throwable>
+ * @implements PropriatedExceptionFormatter<Throwable,ConstraintViolationInterface>
  */
 final readonly class DefaultExceptionViolationFormatter implements PropriatedExceptionFormatter
 {
