@@ -6,11 +6,13 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator;
 
 use Closure;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\PropriatedExceptionListFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\PropriatedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedExceptionList;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Throwable;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -25,11 +27,11 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
     $services = $containerConfigurator->services();
 
     $services
-        ->set(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>', ExceptionViolationListMapper::class)
+        ->set(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>', ExceptionToViolationListMapper::class)
         ->public()
         ->args([
-            service(ExceptionMapper::class.'<non-empty-list<'.PropriatedException::class.'<Throwable>>>'),
-            service(PropriatedExceptionListFormatter::class.'<'.ConstraintViolationListInterface::class.'>'),
+            service(ExceptionMapper::class.'<'.PropriatedExceptionList::class.'>'),
+            service(PropriatedExceptionFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>'),
         ])
         ->lazy($lazy(ExceptionMapper::class))
     ;

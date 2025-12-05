@@ -173,6 +173,7 @@ final class ArchitectureRuleSet
             'model' => [
                 'deps' => [
                     Selector::classname(Assert::class),
+                    Selector::classname(ContainerInterface::class),
                     Selector::classname(ValidationFailedException::class),
                     Selector::classname(ContainerInterface::class),
                 ],

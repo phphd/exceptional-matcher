@@ -6,11 +6,10 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Clo
 
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
-use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedExceptionList;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\Tests\Stub\ConditionallyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\TestCase;
-use Throwable;
 
 /**
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\ClosureMatchCondition
@@ -21,7 +20,7 @@ use Throwable;
  */
 final class ClosureMatchConditionUnitTest extends TestCase
 {
-    /** @var ExceptionMapper<non-empty-list<PropriatedException<Throwable>>> */
+    /** @var ExceptionMapper<PropriatedExceptionList> */
     private ExceptionMapper $mapper;
 
     protected function setUp(): void
@@ -35,8 +34,8 @@ final class ClosureMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMapper<non-empty-list<PropriatedException<Throwable>>> $mapper */
-        $mapper = $container->get(ExceptionMapper::class.'<non-empty-list<'.PropriatedException::class.'<Throwable>>>');
+        /** @var ExceptionMapper<PropriatedExceptionList> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.PropriatedExceptionList::class.'>');
         $this->mapper = $mapper;
     }
 
@@ -62,7 +61,8 @@ final class ClosureMatchConditionUnitTest extends TestCase
         self::assertNotNull($propriatedExceptionList);
         self::assertCount(1, $propriatedExceptionList);
 
-        $propriatedException = $propriatedExceptionList[0];
+        [$propriatedException] = $propriatedExceptionList->toArray();
+
         self::assertSame('nestedObject.conditionalMessage.secondProperty', $propriatedException->getMatchedRule()->getPropertyPath()->join('.'));
         self::assertSame(41, $propriatedException->getMatchedRule()->getValue());
     }
