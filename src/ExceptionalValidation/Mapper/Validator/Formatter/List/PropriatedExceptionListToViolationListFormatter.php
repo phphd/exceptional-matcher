@@ -22,7 +22,7 @@ final readonly class PropriatedExceptionListToViolationListFormatter implements 
 {
     /** @api */
     public function __construct(
-        /** @var PropriatedExceptionFormatter<Throwable> */
+        /** @var PropriatedExceptionFormatter<Throwable,ConstraintViolationInterface> */
         private PropriatedExceptionFormatter $violationFormatter,
     ) {
     }

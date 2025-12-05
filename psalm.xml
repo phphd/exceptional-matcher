@@ -39,6 +39,12 @@
                 <file name="src/ExceptionalValidation/Rule/Object/Property/Capture/Condition/Composite/CompositeMatchConditionFactory.php"/>
             </errorLevel>
         </UnnecessaryVarAnnotation>
+        <LessSpecificImplementedReturnType>
+            <errorLevel type="suppress">
+                <file name="src/ExceptionalValidation/Mapper/Validator/Formatter/Item/Validator/ValidationFailedExceptionFormatter.php"/>
+                <file name="src/ExceptionalValidation/Mapper/Validator/Formatter/Item/Delegating/DelegatingPropriatedExceptionFormatter.php"/>
+            </errorLevel>
+        </LessSpecificImplementedReturnType>
         <MissingOverrideAttribute>
             <errorLevel type="suppress">
                 <directory name="src"/>

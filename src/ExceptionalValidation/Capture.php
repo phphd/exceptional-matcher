@@ -25,7 +25,7 @@ final readonly class Capture
 {
     /**
      * @phpstan-param ?class-string<MatchCondition<T1>> $condition
-     * @phpstan-param class-string<PropriatedExceptionFormatter<T2>> $formatter
+     * @phpstan-param class-string<PropriatedExceptionFormatter<T2,mixed>> $formatter
      *
      * @psalm-param ?class-string<MatchCondition> $condition
      * @psalm-param class-string<PropriatedExceptionFormatter> $formatter
@@ -90,7 +90,7 @@ final readonly class Capture
     }
 
     /**
-     * @phpstan-return class-string<PropriatedExceptionFormatter<T2>>
+     * @phpstan-return class-string<PropriatedExceptionFormatter<T2,mixed>>
      *
      * @psalm-return class-string<PropriatedExceptionFormatter>
      */

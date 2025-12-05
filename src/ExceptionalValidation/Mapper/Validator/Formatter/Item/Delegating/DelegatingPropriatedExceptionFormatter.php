@@ -13,16 +13,16 @@ use Throwable;
 /**
  * @internal
  *
- * @implements PropriatedExceptionFormatter<Throwable>
+ * @implements PropriatedExceptionFormatter<Throwable,mixed>
  */
 final readonly class DelegatingPropriatedExceptionFormatter implements PropriatedExceptionFormatter
 {
     /**
      * @api
      *
-     * @template T of Throwable
+     * @template T of PropriatedExceptionFormatter
      *
-     * @phpstan-param ContainerInterface<class-string<PropriatedExceptionFormatter<T>>,PropriatedExceptionFormatter<T>> $formatterRegistry
+     * @phpstan-param ContainerInterface<class-string<T>,T> $formatterRegistry
      *
      * @psalm-param ContainerInterface<class-string<PropriatedExceptionFormatter>,PropriatedExceptionFormatter> $formatterRegistry
      */
@@ -33,16 +33,17 @@ final readonly class DelegatingPropriatedExceptionFormatter implements Propriate
 
     /**
      * @template T of Throwable
+     * @template TFormatter of PropriatedExceptionFormatter<T,mixed>
      *
      * @param PropriatedException<T> $propriatedException
      *
-     * @psalm-suppress MoreSpecificImplementedParamType, LessSpecificImplementedReturnType
+     * @psalm-suppress MoreSpecificImplementedParamType
      */
-    public function format(PropriatedException $propriatedException): array
+    public function format(PropriatedException $propriatedException): array // @phpstan-ignore method.templateTypeNotInParameter
     {
         $matchedRule = $propriatedException->getMatchedRule();
 
-        /** @var class-string<PropriatedExceptionFormatter<T>> $formatterId */ // FIXME: use real type
+        /** @var class-string<TFormatter> $formatterId */ // FIXME: use real type
         $formatterId = $matchedRule->getFormatterId();
 
         if (!$this->formatterRegistry->has($formatterId)) {
@@ -51,7 +52,7 @@ final readonly class DelegatingPropriatedExceptionFormatter implements Propriate
 
         $exceptionFormatter = $this->formatterRegistry->get($formatterId);
 
-        /** @psalm-var PropriatedExceptionFormatter<T> $exceptionFormatter */
+        /** @psalm-var TFormatter $exceptionFormatter */
         return $exceptionFormatter->format($propriatedException);
     }
 }
