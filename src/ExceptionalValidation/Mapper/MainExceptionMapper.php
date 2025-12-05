@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Mapper;
 
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedExceptionList;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Throwable;
@@ -14,7 +14,7 @@ use Throwable;
 /**
  * @internal
  *
- * @implements ExceptionMapper<non-empty-list<PropriatedException<Throwable>>>
+ * @implements ExceptionMapper<PropriatedExceptionList>
  */
 final readonly class MainExceptionMapper implements ExceptionMapper
 {
@@ -26,7 +26,7 @@ final readonly class MainExceptionMapper implements ExceptionMapper
     ) {
     }
 
-    public function map(object $message, Throwable $exception): ?array
+    public function map(object $message, Throwable $exception): ?PropriatedExceptionList
     {
         $ruleSet = $this->ruleSetAssemblerService->assemble(new ObjectRuleSetAssembler($message));
 

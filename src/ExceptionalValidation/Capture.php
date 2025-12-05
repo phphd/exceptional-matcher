@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation;
 
 use Attribute;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\DefaultExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\PropriatedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Default\MainExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\PropriatedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use Throwable;
 use Webmozart\Assert\Assert;
@@ -41,7 +41,7 @@ final readonly class Capture
         /** @var ?array{object|class-string,string} */
         private ?array $when = null,
         /** @note formatter type is contravariant to the exception */
-        private string $formatter = DefaultExceptionViolationFormatter::class,
+        private string $formatter = MainExceptionViolationFormatter::class,
     ) {
         if (null !== $this->when) {
             Assert::count($this->when, 2);
