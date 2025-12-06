@@ -18,10 +18,11 @@ use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Container;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
@@ -66,9 +67,9 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
-    public function testMatchConditionFactoryDependencies(): BuildStep
+    public function testMatchConditionDependencies(): BuildStep
     {
-        return $this->layerRule('matchConditionFactory');
+        return $this->layerRule('matchCondition');
     }
 
     #[TestRule]
@@ -153,20 +154,19 @@ final class ArchitectureRuleSet
             'captureRuleSetAssembler' => [
                 'deps' => [
                     $this->model(),
-                    $this->matchConditionFactory(),
+                    $this->matchCondition(),
                     Selector::classname(ExceptionalValidation::class),
                     Selector::classname(Capture::class),
                     Selector::classname(Valid::class),
                     Selector::classname(Assert::class),
                 ],
             ],
-            'matchConditionFactory' => [
+            'matchCondition' => [
                 'deps' => [
                     $this->model(),
                     Selector::classname(Capture::class),
                     Selector::classname(ValidationFailedException::class),
                     Selector::inNamespace('Psr\Container'),
-                    Selector::classname(Container::class),
                     Selector::classname(Assert::class),
                 ],
             ],
@@ -174,6 +174,7 @@ final class ArchitectureRuleSet
                 'deps' => [
                     Selector::classname(Assert::class),
                     Selector::classname(ValidationFailedException::class),
+                    Selector::classname(ContainerInterface::class),
                 ],
                 'description' => 'Model classes must not depend on anything else',
             ],
@@ -231,9 +232,10 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function matchConditionFactory(): AnyOfSelectorModifier
+    public function matchCondition(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
+            Selector::implements(MatchCondition::class),
             Selector::classname(MatchConditionFactory::class),
             Selector::implements(MatchConditionFactory::class),
         );
@@ -243,7 +245,7 @@ final class ArchitectureRuleSet
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalValidation\Rule'),
-            Selector::NOT($this->matchConditionFactory()),
+            Selector::NOT($this->matchCondition()),
             Selector::NOT($this->captureRuleSetAssembler()),
             Selector::NOT(Selector::extends(TestCase::class)),
         );
