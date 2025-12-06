@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation;
 
 use Attribute;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\DefaultExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Main\MainExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use Throwable;
 use Webmozart\Assert\Assert;
@@ -25,10 +25,10 @@ final readonly class Capture
 {
     /**
      * @phpstan-param ?class-string<MatchCondition<T1>> $condition
-     * @phpstan-param class-string<ExceptionViolationFormatter<T2>> $formatter
+     * @phpstan-param class-string<MatchedExceptionFormatter<T2,mixed>> $formatter
      *
      * @psalm-param ?class-string<MatchCondition> $condition
-     * @psalm-param class-string<ExceptionViolationFormatter> $formatter
+     * @psalm-param class-string<MatchedExceptionFormatter> $formatter
      */
     public function __construct(
         /** @var class-string<T1&T2> */
@@ -41,7 +41,7 @@ final readonly class Capture
         /** @var ?array{object|class-string,string} */
         private ?array $when = null,
         /** @note formatter type is contravariant to the exception */
-        private string $formatter = DefaultExceptionViolationFormatter::class,
+        private string $formatter = MainExceptionViolationFormatter::class,
     ) {
         if (null !== $this->when) {
             Assert::count($this->when, 2);
@@ -90,9 +90,9 @@ final readonly class Capture
     }
 
     /**
-     * @phpstan-return class-string<ExceptionViolationFormatter<T2>>
+     * @phpstan-return class-string<MatchedExceptionFormatter<T2,mixed>>
      *
-     * @psalm-return class-string<ExceptionViolationFormatter>
+     * @psalm-return class-string<MatchedExceptionFormatter>
      */
     public function getFormatter(): string
     {

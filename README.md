@@ -299,12 +299,12 @@ bin/console debug:container ExceptionMapper
 This should provide you with a list, similar to this:
 
 ```text
-[0] PhPhD\ExceptionalValidation\Mapper\ExceptionMapper<Symfony\Component\Validator\ConstraintViolationListInterface>
-[1] PhPhD\ExceptionalValidation\Mapper\ExceptionMapper<non-empty-list<PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException<Throwable>>>
+[0] PhPhD\ExceptionalValidation\Mapper\ExceptionMapper<PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList>
+[1] PhPhD\ExceptionalValidation\Mapper\ExceptionMapper<Symfony\Component\Validator\ConstraintViolationListInterface>
 ```
 
 These mappers allow you to map the Exception to any available format, specified as a generic parameter.
-It could be `ConstraintViolationList`, or a list of `PropriatedException`, or anything else.
+It could be `ConstraintViolationList`, or a list of `MatchedException`, or anything else.
 
 Therefore, you can inject the needed service into your own code:
 
@@ -526,6 +526,162 @@ class RegisterUserCommand
 }
 ```
 
+### Violation Formatters 🎨
+
+There are two main built-in violation formatters you can use: `DefaultExceptionViolationFormatter` and
+`ViolationListExceptionFormatter`.
+
+If needed, create a custom violation formatter as described below.
+
+#### Main
+
+`MainExceptionViolationFormatter` is used by default if another formatter is not specified.
+
+It provides a basic way of creating a `ConstraintViolation` with these parameters: \
+`$root`, `$message`, `$propertyPath`, `$value`.
+
+#### Constraint Violation List Formatter
+
+`ViolationListExceptionFormatter` allows formatting the exceptions \
+that contain a `ConstraintViolationList` obtained from the validator.
+
+Such exceptions should implement `ViolationListException` interface.
+
+> Besides that, it's also possible to use `ValidationFailedExceptionFormatter`, \
+> which can format Symfony's native `ValidationFailedException`.
+
+A typical exception class would look like this:
+
+```php
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\ViolationListException;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+
+final class CardNumberValidationFailedException extends \RuntimeException implements ViolationListException
+{
+    public function __construct(
+        private readonly string $cardNumber,
+        private readonly ConstraintViolationListInterface $violationList,
+    ) {
+        parent::__construct('Card Number Validation Failed');
+    }
+
+    public function getViolationList(): ConstraintViolationListInterface
+    {
+        return $this->violationList;
+    }
+}
+```
+
+Then, specify `ViolationListExceptionFormatter` as a `formatter:` for the `#[Capture]` attribute:
+
+```php
+use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
+
+#[ExceptionalValidation]
+class IssueCreditCardCommand
+{
+    #[Capture(
+        exception: CardNumberValidationFailedException::class, 
+        formatter: ViolationListExceptionFormatter::class,
+    )]
+    private string $cardNumber;
+}
+```
+
+Thus, `CardNumberValidationFailedException` is captured on a `cardNumber` property, \
+and formatter makes sure all its constraint violations are mapped for this property.
+
+> If `#[Capture]` attribute specified a message, \
+> it would've been ignored in favour of `ConstraintViolationList` messages.
+
+#### Custom Violation Formatters
+
+In some cases, you might want to customize the created violations. \
+For example, pass additional parameters to the message translation.
+
+You can create custom violation formatter by implementing `ExceptionViolationFormatter` interface:
+
+```php
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\MatchedException;
+use Symfony\Component\Validator\ConstraintViolationInterface;
+
+/** @implements ExceptionViolationFormatter<LoginAlreadyTakenException|WeakPasswordException> */
+final class RegistrationViolationsFormatter implements ExceptionViolationFormatter
+{
+    public function __construct(
+        #[Autowire(service: ExceptionViolationFormatter::class.'<Throwable>')]
+        private ExceptionViolationFormatter $formatter,
+    ) {
+    }
+
+    /** @return array{ConstraintViolationInterface} */
+    public function format(MatchedException $matchedException): ConstraintViolationInterface
+    {
+        // format violation with the default formatter
+        // and then adjust only the necessary parts
+        [$violation] = $this->formatter->format($matchedException);
+
+        $exception = $matchedException->getException();
+
+        if ($exception instanceof LoginAlreadyTakenException) {
+            $violation = new ConstraintViolation(
+                $violation->getMessage(),
+                $violation->getMessageTemplate(),
+                ['loginHolder' => $exception->getLoginHolder()],
+                // ...
+            );
+        }
+
+        if ($exception instanceof WeakPasswordException) {
+            // ...
+        }
+
+        return [$violation];
+    }
+}
+```
+
+Then, register it as a service:
+
+```yaml
+services:
+    App\Auth\User\Features\Registration\Validation\RegistrationViolationsFormatter:
+        autoconfigure: true
+```
+
+> In order for violation formatter to be recognized by the bundle, \
+> its service must be tagged with `MatchedExceptionFormatter` class-name tag.
+>
+> If you are using [autoconfiguration](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option),
+> this will be done automatically by the service container, \
+> owing to the fact that `MatchedExceptionFormatter` interface is implemented.
+
+Finally, specify formatter in the `#[Capture]` attribute:
+
+```php
+use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Capture;
+
+#[ExceptionalValidation]
+final class RegisterUserCommand
+{
+    #[Capture(LoginAlreadyTakenException::class, formatter: LoginAlreadyTakenViolationFormatter::class)]
+    private string $login;
+
+    #[Capture(WeakPasswordException::class, formatter: WeakPasswordViolationFormatter::class)]
+    private string $password;
+}
+```
+
+In this example, `LoginAlreadyTakenViolationFormatter` is used to format constraint violation for
+`LoginAlreadyTakenException`, \
+and `WeakPasswordViolationFormatter` formats `WeakPasswordException`.
+
+Though not recommended, you might use a single formatter for the two.
+
 ### In-depth analysis
 
 `#[ExceptionalValidation]` attribute works side-by-side with Symfony Validator's `#[Valid]` attribute.
@@ -622,163 +778,10 @@ exceptions inside.
 Since the library is capable of processing composite exceptions (with unwrappers for Amp and Messenger exceptions), all
 of our thrown exceptions will be processed, and the user will get the complete stack of validation errors at hand.
 
-### Violation Formatters 🎨
-
-There are two main built-in violation formatters you can use: `DefaultExceptionViolationFormatter` and
-`ViolationListExceptionFormatter`.
-
-If needed, create a custom violation formatter as described below.
-
-#### Default
-
-`DefaultViolationFormatter` is used by default if another formatter is not specified.
-
-It provides a very basic way to format violations, building `ConstraintViolation` with these parameters: `$message`,
-`$root`, `$propertyPath`, `$value`.
-
-#### Constraint Violation List Formatter
-
-`ViolationListExceptionFormatter` allows formatting the exceptions \
-that contain a `ConstraintViolationList` obtained from the validator.
-
-Such exceptions must implement `ViolationListException` interface.
-
-> You can also use `ValidationFailedExceptionFormatter` \
-> to format Symfony's native `ValidationFailedException`.
-
-A typical exception class would be something like this:
-
-```php
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListException;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
-
-final class CardNumberValidationFailedException extends \RuntimeException implements ViolationListException
-{
-    public function __construct(
-        private readonly string $cardNumber,
-        private readonly ConstraintViolationListInterface $violationList,
-    ) {
-        parent::__construct('Card Validation Failed');
-    }
-
-    public function getViolationList(): ConstraintViolationListInterface
-    {
-        return $this->violationList;
-    }
-}
-```
-
-Then, specify `ViolationListExceptionFormatter` as `formatter:` on the `#[Capture]` attribute of the property:
-
-```php
-use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ViolationList\ViolationListExceptionFormatter;
-
-#[ExceptionalValidation]
-class IssueCreditCardCommand
-{
-    #[Capture(
-        exception: CardNumberValidationFailedException::class, 
-        formatter: ViolationListExceptionFormatter::class,
-    )]
-    private string $cardNumber;
-}
-```
-
-In this example, `CardNumberValidationFailedException` is captured on a `cardNumber` property, \
-and all constraint violations of this exception are mapped to this property.
-
-> If `#[Capture]` attribute specifies a message, \
-> it is ignored in favour of `ConstraintViolationList` messages.
-
-#### Custom Violation Formatters
-
-In some cases, you might want to customize the created violations. \
-For example, pass additional parameters to the message translation.
-
-You can create custom violation formatter by implementing `ExceptionViolationFormatter` interface:
-
-```php
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
-use Symfony\Component\Validator\ConstraintViolationInterface;
-
-final class RegistrationViolationsFormatter implements ExceptionViolationFormatter
-{
-    public function __construct(
-        #[Autowire(service: ExceptionViolationFormatter::class.'<Throwable>')]
-        private ExceptionViolationFormatter $formatter,
-    ) {
-    }
-
-    /** @return array{ConstraintViolationInterface} */
-    public function format(PropriatedException $propriatedException): ConstraintViolationInterface
-    {
-        // format violation with the default formatter
-        // and then adjust only the necessary parts
-        [$violation] = $this->formatter->format($propriatedException);
-
-        $exception = $propriatedException->getException();
-
-        if ($exception instanceof LoginAlreadyTakenException) {
-            $violation = new ConstraintViolation(
-                $violation->getMessage(),
-                $violation->getMessageTemplate(),
-                ['loginHolder' => $exception->getLoginHolder()],
-                // ...
-            );
-        }
-
-        if ($exception instanceof WeakPasswordException) {
-            // ...
-        }
-
-        return [$violation];
-    }
-}
-```
-
-Then, register it as a service:
-
-```yaml
-services:
-    App\Auth\User\Features\Registration\ViolationFormatter\RegistrationViolationsFormatter:
-        autoconfigure: true
-```
-
-> In order for violation formatter to be recognized by the bundle, \
-> its service must be tagged with `ExceptionViolationFormatter` class-name tag.
->
-> If you are using [autoconfiguration](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option),
-> this will be done automatically by the service container, \
-> owing to the fact that `ExceptionViolationFormatter` interface is implemented.
-
-Finally, specify formatter in the `#[Capture]` attribute:
-
-```php
-use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
-
-#[ExceptionalValidation]
-final class RegisterUserCommand
-{
-    #[Capture(LoginAlreadyTakenException::class, formatter: RegistrationViolationsFormatter::class)]
-    private string $login;
-
-    #[Capture(WeakPasswordException::class, formatter: RegistrationViolationsFormatter::class)]
-    private string $password;
-}
-```
-
-In this example, `RegistrationViolationsFormatter` is used to format constraint violations \
-for both `LoginAlreadyTakenException` and `WeakPasswordException` \
-(though it's perfectly fine to use separate formatters), \
-enriching them with the context.
-
 ## Upgrading 👻
 
-The basic upgrade can be performed by [Rector](https://getrector.com/documentation) using `ExceptionalValidationSetList` \
+The basic upgrade can be performed by [Rector](https://getrector.com/documentation) using
+`ExceptionalValidationSetList` \
 that comes with the library and contains automatic upgrade rules.
 
 To upgrade a project to the latest version of `exceptional-validation`, \
