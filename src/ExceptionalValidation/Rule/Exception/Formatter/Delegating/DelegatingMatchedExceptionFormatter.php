@@ -38,7 +38,7 @@ final readonly class DelegatingMatchedExceptionFormatter implements MatchedExcep
         $formatterId = $matchedRule->getFormatterId();
 
         if (!$this->formatterRegistry->has($formatterId)) {
-            throw new LogicException('Violation formatter not found: '.$formatterId);
+            throw new LogicException('Matched Exception Formatter not found: '.$formatterId);
         }
 
         /** @var T $exceptionFormatter */

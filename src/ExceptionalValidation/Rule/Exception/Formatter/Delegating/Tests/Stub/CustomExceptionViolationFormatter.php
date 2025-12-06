@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub;
 
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\MatchedException;
 use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Component\Validator\ConstraintViolationInterface;
 use Throwable;
 
-/** @implements MatchedExceptionFormatter<Throwable, ConstraintViolationInterface> */
-final readonly class CustomExceptionFormatter implements MatchedExceptionFormatter
+/** @implements ExceptionViolationFormatter<Throwable> */
+final readonly class CustomExceptionViolationFormatter implements ExceptionViolationFormatter
 {
     /** @api */
     public function __construct(
-        /** @var MatchedExceptionFormatter<Throwable,ConstraintViolationInterface> */
-        private MatchedExceptionFormatter $formatter,
+        /** @var ExceptionViolationFormatter<Throwable> */
+        private ExceptionViolationFormatter $formatter,
     ) {
     }
 
