@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Validator;
 
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\ViolationListException;
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\PropriatedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\MatchedExceptionFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
@@ -25,6 +25,6 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
         ->args([
             service(ExceptionViolationFormatter::class.'<'.ViolationListException::class.'>'),
         ])
-        ->tag(PropriatedExceptionFormatter::class, ['id' => ValidationFailedExceptionFormatter::class])
+        ->tag(MatchedExceptionFormatter::class, ['id' => ValidationFailedExceptionFormatter::class])
     ;
 };

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter;
 
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\DelegatingPropriatedExceptionFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\PropriatedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\DelegatingMatchedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\MatchedExceptionFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -22,10 +22,10 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
 
     $services
         ->set(
-            PropriatedExceptionFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>',
-            DelegatingPropriatedExceptionFormatter::class,
+            MatchedExceptionFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>',
+            DelegatingMatchedExceptionFormatter::class,
         )->args([
-            tagged_locator(PropriatedExceptionFormatter::class, 'id'),
+            tagged_locator(MatchedExceptionFormatter::class, 'id'),
         ])
     ;
 };

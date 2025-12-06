@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule\Exception\Formatter;
 
-use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\MatchedException;
 use Throwable;
 
 /**
@@ -18,12 +18,12 @@ use Throwable;
  *
  * @psalm-immutable
  */
-interface PropriatedExceptionFormatter
+interface MatchedExceptionFormatter
 {
     /**
-     * @param PropriatedException<TException> $propriatedException
+     * @param MatchedException<TException> $matchedException
      *
      * @return non-empty-list<TResult>
      */
-    public function format(PropriatedException $propriatedException): array;
+    public function format(MatchedException $matchedException): array;
 }
