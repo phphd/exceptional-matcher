@@ -16,16 +16,21 @@
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
+        <PossiblyUndefinedArrayOffset>
+            <errorLevel type="suppress">
+                <directory name="**/Tests"/>
+            </errorLevel>
+        </PossiblyUndefinedArrayOffset>
         <UnusedProperty>
             <errorLevel type="suppress">
                 <directory name="tests/Unit/Stub"/>
-                <directory name="src/ExceptionalValidation/**/Tests/Stub"/>
+                <directory name="**/Tests/Stub"/>
             </errorLevel>
         </UnusedProperty>
         <PropertyNotSetInConstructor>
             <errorLevel type="suppress">
                 <directory name="tests/Unit/Stub"/>
-                <directory name="src/ExceptionalValidation/**/Tests/Stub"/>
+                <directory name="**/Tests/Stub"/>
             </errorLevel>
         </PropertyNotSetInConstructor>
         <MissingImmutableAnnotation>
@@ -39,6 +44,18 @@
                 <file name="src/ExceptionalValidation/Rule/Object/Property/Capture/Condition/Composite/CompositeMatchConditionFactory.php"/>
             </errorLevel>
         </UnnecessaryVarAnnotation>
+        <ArgumentTypeCoercion>
+            <errorLevel type="suppress">
+                <file name="src/ExceptionalValidation/Rule/Exception/Formatter/Delegating/DelegatingMatchedExceptionFormatter.php"/>
+            </errorLevel>
+        </ArgumentTypeCoercion>
+        <LessSpecificImplementedReturnType>
+            <errorLevel type="suppress">
+                <!-- Psalm doesn't infer it quite well -->
+                <file name="src/ExceptionalValidation/Mapper/Validator/Formatter/Validator/ValidationFailedExceptionFormatter.php"/>
+                <file name="src/ExceptionalValidation/Rule/Exception/Formatter/Delegating/DelegatingMatchedExceptionFormatter.php"/>
+            </errorLevel>
+        </LessSpecificImplementedReturnType>
         <MissingOverrideAttribute>
             <errorLevel type="suppress">
                 <directory name="src"/>

@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation\Tests\Unit;
 use ArrayObject;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Default\Tests\Stub\ObjectPropertyCapturableException;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Main\Tests\Stub\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
@@ -29,8 +29,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Capture
  * @covers \PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension
  * @covers \PhPhD\ExceptionalValidation\Mapper\MainExceptionMapper
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\ExceptionViolationListMapper
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\List\DefaultExceptionListViolationFormatter
+ * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\ExceptionToViolationListMapper
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet
@@ -38,7 +37,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalValidation\Rule\LazyRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath
  * @covers \PhPhD\ExceptionalValidation\Rule\Exception\ExceptionReciprocal
- * @covers \PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException
+ * @covers \PhPhD\ExceptionalValidation\Rule\Exception\MatchedException
+ * @covers \PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList
  * @covers \PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssemblerService
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService
