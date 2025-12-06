@@ -13,11 +13,9 @@ use Throwable;
  *
  * @phpstan-template-contravariant TException of Throwable
  *
- * @psalm-template-covariant TException of Throwable (psalm doesn't support contravariant templates)
+ * @psalm-template TException of mixed (psalm doesn't support contravariant templates)
  *
  * @extends MatchedExceptionFormatter<TException,ConstraintViolationInterface>
- *
- * @psalm-immutable
  */
 interface ExceptionViolationFormatter extends MatchedExceptionFormatter
 {
