@@ -10,7 +10,7 @@ use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Validator\ValidationF
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\ViolationListException;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\DelegatingMatchedExceptionFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\MatchedExceptionFormatter;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -47,7 +47,7 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
         $providedServices = $formatterRegistry->getProvidedServices();
         krsort($providedServices);
         self::assertSame([
-            CustomExceptionFormatter::class => CustomExceptionFormatter::class,
+            CustomExceptionViolationFormatter::class => CustomExceptionViolationFormatter::class,
             ViolationListExceptionFormatter::class => ViolationListExceptionFormatter::class,
             ValidationFailedExceptionFormatter::class => ValidationFailedExceptionFormatter::class,
             MainExceptionViolationFormatter::class => MainExceptionViolationFormatter::class,

@@ -11,7 +11,7 @@ use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Main\Tests\Stub\MessageContainingException;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Main\Tests\Stub\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Validator\ValidationFailedExceptionFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\Tests\Stub\ConditionalMessage;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchCondition;
@@ -29,7 +29,7 @@ final class HandleableMessageStub
     #[ExceptionalValidation\Capture(PropertyCapturableException::class, 'oops')]
     private int $property;
 
-    #[ExceptionalValidation\Capture(CustomFormattedException::class, 'oops', formatter: CustomExceptionFormatter::class)]
+    #[ExceptionalValidation\Capture(CustomFormattedException::class, 'oops', formatter: CustomExceptionViolationFormatter::class)]
     private string $formatted;
 
     #[ExceptionalValidation\Capture(ObjectPropertyCapturableException::class, 'oops')]
