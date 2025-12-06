@@ -33,27 +33,15 @@
                 <directory name="**/Tests/Stub"/>
             </errorLevel>
         </PropertyNotSetInConstructor>
-        <MissingImmutableAnnotation>
-            <errorLevel type="suppress">
-                <!-- classes are readonly anyway  -->
-                <directory name="src"/>
-            </errorLevel>
-        </MissingImmutableAnnotation>
         <UnnecessaryVarAnnotation>
             <errorLevel type="suppress">
                 <file name="src/ExceptionalValidation/Rule/Object/Property/Capture/Condition/Composite/CompositeMatchConditionFactory.php"/>
             </errorLevel>
         </UnnecessaryVarAnnotation>
-        <ArgumentTypeCoercion>
-            <errorLevel type="suppress">
-                <file name="src/ExceptionalValidation/Rule/Exception/Formatter/Delegating/DelegatingMatchedExceptionFormatter.php"/>
-            </errorLevel>
-        </ArgumentTypeCoercion>
         <LessSpecificImplementedReturnType>
             <errorLevel type="suppress">
                 <!-- Psalm doesn't infer it quite well -->
                 <file name="src/ExceptionalValidation/Mapper/Validator/Formatter/Validator/ValidationFailedExceptionFormatter.php"/>
-                <file name="src/ExceptionalValidation/Rule/Exception/Formatter/Delegating/DelegatingMatchedExceptionFormatter.php"/>
             </errorLevel>
         </LessSpecificImplementedReturnType>
         <MissingOverrideAttribute>
