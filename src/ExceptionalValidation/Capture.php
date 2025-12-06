@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation;
 
 use Attribute;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Default\MainExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Main\MainExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use Throwable;
