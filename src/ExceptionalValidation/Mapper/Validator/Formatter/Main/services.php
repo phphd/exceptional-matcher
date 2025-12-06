@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Default;
+namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Main;
 
 use Closure;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ExceptionViolationFormatter;

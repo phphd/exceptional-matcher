@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Default\Tests;
+namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Main\Tests;
 
 use LogicException;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Default\Tests\Stub\MessageContainingException;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Default\Tests\Stub\ObjectPropertyCapturableException;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Main\Tests\Stub\MessageContainingException;
+use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Main\Tests\Stub\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
@@ -21,7 +21,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Default\MainExceptionViolationFormatter
+ * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Main\MainExceptionViolationFormatter
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\CaptureExceptionRule
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet
