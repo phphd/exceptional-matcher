@@ -9,9 +9,9 @@ use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Default\MainException
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Validator\ValidationFailedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\ViolationListException;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\DelegatingPropriatedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\DelegatingMatchedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\PropriatedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\MatchedExceptionFormatter;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -29,8 +29,8 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
 {
     public function testViolationFormatter(): void
     {
-        $violationFormatter = $this->get(PropriatedExceptionFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>');
-        self::assertInstanceOf(DelegatingPropriatedExceptionFormatter::class, $violationFormatter);
+        $violationFormatter = $this->get(MatchedExceptionFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>');
+        self::assertInstanceOf(DelegatingMatchedExceptionFormatter::class, $violationFormatter);
 
         $defaultFormatter = $this->get(ExceptionViolationFormatter::class.'<Throwable>');
         self::assertInstanceOf(MainExceptionViolationFormatter::class, $defaultFormatter);
@@ -56,11 +56,11 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
         self::assertSame($defaultFormatter, $formatterRegistry->get(MainExceptionViolationFormatter::class));
     }
 
-    private function getFormatterRegistry(DelegatingPropriatedExceptionFormatter $violationFormatter): ?ContainerInterface // @phpstan-ignore missingType.generics
+    private function getFormatterRegistry(DelegatingMatchedExceptionFormatter $violationFormatter): ?ContainerInterface // @phpstan-ignore missingType.generics
     {
         /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */
         return (static fn (): ContainerInterface => $violationFormatter->formatterRegistry) // @phpstan-ignore-line
-            ->bindTo(null, DelegatingPropriatedExceptionFormatter::class)->__invoke()
+            ->bindTo(null, DelegatingMatchedExceptionFormatter::class)->__invoke()
         ;
     }
 

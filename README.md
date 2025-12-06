@@ -299,12 +299,12 @@ bin/console debug:container ExceptionMapper
 This should provide you with a list, similar to this:
 
 ```text
-[0] PhPhD\ExceptionalValidation\Mapper\ExceptionMapper<PhPhD\ExceptionalValidation\Rule\Exception\PropriatedExceptionList>
+[0] PhPhD\ExceptionalValidation\Mapper\ExceptionMapper<PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList>
 [1] PhPhD\ExceptionalValidation\Mapper\ExceptionMapper<Symfony\Component\Validator\ConstraintViolationListInterface>
 ```
 
 These mappers allow you to map the Exception to any available format, specified as a generic parameter.
-It could be `ConstraintViolationList`, or a list of `PropriatedException`, or anything else.
+It could be `ConstraintViolationList`, or a list of `MatchedException`, or anything else.
 
 Therefore, you can inject the needed service into your own code:
 
@@ -701,7 +701,7 @@ You can create custom violation formatter by implementing `ExceptionViolationFor
 
 ```php
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\MatchedException;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
 final class RegistrationViolationsFormatter implements ExceptionViolationFormatter
@@ -713,13 +713,13 @@ final class RegistrationViolationsFormatter implements ExceptionViolationFormatt
     }
 
     /** @return array{ConstraintViolationInterface} */
-    public function format(PropriatedException $propriatedException): ConstraintViolationInterface
+    public function format(MatchedException $matchedException): ConstraintViolationInterface
     {
         // format violation with the default formatter
         // and then adjust only the necessary parts
-        [$violation] = $this->formatter->format($propriatedException);
+        [$violation] = $this->formatter->format($matchedException);
 
-        $exception = $propriatedException->getException();
+        $exception = $matchedException->getException();
 
         if ($exception instanceof LoginAlreadyTakenException) {
             $violation = new ConstraintViolation(

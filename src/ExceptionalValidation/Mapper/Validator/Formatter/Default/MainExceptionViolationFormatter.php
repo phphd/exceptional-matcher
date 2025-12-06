@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Default;
 
 use Closure;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\MatchedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
@@ -38,10 +38,10 @@ final readonly class MainExceptionViolationFormatter implements ExceptionViolati
     }
 
     /** @return array{ConstraintViolation} */
-    public function format(PropriatedException $propriatedException): array
+    public function format(MatchedException $matchedException): array
     {
-        $exception = $propriatedException->getException();
-        $rule = $propriatedException->getMatchedRule();
+        $exception = $matchedException->getException();
+        $rule = $matchedException->getRule();
 
         $messageTemplate = $rule->getMessageTemplate() ?? $exception->getMessage();
         $message = ($this->translate)($messageTemplate);

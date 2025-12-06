@@ -9,4 +9,4 @@ This file contains notable (mostly breaking) changes to the library and migratin
   and reference `@phd_exceptional_validation` middleware service instead.
 
 * Removed: `PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter`. \
-  Use `PhPhD\ExceptionalValidation\Rule\Exception\PropriatedExceptionList::format()` instead. 
+  Use `PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList::format()` instead. 

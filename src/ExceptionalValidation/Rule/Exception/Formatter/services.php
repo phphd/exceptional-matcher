@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $builder): void {
     $builder
-        ->registerForAutoconfiguration(PropriatedExceptionFormatter::class)
-        ->addTag(PropriatedExceptionFormatter::class)
+        ->registerForAutoconfiguration(MatchedExceptionFormatter::class)
+        ->addTag(MatchedExceptionFormatter::class)
     ;
 };

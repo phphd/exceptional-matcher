@@ -8,14 +8,14 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\CaptureExceptionRul
 use Throwable;
 use Webmozart\Assert\Assert;
 
-/** @api */
+/** @internal */
 final class ExceptionReciprocal
 {
     /** @var array<int,Throwable> */
     private array $remainingExceptions;
 
-    /** @var list<PropriatedException<Throwable>> */
-    private array $propriatedExceptions = [];
+    /** @var list<MatchedException<Throwable>> */
+    private array $matchedExceptions = [];
 
     /** @param non-empty-list<Throwable> $remainingExceptions */
     public function __construct(array $remainingExceptions)
@@ -40,17 +40,17 @@ final class ExceptionReciprocal
         return [] === $this->remainingExceptions;
     }
 
-    public function getPropriatedExceptionList(): PropriatedExceptionList
+    public function getMatchedExceptionList(): MatchedExceptionList
     {
-        Assert::notEmpty($this->propriatedExceptions);
+        Assert::notEmpty($this->matchedExceptions);
 
-        return new PropriatedExceptionList($this->propriatedExceptions);
+        return new MatchedExceptionList($this->matchedExceptions);
     }
 
     private function reciprocateException(int $index, Throwable $exception, CaptureExceptionRule $rule): void
     {
         unset($this->remainingExceptions[$index]);
 
-        $this->propriatedExceptions[] = new PropriatedException($exception, $rule);
+        $this->matchedExceptions[] = new MatchedException($exception, $rule);
     }
 }

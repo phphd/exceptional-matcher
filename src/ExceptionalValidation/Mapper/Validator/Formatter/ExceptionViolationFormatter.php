@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter;
 
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\PropriatedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\MatchedExceptionFormatter;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Throwable;
 
@@ -15,10 +15,10 @@ use Throwable;
  *
  * @psalm-template-covariant TException of Throwable (psalm doesn't support contravariant templates)
  *
- * @extends PropriatedExceptionFormatter<TException,ConstraintViolationInterface>
+ * @extends MatchedExceptionFormatter<TException,ConstraintViolationInterface>
  *
  * @psalm-immutable
  */
-interface ExceptionViolationFormatter extends PropriatedExceptionFormatter
+interface ExceptionViolationFormatter extends MatchedExceptionFormatter
 {
 }
