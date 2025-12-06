@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Bundle\Tests;
 
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -22,9 +22,9 @@ final class TestServicesCompilerPass implements CompilerPassInterface
     private function registerCustomViolationFormatter(ContainerBuilder $container): void
     {
         $container->setDefinition(
-            CustomExceptionFormatter::class,
+            CustomExceptionViolationFormatter::class,
             new Definition(
-                CustomExceptionFormatter::class,
+                CustomExceptionViolationFormatter::class,
                 [new Reference(ExceptionViolationFormatter::class.'<Throwable>')],
             ),
         )->setAutoconfigured(true);

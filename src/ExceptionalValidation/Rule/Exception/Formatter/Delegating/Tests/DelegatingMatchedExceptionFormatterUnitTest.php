@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\TestCase;
@@ -34,7 +34,7 @@ final class DelegatingMatchedExceptionFormatterUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->register(CustomExceptionFormatter::class, CustomExceptionFormatter::class)
+        $container->register(CustomExceptionViolationFormatter::class, CustomExceptionViolationFormatter::class)
             ->setArguments([new Reference(ExceptionViolationFormatter::class.'<Throwable>')])
             ->setAutoconfigured(true)
         ;
