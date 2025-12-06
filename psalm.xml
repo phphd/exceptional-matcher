@@ -46,14 +46,14 @@
         </UnnecessaryVarAnnotation>
         <ArgumentTypeCoercion>
             <errorLevel type="suppress">
-                <file name="src/ExceptionalValidation/Rule/Exception/Formatter/Delegating/DelegatingPropriatedExceptionFormatter.php"/>
+                <file name="src/ExceptionalValidation/Rule/Exception/Formatter/Delegating/DelegatingMatchedExceptionFormatter.php"/>
             </errorLevel>
         </ArgumentTypeCoercion>
         <LessSpecificImplementedReturnType>
             <errorLevel type="suppress">
                 <!-- Psalm doesn't infer it quite well -->
                 <file name="src/ExceptionalValidation/Mapper/Validator/Formatter/Validator/ValidationFailedExceptionFormatter.php"/>
-                <file name="src/ExceptionalValidation/Rule/Exception/Formatter/Delegating/DelegatingPropriatedExceptionFormatter.php"/>
+                <file name="src/ExceptionalValidation/Rule/Exception/Formatter/Delegating/DelegatingMatchedExceptionFormatter.php"/>
             </errorLevel>
         </LessSpecificImplementedReturnType>
         <MissingOverrideAttribute>

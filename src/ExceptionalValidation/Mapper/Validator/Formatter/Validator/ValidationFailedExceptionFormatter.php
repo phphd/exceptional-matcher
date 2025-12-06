@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Validator;
 
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\ViolationListException;
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\PropriatedExceptionFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\MatchedException;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 /**
@@ -19,18 +19,18 @@ final readonly class ValidationFailedExceptionFormatter implements ExceptionViol
 {
     public function __construct(
         /** @var ExceptionViolationFormatter<ViolationListException> */
-        private PropriatedExceptionFormatter $violationListExceptionFormatter,
+        private MatchedExceptionFormatter $violationListExceptionFormatter,
     ) {
     }
 
-    /** @param PropriatedException<ValidationFailedException> $propriatedException */
-    public function format(PropriatedException $propriatedException): array
+    /** @param MatchedException<ValidationFailedException> $matchedException */
+    public function format(MatchedException $matchedException): array
     {
-        $exception = $propriatedException->getException();
+        $exception = $matchedException->getException();
 
-        $targetException = new PropriatedException(
+        $targetException = new MatchedException(
             new ValidationFailedExceptionAdapter($exception),
-            $propriatedException->getMatchedRule(),
+            $matchedException->getRule(),
         );
 
         return $this->violationListExceptionFormatter->format($targetException);

@@ -12,12 +12,12 @@ use Throwable;
  *
  * @template-covariant T of Throwable
  */
-final readonly class PropriatedException
+final readonly class MatchedException
 {
     public function __construct(
         /** @var T */
         private Throwable $exception,
-        private CaptureExceptionRule $matchedRule,
+        private CaptureExceptionRule $rule,
     ) {
     }
 
@@ -28,8 +28,8 @@ final readonly class PropriatedException
     }
 
     /** @internal */
-    public function getMatchedRule(): CaptureExceptionRule
+    public function getRule(): CaptureExceptionRule
     {
-        return $this->matchedRule;
+        return $this->rule;
     }
 }

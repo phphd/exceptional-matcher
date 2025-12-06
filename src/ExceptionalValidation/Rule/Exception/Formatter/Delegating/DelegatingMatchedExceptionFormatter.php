@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating;
 
 use LogicException;
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\PropriatedExceptionFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedException;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Exception\MatchedException;
 use Psr\Container\ContainerInterface;
 use Throwable;
 
 /**
  * @internal
  *
- * @implements PropriatedExceptionFormatter<Throwable,mixed>
+ * @implements MatchedExceptionFormatter<Throwable,mixed>
  */
-final readonly class DelegatingPropriatedExceptionFormatter implements PropriatedExceptionFormatter
+final readonly class DelegatingMatchedExceptionFormatter implements MatchedExceptionFormatter
 {
     /**
      * @api
      *
-     * @template T of PropriatedExceptionFormatter
+     * @template T of MatchedExceptionFormatter
      *
      * @param ContainerInterface<class-string<T>,T> $formatterRegistry
      */
@@ -29,10 +29,10 @@ final readonly class DelegatingPropriatedExceptionFormatter implements Propriate
     ) {
     }
 
-    /** @template T of PropriatedExceptionFormatter */
-    public function format(PropriatedException $propriatedException): array // @phpstan-ignore method.templateTypeNotInParameter
+    /** @template T of MatchedExceptionFormatter */
+    public function format(MatchedException $matchedException): array // @phpstan-ignore method.templateTypeNotInParameter
     {
-        $matchedRule = $propriatedException->getMatchedRule();
+        $matchedRule = $matchedException->getRule();
 
         /** @var class-string<T> $formatterId */ // FIXME: use real type
         $formatterId = $matchedRule->getFormatterId();
@@ -44,6 +44,6 @@ final readonly class DelegatingPropriatedExceptionFormatter implements Propriate
         /** @var T $exceptionFormatter */
         $exceptionFormatter = $this->formatterRegistry->get($formatterId);
 
-        return $exceptionFormatter->format($propriatedException);
+        return $exceptionFormatter->format($matchedException);
     }
 }

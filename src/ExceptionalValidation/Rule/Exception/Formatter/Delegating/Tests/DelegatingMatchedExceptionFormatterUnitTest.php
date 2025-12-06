@@ -16,11 +16,11 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
- * @covers \PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\DelegatingPropriatedExceptionFormatter
+ * @covers \PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\DelegatingMatchedExceptionFormatter
  *
  * @internal
  */
-final class DelegatingPropriatedExceptionFormatterUnitTest extends TestCase
+final class DelegatingMatchedExceptionFormatterUnitTest extends TestCase
 {
     /** @var ExceptionMapper<ConstraintViolationListInterface> */
     private ExceptionMapper $mapper;

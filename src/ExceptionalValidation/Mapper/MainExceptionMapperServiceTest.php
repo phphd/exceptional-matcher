@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Mapper;
 
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Bundle\Tests\BundleTestCase;
-use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedExceptionList;
+use PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionToolkit\Unwrapper\Messenger\MessengerExceptionUnwrapper;
 use Symfony\Component\VarExporter\LazyObjectInterface;
 
@@ -19,7 +19,7 @@ final class MainExceptionMapperServiceTest extends BundleTestCase
 {
     public function testExceptionMapperService(): void
     {
-        $exceptionMapper = self::getContainer()->get(ExceptionMapper::class.'<'.PropriatedExceptionList::class.'>');
+        $exceptionMapper = self::getContainer()->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
         self::assertInstanceOf(ExceptionMapper::class, $exceptionMapper);
 
         if (PhdExceptionalValidationExtension::nativeProxiesAreSupported()) {

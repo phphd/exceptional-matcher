@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Ori
 use InvalidArgumentException;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
-use PhPhD\ExceptionalValidation\Rule\Exception\PropriatedExceptionList;
+use PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Email;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
  */
 final class ExceptionOriginMatchConditionUnitTest extends TestCase
 {
-    /** @var ExceptionMapper<PropriatedExceptionList> */
+    /** @var ExceptionMapper<MatchedExceptionList> */
     private ExceptionMapper $mapper;
 
     protected function setUp(): void
@@ -37,8 +37,8 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMapper<PropriatedExceptionList> $mapper */
-        $mapper = $container->get(ExceptionMapper::class.'<'.PropriatedExceptionList::class.'>');
+        /** @var ExceptionMapper<MatchedExceptionList> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
         $this->mapper = $mapper;
     }
 
@@ -56,14 +56,14 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
         $message = HandleableMessageStub::create();
 
-        $propriatedExceptionList = $this->mapper->map($message, $originalException);
+        $matchedExceptionList = $this->mapper->map($message, $originalException);
 
-        self::assertNotNull($propriatedExceptionList);
-        self::assertCount(1, $propriatedExceptionList);
+        self::assertNotNull($matchedExceptionList);
+        self::assertCount(1, $matchedExceptionList);
 
-        [$propriatedException] = $propriatedExceptionList->toArray();
+        [$matchedException] = $matchedExceptionList->toArray();
 
-        self::assertSame('email', $propriatedException->getMatchedRule()->getPropertyPath()->join('.'));
+        self::assertSame('email', $matchedException->getRule()->getPropertyPath()->join('.'));
     }
 
     public function testMatchExceptionByOriginClassMethod(): void
@@ -79,13 +79,13 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
         self::assertNotNull($originalException);
 
-        $propriatedExceptionList = $this->mapper->map($message, $originalException);
+        $matchedExceptionList = $this->mapper->map($message, $originalException);
 
-        self::assertNotNull($propriatedExceptionList);
-        self::assertCount(1, $propriatedExceptionList);
+        self::assertNotNull($matchedExceptionList);
+        self::assertCount(1, $matchedExceptionList);
 
-        [$propriatedException] = $propriatedExceptionList->toArray();
+        [$matchedException] = $matchedExceptionList->toArray();
 
-        self::assertSame('uid', $propriatedException->getMatchedRule()->getPropertyPath()->join('.'));
+        self::assertSame('uid', $matchedException->getRule()->getPropertyPath()->join('.'));
     }
 }
