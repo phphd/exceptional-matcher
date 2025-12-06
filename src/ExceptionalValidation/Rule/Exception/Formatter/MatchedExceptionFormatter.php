@@ -12,16 +12,14 @@ use Throwable;
  *
  * @phpstan-template-contravariant TException of Throwable
  *
- * @psalm-template-covariant TException of Throwable (psalm doesn't support contravariant templates)
+ * @psalm-template TException of mixed (psalm doesn't support contravariant templates)
  *
  * @template-covariant TResult of mixed
- *
- * @psalm-immutable
  */
 interface MatchedExceptionFormatter
 {
     /**
-     * @param MatchedException<TException> $matchedException
+     * @param MatchedException<TException&Throwable> $matchedException
      *
      * @return non-empty-list<TResult>
      */

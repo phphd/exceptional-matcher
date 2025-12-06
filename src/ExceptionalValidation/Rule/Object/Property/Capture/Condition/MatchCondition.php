@@ -11,9 +11,7 @@ use Throwable;
  *
  * @phpstan-template-contravariant T of Throwable
  *
- * @psalm-template-covariant T of Throwable (psalm doesn't support contravariant templates)
- *
- * @psalm-immutable
+ * @psalm-template T of mixed (psalm doesn't support contravariant templates)
  */
 interface MatchCondition
 {
