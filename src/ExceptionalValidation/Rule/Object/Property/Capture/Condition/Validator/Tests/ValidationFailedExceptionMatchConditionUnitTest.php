@@ -17,8 +17,8 @@ use Symfony\Component\Validator\Validation;
 /**
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Validator\ValidationFailedExceptionFormatter
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Item\Validator\ValidationFailedExceptionAdapter
+ * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Validator\ValidationFailedExceptionFormatter
+ * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Validator\ValidationFailedExceptionAdapter
  * @covers \PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension
  *
  * @internal

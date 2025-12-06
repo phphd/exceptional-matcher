@@ -10,7 +10,7 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 /** @internal */
 interface CaptureRule
 {
-    /** Returns TRUE if all exceptions were propriated; FALSE otherwise */
+    /** Returns TRUE if all exceptions were matched; FALSE otherwise */
     public function process(ExceptionReciprocal $reciprocal): bool;
 
     public function getParent(): ?self;
