@@ -6,19 +6,24 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture;
 
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Exception\ExceptionReciprocal;
+use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath;
 use Throwable;
 
-/** @internal */
+/**
+ * @internal
+ *
+ * @template TException of Throwable
+ */
 final readonly class CaptureExceptionRule implements CaptureRule
 {
     public function __construct(
         private CaptureRule $parent,
-        /** @var MatchCondition<Throwable> */
+        /** @var MatchCondition<TException> */
         private MatchCondition $condition,
         private ?string $messageTemplate,
-        /** @var class-string */
+        /** @var class-string<MatchedExceptionFormatter<TException,mixed>> */
         private string $formatterId,
     ) {
     }
@@ -55,6 +60,7 @@ final readonly class CaptureExceptionRule implements CaptureRule
         return $this->parent->getValue();
     }
 
+    /** @param TException $exception */
     public function matchesException(Throwable $exception): bool
     {
         return $this->condition->matches($exception);
@@ -65,7 +71,7 @@ final readonly class CaptureExceptionRule implements CaptureRule
         return $this->messageTemplate;
     }
 
-    /** @return class-string */
+    /** @return class-string<MatchedExceptionFormatter<TException,mixed>> */
     public function getFormatterId(): string
     {
         return $this->formatterId;
