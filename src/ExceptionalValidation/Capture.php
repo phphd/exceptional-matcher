@@ -24,7 +24,7 @@ use function is_string;
 final readonly class Capture
 {
     /**
-     * @phpstan-param ?class-string<MatchCondition<T1>> $condition
+     * @phpstan-param ?class-string<MatchCondition<contravariant T1>> $condition
      * @phpstan-param class-string<MatchedExceptionFormatter<T2,mixed>> $formatter
      *
      * @psalm-param ?class-string<MatchCondition> $condition
@@ -74,7 +74,7 @@ final readonly class Capture
     }
 
     /**
-     * @phpstan-return ?class-string<MatchCondition<T1>>
+     * @phpstan-return ?class-string<MatchCondition<contravariant T1>>
      *
      * @psalm-return ?class-string<MatchCondition>
      */

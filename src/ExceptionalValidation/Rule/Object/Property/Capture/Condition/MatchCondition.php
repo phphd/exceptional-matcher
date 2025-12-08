@@ -9,7 +9,7 @@ use Throwable;
 /**
  * @internal
  *
- * @phpstan-template-contravariant T of Throwable
+ * @phpstan-template T of Throwable
  *
  * @psalm-template T of mixed (psalm doesn't support contravariant templates)
  */
