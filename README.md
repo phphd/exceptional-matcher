@@ -81,7 +81,7 @@ you maintain a single source of truth for the domain validation logic.
 Domain enforces its invariants through value objects and services, \
 while this library ensures that validation failures will properly appear in your forms and API responses.
 
-### Bottom line
+### Key takeways
 
 Exceptional Validation:
 
@@ -543,14 +543,9 @@ It provides a basic way of creating a `ConstraintViolation` with these parameter
 #### Constraint Violation List Formatter
 
 `ViolationListExceptionFormatter` allows formatting the exceptions \
-that contain a `ConstraintViolationList` obtained from the validator.
+that contain a `ConstraintViolationList` from the validator.
 
-Such exceptions should implement `ViolationListException` interface.
-
-> Besides that, it's also possible to use `ValidationFailedExceptionFormatter`, \
-> which can format Symfony's native `ValidationFailedException`.
-
-A typical exception class would look like this:
+Such exceptions should implement `ViolationListException` interface:
 
 ```php
 use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\ViolationListException;
@@ -595,6 +590,10 @@ and formatter makes sure all its constraint violations are mapped for this prope
 
 > If `#[Capture]` attribute specified a message, \
 > it would've been ignored in favour of `ConstraintViolationList` messages.
+
+
+> Besides that, it's also possible to use `ValidationFailedExceptionFormatter`, \
+> which can format Symfony's native `ValidationFailedException`.
 
 #### Custom Violation Formatters
 
