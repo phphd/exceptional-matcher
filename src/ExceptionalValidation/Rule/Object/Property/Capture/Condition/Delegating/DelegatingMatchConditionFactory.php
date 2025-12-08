@@ -24,24 +24,13 @@ final readonly class DelegatingMatchConditionFactory implements MatchConditionFa
      *
      * @template T of Throwable
      *
-     * @phpstan-param ContainerInterface<class-string<MatchCondition<T>>,MatchConditionFactory<T>> $conditionFactoryRegistry
-     *
-     * @psalm-param ContainerInterface<class-string<MatchCondition>,MatchConditionFactory> $conditionFactoryRegistry
+     * @param ContainerInterface<class-string<MatchCondition<T>>,MatchConditionFactory<T>> $conditionFactoryRegistry
      */
     public function __construct(
         private ContainerInterface $conditionFactoryRegistry,
     ) {
     }
 
-    /**
-     * @template T of Throwable
-     *
-     * @param Capture<T,T> $capture
-     *
-     * @return ?MatchCondition<T>
-     *
-     * @psalm-suppress MoreSpecificImplementedParamType
-     */
     public function getCondition(Capture $capture, CaptureRule $parent): ?MatchCondition
     {
         $conditionFactoryId = $capture->getCondition();
@@ -56,7 +45,7 @@ final readonly class DelegatingMatchConditionFactory implements MatchConditionFa
 
         $conditionFactory = $this->conditionFactoryRegistry->get($conditionFactoryId);
 
-        /** @psalm-var MatchConditionFactory<T> $conditionFactory */
+        /** @var MatchConditionFactory<Throwable> $conditionFactory */
         return $conditionFactory->getCondition($capture, $parent);
     }
 }
