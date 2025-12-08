@@ -17,6 +17,7 @@ final readonly class MatchedException
     public function __construct(
         /** @var T */
         private Throwable $exception,
+        /** @var CaptureExceptionRule<Throwable> */
         private CaptureExceptionRule $rule,
     ) {
     }
@@ -27,7 +28,11 @@ final readonly class MatchedException
         return $this->exception;
     }
 
-    /** @internal */
+    /**
+     * @return CaptureExceptionRule<Throwable>
+     *
+     * @internal
+     */
     public function getRule(): CaptureExceptionRule
     {
         return $this->rule;
