@@ -22,28 +22,28 @@ final readonly class DelegatingMatchedExceptionFormatter implements MatchedExcep
      *
      * @template T of MatchedExceptionFormatter
      *
-     * @param ContainerInterface<class-string<T>,T> $formatterRegistry
+     * @phpstan-param ContainerInterface<class-string<T>,T> $formatterRegistry
+     *
+     * @psalm-param ContainerInterface<class-string<MatchedExceptionFormatter>,MatchedExceptionFormatter> $formatterRegistry
      */
     public function __construct(
         private ContainerInterface $formatterRegistry,
     ) {
     }
 
-    /** @template T of MatchedExceptionFormatter */
-    public function format(MatchedException $matchedException): array // @phpstan-ignore method.templateTypeNotInParameter
+    public function format(MatchedException $matchedException): array
     {
         $matchedRule = $matchedException->getRule();
 
-        /** @var class-string<T> $formatterId */ // FIXME: use real type
         $formatterId = $matchedRule->getFormatterId();
 
         if (!$this->formatterRegistry->has($formatterId)) {
             throw new LogicException('Matched Exception Formatter not found: '.$formatterId);
         }
 
-        /** @var T $exceptionFormatter */
         $exceptionFormatter = $this->formatterRegistry->get($formatterId);
 
+        /** @psalm-var MatchedExceptionFormatter<Throwable,mixed> $exceptionFormatter */
         return $exceptionFormatter->format($matchedException);
     }
 }
