@@ -23,7 +23,11 @@ final class ExceptionReciprocal
         $this->remainingExceptions = $remainingExceptions;
     }
 
-    /** @internal */
+    /**
+     * @param CaptureExceptionRule<Throwable> $rule
+     *
+     * @internal
+     */
     public function process(CaptureExceptionRule $rule): void
     {
         foreach ($this->remainingExceptions as $index => $exception) {
@@ -47,6 +51,7 @@ final class ExceptionReciprocal
         return new MatchedExceptionList($this->matchedExceptions);
     }
 
+    /** @param CaptureExceptionRule<Throwable> $rule */
     private function reciprocateException(int $index, Throwable $exception, CaptureExceptionRule $rule): void
     {
         unset($this->remainingExceptions[$index]);
