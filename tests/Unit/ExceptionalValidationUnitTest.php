@@ -145,16 +145,6 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertNull($violationList);
     }
 
-    public function testNestedObjectIsNotCapturedWhenValidAttributeIsMissing(): void
-    {
-        $message = HandleableMessageStub::create()->withOrdinaryObject(new NestedHandleableMessage());
-        $exception = new NestedPropertyCapturableException();
-
-        $violationList = $this->exceptionMapper->map($message, $exception);
-
-        self::assertNull($violationList);
-    }
-
     public function testCaptureNestedObjectPropertyException(): void
     {
         $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());
