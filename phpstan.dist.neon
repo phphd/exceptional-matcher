@@ -23,9 +23,11 @@ parameters:
     ignoreErrors:
         - identifier: ternary.shortNotAllowed
         - identifier: property.unused
-          message: '/^Property PhPhD\\ExceptionalValidation\\Tests\\Unit\\Stub\\\w+::\$\w+ is unused\.$/'
+          message: '/^Property PhPhD\\[\w\\]+\\Stub\\\w+::\$\w+ is unused\.$/'
         - identifier: property.onlyWritten
-          message: '/^(Static )?(Property|property) PhPhD\\ExceptionalValidation\\Tests\\Unit\\Stub\\\w+::\$\w+ is never read, only written\.$/'
+          message: '/^(Static )?(Property|property) PhPhD\\[\w\\]+\\Stub\\\w+::\$\w+ is never read, only written\.$/'
+        - identifier: missingType.iterableValue
+          message: '/^(Static )?(Method|Property|property) PhPhD\\[\w\\]+\\Stub\\\w+::[\$\w\(\)]+ .* no value type specified (in )?iterable type array\.$/'
     type_coverage:
         declare: 100
         return_type: 100
