@@ -56,11 +56,6 @@ final readonly class PropertyCaptureRulesAssembler implements CaptureRuleSetAsse
         return $this->parentRule;
     }
 
-    public function getReflectionProperty(): ReflectionProperty
-    {
-        return $this->reflectionProperty;
-    }
-
     /** @return Generator<Capture<Throwable,Throwable>> */
     private function getCaptures(): Generator
     {

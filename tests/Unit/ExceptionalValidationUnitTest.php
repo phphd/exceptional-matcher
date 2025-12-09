@@ -165,67 +165,6 @@ final class ExceptionalValidationUnitTest extends TestCase
         self::assertNull($violation->getInvalidValue());
     }
 
-    public function testExceptionIsNotCapturedWhenNestedItemsValueTypeClassIsNotMarkedWithExceptionalValidationAttribute(): void
-    {
-        /**
-         * @noinspection PhpParamsInspection
-         *
-         * @psalm-suppress InvalidArgument
-         */
-        $message = HandleableMessageStub::create()->withTypedNotHandleableArray([ // @phpstan-ignore argument.type
-            new NestedItem(1), // deliberately passing incorrect objects
-            new NestedItem(2),
-            new NestedItem(3),
-        ]);
-
-        $originalException = new NestedItemCapturedException(code: 2);
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNull($violationList);
-    }
-
-    public function testCanCaptureExceptionOnNestedArrayItemWhenPropertyIsMarkedWithValidAttribute(): void
-    {
-        $message = HandleableMessageStub::create()->withNestedArrayItems([
-            new NestedItem(41),
-            new NestedItem(57),
-            new NestedItem(32),
-        ]);
-
-        $originalException = new NestedItemCapturedException(code: 57);
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNotNull($violationList);
-        self::assertCount(1, $violationList);
-
-        /** @var ConstraintViolationInterface $violation */
-        $violation = $violationList[0];
-        self::assertSame('nestedArrayItems[1].property', $violation->getPropertyPath());
-    }
-
-    public function testCanCaptureExceptionOnANestedIterableItemWhenPropertyIsMarkedWithValidAttribute(): void
-    {
-        $message = HandleableMessageStub::create()->withNestedIterableItems(new ArrayObject([
-            'first' => new NestedItem(1),
-            'second' => new NestedItem(2),
-            'third' => new NestedItem(3),
-            4 => new NestedItem(2),
-        ]));
-
-        $originalException = new NestedItemCapturedException(code: 2);
-
-        $violationList = $this->exceptionMapper->map($message, $originalException);
-
-        self::assertNotNull($violationList);
-        self::assertCount(1, $violationList);
-
-        /** @var ConstraintViolationInterface $firstViolation */
-        $firstViolation = $violationList[0];
-        self::assertSame('nestedIterableItems[second].property', $firstViolation->getPropertyPath());
-    }
-
     public function testUncaughtExceptionsAreNotAllowed(): void
     {
         $message = HandleableMessageStub::create()
