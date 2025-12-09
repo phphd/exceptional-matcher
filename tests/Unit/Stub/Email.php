@@ -7,10 +7,10 @@ namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
 use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 use Symfony\Component\Validator\Validation;
 
-final class Email
+final readonly class Email
 {
     private function __construct(
-        private readonly string $email,
+        private string $email,
     ) {
     }
 

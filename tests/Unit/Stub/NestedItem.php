@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
 
 use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
 
 #[ExceptionalValidation]
-final class NestedItem
+final readonly class NestedItem
 {
-    #[ExceptionalValidation\Capture(NestedItemCapturedException::class, 'oops', when: [self::class, 'matchesValue'])]
-    private int $property;
-
-    public function __construct(int $property)
-    {
-        $this->property = $property;
+    public function __construct(
+        #[Capture(NestedItemCapturedException::class, 'oops', when: [self::class, 'matchesValue'])]
+        private int $property,
+    ) {
     }
 
     /** @api */
