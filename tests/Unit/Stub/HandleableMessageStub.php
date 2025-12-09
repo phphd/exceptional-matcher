@@ -38,9 +38,6 @@ final class HandleableMessageStub
     #[ExceptionalValidation\Capture(StaticPropertyCapturedException::class, 'oops')]
     private static string $staticProperty = 'foo';
 
-    private NestedHandleableMessage $ordinaryObject;
-
-    #[Valid]
     private NestedHandleableMessage $nestedObject;
 
     /** @var NotHandleableMessageStub[] */
@@ -99,14 +96,6 @@ final class HandleableMessageStub
     {
         $message = clone $this;
         $message->objectProperty = $objectProperty;
-
-        return $message;
-    }
-
-    public function withOrdinaryObject(NestedHandleableMessage $ordinaryObject): self
-    {
-        $message = clone $this;
-        $message->ordinaryObject = $ordinaryObject;
 
         return $message;
     }
