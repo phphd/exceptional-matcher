@@ -14,7 +14,6 @@ use PhPhD\ExceptionalValidation\Rule\LazyRuleSet;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet;
-use Symfony\Component\Validator\Constraints\Valid;
 
 use function is_iterable;
 use function is_object;
@@ -36,7 +35,8 @@ final readonly class PropertyNestedValidIterableRulesAssemblerService implements
     /** @param PropertyCaptureRulesAssembler $assembler */
     public function assemble(CaptureRuleSetAssembler $assembler): ?CaptureRule
     {
-        $propertyValue = $assembler->getParentRule()->getValue();
+        $propertyRuleSet = $assembler->getParentRule();
+        $propertyValue = $propertyRuleSet->getValue();
 
         if (!is_iterable($propertyValue)) {
             return null;
@@ -46,20 +46,9 @@ final readonly class PropertyNestedValidIterableRulesAssemblerService implements
             return null;
         }
 
-        if (!$this->isMarkedWithValidAttribute($assembler)) {
-            return null;
-        }
-
         /** @var iterable<array-key,mixed> $propertyValue */
 
-        return $this->createRuleSet($propertyValue, $assembler->getParentRule());
-    }
-
-    private function isMarkedWithValidAttribute(PropertyCaptureRulesAssembler $assembler): bool
-    {
-        $validAttributes = $assembler->getReflectionProperty()->getAttributes(Valid::class);
-
-        return [] !== $validAttributes;
+        return $this->createRuleSet($propertyValue, $propertyRuleSet);
     }
 
     /** @param iterable<array-key,mixed> $items */
