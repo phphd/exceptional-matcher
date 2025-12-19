@@ -14,12 +14,12 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyC
  *
  * @implements CaptureRuleSetAssemblerService<PropertyRuleSetAssembler>
  */
-final readonly class PropertyRuleSetAssemblerService implements CaptureRuleSetAssemblerService
+final class PropertyRuleSetAssemblerService implements CaptureRuleSetAssemblerService
 {
     /** @api */
     public function __construct(
         /** @var CaptureRuleSetAssemblerService<PropertyCaptureRulesAssembler> */
-        public CaptureRuleSetAssemblerService $captureListAssemblerService,
+        public readonly CaptureRuleSetAssemblerService $captureListAssemblerService,
     ) {
     }
 

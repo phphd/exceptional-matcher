@@ -11,11 +11,11 @@ use Throwable;
 use function array_merge;
 use function count;
 
-final readonly class MatchedExceptionList implements Countable
+final class MatchedExceptionList implements Countable
 {
     public function __construct(
         /** @var list<MatchedException<Throwable>> */
-        private array $matchedExceptions,
+        private readonly array $matchedExceptions,
     ) {
     }
 

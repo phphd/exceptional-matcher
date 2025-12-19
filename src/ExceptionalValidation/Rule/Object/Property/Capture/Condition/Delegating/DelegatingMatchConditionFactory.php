@@ -17,7 +17,7 @@ use Throwable;
  *
  * @implements MatchConditionFactory<Throwable>
  */
-final readonly class DelegatingMatchConditionFactory implements MatchConditionFactory
+final class DelegatingMatchConditionFactory implements MatchConditionFactory
 {
     /**
      * @api
@@ -27,7 +27,7 @@ final readonly class DelegatingMatchConditionFactory implements MatchConditionFa
      * @param ContainerInterface<class-string<MatchCondition<T>>,MatchConditionFactory<T>> $conditionFactoryRegistry
      */
     public function __construct(
-        private ContainerInterface $conditionFactoryRegistry,
+        private readonly ContainerInterface $conditionFactoryRegistry,
     ) {
     }
 
