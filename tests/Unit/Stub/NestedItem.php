@@ -9,11 +9,11 @@ use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
 
 #[ExceptionalValidation]
-final readonly class NestedItem
+final class NestedItem
 {
     public function __construct(
         #[Capture(NestedItemCapturedException::class, 'oops', when: [self::class, 'matchesValue'])]
-        private int $property,
+        private readonly int $property,
     ) {
     }
 

@@ -17,12 +17,12 @@ use function is_object;
  *
  * @implements CaptureRuleSetAssemblerService<PropertyCaptureRulesAssembler>
  */
-final readonly class PropertyNestedValidObjectRuleAssemblerService implements CaptureRuleSetAssemblerService
+final class PropertyNestedValidObjectRuleAssemblerService implements CaptureRuleSetAssemblerService
 {
     /** @api */
     public function __construct(
         /** @var CaptureRuleSetAssemblerService<ObjectRuleSetAssembler> */
-        private CaptureRuleSetAssemblerService $objectRuleSetAssemblerService,
+        private readonly CaptureRuleSetAssemblerService $objectRuleSetAssemblerService,
     ) {
     }
 
