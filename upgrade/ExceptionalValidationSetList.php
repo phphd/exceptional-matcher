@@ -13,7 +13,7 @@ use function sprintf;
 use function version_compare;
 
 /** @api */
-final readonly class ExceptionalValidationSetList
+final class ExceptionalValidationSetList
 {
     private const VERSIONS = [
         '2.0' => __DIR__.'/2.0.php',
@@ -21,7 +21,7 @@ final readonly class ExceptionalValidationSetList
 
     public function __construct(
         /** @var array<string,string> */
-        private array $setList,
+        private readonly array $setList,
     ) {
         if (version_compare(VersionResolver::PACKAGE_VERSION, '2.0', '<') // @phpstan-ignore booleanOr.leftAlwaysFalse
             || version_compare(VersionResolver::PACKAGE_VERSION, '3.0', '>=')) { // @phpstan-ignore booleanOr.rightAlwaysFalse

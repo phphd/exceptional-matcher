@@ -21,7 +21,7 @@ use function is_string;
  * @template T2 of Throwable (redundant, but can't be omitted due to {@see https://github.com/phpstan/phpstan/issues/13875})
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final readonly class Capture
+final class Capture
 {
     /**
      * @phpstan-param ?class-string<MatchCondition<T1>> $condition
@@ -32,16 +32,16 @@ final readonly class Capture
      */
     public function __construct(
         /** @var class-string<T1&T2> */
-        private string $exception,
-        private ?string $message = null,
+        private readonly string $exception,
+        private readonly ?string $message = null,
         /** @var null|class-string|array{class-string,non-empty-string} The origin of the exception */
-        private array|string|null $from = null,
+        private readonly array|string|null $from = null,
         /** @note condition type is contravariant to the exception */
-        private ?string $condition = null,
+        private readonly ?string $condition = null,
         /** @var ?array{object|class-string,string} */
-        private ?array $when = null,
+        private readonly ?array $when = null,
         /** @note formatter type is contravariant to the exception */
-        private string $formatter = MainExceptionViolationFormatter::class,
+        private readonly string $formatter = MainExceptionViolationFormatter::class,
     ) {
         if (null !== $this->when) {
             Assert::count($this->when, 2);

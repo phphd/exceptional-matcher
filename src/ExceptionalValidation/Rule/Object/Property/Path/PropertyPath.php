@@ -11,11 +11,11 @@ use function implode;
 use function sprintf;
 
 /** @internal */
-final readonly class PropertyPath
+final class PropertyPath
 {
     public function __construct(
         /** @var list<string> */
-        private array $items,
+        private readonly array $items,
     ) {
     }
 

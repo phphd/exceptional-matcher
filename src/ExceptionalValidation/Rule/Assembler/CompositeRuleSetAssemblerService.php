@@ -15,12 +15,12 @@ use Webmozart\Assert\Assert;
  *
  * @implements CaptureRuleSetAssemblerService<T>
  */
-final readonly class CompositeRuleSetAssemblerService implements CaptureRuleSetAssemblerService
+final class CompositeRuleSetAssemblerService implements CaptureRuleSetAssemblerService
 {
     /** @api */
     public function __construct(
         /** @var iterable<CaptureRuleSetAssemblerService<T>> */
-        private iterable $assemblers,
+        private readonly iterable $assemblers,
     ) {
     }
 

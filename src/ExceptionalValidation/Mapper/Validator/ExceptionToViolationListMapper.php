@@ -17,14 +17,14 @@ use Throwable;
  *
  * @implements ExceptionMapper<ConstraintViolationListInterface>
  */
-final readonly class ExceptionToViolationListMapper implements ExceptionMapper
+final class ExceptionToViolationListMapper implements ExceptionMapper
 {
     /** @api */
     public function __construct(
         /** @var ExceptionMapper<MatchedExceptionList> */
-        private ExceptionMapper $mapper,
+        private readonly ExceptionMapper $mapper,
         /** @var MatchedExceptionFormatter<Throwable,ConstraintViolationInterface> */
-        private MatchedExceptionFormatter $formatter,
+        private readonly MatchedExceptionFormatter $formatter,
     ) {
     }
 

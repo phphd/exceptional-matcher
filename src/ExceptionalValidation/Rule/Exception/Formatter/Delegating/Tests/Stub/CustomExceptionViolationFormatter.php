@@ -10,12 +10,12 @@ use Symfony\Component\Validator\ConstraintViolation;
 use Throwable;
 
 /** @implements ExceptionViolationFormatter<Throwable> */
-final readonly class CustomExceptionViolationFormatter implements ExceptionViolationFormatter
+final class CustomExceptionViolationFormatter implements ExceptionViolationFormatter
 {
     /** @api */
     public function __construct(
         /** @var ExceptionViolationFormatter<Throwable> */
-        private ExceptionViolationFormatter $formatter,
+        private readonly ExceptionViolationFormatter $formatter,
     ) {
     }
 

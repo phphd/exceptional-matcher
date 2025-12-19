@@ -15,7 +15,7 @@ use Throwable;
  *
  * @implements MatchedExceptionFormatter<Throwable,mixed>
  */
-final readonly class DelegatingMatchedExceptionFormatter implements MatchedExceptionFormatter
+final class DelegatingMatchedExceptionFormatter implements MatchedExceptionFormatter
 {
     /**
      * @api
@@ -27,7 +27,7 @@ final readonly class DelegatingMatchedExceptionFormatter implements MatchedExcep
      * @psalm-param ContainerInterface<class-string<MatchedExceptionFormatter>,MatchedExceptionFormatter> $formatterRegistry
      */
     public function __construct(
-        private ContainerInterface $formatterRegistry,
+        private readonly ContainerInterface $formatterRegistry,
     ) {
     }
 

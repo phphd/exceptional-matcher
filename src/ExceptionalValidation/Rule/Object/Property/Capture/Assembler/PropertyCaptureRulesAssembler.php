@@ -17,11 +17,11 @@ use Throwable;
 use Webmozart\Assert\Assert;
 
 /** @internal */
-final readonly class PropertyCaptureRulesAssembler implements CaptureRuleSetAssembler
+final class PropertyCaptureRulesAssembler implements CaptureRuleSetAssembler
 {
     public function __construct(
-        private PropertyRuleSet $parentRule,
-        private ReflectionProperty $reflectionProperty,
+        private readonly PropertyRuleSet $parentRule,
+        private readonly ReflectionProperty $reflectionProperty,
     ) {
     }
 
