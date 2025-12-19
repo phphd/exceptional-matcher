@@ -13,11 +13,11 @@ use Throwable;
  *
  * @implements MatchCondition<Throwable>
  */
-final readonly class ClosureMatchCondition implements MatchCondition
+final class ClosureMatchCondition implements MatchCondition
 {
     public function __construct(
         /** @var Closure(Throwable): bool */
-        private Closure $condition,
+        private readonly Closure $condition,
     ) {
     }
 

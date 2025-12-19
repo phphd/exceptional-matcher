@@ -15,14 +15,14 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAs
 use ReflectionClass;
 
 /** @internal */
-final readonly class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
+final class ObjectRuleSetAssembler implements CaptureRuleSetAssembler
 {
     /** @var ReflectionClass<object> */
-    private ReflectionClass $reflectionClass;
+    private readonly ReflectionClass $reflectionClass;
 
     public function __construct(
-        private object $message,
-        private ?CaptureRule $parentRule = null,
+        private readonly object $message,
+        private readonly ?CaptureRule $parentRule = null,
     ) {
         $this->reflectionClass = new ReflectionClass($this->message::class);
     }

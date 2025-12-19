@@ -22,7 +22,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
  *
  * @api
  */
-final readonly class ContainerBench
+final class ContainerBench
 {
     public function __construct()
     {

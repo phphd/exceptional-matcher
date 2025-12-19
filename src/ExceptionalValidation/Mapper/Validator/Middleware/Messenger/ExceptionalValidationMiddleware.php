@@ -14,12 +14,12 @@ use Symfony\Component\Messenger\Middleware\StackInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /** @internal */
-final readonly class ExceptionalValidationMiddleware implements MiddlewareInterface
+final class ExceptionalValidationMiddleware implements MiddlewareInterface
 {
     /** @api */
     public function __construct(
         /** @var ExceptionMapper<ConstraintViolationListInterface> */
-        private ExceptionMapper $exceptionMapper,
+        private readonly ExceptionMapper $exceptionMapper,
     ) {
     }
 

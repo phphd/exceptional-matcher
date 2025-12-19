@@ -16,13 +16,13 @@ use Throwable;
  *
  * @implements ExceptionMapper<MatchedExceptionList>
  */
-final readonly class MainExceptionMapper implements ExceptionMapper
+final class MainExceptionMapper implements ExceptionMapper
 {
     /** @api */
     public function __construct(
         /** @var CaptureRuleSetAssemblerService<ObjectRuleSetAssembler> */
-        private CaptureRuleSetAssemblerService $ruleSetAssemblerService,
-        private ExceptionUnwrapper $exceptionUnwrapper,
+        private readonly CaptureRuleSetAssemblerService $ruleSetAssemblerService,
+        private readonly ExceptionUnwrapper $exceptionUnwrapper,
     ) {
     }
 

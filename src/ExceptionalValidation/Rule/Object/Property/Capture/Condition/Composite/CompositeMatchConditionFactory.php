@@ -19,12 +19,12 @@ use function count;
  *
  * @implements MatchConditionFactory<Throwable>
  */
-final readonly class CompositeMatchConditionFactory implements MatchConditionFactory
+final class CompositeMatchConditionFactory implements MatchConditionFactory
 {
     /** @api */
     public function __construct(
         /** @var iterable<MatchConditionFactory<Throwable>> */
-        private iterable $factories,
+        private readonly iterable $factories,
     ) {
     }
 

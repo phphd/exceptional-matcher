@@ -13,11 +13,11 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet;
 use ReflectionProperty;
 
 /** @internal */
-final readonly class PropertyRuleSetAssembler implements CaptureRuleSetAssembler
+final class PropertyRuleSetAssembler implements CaptureRuleSetAssembler
 {
     public function __construct(
-        private ObjectRuleSet $parentRule,
-        private ReflectionProperty $reflectionProperty,
+        private readonly ObjectRuleSet $parentRule,
+        private readonly ReflectionProperty $reflectionProperty,
     ) {
     }
 

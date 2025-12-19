@@ -12,13 +12,13 @@ use Throwable;
  *
  * @template-covariant T of Throwable
  */
-final readonly class MatchedException
+final class MatchedException
 {
     public function __construct(
         /** @var T */
-        private Throwable $exception,
+        private readonly Throwable $exception,
         /** @var CaptureExceptionRule<Throwable> */
-        private CaptureExceptionRule $rule,
+        private readonly CaptureExceptionRule $rule,
     ) {
     }
 

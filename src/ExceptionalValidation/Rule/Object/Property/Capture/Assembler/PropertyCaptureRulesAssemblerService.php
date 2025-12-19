@@ -15,12 +15,12 @@ use Throwable;
  *
  * @implements CaptureRuleSetAssemblerService<PropertyCaptureRulesAssembler>
  */
-final readonly class PropertyCaptureRulesAssemblerService implements CaptureRuleSetAssemblerService
+final class PropertyCaptureRulesAssemblerService implements CaptureRuleSetAssemblerService
 {
     /** @api */
     public function __construct(
         /** @var MatchConditionFactory<Throwable> */
-        private MatchConditionFactory $conditionFactory,
+        private readonly MatchConditionFactory $conditionFactory,
     ) {
     }
 
