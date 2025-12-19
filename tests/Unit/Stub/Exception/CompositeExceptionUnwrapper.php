@@ -11,11 +11,11 @@ use function array_map;
 use function array_merge;
 
 /** @internal */
-final readonly class CompositeExceptionUnwrapper implements ExceptionUnwrapper
+final class CompositeExceptionUnwrapper implements ExceptionUnwrapper
 {
     /** @api */
     public function __construct(
-        private ExceptionUnwrapper $innerUnwrapper,
+        private readonly ExceptionUnwrapper $innerUnwrapper,
     ) {
     }
 

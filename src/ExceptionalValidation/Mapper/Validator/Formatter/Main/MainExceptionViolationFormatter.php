@@ -16,10 +16,10 @@ use Throwable;
  *
  * @implements ExceptionViolationFormatter<Throwable>
  */
-final readonly class MainExceptionViolationFormatter implements ExceptionViolationFormatter
+final class MainExceptionViolationFormatter implements ExceptionViolationFormatter
 {
     /** @var Closure(string):string */
-    private Closure $translate;
+    private readonly Closure $translate;
 
     /**
      * @api

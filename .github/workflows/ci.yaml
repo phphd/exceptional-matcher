@@ -18,8 +18,8 @@ jobs:
                 run: composer validate --strict --ansi
 
     code-style:
-        needs: composer-validate
         name: ${{ matrix.actions.name }}
+        needs: composer-validate
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
@@ -47,13 +47,13 @@ jobs:
 
             -   run: ${{ matrix.actions.run }}
     static-analysis:
+        name: ${{ matrix.actions.name }} (${{ matrix.php }}, ${{ matrix.dependencies }})
         needs: composer-validate
         runs-on: ubuntu-latest
-        name: ${{ matrix.actions.name }} (${{ matrix.php }}, ${{ matrix.dependencies }})
         strategy:
             fail-fast: false
             matrix:
-                php: [ '8.2', '8.4' ]
+                php: [ '8.1', '8.4' ]
                 dependencies: [ highest, lowest ]
                 actions:
                     -   name: 'Psalm'
@@ -80,12 +80,12 @@ jobs:
 
             -   run: ${{ matrix.actions.run }}
     test:
-        needs: composer-validate
         name: PHPUnit
+        needs: composer-validate
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                php: [ '8.2', '8.4' ]
+                php: [ '8.1', '8.4' ]
                 dependencies: [ highest, lowest ]
         steps:
             -   name: 'Checkout Code'
@@ -108,8 +108,8 @@ jobs:
                 run: vendor/bin/phpunit --testdox --colors=always --configuration=phpunit.xml.dist
 
     code-coverage:
-        needs: [ test, static-analysis ]
         name: PHPUnit Coverage
+        needs: [ test, static-analysis ]
         runs-on: ubuntu-latest
         steps:
             -   name: 'Checkout Code'
