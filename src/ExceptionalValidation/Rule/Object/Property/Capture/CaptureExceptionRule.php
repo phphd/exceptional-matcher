@@ -16,15 +16,15 @@ use Throwable;
  *
  * @template TException of Throwable
  */
-final readonly class CaptureExceptionRule implements CaptureRule
+final class CaptureExceptionRule implements CaptureRule
 {
     public function __construct(
-        private CaptureRule $parent,
+        private readonly CaptureRule $parent,
         /** @var MatchCondition<TException> */
-        private MatchCondition $condition,
-        private ?string $messageTemplate,
+        private readonly MatchCondition $condition,
+        private readonly ?string $messageTemplate,
         /** @var class-string<MatchedExceptionFormatter<TException,mixed>> */
-        private string $formatterId,
+        private readonly string $formatterId,
     ) {
     }
 

@@ -15,11 +15,11 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
  *
  * @implements ExceptionViolationFormatter<ValidationFailedException>
  */
-final readonly class ValidationFailedExceptionFormatter implements ExceptionViolationFormatter
+final class ValidationFailedExceptionFormatter implements ExceptionViolationFormatter
 {
     public function __construct(
         /** @var ExceptionViolationFormatter<ViolationListException> */
-        private MatchedExceptionFormatter $violationListExceptionFormatter,
+        private readonly MatchedExceptionFormatter $violationListExceptionFormatter,
     ) {
     }
 
