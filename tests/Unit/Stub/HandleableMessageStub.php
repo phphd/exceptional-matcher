@@ -23,6 +23,7 @@ use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCaptured
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
+/** @psalm-suppress InvalidAttribute ("Attribute Capture is not repeatable") */
 #[ExceptionalValidation]
 final class HandleableMessageStub
 {
