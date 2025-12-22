@@ -7,6 +7,7 @@
 /bin export-ignore
 /tests export-ignore
 /stubs export-ignore
+/vendor-bin export-ignore
 /ecs.php export-ignore
 /phpstan.dist.neon export-ignore
 /phpstan-vendor-baseline.neon export-ignore

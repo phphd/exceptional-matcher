@@ -12,6 +12,7 @@
         <directory name="./"/>
         <ignoreFiles>
             <directory name="vendor"/>
+            <directory name="vendor-bin"/>
             <file name="rector.php"/>
         </ignoreFiles>
     </projectFiles>
