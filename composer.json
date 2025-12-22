@@ -32,14 +32,13 @@
         "phphd/coding-standard": "~0.7.0",
         "tomasvotruba/type-coverage": "^2.0.2",
         "phpstan/phpstan-phpunit": "^2.0.7",
-        "psalm/plugin-phpunit": "^0.19.5",
         "nyholm/symfony-bundle-test": "^3.1",
         "phpstan/phpstan": "^2.1.31",
         "phpstan/phpstan-strict-rules": "^2.0.7",
         "phpat/phpat": "^0.11.10",
-        "vimeo/psalm": "^6.13.1",
         "phpunit/phpunit": "^10.5.46",
-        "phpbench/phpbench": "^1.2.6"
+        "phpbench/phpbench": "^1.2.6",
+        "bamarni/composer-bin-plugin": "^1.8"
     },
     "suggest": {
         "symfony/validator": "Install Validator component to use constraint violations mapper",
@@ -67,6 +66,9 @@
         }
     },
     "scripts": {
+        "post-update-cmd": [
+            "composer bin psalm update --ansi"
+        ],
         "ci:pack": [
             "@ci:ecs",
             "@ci:rector",
@@ -80,9 +82,20 @@
         "ci:rector": "vendor/bin/rector process --dry-run",
         "ci:rector-fix": "vendor/bin/rector process",
         "ci:phpstan": "vendor/bin/phpstan analyze",
-        "ci:psalm": "vendor/bin/psalm",
+        "ci:psalm": "vendor-bin/psalm/psalm",
         "ci:test": "vendor/bin/phpunit --testdox --colors=always",
         "ci:unit-test": "vendor/bin/phpunit --testdox --colors=always --testsuite=Unit",
         "ci:integration-test": "vendor/bin/phpunit --testdox --colors=always --testsuite=Integration"
+    },
+    "config": {
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true
+        }
+    },
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": false,
+            "forward-command": true
+        }
     }
 }
