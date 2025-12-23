@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $builder): void {
-    if (false === $builder->getParameter('phd_exceptional_validation.validator_enabled')) {
+    if (false === $builder->getParameter('phd_exceptional_validation.validator_available')) {
         return;
     }
 
