@@ -80,14 +80,14 @@ final class PhdExceptionalValidationExtension extends AbstractExtension implemen
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $builder->set('phd_exceptional_validation.lazy_proxy', $this->lazyProxy(...));
-        $builder->setParameter('phd_exceptional_validation.validator_enabled', interface_exists(ValidatorInterface::class));
-        $builder->setParameter('phd_exceptional_validation.messenger_enabled', interface_exists(MessengerMiddlewareInterface::class));
+        $builder->setParameter('phd_exceptional_validation.validator_available', interface_exists(ValidatorInterface::class));
+        $builder->setParameter('phd_exceptional_validation.messenger_available', interface_exists(MessengerMiddlewareInterface::class));
 
         $container->import(__DIR__.'/../../**/services.php');
 
         $builder->set('phd_exceptional_validation.lazy_proxy', null);
-        $builder->setParameter('phd_exceptional_validation.validator_enabled', null);
-        $builder->setParameter('phd_exceptional_validation.messenger_enabled', null);
+        $builder->setParameter('phd_exceptional_validation.validator_available', null);
+        $builder->setParameter('phd_exceptional_validation.messenger_available', null);
     }
 
     /** @override */

@@ -14,7 +14,7 @@ use Throwable;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_locator;
 
 return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $builder): void {
-    if (false === $builder->getParameter('phd_exceptional_validation.validator_enabled')) {
+    if (false === $builder->getParameter('phd_exceptional_validation.validator_available')) {
         return;
     }
 
