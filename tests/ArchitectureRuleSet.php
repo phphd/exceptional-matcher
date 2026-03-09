@@ -23,6 +23,7 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCond
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
@@ -165,9 +166,11 @@ final class ArchitectureRuleSet
                 'deps' => [
                     $this->model(),
                     Selector::classname(Capture::class),
-                    Selector::classname(ValidationFailedException::class),
-                    Selector::inNamespace('Psr\Container'),
                     Selector::classname(Assert::class),
+                    Selector::inNamespace('Psr\Container'),
+                    // Third-party
+                    Selector::classname(ValidationFailedException::class),
+                    Selector::classname(InvalidUidException::class),
                 ],
             ],
             'model' => [
