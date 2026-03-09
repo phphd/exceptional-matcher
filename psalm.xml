@@ -13,6 +13,7 @@
         <ignoreFiles>
             <directory name="vendor"/>
             <directory name="vendor-bin"/>
+            <directory name="stubs"/>
             <file name="rector.php"/>
         </ignoreFiles>
     </projectFiles>
@@ -59,5 +60,6 @@
         <file name="stubs/WrappedExceptionsInterface.stub"/>
         <file name="stubs/ContainerInterface.stub"/>
         <file name="stubs/ConstraintViolationInterface.stub"/>
+        <file name="stubs/SymfonyUidInvalidArgumentException.php"/>
     </stubs>
 </psalm>
