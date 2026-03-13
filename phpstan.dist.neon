@@ -20,6 +20,8 @@ parameters:
         - 'php'
     stubFiles:
         - stubs/ContainerInterface.stub
+    bootstrapFiles:
+        - stubs/SymfonyUidInvalidArgumentException.php
     ignoreErrors:
         - identifier: ternary.shortNotAllowed
         - identifier: property.unused

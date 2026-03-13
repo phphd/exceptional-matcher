@@ -11,11 +11,11 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 return static function (ContainerConfigurator $container, ContainerBuilder $builder): void {
-    if (false === $builder->getParameter('phd_exceptional_validation.validator_enabled')) {
+    if (false === $builder->getParameter('phd_exceptional_validation.validator_available')) {
         return;
     }
 
-    if (false === $builder->getParameter('phd_exceptional_validation.messenger_enabled')) {
+    if (false === $builder->getParameter('phd_exceptional_validation.messenger_available')) {
         return;
     }
 

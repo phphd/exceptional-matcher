@@ -1,6 +1,6 @@
 # Exceptional Validation 🏹
 
-🧰 Correlate Domain Exceptions with Object Properties
+🧰 Correlate Domain Exceptions with Object Property paths
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/phphd/exceptional-validation/ci.yaml?branch=main&logo=github&logoColor=024C1A&cacheSeconds=3600)](https://github.com/phphd/exceptional-validation/actions?query=branch%3Amain)
 [![Codecov](https://codecov.io/gh/phphd/exceptional-validation/graph/badge.svg?token=GZRXWYT55Z)](https://codecov.io/gh/phphd/exceptional-validation)
@@ -454,6 +454,33 @@ Otherwise, we analyse `depositCardId`, and if `isDepositCardBlocked()` callback 
 then the exception is captured on this property.
 
 If neither of them returned `true`, then exception is re-thrown upper in the stack.
+
+#### Uid Condition
+
+You can match Symfony's `InvalidArgumentException` from the `Uid` component
+using `InvalidUidExceptionMatchCondition`:
+
+```php
+use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Uid\InvalidUidExceptionMatchCondition;
+use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
+
+#[ExceptionalValidation]
+class ApproveVerificationCommand
+{
+    #[Capture(InvalidUidException::class, condition: InvalidUidExceptionMatchCondition::class)]
+    public string $id;
+}
+```
+
+This condition compares exception's `invalidValue` with the property value.
+If they are equal, the exception is captured on this property.
+
+Only string property values are allowed for this condition.
+
+> This condition is registered only when `symfony/uid` is installed and exposes
+> `Symfony\Component\Uid\Exception\InvalidArgumentException::$invalidValue`.
 
 #### ValueException Condition
 
