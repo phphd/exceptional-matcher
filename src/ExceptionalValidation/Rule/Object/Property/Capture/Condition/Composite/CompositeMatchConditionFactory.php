@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Com
 
 use PhPhD\ExceptionalValidation\Capture;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Bool\FalseCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
 use Throwable;
@@ -33,7 +34,13 @@ final class CompositeMatchConditionFactory implements MatchConditionFactory
         $conditions = [];
 
         foreach ($this->factories as $factory) {
-            $conditions[] = $factory->getCondition($capture, $parent);
+            $matchCondition = $factory->getCondition($capture, $parent);
+
+            if ($matchCondition instanceof FalseCondition) {
+                return $matchCondition;
+            }
+
+            $conditions[] = $matchCondition;
         }
 
         /** @var list<MatchCondition<Throwable>> $conditions */
