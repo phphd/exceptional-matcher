@@ -28,9 +28,9 @@ final class ExceptionToViolationListMatcher implements ExceptionMatcher
     ) {
     }
 
-    public function map(object $message, Throwable $exception): ?ConstraintViolationListInterface
+    public function match(Throwable $exception, object $message): ?ConstraintViolationListInterface
     {
-        $matchedExceptionList = $this->matcher->map($message, $exception);
+        $matchedExceptionList = $this->matcher->match($exception, $message);
 
         if (null === $matchedExceptionList) {
             return null;

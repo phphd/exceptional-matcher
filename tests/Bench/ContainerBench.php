@@ -48,9 +48,10 @@ final class ContainerBench
 
         $matcher = $this->createMatcher($isProxyAllowed);
 
+        $exception = new PropertyCapturableException();
         $message = new NotHandleableMessageStub(123);
 
-        $violationList = $matcher->map($message, new PropertyCapturableException());
+        $violationList = $matcher->match($exception, $message);
 
         if (null !== $violationList) {
             throw new RuntimeException('Expected to have no violations');
@@ -74,6 +75,7 @@ final class ContainerBench
 
         $matcher = $this->createMatcher($isProxyAllowed);
 
+        $originalException = new NestedItemCapturedException(code: 2);
         $message = HandleableMessageStub::create()->withNestedIterableItems(new ArrayObject([
             'first' => new NestedItem(1),
             'second' => new NestedItem(2),
@@ -81,10 +83,8 @@ final class ContainerBench
             4 => new NestedItem(2),
         ]));
 
-        $originalException = new NestedItemCapturedException(code: 2);
-
         /** @var ConstraintViolationListInterface $violationList */
-        $violationList = $matcher->map($message, $originalException);
+        $violationList = $matcher->match($originalException, $message);
 
         if (1 !== $violationList->count()) {
             throw new RuntimeException('Expected to have 1 violation');
