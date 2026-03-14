@@ -44,15 +44,13 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
     public function testMatchExceptionByOriginClass(): void
     {
-        $originalException = null;
-
         try {
             /** @psalm-suppress UnusedMethodCall */
             Email::fromString('non-email')->getEmail(); // @phpstan-ignore method.resultUnused
+
+            self::fail('The exception must be thrown.');
         } catch (ValidationFailedException $originalException) {
         }
-
-        self::assertNotNull($originalException);
 
         $message = HandleableMessageStub::create();
 
@@ -68,14 +66,12 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
     public function testMatchExceptionByOriginClassMethod(): void
     {
-        $originalException = null;
-
         try {
             Uuid::fromString('invalid-uuid');
+
+            self::fail('The exception must be thrown.');
         } catch (InvalidArgumentException $originalException) {
         }
-
-        self::assertNotNull($originalException);
 
         $message = HandleableMessageStub::create();
 

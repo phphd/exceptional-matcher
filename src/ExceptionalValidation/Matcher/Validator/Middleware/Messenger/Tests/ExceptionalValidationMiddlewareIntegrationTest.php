@@ -80,26 +80,25 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
 
         $this->willThrow($messengerException);
 
-        $this->expectException(ExceptionalValidationFailedException::class);
-
         try {
             $this->middleware->handle($envelope, $this->stack);
+
+            self::fail('The exception must be thrown.');
         } catch (ExceptionalValidationFailedException $e) {
-            self::assertSame(
-                'Message of type "PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub" has failed exceptional validation.',
-                $e->getMessage(),
-            );
-            self::assertSame($messengerException, $e->getPrevious());
-            self::assertSame($envelope->getMessage(), $e->getViolatingMessage());
-
-            $violations = $e->getViolationList();
-            self::assertCount(2, $violations);
-
-            self::assertSame('property', $violations->get(0)->getPropertyPath());
-            self::assertSame('staticProperty', $violations->get(1)->getPropertyPath());
-
-            throw $e;
         }
+
+        self::assertSame(
+            'Message of type "PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub" has failed exceptional validation.',
+            $e->getMessage(),
+        );
+        self::assertSame($messengerException, $e->getPrevious());
+        self::assertSame($envelope->getMessage(), $e->getViolatingMessage());
+
+        $violations = $e->getViolationList();
+        self::assertCount(2, $violations);
+
+        self::assertSame('property', $violations->get(0)->getPropertyPath());
+        self::assertSame('staticProperty', $violations->get(1)->getPropertyPath());
     }
 
     public function testHandlesNotWrappedException(): void
@@ -110,15 +109,14 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
 
         $this->willThrow($handlerException);
 
-        $this->expectException(ExceptionalValidationFailedException::class);
-
         try {
             $this->middleware->handle($envelope, $this->stack);
-        } catch (ExceptionalValidationFailedException $e) {
-            self::assertSame($handlerException, $e->getPrevious());
 
-            throw $e;
+            self::fail('The exception must be thrown.');
+        } catch (ExceptionalValidationFailedException $e) {
         }
+
+        self::assertSame($handlerException, $e->getPrevious());
     }
 
     public function testRethrowsUnhandledException(): void
