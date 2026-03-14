@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation\Tests\Bench;
 use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
-use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
+use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
@@ -46,11 +46,11 @@ final class ContainerBench
     {
         [$isProxyAllowed] = $params;
 
-        $mapper = $this->createMapper($isProxyAllowed);
+        $matcher = $this->createMatcher($isProxyAllowed);
 
         $message = new NotHandleableMessageStub(123);
 
-        $violationList = $mapper->map($message, new PropertyCapturableException());
+        $violationList = $matcher->map($message, new PropertyCapturableException());
 
         if (null !== $violationList) {
             throw new RuntimeException('Expected to have no violations');
@@ -72,7 +72,7 @@ final class ContainerBench
     {
         [$isProxyAllowed] = $params;
 
-        $mapper = $this->createMapper($isProxyAllowed);
+        $matcher = $this->createMatcher($isProxyAllowed);
 
         $message = HandleableMessageStub::create()->withNestedIterableItems(new ArrayObject([
             'first' => new NestedItem(1),
@@ -84,7 +84,7 @@ final class ContainerBench
         $originalException = new NestedItemCapturedException(code: 2);
 
         /** @var ConstraintViolationListInterface $violationList */
-        $violationList = $mapper->map($message, $originalException);
+        $violationList = $matcher->map($message, $originalException);
 
         if (1 !== $violationList->count()) {
             throw new RuntimeException('Expected to have 1 violation');
@@ -100,13 +100,13 @@ final class ContainerBench
         ];
     }
 
-    /** @return ExceptionMapper<ConstraintViolationListInterface> */
-    private function createMapper(bool $allowGeneratedProxies): ExceptionMapper
+    /** @return ExceptionMatcher<ConstraintViolationListInterface> */
+    private function createMatcher(bool $allowGeneratedProxies): ExceptionMatcher
     {
         $container = $this->createContainer($allowGeneratedProxies);
 
-        /** @var ExceptionMapper<ConstraintViolationListInterface> */
-        return $container->get(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>');
+        /** @var ExceptionMatcher<ConstraintViolationListInterface> */
+        return $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>');
     }
 
     private function createContainer(bool $allowGeneratedProxies): ContainerBuilder

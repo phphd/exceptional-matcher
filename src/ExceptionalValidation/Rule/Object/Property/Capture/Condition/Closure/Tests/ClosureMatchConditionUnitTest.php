@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\Tests;
 
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
-use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
+use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\Tests\Stub\ConditionallyCapturedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
@@ -20,8 +20,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class ClosureMatchConditionUnitTest extends TestCase
 {
-    /** @var ExceptionMapper<MatchedExceptionList> */
-    private ExceptionMapper $mapper;
+    /** @var ExceptionMatcher<MatchedExceptionList> */
+    private ExceptionMatcher $matcher;
 
     protected function setUp(): void
     {
@@ -34,9 +34,9 @@ final class ClosureMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMapper<MatchedExceptionList> $mapper */
-        $mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
-        $this->mapper = $mapper;
+        /** @var ExceptionMatcher<MatchedExceptionList> $matcher */
+        $matcher = $container->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
+        $this->matcher = $matcher;
     }
 
     public function testDoesntCaptureConditionalExceptionWhenConditionIsNotMet(): void
@@ -45,7 +45,7 @@ final class ClosureMatchConditionUnitTest extends TestCase
 
         $originalException = new ConditionallyCapturedException(12);
 
-        $violationList = $this->mapper->map($message, $originalException);
+        $violationList = $this->matcher->map($message, $originalException);
 
         self::assertNull($violationList);
     }
@@ -56,7 +56,7 @@ final class ClosureMatchConditionUnitTest extends TestCase
 
         $originalException = new ConditionallyCapturedException(41);
 
-        $matchedExceptionList = $this->mapper->map($message, $originalException);
+        $matchedExceptionList = $this->matcher->map($message, $originalException);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
