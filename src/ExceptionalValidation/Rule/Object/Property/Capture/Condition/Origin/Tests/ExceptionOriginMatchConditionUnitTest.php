@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Ori
 
 use InvalidArgumentException;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
-use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
+use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Email;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
@@ -23,8 +23,8 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
  */
 final class ExceptionOriginMatchConditionUnitTest extends TestCase
 {
-    /** @var ExceptionMapper<MatchedExceptionList> */
-    private ExceptionMapper $mapper;
+    /** @var ExceptionMatcher<MatchedExceptionList> */
+    private ExceptionMatcher $matcher;
 
     protected function setUp(): void
     {
@@ -37,26 +37,24 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMapper<MatchedExceptionList> $mapper */
-        $mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
-        $this->mapper = $mapper;
+        /** @var ExceptionMatcher<MatchedExceptionList> $matcher */
+        $matcher = $container->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
+        $this->matcher = $matcher;
     }
 
     public function testMatchExceptionByOriginClass(): void
     {
-        $originalException = null;
-
         try {
             /** @psalm-suppress UnusedMethodCall */
             Email::fromString('non-email')->getEmail(); // @phpstan-ignore method.resultUnused
+
+            self::fail('The exception must be thrown.');
         } catch (ValidationFailedException $originalException) {
         }
 
-        self::assertNotNull($originalException);
-
         $message = HandleableMessageStub::create();
 
-        $matchedExceptionList = $this->mapper->map($message, $originalException);
+        $matchedExceptionList = $this->matcher->match($originalException, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
@@ -68,18 +66,16 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
     public function testMatchExceptionByOriginClassMethod(): void
     {
-        $message = HandleableMessageStub::create();
-
-        $originalException = null;
-
         try {
             Uuid::fromString('invalid-uuid');
+
+            self::fail('The exception must be thrown.');
         } catch (InvalidArgumentException $originalException) {
         }
 
-        self::assertNotNull($originalException);
+        $message = HandleableMessageStub::create();
 
-        $matchedExceptionList = $this->mapper->map($message, $originalException);
+        $matchedExceptionList = $this->matcher->match($originalException, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);

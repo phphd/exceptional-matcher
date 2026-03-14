@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\Tests;
 
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
-use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
+use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Length;
@@ -17,16 +17,16 @@ use Symfony\Component\Validator\Validation;
 /**
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Validator\ValidationFailedExceptionFormatter
- * @covers \PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\Validator\ValidationFailedExceptionAdapter
+ * @covers \PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Validator\ValidationFailedExceptionFormatter
+ * @covers \PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Validator\ValidationFailedExceptionAdapter
  * @covers \PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension
  *
  * @internal
  */
 final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
 {
-    /** @var ExceptionMapper<ConstraintViolationListInterface> */
-    private ExceptionMapper $mapper;
+    /** @var ExceptionMatcher<ConstraintViolationListInterface> */
+    private ExceptionMatcher $matcher;
 
     protected function setUp(): void
     {
@@ -39,26 +39,25 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMapper<ConstraintViolationListInterface> $mapper */
-        $mapper = $container->get(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>');
-        $this->mapper = $mapper;
+        /** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
+        $matcher = $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>');
+        $this->matcher = $matcher;
     }
 
     public function testValidationFailedExceptionCanBeCaptured(): void
     {
-        $message = HandleableMessageStub::create();
-
         $validation = Validation::createCallable($constraint = new Length(min: 11));
-        $originalException = null;
 
         try {
             $validation('matched!');
+
+            self::fail('The exception must be thrown.');
         } catch (ValidationFailedException $originalException) {
         }
 
-        self::assertNotNull($originalException);
+        $message = HandleableMessageStub::create();
 
-        $violationList = $this->mapper->map($message, $originalException);
+        $violationList = $this->matcher->match($originalException, $message);
 
         self::assertNotNull($violationList);
         self::assertCount(1, $violationList);

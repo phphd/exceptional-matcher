@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
 
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\Tests\Stub\ViolationListExampleException;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\ViolationList\Tests\Stub\ViolationListExampleException;
+use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\Tests\Stub\ConditionalMessage;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedPropertyCapturableException;
 use Symfony\Component\Validator\Constraints\Valid;
