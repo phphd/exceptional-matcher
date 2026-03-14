@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Uid
 
 use InvalidArgumentException;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
-use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
+use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Uid\Tests\Stub\MessageWithInvalidUidCondition;
 use PHPUnit\Framework\TestCase;
@@ -28,8 +28,8 @@ use function property_exists;
  */
 final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
 {
-    /** @var ExceptionMapper<MatchedExceptionList> */
-    private ExceptionMapper $mapper;
+    /** @var ExceptionMatcher<MatchedExceptionList> */
+    private ExceptionMatcher $matcher;
 
     protected function setUp(): void
     {
@@ -46,9 +46,9 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMapper<MatchedExceptionList> $mapper */
-        $mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
-        $this->mapper = $mapper;
+        /** @var ExceptionMatcher<MatchedExceptionList> $matcher */
+        $matcher = $container->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
+        $this->matcher = $matcher;
     }
 
     public function testInvalidUidExceptionIsNotCapturedWhenValueIsNull(): void
@@ -62,7 +62,7 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
         } catch (InvalidUidException $originalException) {
         }
 
-        $matchedExceptionList = $this->mapper->map($message, $originalException);
+        $matchedExceptionList = $this->matcher->map($message, $originalException);
 
         self::assertNull($matchedExceptionList);
     }
@@ -83,7 +83,7 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
         $this->expectExceptionMessage('InvalidUidExceptionMatchCondition requires a stringable value, got: array');
         $this->expectException(InvalidArgumentException::class);
 
-        $this->mapper->map($message, $originalException);
+        $this->matcher->map($message, $originalException);
     }
 
     public function testInvalidUidExceptionIsNotCapturedWhenValueIsDifferent(): void
@@ -97,7 +97,7 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
         } catch (InvalidUidException $originalException) {
         }
 
-        $matchedExceptionList = $this->mapper->map($message, $originalException);
+        $matchedExceptionList = $this->matcher->map($message, $originalException);
 
         self::assertNull($matchedExceptionList);
     }
@@ -113,7 +113,7 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
         } catch (InvalidUidException $originalException) {
         }
 
-        $matchedExceptionList = $this->mapper->map($message, $originalException);
+        $matchedExceptionList = $this->matcher->map($message, $originalException);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
