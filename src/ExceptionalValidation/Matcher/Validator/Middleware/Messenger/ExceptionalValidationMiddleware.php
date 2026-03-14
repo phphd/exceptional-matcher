@@ -31,7 +31,7 @@ final class ExceptionalValidationMiddleware implements MiddlewareInterface
         } catch (Exception $exception) {
             $message = $envelope->getMessage();
 
-            $violationList = $this->exceptionMatcher->map($message, $exception);
+            $violationList = $this->exceptionMatcher->match($exception, $message);
 
             if (null === $violationList) {
                 throw $exception;

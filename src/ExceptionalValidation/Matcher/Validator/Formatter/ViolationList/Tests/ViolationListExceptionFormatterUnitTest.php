@@ -46,13 +46,12 @@ final class ViolationListExceptionFormatterUnitTest extends TestCase
 
     public function testValidatorViolationListExceptionMapping(): void
     {
-        $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());
-
         $violationList = Validation::createValidator()->validate('123', [$constraint = new Length(max: 2)]);
 
         $originalException = new ViolationListExampleException($violationList);
+        $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());
 
-        $violationList = $this->matcher->map($message, $originalException);
+        $violationList = $this->matcher->match($originalException, $message);
 
         self::assertNotNull($violationList);
         self::assertCount(1, $violationList);
