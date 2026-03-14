@@ -1,6 +1,6 @@
 # Exceptional Validation 🏹
 
-🧰 Correlate Domain Exceptions with Object Property paths
+🧰 Correlate Domain Exceptions with Object Properties
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/phphd/exceptional-validation/ci.yaml?branch=main&logo=github&logoColor=024C1A&cacheSeconds=3600)](https://github.com/phphd/exceptional-validation/actions?query=branch%3Amain)
 [![Codecov](https://codecov.io/gh/phphd/exceptional-validation/graph/badge.svg?token=GZRXWYT55Z)](https://codecov.io/gh/phphd/exceptional-validation)
@@ -10,20 +10,22 @@
 [![Packagist downloads](https://img.shields.io/packagist/dt/phphd/exceptional-validation?logo=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAMAAAApWqozAAAC%2FVBMVEUAAAAFBQVVWF8DBAQAAAABAQEMDAy1u8slJioDBAQCAQEAAAAAAAAAAACPk6CDg4RJS1I6PEFjZ28uLzMmEQIlDwAJCAgKCAcDBAQAAAABAQEAAAAAAAAAAAAAAABxdX4oDgAjDgAfHyEcHSAXFxgWFhYEBAUZGRwdHiAJBAEHAgAODg8EBAUEBQUAAABMTEyYnatxdYCJjpqFipV9gYwhIiUdHR5scHlmanN8gIsfDABucnthZG0bHB5DRUsvMTUTBgBWWWBDRktMT1YRERMkDQAkJSkVFhgrEAA3OT5ERkwrLDBSVVwuMDMqEQEGAQAfHyIRBwAGBgYpFAYsEAAKCgsNDQ8xMzgmJysODxATBwAICAkZGh0fHyI5O0ArLTEXFxoHBwdOTk7Z4PPZ4fTb4vXQ1%2BnW3e%2FU2%2B3CyNnc4%2FbY3%2FLX3vDN1OXM0uSUmaZfYmra4fXIz%2BHGzN2lq7mBOADT2uzEy9y%2Fxtaorr2Wm6h%2Bgo1bXmZQU1o2OD0CAQDHzt%2B9w9S5vs%2Bxt8ado7Can6yMkJ1scHhnanNhZG5dYGhGSU8%2FQkhfKAD%2F%2F%2F%2FS2erK0OK2vMuvtcW8vLyiqLeepLKIjJeEiJSBhZF1eYRwdH5kaHFSVVxJS1FDRUs%2BQEU9PkIwMTYlJipSIwBEHQDd5Pfw8PDU2%2B7P1efDytm%2BxNK7wdG5wNCus8OsssGTl6OJjZl7f4p6foh5fIZ2e4V%2BfoBgYmVhYWJWWWFOUFhLTlUfHyEUFBYODg4DBghtLgBXJAD29fXs7Oy0ucmhp7SoqKiQkJF2eoJ4eXpqbXZycnIPQl1KTFNOTk8FNU9KS046PEE0NDchIiUYGx8CEBlwMABkKgBZJgD6%2Bvrd5fff39%2FU0tHIycisscAAeLeysrOsrKwGcqmmpKMEaaCQk52YmJkAYZWHiYtxdYAGT3YmU2sVTmsfTWZdXV0AOVgySldVVVYDK0IbMD0AJTssLjIqKiopIyWGOwB8NgB4NABLIABBGQA8GQA3FgAsEgCoWa7%2BAAAAY3RSTlMACf5REQ4H%2FpiQgkQtIf7%2B7ejm1aqainFjXTkzJRsW%2Fv38sKainZyQfn5zbmtNNQr9%2B%2Fr4%2BPf39vbz8%2B7u7uzr6%2Bbj4N%2Fd29XV0s7My8vKyr29ubi4s6ypo5ycmJOLeHNsXg8rMEp9AAAD%2FElEQVQ4y6WUZXDbUBCElaRtmqTMzMzMzMzM7T2Z2a4ZQmY7nIY5ZWZuU2ZmZmbmTiXbsV1wnJnujzen0aedu5V02L%2FUel5rrJAqNndM%2BZEzSxaK9WnQLkQiuDHIrzBw8TA%2BEArtGFi0AKpkk0YlsBIN4wCRMKJoyzVu5QEtMaOcP7d3vV5asAsBUxhTtqVf8SmVqhT7w3VqD%2FlaZQxFSE0ysmwwX5tmoES192dHRWdW%2FY31K1uKp088%2FV4MQNXxKCQsN7GJk5ayVbEvdIB790UGL9sWiUO0iRGi3S%2BV0BEhKgvEdHbw9nWqs6LEQDe4Zl%2BZHAE%2FWZSwKTZ24wLc1jNTt%2FHgYcXxxbjQuKRMdTe4u4SGYGH6shOL9lxbtFlog7kH9%2B65XHobUa5aI2rhgmt0xsnp01eXvv783tPDOhJemKo%2FduzRVR75XFRYU7fYapMwx7z%2F6KubJ5%2Bd44ZzZRJQvzt558ndUxwyxRWVXHC12jhCEJ1Jy3jzctfOXdv0hrTTmdmanW8ffsjaggAhemMXHHSEdFZuwP3P7dJoNlDJzMKyNJrz57dSLGsIH0Fxt5j1OPBXEylEblHz4pD9dQefMabIcFieLUawZLILnh5O3E2iAUpW4Ay6SCalko2u5B1iI2CkcBCw%2BtfKZ2v1ZANQlTSIVFNiTMnhIWwWCQMzTk0BhoFNlG1a5sNVVQwAvjGeY96hsLBtnP24khUNFPViopQ4m26gIydeoVZtPJNtSwrZBMylO1RSE5esWeXzv7yG8aQTg3ciYvNqAJdzcMbRA9mJthKV9XHAlRXkJVr3IOKFv50L1Yn4AEtOLYo10QVkOjSncytfMT0GGMbYiNfr7bCYrreEsaibDmSaN6TKCJhe3%2Fk7%2B81qPq7UUtWtiM2PkaMNxoLtlvU7zCtxJNzCZSFuZcxNNefMbl567yblQsdwXEPY%2Bp1rWETJFNwvM6JJEewP1bt9SLmUiJeMOARwldyWjLRDmRY%2B2F%2Bq1ilh31b6WoojjSjipIb3q1LDhbqrWQKeeFYG4MyPciSjqsfNUQ44aTQXHGlY0bWGx801jImS5M6XQvOViod6Xkv12SCxCB2BCFLkaPkkzKOCfFmwjBeC275n5XKAUlUwzwrgUUHg6xsvoGuPhxIDDi%2BKFaBGqcSAoYrkpLXBCPAuQQVv54C25Gw4vli0gBEX4G2XT4znI1iVnprAkX6s5gUuMmQ7B0CYTkWcrG%2FNvMBN69ZJC1%2B1zrxSlKH5OcGLcUBdqzXna05e3iXrhTpjixZMB1789Hm3NSf3e651d26QF%2BfRA%2Fv8yM3Z%2FeXCxbxulap76bkWFnhpvl2jfDCvqj6tYsWKFSpUGF8Z%2Bx%2F9Aipg0qzWNVY9AAAAAElFTkSuQmCC&color=%23F28D1A&cacheSeconds=3600)](https://packagist.org/packages/phphd/exceptional-validation)
 [![Licence](https://img.shields.io/github/license/phphd/exceptional-validation.svg?color=3DA639)](https://github.com/phphd/exceptional-validation/blob/main/LICENSE)
 
-A library that captures validation exceptions and maps them to validated object properties.
+A library that matches exceptions against object properties.
 
-No longer do you need custom validators in your object \
-nor any validation in application/ui layers.
+**No** longer do you need any **peripheral validation** for your objects \
+that doesn't really dig down into the domain.
 
-Instead, **declaratively _relate_ domain exceptions** with their relevant form fields \
-and yield validation failed response as you do normally.
+Instead, build full-fledged declarative feature-rich domain **validation** with full **use of exceptions** \
+and let this library to **_relate_** these **exceptions _to_** their **originator fields**.
+
+Eventually, you can return a normal validation failed response.
 
 ## A Validation Library? 🤔
 
 It's not a validation library. Not ever intended to be. \
 It doesn't provide validation rules, constraints, or validators.
 
-Instead, it provides **exception handling** functionality, specific to a validation task.
+It is **exception handling** library, specifically featured with usefulties for validation.
 
 You can validate business logic with any third-party library (or even plain PHP), \
 while the library will be **_correlating_** these **validation exceptions** to the specific properties \
@@ -68,18 +70,20 @@ Yet, with a domain-driven approach, it's not possible to use standard validation
 as these drain domain from all logic.
 
 How then do we show contextual validation errors to the users? \
-It's a task of relating thrown exception with the property which value caused this exception.
+It's a task of relating a thrown exception with the property which value caused this exception.
 
 To return a neat json-response with `email` as a property path and validation error description, \
 it's necessary to match `EmailAlreadyTakenException` with a `$email` property of the original `RegisterUserCommand`.
 
 This is what Exceptional Validation was designed for.
 
-Capturing exceptions like `EmailValidationFailedException` and mapping them to the particular form fields as `$email`, \
-you maintain a single source of truth for the domain validation logic.
+Throwing exceptions like `EmailValidationFailedException` and matching them with the particular form fields as
+`$email`, \
+you maintain a **single source of truth** for the domain validation logic.
 
-Domain enforces its invariants through value objects and services, \
-while this library ensures that validation failures will properly appear in your forms and API responses.
+Domain enforces its invariants via exceptions in value objects and services, \
+while this library ensures that these validation failures will properly match form fields
+and appear correct in your API responses or forms.
 
 ### Key takeways
 
@@ -112,10 +116,10 @@ Exceptional Validation:
 ## Get Started 🎯
 
 Mark a message with `#[ExceptionalValidation]` attribute. \
-It's used by mapper to include this object for processing.
+It's used by matcher to include this object for processing.
 
-Then, define `#[Capture]` exception mappings on your properties. \
-These declaratively describe what exceptions correlate to what properties:
+Define `#[Capture]` exception matching rules for your properties. \
+These declaratively describe what properties what exceptions correlate with:
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -132,34 +136,34 @@ class RegisterUserCommand
 }
 ```
 
-Here, we say that `LoginAlreadyTakenException` is related to `login` property, \
-while `WeakPasswordException` is related to `password` property.
+For example, we say that `login` property is related to `LoginAlreadyTakenException`, \
+while `password` - to `WeakPasswordException`.
 
-The actual mapping takes place when the mapper is used:
+Matching takes place when the matcher is used:
 
 ```php
-use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
+use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
 
-/** @var ExceptionMapper<ConstraintViolationListInterface> $mapper */
+/** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
 
 try {
     $command = new RegisterUserCommand($login, $password);
 
     $this->service->register($command);
 } catch (DomainException $exception) {
-    $violationList = $mapper->map($command, $exception);
+    $violationList = $matcher->map($command, $exception);
 
-    return new JsonResponse($violationList, 422);
+    return new JsonResponse($violationList, Response::HTTP_UNPROCESSABLE_ENTITY);
 }
 ```
 
-Each exception, when mapped, results in a `ConstraintViolation` object, \
-which contains a property path, and an exception message translation.
+Each exception, when matched, results in a `ConstraintViolation` object, \
+which contains a property path, and a message translation.
 
-You can use it to render form with validation errors or serialize these into a json-response.
+You can serialize this violation list into a json-response or render a form with it.
 
 > Note that the default messages translation domain is `validators`, \
-> being inherited from `validator.translation_domain` parameter.
+> inherited from `validator.translation_domain` parameter.
 >
 > You can change it by setting `phd_exceptional_validation.translation_domain` parameter.
 
@@ -209,7 +213,7 @@ Using the validation attributes results in duplicated asserts between the two, \
 while this business conceptually belongs to `Password`, \
 which most properly would be represented as a value object, used in both actions.
 
-With exceptional validation you just write business logic in your domain and then retroactively map violations. \
+With exceptional validation you just write business logic in your domain and then retroactively relate violations. \
 Retroactively — after your business logic has worked out. \
 Representation of the errors to the user is separate from the business logic concern which's managed by this library.
 
@@ -268,18 +272,18 @@ try {
 } 
 ```
 
-This exception just wraps respectively mapped `ConstraintViolationList` with all your messages and property paths.
+This exception just wraps respectively created `ConstraintViolationList` with all your messages and property paths.
 
 ### How it works ⚙️
 
 Primarily, it works as
 a [Command Bus](https://symfony.com/doc/current/messenger.html#multiple-buses-command-event-buses)
-middleware that intercepts exceptions and uses exception mapper to perform their mapping to the relevant form
-properties, eventually formatting captured exceptions as
-standard [SF Validator](https://symfony.com/doc/current/validation.html) violations.
+middleware that intercepts exceptions and performs matching to the relevant form properties by an exception matcher,
+eventually formatting captured exceptions as standard [SF Validator](https://symfony.com/doc/current/validation.html)
+violations.
 
-> Besides that, `ExceptionMapper` is also available for direct use w/o any middleware. You can
-> reference it as `ExceptionMapper<ConstraintViolationListInterface>` service.
+> Besides that, `ExceptionMatcher` is also available for direct use w/o any middleware. \
+> You can reference it as `ExceptionMatcher<ConstraintViolationListInterface>` service.
 
 This diagram represents the concept:
 
@@ -290,34 +294,34 @@ This diagram represents the concept:
 It's possible to use features of this bundle without necessarily depending on Command Bus middleware, nor on the
 Messenger component.
 
-If you're using Symfony, you can check what exception mappers are available using this command:
+If you're using Symfony, you can check what exception matchers are available using this command:
 
 ```shell
-bin/console debug:container ExceptionMapper
+bin/console debug:container ExceptionMatcher
 ```
 
 This should provide you with a list, similar to this:
 
 ```text
-[0] PhPhD\ExceptionalValidation\Mapper\ExceptionMapper<PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList>
-[1] PhPhD\ExceptionalValidation\Mapper\ExceptionMapper<Symfony\Component\Validator\ConstraintViolationListInterface>
+[0] PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher<PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList>
+[1] PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher<Symfony\Component\Validator\ConstraintViolationListInterface>
 ```
 
-These mappers allow you to map the Exception to any available format, specified as a generic parameter.
-It could be `ConstraintViolationList`, or a list of `MatchedException`, or anything else.
+These matchers format the Exception to their respective format, specified as a generic parameter. \
+Format could be `ConstraintViolationList`, or `MatchedExceptionList`, or anything else dumped by the command.
 
-Therefore, you can inject the needed service into your own code:
+Therefore, you can inject the wanted service into your own code:
 
 ```php
-use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
+use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class SignDocumentActivity
 {
     public function __construct(
-        /** @var ExceptionMapper<ConstraintViolationListInterface> */
-        #[Autowire(service: ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>')]
-        private ExceptionMapper $exceptionMapper,
+        /** @var ExceptionMatcher<ConstraintViolationListInterface> */
+        #[Autowire(service: ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>')]
+        private ExceptionMatcher $exceptionMatcher,
     ) {
     }
 
@@ -327,7 +331,7 @@ class SignDocumentActivity
             return $command->process();
         } catch (DomainException $e) {
             /** @var ConstraintViolationListInterface $violationList */
-            $violationList = $this->exceptionMapper->map($message, $e);
+            $violationList = $this->exceptionMatcher->map($message, $e);
 
             throw new ApplicationFailure(
                 'Validation Failed',
@@ -339,15 +343,15 @@ class SignDocumentActivity
 }
 ```
 
-In this example, we use `ExceptionMapper` to relate the caught exception to some property of the `$message`, \
-producing `ConstraintViolationListInterface` that can be used however you want to.
+In this example, we use `ExceptionMatcher` to relate the exception to some property of the `$command`, \
+which produces `ConstraintViolationListInterface` that can be used however you want to.
 
 ## Standalone Usage 🔧
 
-If you are not using Symfony framework, you can still take advantage of this library.
+If you are not using a Symfony framework, you still have a great opportunity of taking advantage of this library.
 
-Create a Service Container (`symfony/dependency-injection` is required) with a DI Extension \
-and then use it to create necessary services:
+You can create a Service Container (`symfony/dependency-injection` is required) \
+and use it to get necessary services:
 
 ```php
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
@@ -359,24 +363,25 @@ $container = (new PhdExceptionalValidationExtension())->getContainer([
 
 $container->compile();
 
-/** @var ExceptionMapper<ConstraintViolationListInterface> $mapper */
-$mapper = $container->get(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>');
+/** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
+$matcher = $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>');
 ```
 
-Herein, you create a Container, compile it, and use it to retrieve `ExceptionMapper`.
+Herein, you create a Container, compile it, and use to get `ExceptionMatcher`.
 
 ## Features 📙
 
-`#[ExceptionalValidation]` and `#[Capture]` attributes allow you to implement very flexible mappings. \
-Here are the examples of how you can use them.
+`#[ExceptionalValidation]` and `#[Capture]` attributes allow implementing very flexible matching rules. \
+It's highly recommended to see the examples below to know the power of these solutions.
 
 ### Capture Conditions
 
 #### Exception Class Condition
 
-A minimum required condition. \
+A bare minimum condition.
+
 Matches the exception by its class name using `instanceof` check, \
-making it similar to `catch` operation.
+acting similarly to `catch` operation.
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -392,9 +397,8 @@ class PublishMessageCommand
 
 #### Origin Source Condition
 
-Besides filtering by exception class, \
-it's possible to filter by the origin class and method name \
-whence the exception raised from.
+Filters the exception by its origin place, \
+specifying whence it was to be raised from (class name and method name).
 
 ```php
 use PhPhD\ExceptionalValidation;
@@ -409,11 +413,11 @@ class ConfirmPackageCommand
 }
 ```
 
-In this example `InvalidArgumentException` is a generic one, which can originate from multiple places. \
-To catch only those exceptions that belong to `Uuid` class, `from:` clause specifies class and method names.
+In this example `InvalidArgumentException` is a generic one, possibly originating from multiple places. \
+If you want to catch only those that belong to `Uuid` class, specify `from:` clause with class and method name.
 
-Thus, Exception Mapper will analyse the exception trace \
-and check whether it was originated from the `from:` place.
+Therefore, Exception Matcher will analyse the exception trace \
+and check whether the exception was originated from that origin `from:` place.
 
 #### When-Closure Condition
 
@@ -575,7 +579,7 @@ that contain a `ConstraintViolationList` from the validator.
 Such exceptions should implement `ViolationListException` interface:
 
 ```php
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\ViolationListException;
+use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\ViolationList\ViolationListException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 final class CardNumberValidationFailedException extends \RuntimeException implements ViolationListException
@@ -599,7 +603,7 @@ Then, specify `ViolationListExceptionFormatter` as a `formatter:` for the `#[Cap
 ```php
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
 
 #[ExceptionalValidation]
 class IssueCreditCardCommand
@@ -612,8 +616,8 @@ class IssueCreditCardCommand
 }
 ```
 
-Thus, `CardNumberValidationFailedException` is captured on a `cardNumber` property, \
-and formatter makes sure all its constraint violations are mapped for this property.
+Thus, once `cardNumber` property gets a hold of `CardNumberValidationFailedException`, \
+formatter makes sure that a proper representation of this exception in a `ConstraintViolation` form is created for this property.
 
 > If `#[Capture]` attribute specified a message, \
 > it would've been ignored in favour of `ConstraintViolationList` messages.
@@ -630,7 +634,7 @@ For example, pass additional parameters to the message translation.
 You can create custom violation formatter by implementing `ExceptionViolationFormatter` interface:
 
 ```php
-use PhPhD\ExceptionalValidation\Mapper\Validator\Formatter\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\MatchedException;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
@@ -710,10 +714,12 @@ Though not recommended, you might use a single formatter for the two.
 
 ### In-depth analysis
 
+> The approach described is done away with.
+
 `#[ExceptionalValidation]` attribute works side-by-side with Symfony Validator's `#[Valid]` attribute.
 
 Once you define `#[Valid]` on an object/iterable property, \
-the mapper will pick it up for the nested exception mapping analysis, \
+the matcher will pick it up for a nested analysis, \
 providing a respective property path for the created violations.
 
 ```php

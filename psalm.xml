@@ -43,7 +43,7 @@
         <LessSpecificImplementedReturnType>
             <errorLevel type="suppress">
                 <!-- Psalm doesn't infer it quite well -->
-                <file name="src/ExceptionalValidation/Mapper/Validator/Formatter/Validator/ValidationFailedExceptionFormatter.php"/>
+                <file name="src/ExceptionalValidation/Matcher/Validator/Formatter/Validator/ValidationFailedExceptionFormatter.php"/>
             </errorLevel>
         </LessSpecificImplementedReturnType>
         <MissingOverrideAttribute>

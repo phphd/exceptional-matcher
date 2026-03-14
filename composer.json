@@ -1,6 +1,6 @@
 {
     "name": "phphd/exceptional-validation",
-    "description": "Capture domain exceptions and map them to the corresponding properties that caused them",
+    "description": "Match exceptions with the properties that caused them",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
@@ -41,9 +41,9 @@
         "bamarni/composer-bin-plugin": "^1.8"
     },
     "suggest": {
-        "symfony/validator": "Install Validator component to use constraint violations mapper",
-        "symfony/messenger": "Install Messenger component to use exceptional validation middleware",
-        "amphp/amp": "Install AMP package to capture multiple exceptions at once"
+        "symfony/validator": "Install Validator component to format matched exceptions into ConstraintViolationList format",
+        "symfony/messenger": "Install Messenger component to match with a middleware",
+        "amphp/amp": "Install AMP package to match multiple exceptions at once"
     },
     "replace": {
         "phphd/exceptional-validation-bundle": "*"
