@@ -47,14 +47,13 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
     public function testValidationFailedExceptionCanBeCaptured(): void
     {
         $validation = Validation::createCallable($constraint = new Length(min: 11));
-        $originalException = null;
 
         try {
             $validation('matched!');
+
+            self::fail('The exception must be thrown.');
         } catch (ValidationFailedException $originalException) {
         }
-
-        self::assertNotNull($originalException);
 
         $message = HandleableMessageStub::create();
 
