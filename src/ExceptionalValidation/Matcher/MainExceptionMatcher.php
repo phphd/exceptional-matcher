@@ -26,7 +26,7 @@ final class MainExceptionMatcher implements ExceptionMatcher
     ) {
     }
 
-    public function map(object $message, Throwable $exception): ?MatchedExceptionList
+    public function match(Throwable $exception, object $message): ?MatchedExceptionList
     {
         $ruleSet = $this->ruleSetAssemblerService->assemble(new ObjectRuleSetAssembler($message));
 

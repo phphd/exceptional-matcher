@@ -56,7 +56,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
         $message = HandleableMessageStub::create();
 
-        $matchedExceptionList = $this->matcher->map($message, $originalException);
+        $matchedExceptionList = $this->matcher->match($originalException, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
@@ -68,8 +68,6 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
     public function testMatchExceptionByOriginClassMethod(): void
     {
-        $message = HandleableMessageStub::create();
-
         $originalException = null;
 
         try {
@@ -79,7 +77,9 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
         self::assertNotNull($originalException);
 
-        $matchedExceptionList = $this->matcher->map($message, $originalException);
+        $message = HandleableMessageStub::create();
+
+        $matchedExceptionList = $this->matcher->match($originalException, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);

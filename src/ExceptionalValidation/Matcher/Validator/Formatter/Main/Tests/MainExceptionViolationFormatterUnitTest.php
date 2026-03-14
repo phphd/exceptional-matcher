@@ -69,10 +69,10 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
 
     public function testFormatException(): void
     {
-        $message = HandleableMessageStub::create();
         $originalException = new PropertyCapturableException();
+        $message = HandleableMessageStub::create();
 
-        $violationList = $this->matcher->map($message, $originalException);
+        $violationList = $this->matcher->match($originalException, $message);
 
         self::assertNotNull($violationList);
         self::assertCount(1, $violationList);
@@ -89,10 +89,11 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
 
     public function testPropertyInvalidValueIsCollected(): void
     {
+        $exception = new LogicException();
         $message = HandleableMessageStub::create()->withMessageText('invalid text value');
 
         /** @var ConstraintViolationListInterface $violationList */
-        $violationList = $this->matcher->map($message, new LogicException());
+        $violationList = $this->matcher->match($exception, $message);
 
         /** @var ConstraintViolationInterface $violation */
         [$violation] = $violationList;
@@ -102,12 +103,11 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
 
     public function testObjectInvalidValueIsCollected(): void
     {
+        $originalException = new ObjectPropertyCapturableException();
         $message = HandleableMessageStub::create()->withObjectProperty($object = new stdClass());
 
-        $originalException = new ObjectPropertyCapturableException();
-
         /** @var ConstraintViolationListInterface $violationList */
-        $violationList = $this->matcher->map($message, $originalException);
+        $violationList = $this->matcher->match($originalException, $message);
 
         /** @var ConstraintViolationInterface $violation */
         [$violation] = $violationList;
@@ -117,13 +117,13 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
 
     public function testViolationMessageFallsBackToExceptionMessage(): void
     {
-        $message = HandleableMessageStub::create();
         $exceptionAdapter = new CompositeException([
             new MessageContainingException(),
             new MessageContainingException(),
         ]);
+        $message = HandleableMessageStub::create();
 
-        $violationList = $this->matcher->map($message, $exceptionAdapter);
+        $violationList = $this->matcher->match($exceptionAdapter, $message);
 
         self::assertNotNull($violationList);
         self::assertCount(2, $violationList);

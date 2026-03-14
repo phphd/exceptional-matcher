@@ -50,14 +50,13 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
 
     public function testValueExceptionCondition(): void
     {
-        $message = HandleableMessageStub::create();
-
         $exceptionAdapter = new CompositeException([
             new SomeValueException('matched!'),
             new SomeValueException('whatever'),
         ]);
+        $message = HandleableMessageStub::create();
 
-        $matchedExceptionList = $this->matcher->map($message, $exceptionAdapter);
+        $matchedExceptionList = $this->matcher->match($exceptionAdapter, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(2, $matchedExceptionList);

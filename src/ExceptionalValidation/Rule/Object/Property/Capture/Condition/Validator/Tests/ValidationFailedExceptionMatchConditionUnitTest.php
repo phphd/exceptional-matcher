@@ -46,8 +46,6 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
 
     public function testValidationFailedExceptionCanBeCaptured(): void
     {
-        $message = HandleableMessageStub::create();
-
         $validation = Validation::createCallable($constraint = new Length(min: 11));
         $originalException = null;
 
@@ -58,7 +56,9 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
 
         self::assertNotNull($originalException);
 
-        $violationList = $this->matcher->map($message, $originalException);
+        $message = HandleableMessageStub::create();
+
+        $violationList = $this->matcher->match($originalException, $message);
 
         self::assertNotNull($violationList);
         self::assertCount(1, $violationList);

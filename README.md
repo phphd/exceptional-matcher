@@ -151,7 +151,7 @@ try {
 
     $this->service->register($command);
 } catch (DomainException $exception) {
-    $violationList = $matcher->map($command, $exception);
+    $violationList = $matcher->match($exception, $command);
 
     return new JsonResponse($violationList, Response::HTTP_UNPROCESSABLE_ENTITY);
 }
@@ -331,7 +331,7 @@ class SignDocumentActivity
             return $command->process();
         } catch (DomainException $e) {
             /** @var ConstraintViolationListInterface $violationList */
-            $violationList = $this->exceptionMatcher->map($message, $e);
+            $violationList = $this->exceptionMatcher->match($e, $command);
 
             throw new ApplicationFailure(
                 'Validation Failed',

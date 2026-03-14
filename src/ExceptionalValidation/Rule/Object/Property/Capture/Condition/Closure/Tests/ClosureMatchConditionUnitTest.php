@@ -41,22 +41,20 @@ final class ClosureMatchConditionUnitTest extends TestCase
 
     public function testDoesntCaptureConditionalExceptionWhenConditionIsNotMet(): void
     {
+        $originalException = new ConditionallyCapturedException(12);
         $message = HandleableMessageStub::create()->withConditionalMessage(11, 41);
 
-        $originalException = new ConditionallyCapturedException(12);
-
-        $violationList = $this->matcher->map($message, $originalException);
+        $violationList = $this->matcher->match($originalException, $message);
 
         self::assertNull($violationList);
     }
 
     public function testCaptureConditionalException(): void
     {
+        $originalException = new ConditionallyCapturedException(41);
         $message = HandleableMessageStub::create()->withConditionalMessage(11, 41);
 
-        $originalException = new ConditionallyCapturedException(41);
-
-        $matchedExceptionList = $this->matcher->map($message, $originalException);
+        $matchedExceptionList = $this->matcher->match($originalException, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
