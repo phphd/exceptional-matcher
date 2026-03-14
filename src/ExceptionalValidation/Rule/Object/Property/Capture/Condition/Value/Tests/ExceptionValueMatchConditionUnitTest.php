@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\Tests;
 
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
-use PhPhD\ExceptionalValidation\Mapper\ExceptionMapper;
+use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\Tests\Stub\SomeValueException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
@@ -23,8 +23,8 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 final class ExceptionValueMatchConditionUnitTest extends TestCase
 {
-    /** @var ExceptionMapper<MatchedExceptionList> */
-    private ExceptionMapper $mapper;
+    /** @var ExceptionMatcher<MatchedExceptionList> */
+    private ExceptionMatcher $matcher;
 
     protected function setUp(): void
     {
@@ -43,21 +43,20 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMapper<MatchedExceptionList> $mapper */
-        $mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
-        $this->mapper = $mapper;
+        /** @var ExceptionMatcher<MatchedExceptionList> $matcher */
+        $matcher = $container->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
+        $this->matcher = $matcher;
     }
 
     public function testValueExceptionCondition(): void
     {
-        $message = HandleableMessageStub::create();
-
         $exceptionAdapter = new CompositeException([
             new SomeValueException('matched!'),
             new SomeValueException('whatever'),
         ]);
+        $message = HandleableMessageStub::create();
 
-        $matchedExceptionList = $this->mapper->map($message, $exceptionAdapter);
+        $matchedExceptionList = $this->matcher->match($exceptionAdapter, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(2, $matchedExceptionList);
