@@ -14,12 +14,12 @@ use PHPat\Test\Attributes\TestRule;
 use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\PHPat;
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
+use PhPhD\ExceptionalValidation\Catch_;
+use PhPhD\ExceptionalValidation\Rule\Assembler\MatchingRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Assembler\MatchingRuleSetAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\MatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\MatchConditionFactory;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -74,9 +74,9 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
-    public function testCaptureRuleSetAssemblerDependencies(): BuildStep
+    public function testMatchingRuleSetAssemblerDependencies(): BuildStep
     {
-        return $this->layerRule('captureRuleSetAssembler');
+        return $this->layerRule('matchingRuleSetAssembler');
     }
 
     #[TestRule]
@@ -142,8 +142,8 @@ final class ArchitectureRuleSet
             ],
             'matcher' => [
                 'deps' => [
-                    Selector::classname(CaptureRuleSetAssemblerService::class),
-                    Selector::classname(ObjectRuleSetAssembler::class),
+                    Selector::classname(MatchingRuleSetAssemblerService::class),
+                    Selector::classname(ObjectMatchingRuleSetAssembler::class),
                     $this->model(),
                     Selector::AllOf(
                         Selector::isInterface(),
@@ -152,12 +152,12 @@ final class ArchitectureRuleSet
                     Selector::classname(ExceptionUnwrapper::class),
                 ],
             ],
-            'captureRuleSetAssembler' => [
+            'matchingRuleSetAssembler' => [
                 'deps' => [
                     $this->model(),
                     $this->matchCondition(),
                     Selector::classname(ExceptionalValidation::class),
-                    Selector::classname(Capture::class),
+                    Selector::classname(Catch_::class),
                     Selector::classname(Valid::class),
                     Selector::classname(Assert::class),
                 ],
@@ -165,7 +165,7 @@ final class ArchitectureRuleSet
             'matchCondition' => [
                 'deps' => [
                     $this->model(),
-                    Selector::classname(Capture::class),
+                    Selector::classname(Catch_::class),
                     Selector::classname(Assert::class),
                     Selector::inNamespace('Psr\Container'),
                     // Third-party
@@ -226,13 +226,13 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function captureRuleSetAssembler(): AnyOfSelectorModifier
+    public function matchingRuleSetAssembler(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
-            Selector::classname(CaptureRuleSetAssembler::class),
-            Selector::implements(CaptureRuleSetAssembler::class),
-            Selector::classname(CaptureRuleSetAssemblerService::class),
-            Selector::implements(CaptureRuleSetAssemblerService::class),
+            Selector::classname(MatchingRuleSetAssembler::class),
+            Selector::implements(MatchingRuleSetAssembler::class),
+            Selector::classname(MatchingRuleSetAssemblerService::class),
+            Selector::implements(MatchingRuleSetAssemblerService::class),
         );
     }
 
@@ -250,7 +250,7 @@ final class ArchitectureRuleSet
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalValidation\Rule'),
             Selector::NOT($this->matchCondition()),
-            Selector::NOT($this->captureRuleSetAssembler()),
+            Selector::NOT($this->matchingRuleSetAssembler()),
             Selector::NOT(Selector::extends(TestCase::class)),
         );
     }

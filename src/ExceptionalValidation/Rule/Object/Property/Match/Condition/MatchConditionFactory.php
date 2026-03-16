@@ -1,0 +1,24 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition;
+
+use PhPhD\ExceptionalValidation\Catch_;
+use PhPhD\ExceptionalValidation\Rule\MatchingRule;
+use Throwable;
+
+/**
+ * @internal - this might be exposed as an api in some future versions
+ *
+ * @template T of Throwable
+ */
+interface MatchConditionFactory
+{
+    /**
+     * @param Catch_<T,T> $catch
+     *
+     * @return ?MatchCondition<T>
+     */
+    public function getCondition(Catch_ $catch, MatchingRule $parent): ?MatchCondition;
+}

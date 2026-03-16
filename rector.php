@@ -24,7 +24,7 @@ return RectorConfig::configure()
         ],
         ClassPropertyAssignToConstructorPromotionRector::class => [
             __DIR__.'/src/ExceptionalValidation/Rule/Exception/ExceptionReciprocal.php',
-            __DIR__.'/src/ExceptionalValidation/Rule/LazyRuleSet.php',
+            __DIR__.'/src/ExceptionalValidation/Rule/LazyMatchingRule.php',
         ],
         StringClassNameToClassConstantRector::class => [
             __DIR__.'/upgrade',

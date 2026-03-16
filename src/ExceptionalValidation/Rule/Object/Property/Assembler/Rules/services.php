@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules;
 
 use Closure;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssemblerService;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\Assembler\MatchingRuleSetAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Assembler\PropertyMatchingRulesAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Assembler\PropertyMatchingRulesAssemblerService;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -23,15 +23,15 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
 
     $services
         ->set(
-            CaptureRuleSetAssemblerService::class.'<'.PropertyCaptureRulesAssembler::class.'>',
+            MatchingRuleSetAssemblerService::class.'<'.PropertyMatchingRulesAssembler::class.'>',
             CompositeRuleSetAssemblerService::class,
         )->args([
             [
-                service(PropertyCaptureRulesAssemblerService::class),
+                service(PropertyMatchingRulesAssemblerService::class),
                 service(PropertyNestedValidObjectRuleAssemblerService::class),
                 service(PropertyNestedValidIterableRulesAssemblerService::class),
             ],
-        ])->lazy($lazy(CaptureRuleSetAssemblerService::class) ?: CaptureRuleSetAssemblerService::class)
+        ])->lazy($lazy(MatchingRuleSetAssemblerService::class) ?: MatchingRuleSetAssemblerService::class)
     ;
 
     // Deliberately making these non-lazy
@@ -40,14 +40,14 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
     $services
         ->set(PropertyNestedValidObjectRuleAssemblerService::class, PropertyNestedValidObjectRuleAssemblerService::class)
         ->args([
-            service(CaptureRuleSetAssemblerService::class.'<'.ObjectRuleSetAssembler::class.'>'),
+            service(MatchingRuleSetAssemblerService::class.'<'.ObjectMatchingRuleSetAssembler::class.'>'),
         ])
     ;
 
     $services
         ->set(PropertyNestedValidIterableRulesAssemblerService::class, PropertyNestedValidIterableRulesAssemblerService::class)
         ->args([
-            service(CaptureRuleSetAssemblerService::class.'<'.ObjectRuleSetAssembler::class.'>'),
+            service(MatchingRuleSetAssemblerService::class.'<'.ObjectMatchingRuleSetAssembler::class.'>'),
         ])
     ;
 };
