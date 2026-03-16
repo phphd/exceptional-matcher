@@ -7,8 +7,8 @@ namespace PhPhD\ExceptionalValidation\Matcher\Validator\Middleware\Messenger\Tes
 use PhPhD\ExceptionalValidation\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalValidation\Matcher\Validator\Middleware\ExceptionalValidationFailedException;
 use PhPhD\ExceptionalValidation\Matcher\Validator\Middleware\Messenger\ExceptionalValidationMiddleware;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\AnException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -67,8 +67,8 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
     {
         $envelope = Envelope::wrap(HandleableMessageStub::create());
 
-        $handlerException1 = new PropertyCapturableException();
-        $handlerException2 = new StaticPropertyCapturedException();
+        $handlerException1 = new AnException();
+        $handlerException2 = new StaticPropertyMatchedException();
 
         $messengerException = new HandlerFailedException(
             $envelope,
@@ -105,7 +105,7 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
     {
         $envelope = Envelope::wrap(HandleableMessageStub::create());
 
-        $handlerException = new PropertyCapturableException();
+        $handlerException = new AnException();
 
         $this->willThrow($handlerException);
 

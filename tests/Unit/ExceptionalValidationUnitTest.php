@@ -7,13 +7,13 @@ namespace PhPhD\ExceptionalValidation\Tests\Unit;
 use ArrayObject;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
-use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\Tests\Stub\ObjectPropertyCapturableException;
+use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedPropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemMatchedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedPropertyMatchedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedHandleableMessage;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedItem;
@@ -26,34 +26,34 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @covers \PhPhD\ExceptionalValidation
- * @covers \PhPhD\ExceptionalValidation\Capture
+ * @covers \PhPhD\ExceptionalValidation\Catch_
  * @covers \PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension
  * @covers \PhPhD\ExceptionalValidation\Matcher\MainExceptionMatcher
  * @covers \PhPhD\ExceptionalValidation\Matcher\Validator\ExceptionToViolationListMatcher
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet
- * @covers \PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet
- * @covers \PhPhD\ExceptionalValidation\Rule\CompositeRuleSet
- * @covers \PhPhD\ExceptionalValidation\Rule\LazyRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectMatchingRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Rule\ItemOfIterableMatchingRule
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyMatchingRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Rule\CompositeMatchingRule
+ * @covers \PhPhD\ExceptionalValidation\Rule\LazyMatchingRule
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath
  * @covers \PhPhD\ExceptionalValidation\Rule\Exception\ExceptionReciprocal
  * @covers \PhPhD\ExceptionalValidation\Rule\Exception\MatchedException
  * @covers \PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList
  * @covers \PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssemblerService
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssemblerService
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyRuleSetAssemblerService
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssemblerService
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectMatchingRuleSetAssemblerService
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyMatchingRuleSetAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyMatchingRuleSetAssemblerService
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Assembler\PropertyMatchingRulesAssembler
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Assembler\PropertyMatchingRulesAssemblerService
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssemblerService
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssemblerService
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\CaptureExceptionRule
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class\ExceptionClassMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class\ExceptionClassMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Delegating\DelegatingMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CompositeMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite\CompositeMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\MatchExceptionRule
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Delegating\DelegatingMatchConditionFactory
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Composite\CompositeMatchCondition
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionFactory
  *
  * @internal
  */
@@ -98,7 +98,7 @@ final class ExceptionalValidationUnitTest extends TestCase
 
     public function testExceptionIsNotCapturedForMessageWithoutExceptionalValidationAttribute(): void
     {
-        $exception = new PropertyCapturableException();
+        $exception = new AnException();
         $message = new NotHandleableMessageStub(123);
 
         $violationList = $this->exceptionMatcher->match($exception, $message);
@@ -108,7 +108,7 @@ final class ExceptionalValidationUnitTest extends TestCase
 
     public function testCaptureExceptionMappedToProperty(): void
     {
-        $originalException = new PropertyCapturableException();
+        $originalException = new AnException();
         $message = HandleableMessageStub::create();
 
         $violationList = $this->exceptionMatcher->match($originalException, $message);
@@ -123,7 +123,7 @@ final class ExceptionalValidationUnitTest extends TestCase
 
     public function testCaptureExceptionMappedToStaticProperty(): void
     {
-        $originalException = new StaticPropertyCapturedException();
+        $originalException = new StaticPropertyMatchedException();
         $message = HandleableMessageStub::create();
 
         /** @var ConstraintViolationListInterface $violationList */
@@ -138,7 +138,7 @@ final class ExceptionalValidationUnitTest extends TestCase
 
     public function testNestedObjectIsNotCapturedWhenPropertyIsNotInitialized(): void
     {
-        $exception = new NestedPropertyCapturableException();
+        $exception = new NestedPropertyMatchedException();
         $message = HandleableMessageStub::create();
 
         $violationList = $this->exceptionMatcher->match($exception, $message);
@@ -148,7 +148,7 @@ final class ExceptionalValidationUnitTest extends TestCase
 
     public function testCaptureNestedObjectPropertyException(): void
     {
-        $originalException = new NestedPropertyCapturableException();
+        $originalException = new NestedPropertyMatchedException();
         $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());
 
         $violationList = $this->exceptionMatcher->match($originalException, $message);
@@ -168,8 +168,8 @@ final class ExceptionalValidationUnitTest extends TestCase
     public function testUncaughtExceptionsAreNotAllowed(): void
     {
         $exceptionAdapter = new CompositeException([
-            new NestedItemCapturedException(code: 1),
-            new NestedItemCapturedException(code: 3), // not caught
+            new NestedItemMatchedException(code: 1),
+            new NestedItemMatchedException(code: 3), // not caught
         ]);
 
         $message = HandleableMessageStub::create()
@@ -187,10 +187,10 @@ final class ExceptionalValidationUnitTest extends TestCase
     public function testCaptureMultipleExceptions(): void
     {
         $exceptionAdapter = new CompositeException([
-            new NestedItemCapturedException(code: 1),
-            new PropertyCapturableException(),
-            new ObjectPropertyCapturableException(),
-            new NestedItemCapturedException(code: 2),
+            new NestedItemMatchedException(code: 1),
+            new AnException(),
+            new ObjectPropertyMatchedException(),
+            new NestedItemMatchedException(code: 2),
         ]);
 
         $message = HandleableMessageStub::create()

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Matcher;
 
 use Closure;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\Assembler\MatchingRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -24,7 +24,7 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
         ->set(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>', MainExceptionMatcher::class)
         ->public()
         ->args([
-            service(CaptureRuleSetAssemblerService::class.'<'.ObjectRuleSetAssembler::class.'>'),
+            service(MatchingRuleSetAssemblerService::class.'<'.ObjectMatchingRuleSetAssembler::class.'>'),
             service('phd_exceptional_validation.exception_unwrapper'),
         ])
         ->lazy($lazy(ExceptionMatcher::class))

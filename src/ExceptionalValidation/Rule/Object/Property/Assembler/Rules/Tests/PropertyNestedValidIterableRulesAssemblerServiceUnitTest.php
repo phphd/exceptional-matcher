@@ -9,7 +9,7 @@ use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidat
 use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\Tests\Stub\RootObject;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemMatchedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedItem;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NotHandleableMessageStub;
@@ -43,7 +43,7 @@ final class PropertyNestedValidIterableRulesAssemblerServiceUnitTest extends Tes
 
     public function testExceptionCanBeCaughtOnNestedArrayItems(): void
     {
-        $originalException = new NestedItemCapturedException(code: 57);
+        $originalException = new NestedItemMatchedException(code: 57);
         $message = HandleableMessageStub::create()->withNestedArrayItems([
             new NestedItem(41),
             new NestedItem(57),
@@ -62,7 +62,7 @@ final class PropertyNestedValidIterableRulesAssemblerServiceUnitTest extends Tes
 
     public function testExceptionCanBeCaughtOnANestedIterableItems(): void
     {
-        $originalException = new NestedItemCapturedException(code: 3);
+        $originalException = new NestedItemMatchedException(code: 3);
         $message = HandleableMessageStub::create()->withNestedIterableItems(new ArrayObject([
             'first' => new NestedItem(1),
             'second' => new NestedItem(2),
@@ -81,7 +81,7 @@ final class PropertyNestedValidIterableRulesAssemblerServiceUnitTest extends Tes
 
     public function testExceptionCanBeCaughtOnMixedArrayItems(): void
     {
-        $originalException = new NestedItemCapturedException(code: 2);
+        $originalException = new NestedItemMatchedException(code: 2);
         $message = RootObject::create()->withNotTypedArray([
             'not an object',
             new NotHandleableMessageStub(1),
