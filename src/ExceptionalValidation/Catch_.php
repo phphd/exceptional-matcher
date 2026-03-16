@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation;
 use Attribute;
 use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\MainExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\MatchedExceptionFormatter;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\MatchCondition;
 use Throwable;
 use Webmozart\Assert\Assert;
 

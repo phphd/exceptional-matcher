@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules;
 
 use Generator;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
-use PhPhD\ExceptionalValidation\Rule\CaptureRule;
-use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
-use PhPhD\ExceptionalValidation\Rule\ItemOfIterableCaptureRule;
-use PhPhD\ExceptionalValidation\Rule\LazyRuleSet;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Assembler\PropertyCaptureRulesAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet;
+use PhPhD\ExceptionalValidation\Rule\Assembler\MatchingRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Assembler\MatchingRuleSetAssemblerService;
+use PhPhD\ExceptionalValidation\Rule\CompositeMatchingRule;
+use PhPhD\ExceptionalValidation\Rule\ItemOfIterableMatchingRule;
+use PhPhD\ExceptionalValidation\Rule\LazyMatchingRule;
+use PhPhD\ExceptionalValidation\Rule\MatchingRule;
+use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Assembler\PropertyMatchingRulesAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyMatchingRuleSet;
 
 use function is_iterable;
 use function is_object;
@@ -21,19 +21,19 @@ use function is_object;
 /**
  * @internal
  *
- * @implements CaptureRuleSetAssemblerService<PropertyCaptureRulesAssembler>
+ * @implements MatchingRuleSetAssemblerService<PropertyMatchingRulesAssembler>
  */
-final class PropertyNestedValidIterableRulesAssemblerService implements CaptureRuleSetAssemblerService
+final class PropertyNestedValidIterableRulesAssemblerService implements MatchingRuleSetAssemblerService
 {
     /** @api */
     public function __construct(
-        /** @var CaptureRuleSetAssemblerService<ObjectRuleSetAssembler> */
-        private readonly CaptureRuleSetAssemblerService $objectRuleSetAssemblerService,
+        /** @var MatchingRuleSetAssemblerService<ObjectMatchingRuleSetAssembler> */
+        private readonly MatchingRuleSetAssemblerService $objectRuleSetAssemblerService,
     ) {
     }
 
-    /** @param PropertyCaptureRulesAssembler $assembler */
-    public function assemble(CaptureRuleSetAssembler $assembler): ?CaptureRule
+    /** @param PropertyMatchingRulesAssembler $assembler */
+    public function assemble(MatchingRuleSetAssembler $assembler): ?MatchingRule
     {
         $propertyRuleSet = $assembler->getParentRule();
         $propertyValue = $propertyRuleSet->getValue();
@@ -52,23 +52,23 @@ final class PropertyNestedValidIterableRulesAssemblerService implements CaptureR
     }
 
     /** @param iterable<array-key,mixed> $items */
-    private function createRuleSet(iterable $items, PropertyRuleSet $parent): CompositeRuleSet
+    private function createRuleSet(iterable $items, PropertyMatchingRuleSet $parent): CompositeMatchingRule
     {
-        return new CompositeRuleSet(
+        return new CompositeMatchingRule(
             $parent,
             $this->getRules($items, $parent),
         );
     }
 
     /** @param iterable<array-key,mixed> $items */
-    private function getRules(iterable $items, PropertyRuleSet $parentRuleSet): Generator
+    private function getRules(iterable $items, PropertyMatchingRuleSet $parentRuleSet): Generator
     {
         foreach ($items as $key => $item) {
             if (!is_object($item)) {
                 continue;
             }
 
-            $rule = $this->getIterableItemCaptureRule($parentRuleSet, $key, $item);
+            $rule = $this->getIterableItemMatchingRule($parentRuleSet, $key, $item);
 
             if (null !== $rule) {
                 yield $rule;
@@ -76,15 +76,15 @@ final class PropertyNestedValidIterableRulesAssemblerService implements CaptureR
         }
     }
 
-    private function getIterableItemCaptureRule(PropertyRuleSet $parentRuleSet, int|string $key, object $object): ?CaptureRule
+    private function getIterableItemMatchingRule(PropertyMatchingRuleSet $parentRuleSet, int|string $key, object $object): ?MatchingRule
     {
-        $wrappedObjectRuleSet = new LazyRuleSet(
-            /** @param LazyRuleSet<CaptureRule> $lazyObjectRuleSet */
-            function (LazyRuleSet $lazyObjectRuleSet) use ($key, $parentRuleSet, $object): ?CaptureRule {
-                $itemOfIterableRule = new ItemOfIterableCaptureRule($key, $parentRuleSet, $lazyObjectRuleSet);
+        $wrappedObjectRuleSet = new LazyMatchingRule(
+            /** @param LazyMatchingRule<MatchingRule> $lazyObjectRuleSet */
+            function (LazyMatchingRule $lazyObjectRuleSet) use ($key, $parentRuleSet, $object): ?MatchingRule {
+                $itemOfIterableRule = new ItemOfIterableMatchingRule($key, $parentRuleSet, $lazyObjectRuleSet);
 
                 return $this->objectRuleSetAssemblerService
-                    ->assemble(new ObjectRuleSetAssembler($object, $itemOfIterableRule))
+                    ->assemble(new ObjectMatchingRuleSetAssembler($object, $itemOfIterableRule))
                 ;
             },
         );

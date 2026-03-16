@@ -10,16 +10,16 @@ use LogicException;
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Catch_;
 use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\Tests\Stub\MessageContainingException;
-use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\Tests\Stub\ObjectPropertyCapturableException;
+use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
 use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Validator\ValidationFailedExceptionFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\Tests\Stub\ConditionalMessage;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchCondition;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\Tests\Stub\SomeValueException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCapturedException;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Closure\Tests\Stub\ConditionalMessage;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Value\Tests\Stub\SomeValueException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\AnException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
@@ -27,16 +27,16 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 #[ExceptionalValidation]
 final class HandleableMessageStub
 {
-    #[Catch_(PropertyCapturableException::class, 'oops')]
+    #[Catch_(AnException::class, 'oops')]
     private int $property;
 
     #[Catch_(CustomFormattedException::class, 'oops', formatter: CustomExceptionViolationFormatter::class)]
     private string $formatted;
 
-    #[Catch_(ObjectPropertyCapturableException::class, 'oops')]
+    #[Catch_(ObjectPropertyMatchedException::class, 'oops')]
     private object $objectProperty;
 
-    #[Catch_(StaticPropertyCapturedException::class, 'oops')]
+    #[Catch_(StaticPropertyMatchedException::class, 'oops')]
     private static string $staticProperty = 'foo';
 
     private NestedHandleableMessage $nestedObject;

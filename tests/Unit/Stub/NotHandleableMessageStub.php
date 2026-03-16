@@ -7,12 +7,12 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
 
 use PhPhD\ExceptionalValidation\Catch_;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\AnException;
 
 final class NotHandleableMessageStub
 {
     public function __construct(
-        #[Catch_(PropertyCapturableException::class, 'not captured')]
+        #[Catch_(AnException::class, 'not matched')]
         private readonly int $property,
     ) {
     }

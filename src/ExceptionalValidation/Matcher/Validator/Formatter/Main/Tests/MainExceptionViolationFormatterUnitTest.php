@@ -8,10 +8,10 @@ use LogicException;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\Tests\Stub\MessageContainingException;
-use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\Tests\Stub\ObjectPropertyCapturableException;
+use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -22,9 +22,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @covers \PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\MainExceptionViolationFormatter
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\CaptureExceptionRule
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyRuleSet
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\MatchExceptionRule
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyMatchingRuleSet
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectMatchingRuleSet
  *
  * @internal
  */
@@ -69,7 +69,7 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
 
     public function testFormatException(): void
     {
-        $originalException = new PropertyCapturableException();
+        $originalException = new AnException();
         $message = HandleableMessageStub::create();
 
         $violationList = $this->matcher->match($originalException, $message);
@@ -103,7 +103,7 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
 
     public function testObjectInvalidValueIsCollected(): void
     {
-        $originalException = new ObjectPropertyCapturableException();
+        $originalException = new ObjectPropertyMatchedException();
         $message = HandleableMessageStub::create()->withObjectProperty($object = new stdClass());
 
         /** @var ConstraintViolationListInterface $violationList */
