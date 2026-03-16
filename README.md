@@ -118,20 +118,20 @@ Exceptional Validation:
 Mark a message with `#[ExceptionalValidation]` attribute. \
 It's used by matcher to include this object for processing.
 
-Define `#[Capture]` exception matching rules for your properties. \
+Define `#[Catch_]` matching rules for your properties. \
 These declaratively describe what properties what exceptions correlate with:
 
 ```php
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 
 #[ExceptionalValidation]
 class RegisterUserCommand
 {
-    #[Capture(LoginAlreadyTakenException::class, 'auth.login.already_taken')]
+    #[Catch_(LoginAlreadyTakenException::class, 'auth.login.already_taken')]
     public string $login;
 
-    #[Capture(WeakPasswordException::class, 'auth.password.weak')]
+    #[Catch_(WeakPasswordException::class, 'auth.password.weak')]
     public string $password;
 }
 ```
@@ -182,11 +182,11 @@ A comparison of the approaches would look something like this:
  class RegisterUserCommand
  {
 -    #[App\Assert\UniqueLogin]
-+    #[Capture(LoginAlreadyTakenException::class, 'auth.login.already_taken')]
++    #[Catch_(LoginAlreadyTakenException::class, 'auth.login.already_taken')]
      public string $login;
 
 -    #[Assert\PasswordStrength(minScore: 2)]
-+    #[Capture(WeakPasswordException::class, 'auth.password.weak')]
++    #[Catch_(WeakPasswordException::class, 'auth.password.weak')]
      public string $password;
  }
 ```
@@ -371,10 +371,10 @@ Herein, you create a Container, compile it, and use to get `ExceptionMatcher`.
 
 ## Features 📙
 
-`#[ExceptionalValidation]` and `#[Capture]` attributes allow implementing very flexible matching rules. \
+`#[ExceptionalValidation]` and `#[Catch_]` attributes allow implementing very flexible matching rules. \
 It's highly recommended to see the examples below to know the power of these solutions.
 
-### Capture Conditions
+### Match Conditions
 
 #### Exception Class Condition
 
@@ -385,12 +385,12 @@ acting similarly to `catch` operation.
 
 ```php
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 
 #[ExceptionalValidation]
 class PublishMessageCommand
 {
-    #[Capture(MessageNotFoundException::class)]
+    #[Catch_(MessageNotFoundException::class)]
     public string $messageId;
 }
 ```
@@ -402,13 +402,13 @@ specifying whence it was to be raised from (class name and method name).
 
 ```php
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 use Symfony\Component\Uid\Uuid;
 
 #[ExceptionalValidation]
 class ConfirmPackageCommand
 {
-    #[Capture(\InvalidArgumentException::class, from: [Uuid::class, 'fromString'])]
+    #[Catch_(\InvalidArgumentException::class, from: [Uuid::class, 'fromString'])]
     public string $uid;
 }
 ```
@@ -421,21 +421,21 @@ and check whether the exception was originated from that origin `from:` place.
 
 #### When-Closure Condition
 
-`#[Capture]` attribute allows to specify `when:` argument with a callback function to be used to determine \
+`#[Catch_]` attribute allows to specify `when:` argument with a callback function to be used to determine \
 whether particular instance of the exception should be captured for a given property or not. \
 This is particularly useful when the same exception could be originated from multiple places:
 
 ```php
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 
 #[ExceptionalValidation]
 class TransferMoneyCommand
 {
-    #[Capture(BlockedCardException::class, when: [self::class, 'isWithdrawalCardBlocked'])]
+    #[Catch_(BlockedCardException::class, when: [self::class, 'isWithdrawalCardBlocked'])]
     public int $withdrawalCardId;
 
-    #[Capture(BlockedCardException::class, when: [self::class, 'isDepositCardBlocked'])]
+    #[Catch_(BlockedCardException::class, when: [self::class, 'isDepositCardBlocked'])]
     public int $depositCardId;
 
     public function isWithdrawalCardBlocked(BlockedCardException $exception): bool
@@ -466,14 +466,14 @@ using `InvalidUidExceptionMatchCondition`:
 
 ```php
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Uid\InvalidUidExceptionMatchCondition;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 
 #[ExceptionalValidation]
 class ApproveVerificationCommand
 {
-    #[Capture(InvalidUidException::class, condition: InvalidUidExceptionMatchCondition::class)]
+    #[Catch_(InvalidUidException::class, condition: InvalidUidExceptionMatchCondition::class)]
     public string $id;
 }
 ```
@@ -496,16 +496,16 @@ This way it's possible to avoid much of the boilerplate code, keeping it clean:
 
 ```php
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
 
 #[ExceptionalValidation]
 class TransferMoneyCommand
 {
-    #[Capture(BlockedCardException::class, condition: ExceptionValueMatchCondition::class)]
+    #[Catch_(BlockedCardException::class, condition: ExceptionValueMatchCondition::class)]
     public int $withdrawalCardId;
 
-    #[Capture(BlockedCardException::class, condition: ExceptionValueMatchCondition::class)]
+    #[Catch_(BlockedCardException::class, condition: ExceptionValueMatchCondition::class)]
     public int $depositCardId;
 }
 ```
@@ -541,14 +541,14 @@ Specify `ValidationFailedExceptionMatchCondition` to correlate validation except
 
 ```php
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchCondition;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 #[ExceptionalValidation]
 class RegisterUserCommand
 {
-    #[Capture(
+    #[Catch_(
         exception: ValidationFailedException::class,
         from: Password::class,
         condition: ValidationFailedExceptionMatchCondition::class,
@@ -598,17 +598,17 @@ final class CardNumberValidationFailedException extends \RuntimeException implem
 }
 ```
 
-Then, specify `ViolationListExceptionFormatter` as a `formatter:` for the `#[Capture]` attribute:
+Then, specify `ViolationListExceptionFormatter` as a `formatter:` for the `#[Catch_]` attribute:
 
 ```php
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
 
 #[ExceptionalValidation]
 class IssueCreditCardCommand
 {
-    #[Capture(
+    #[Catch_(
         exception: CardNumberValidationFailedException::class, 
         formatter: ViolationListExceptionFormatter::class,
     )]
@@ -619,7 +619,7 @@ class IssueCreditCardCommand
 Thus, once `cardNumber` property gets a hold of `CardNumberValidationFailedException`, \
 formatter makes sure that a proper representation of this exception in a `ConstraintViolation` form is created for this property.
 
-> If `#[Capture]` attribute specified a message, \
+> If `#[Catch_]` attribute specified a message, \
 > it would've been ignored in favour of `ConstraintViolationList` messages.
 
 
@@ -689,19 +689,19 @@ services:
 > this will be done automatically by the service container, \
 > owing to the fact that `MatchedExceptionFormatter` interface is implemented.
 
-Finally, specify formatter in the `#[Capture]` attribute:
+Finally, specify formatter in the `#[Catch_]` attribute:
 
 ```php
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 
 #[ExceptionalValidation]
 final class RegisterUserCommand
 {
-    #[Capture(LoginAlreadyTakenException::class, formatter: LoginAlreadyTakenViolationFormatter::class)]
+    #[Catch_(LoginAlreadyTakenException::class, formatter: LoginAlreadyTakenViolationFormatter::class)]
     private string $login;
 
-    #[Capture(WeakPasswordException::class, formatter: WeakPasswordViolationFormatter::class)]
+    #[Catch_(WeakPasswordException::class, formatter: WeakPasswordViolationFormatter::class)]
     private string $password;
 }
 ```
@@ -724,7 +724,7 @@ providing a respective property path for the created violations.
 
 ```php
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ExceptionalValidation]
@@ -740,7 +740,7 @@ class OrderItemDto
 {
     public int $productId;
 
-    #[Capture(InsufficientStockException::class, when: [self::class, 'isStockExceptionForThisItem'])]
+    #[Catch_(InsufficientStockException::class, when: [self::class, 'isStockExceptionForThisItem'])]
     public string $quantity;
 
     public function isStockExceptionForThisItem(InsufficientStockException $exception): bool

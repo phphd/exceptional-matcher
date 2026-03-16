@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure;
 
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
@@ -18,9 +18,9 @@ use Webmozart\Assert\Assert;
  */
 final class ClosureMatchConditionFactory implements MatchConditionFactory
 {
-    public function getCondition(Capture $capture, CaptureRule $parent): ?MatchCondition
+    public function getCondition(Catch_ $catch, CaptureRule $parent): ?MatchCondition
     {
-        $when = $capture->getWhen();
+        $when = $catch->getWhen();
 
         if (null === $when) {
             return null;

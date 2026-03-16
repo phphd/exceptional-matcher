@@ -8,7 +8,7 @@ use ArrayObject;
 use InvalidArgumentException;
 use LogicException;
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\Tests\Stub\MessageContainingException;
 use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\Tests\Stub\ObjectPropertyCapturableException;
 use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Validator\ValidationFailedExceptionFormatter;
@@ -23,20 +23,20 @@ use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyCaptured
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-/** @psalm-suppress InvalidAttribute ("Attribute Capture is not repeatable") */
+/** @psalm-suppress InvalidAttribute ("Attribute Catch_ is not repeatable") */
 #[ExceptionalValidation]
 final class HandleableMessageStub
 {
-    #[Capture(PropertyCapturableException::class, 'oops')]
+    #[Catch_(PropertyCapturableException::class, 'oops')]
     private int $property;
 
-    #[Capture(CustomFormattedException::class, 'oops', formatter: CustomExceptionViolationFormatter::class)]
+    #[Catch_(CustomFormattedException::class, 'oops', formatter: CustomExceptionViolationFormatter::class)]
     private string $formatted;
 
-    #[Capture(ObjectPropertyCapturableException::class, 'oops')]
+    #[Catch_(ObjectPropertyCapturableException::class, 'oops')]
     private object $objectProperty;
 
-    #[Capture(StaticPropertyCapturedException::class, 'oops')]
+    #[Catch_(StaticPropertyCapturedException::class, 'oops')]
     private static string $staticProperty = 'foo';
 
     private NestedHandleableMessage $nestedObject;
@@ -45,30 +45,30 @@ final class HandleableMessageStub
 
     private ArrayObject $nestedIterableItems; // @phpstan-ignore missingType.generics
 
-    #[Capture(ValidationFailedException::class, from: Email::class)]
+    #[Catch_(ValidationFailedException::class, from: Email::class)]
     private string $email = 'matched!';
 
-    #[Capture(InvalidArgumentException::class, from: [Uuid::class, 'fromString'])]
+    #[Catch_(InvalidArgumentException::class, from: [Uuid::class, 'fromString'])]
     private string $uid;
 
-    #[Capture(LogicException::class, 'oops')]
+    #[Catch_(LogicException::class, 'oops')]
     private string $messageText;
 
-    #[Capture(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
-    #[Capture(ValidationFailedException::class, condition: ValidationFailedExceptionMatchCondition::class, formatter: ValidationFailedExceptionFormatter::class)]
+    #[Catch_(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
+    #[Catch_(ValidationFailedException::class, condition: ValidationFailedExceptionMatchCondition::class, formatter: ValidationFailedExceptionFormatter::class)]
     private string $notMatchedProperty = 'not matched';
 
-    #[Capture(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
-    #[Capture(ValidationFailedException::class, condition: ValidationFailedExceptionMatchCondition::class, formatter: ValidationFailedExceptionFormatter::class)]
+    #[Catch_(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
+    #[Catch_(ValidationFailedException::class, condition: ValidationFailedExceptionMatchCondition::class, formatter: ValidationFailedExceptionFormatter::class)]
     private string $matchedProperty = 'matched!';
 
-    #[Capture(SomeValueException::class, 'oops')]
+    #[Catch_(SomeValueException::class, 'oops')]
     private string $anotherMatchedAsNoCondition;
 
-    #[Capture(MessageContainingException::class)]
+    #[Catch_(MessageContainingException::class)]
     private int $fallBackToExceptionMessage;
 
-    #[Capture(MessageContainingException::class, '')]
+    #[Catch_(MessageContainingException::class, '')]
     private string $emptyTranslationMessage;
 
     private function __construct()

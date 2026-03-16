@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Delegating;
 
 use LogicException;
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
@@ -31,9 +31,9 @@ final class DelegatingMatchConditionFactory implements MatchConditionFactory
     ) {
     }
 
-    public function getCondition(Capture $capture, CaptureRule $parent): ?MatchCondition
+    public function getCondition(Catch_ $catch, CaptureRule $parent): ?MatchCondition
     {
-        $conditionFactoryId = $capture->getCondition();
+        $conditionFactoryId = $catch->getCondition();
 
         if (null === $conditionFactoryId) {
             return null;
@@ -46,6 +46,6 @@ final class DelegatingMatchConditionFactory implements MatchConditionFactory
         $conditionFactory = $this->conditionFactoryRegistry->get($conditionFactoryId);
 
         /** @var MatchConditionFactory<Throwable> $conditionFactory */
-        return $conditionFactory->getCondition($capture, $parent);
+        return $conditionFactory->getCondition($catch, $parent);
     }
 }

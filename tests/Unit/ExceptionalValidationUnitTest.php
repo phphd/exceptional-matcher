@@ -26,7 +26,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @covers \PhPhD\ExceptionalValidation
- * @covers \PhPhD\ExceptionalValidation\Capture
+ * @covers \PhPhD\ExceptionalValidation\Catch_
  * @covers \PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension
  * @covers \PhPhD\ExceptionalValidation\Matcher\MainExceptionMatcher
  * @covers \PhPhD\ExceptionalValidation\Matcher\Validator\ExceptionToViolationListMatcher

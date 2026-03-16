@@ -137,7 +137,7 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
         /** @var ConstraintViolationInterface $violation2 */
         $violation2 = $violationList[1];
 
-        // When #[Capture] message is specified as an empty string, it is used w/o any fallbacks to exception message
+        // When #[Catch_] message is specified as an empty string, it is used w/o any fallbacks to exception message
         self::assertSame('emptyTranslationMessage', $violation2->getPropertyPath());
         self::assertSame('', $violation2->getMessage());
     }
