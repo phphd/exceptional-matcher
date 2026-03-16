@@ -37,7 +37,7 @@
         </PropertyNotSetInConstructor>
         <UnnecessaryVarAnnotation>
             <errorLevel type="suppress">
-                <file name="src/ExceptionalValidation/Rule/Object/Property/Capture/Condition/Composite/CompositeMatchConditionFactory.php"/>
+                <file name="src/ExceptionalValidation/Rule/Object/Property/Match/Condition/Composite/CompositeMatchConditionFactory.php"/>
             </errorLevel>
         </UnnecessaryVarAnnotation>
         <LessSpecificImplementedReturnType>
