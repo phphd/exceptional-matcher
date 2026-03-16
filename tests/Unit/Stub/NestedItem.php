@@ -6,19 +6,19 @@ namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
 
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Catch_;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemMatchedException;
 
 #[ExceptionalValidation]
 final class NestedItem
 {
     public function __construct(
-        #[Catch_(NestedItemCapturedException::class, 'oops', when: [self::class, 'matchesValue'])]
+        #[Catch_(NestedItemMatchedException::class, 'oops', when: [self::class, 'matchesValue'])]
         private readonly int $property,
     ) {
     }
 
     /** @api */
-    public function matchesValue(NestedItemCapturedException $exception): bool
+    public function matchesValue(NestedItemMatchedException $exception): bool
     {
         return $exception->getCode() === $this->property;
     }
