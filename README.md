@@ -255,7 +255,7 @@ Add `phd_exceptional_validation` middleware to the list:
                      - doctrine_transaction
 ```
 
-Once you have done this, the middleware will take care of capturing exceptions and re-throwing
+Once you have done this, the middleware will take care of exception capturing, matching, and re-throwing
 `ExceptionalValidationFailedException`.
 
 You can use it to catch and process it:
@@ -278,8 +278,8 @@ This exception just wraps respectively created `ConstraintViolationList` with al
 
 Primarily, it works as
 a [Command Bus](https://symfony.com/doc/current/messenger.html#multiple-buses-command-event-buses)
-middleware that intercepts exceptions and performs matching to the relevant form properties by an exception matcher,
-eventually formatting captured exceptions as standard [SF Validator](https://symfony.com/doc/current/validation.html)
+middleware that intercepts exceptions and performs their matching to object's properties by an exception matcher,
+eventually formatting matched exceptions as standard [SF Validator](https://symfony.com/doc/current/validation.html)
 violations.
 
 > Besides that, `ExceptionMatcher` is also available for direct use w/o any middleware. \
@@ -422,7 +422,7 @@ and check whether the exception was originated from that origin `from:` place.
 #### When-Closure Condition
 
 `#[Catch_]` attribute allows to specify `when:` argument with a callback function to be used to determine \
-whether particular instance of the exception should be captured for a given property or not. \
+whether particular instance of the exception should be matched with a given property or not. \
 This is particularly useful when the same exception could be originated from multiple places:
 
 ```php
@@ -452,10 +452,10 @@ class TransferMoneyCommand
 
 In this example, once we've matched `BlockedCardException` by class, custom closure is called.
 
-If `isWithdrawalCardBlocked()` callback returns `true`, then exception is captured for `withdrawalCardId` property.
+If `isWithdrawalCardBlocked()` callback returns `true`, the exception is matched for `withdrawalCardId` property.
 
 Otherwise, we analyse `depositCardId`, and if `isDepositCardBlocked()` callback returns `true`, \
-then the exception is captured on this property.
+then the exception is matched for this property.
 
 If neither of them returned `true`, then exception is re-thrown upper in the stack.
 
@@ -467,7 +467,7 @@ using `InvalidUidExceptionMatchCondition`:
 ```php
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Catch_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Uid\InvalidUidExceptionMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Uid\InvalidUidExceptionMatchCondition;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 
 #[ExceptionalValidation]
@@ -478,8 +478,8 @@ class ApproveVerificationCommand
 }
 ```
 
-This condition compares exception's `invalidValue` with the property value.
-If they are equal, the exception is captured on this property.
+This condition compares exception's `invalidValue` with the property value. \
+If they are equal, the exception is matched for this property, otherwise other properties are analysed (if any). 
 
 Only string property values are allowed for this condition.
 
@@ -488,7 +488,7 @@ Only string property values are allowed for this condition.
 
 #### ValueException Condition
 
-Since in most cases capture conditions come down to the simple value comparison, it's easier to make the exception
+Since in most cases matching conditions come down to the simple value comparison, it's easier to make the exception
 implement `ValueException` interface and specify `condition: ExceptionValueMatchCondition::class` instead of
 implementing `when:` closure every time.
 
@@ -497,7 +497,7 @@ This way it's possible to avoid much of the boilerplate code, keeping it clean:
 ```php
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Catch_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ExceptionValueMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchCondition;
 
 #[ExceptionalValidation]
 class TransferMoneyCommand
@@ -510,13 +510,13 @@ class TransferMoneyCommand
 }
 ```
 
-In this example `BlockedCardException` could be captured either to `withdrawalCardId` or `depositCardId`, \
+In this example `BlockedCardException` could be matched either with `withdrawalCardId` or with `depositCardId`, \
 depending on the `cardId` value from the exception.
 
 And `BlockedCardException` itself must implement `ValueException` interface:
 
 ```php
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Value\ValueException;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Value\ValueException;
 
 class BlockedCardException extends DomainException implements ValueException
 {
@@ -542,7 +542,7 @@ Specify `ValidationFailedExceptionMatchCondition` to correlate validation except
 ```php
 use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Catch_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Validator\ValidationFailedExceptionMatchCondition;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchCondition;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 #[ExceptionalValidation]
@@ -758,7 +758,7 @@ by `InsufficientStockException` class name, and custom closure condition that ma
 The resulting property path of the caught violation includes all intermediary items, starting from the root of the tree,
 proceeding down to the leaf item, where the exception was actually caught.
 
-### Capturing multiple exceptions
+### Matching multiple exceptions
 
 Typically, validation is expected to return all present violations at once (not just the first one) so they can be shown
 to the user.

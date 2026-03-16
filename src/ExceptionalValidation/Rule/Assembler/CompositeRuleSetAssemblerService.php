@@ -5,34 +5,34 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Assembler;
 
 use ArrayIterator;
-use PhPhD\ExceptionalValidation\Rule\CompositeRuleSet;
+use PhPhD\ExceptionalValidation\Rule\CompositeMatchingRule;
 use Webmozart\Assert\Assert;
 
 /**
  * @internal
  *
- * @template T of CaptureRuleSetAssembler
+ * @template T of MatchingRuleSetAssembler
  *
- * @implements CaptureRuleSetAssemblerService<T>
+ * @implements MatchingRuleSetAssemblerService<T>
  */
-final class CompositeRuleSetAssemblerService implements CaptureRuleSetAssemblerService
+final class CompositeRuleSetAssemblerService implements MatchingRuleSetAssemblerService
 {
     /** @api */
     public function __construct(
-        /** @var iterable<CaptureRuleSetAssemblerService<T>> */
+        /** @var iterable<MatchingRuleSetAssemblerService<T>> */
         private readonly iterable $assemblers,
     ) {
     }
 
     /** @param T $assembler */
-    public function assemble(CaptureRuleSetAssembler $assembler): ?CompositeRuleSet
+    public function assemble(MatchingRuleSetAssembler $assembler): ?CompositeMatchingRule
     {
         $rules = new ArrayIterator();
 
         $parentRule = $assembler->getParentRule();
         Assert::notNull($parentRule);
 
-        $ruleSet = new CompositeRuleSet($parentRule, $rules);
+        $ruleSet = new CompositeMatchingRule($parentRule, $rules);
 
         foreach ($this->assemblers as $a) {
             $innerRuleSet = $a->assemble($assembler);

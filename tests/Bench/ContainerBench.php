@@ -8,8 +8,8 @@ use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemCapturedException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\PropertyCapturableException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\AnException;
+use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemMatchedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedItem;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NotHandleableMessageStub;
@@ -48,7 +48,7 @@ final class ContainerBench
 
         $matcher = $this->createMatcher($isProxyAllowed);
 
-        $exception = new PropertyCapturableException();
+        $exception = new AnException();
         $message = new NotHandleableMessageStub(123);
 
         $violationList = $matcher->match($exception, $message);
@@ -75,7 +75,7 @@ final class ContainerBench
 
         $matcher = $this->createMatcher($isProxyAllowed);
 
-        $originalException = new NestedItemCapturedException(code: 2);
+        $originalException = new NestedItemMatchedException(code: 2);
         $message = HandleableMessageStub::create()->withNestedIterableItems(new ArrayObject([
             'first' => new NestedItem(1),
             'second' => new NestedItem(2),
