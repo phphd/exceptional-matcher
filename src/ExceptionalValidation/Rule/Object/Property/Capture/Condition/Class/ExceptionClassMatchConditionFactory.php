@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Class;
 
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchConditionFactory;
 use Throwable;
@@ -16,8 +16,8 @@ use Throwable;
  */
 final class ExceptionClassMatchConditionFactory implements MatchConditionFactory
 {
-    public function getCondition(Capture $capture, CaptureRule $parent): ExceptionClassMatchCondition
+    public function getCondition(Catch_ $catch, CaptureRule $parent): ExceptionClassMatchCondition
     {
-        return new ExceptionClassMatchCondition($capture->getExceptionClass());
+        return new ExceptionClassMatchCondition($catch->getExceptionClass());
     }
 }

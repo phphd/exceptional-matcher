@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Closure\Tests\Stub;
 
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 
 #[ExceptionalValidation]
 final class ConditionalMessage
 {
-    #[Capture(ConditionallyCapturedException::class, 'oops', when: [self::class, 'firstPropertyMatchesException'])]
+    #[Catch_(ConditionallyCaughtException::class, 'oops', when: [self::class, 'firstPropertyMatchesException'])]
     private int $firstProperty;
 
-    #[Capture(ConditionallyCapturedException::class, 'oops', when: [self::class, 'secondPropertyMatchesException'])]
+    #[Catch_(ConditionallyCaughtException::class, 'oops', when: [self::class, 'secondPropertyMatchesException'])]
     private int $secondProperty;
 
     public static function createWithConditionalProperties(int $firstConditionalProperty, int $secondConditionalProperty): self
@@ -26,13 +26,13 @@ final class ConditionalMessage
     }
 
     /** @api */
-    public function firstPropertyMatchesException(ConditionallyCapturedException $exception): bool
+    public function firstPropertyMatchesException(ConditionallyCaughtException $exception): bool
     {
         return $exception->getConditionValue() === $this->firstProperty;
     }
 
     /** @api */
-    public function secondPropertyMatchesException(ConditionallyCapturedException $exception): bool
+    public function secondPropertyMatchesException(ConditionallyCaughtException $exception): bool
     {
         return $exception->getConditionValue() === $this->secondProperty;
     }
