@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Clo
 
 use RuntimeException;
 
-final class ConditionallyCapturedException extends RuntimeException
+final class ConditionallyCaughtException extends RuntimeException
 {
     public function __construct(
         private readonly int $conditionValue,

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Composite;
 
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 use PhPhD\ExceptionalValidation\Rule\CaptureRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\Bool\FalseCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition\MatchCondition;
@@ -29,12 +29,12 @@ final class CompositeMatchConditionFactory implements MatchConditionFactory
     ) {
     }
 
-    public function getCondition(Capture $capture, CaptureRule $parent): ?MatchCondition
+    public function getCondition(Catch_ $catch, CaptureRule $parent): ?MatchCondition
     {
         $conditions = [];
 
         foreach ($this->factories as $factory) {
-            $matchCondition = $factory->getCondition($capture, $parent);
+            $matchCondition = $factory->getCondition($catch, $parent);
 
             if ($matchCondition instanceof FalseCondition) {
                 return $matchCondition;

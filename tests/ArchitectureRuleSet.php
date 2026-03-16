@@ -14,7 +14,7 @@ use PHPat\Test\Attributes\TestRule;
 use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\PHPat;
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Capture;
+use PhPhD\ExceptionalValidation\Catch_;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\CaptureRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectRuleSetAssembler;
@@ -157,7 +157,7 @@ final class ArchitectureRuleSet
                     $this->model(),
                     $this->matchCondition(),
                     Selector::classname(ExceptionalValidation::class),
-                    Selector::classname(Capture::class),
+                    Selector::classname(Catch_::class),
                     Selector::classname(Valid::class),
                     Selector::classname(Assert::class),
                 ],
@@ -165,7 +165,7 @@ final class ArchitectureRuleSet
             'matchCondition' => [
                 'deps' => [
                     $this->model(),
-                    Selector::classname(Capture::class),
+                    Selector::classname(Catch_::class),
                     Selector::classname(Assert::class),
                     Selector::inNamespace('Psr\Container'),
                     // Third-party

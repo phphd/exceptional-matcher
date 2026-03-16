@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Capture\Condition;
 use Throwable;
 
 /**
- * @internal
+ * @internal (this might be exposed as an api in some future versions)
  *
  * @phpstan-template-contravariant T of Throwable
  *

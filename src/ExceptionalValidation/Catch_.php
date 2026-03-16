@@ -21,7 +21,7 @@ use function is_string;
  * @template T2 of Throwable (redundant, but can't be omitted due to {@see https://github.com/phpstan/phpstan/issues/13875})
  */
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
-final class Capture
+final class Catch_
 {
     /**
      * @phpstan-param ?class-string<MatchCondition<T1>> $condition
