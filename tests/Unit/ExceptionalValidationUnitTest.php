@@ -25,7 +25,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * @covers \PhPhD\ExceptionalValidation
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Try_
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_
  * @covers \PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension
  * @covers \PhPhD\ExceptionalValidation\MainExceptionMatcher

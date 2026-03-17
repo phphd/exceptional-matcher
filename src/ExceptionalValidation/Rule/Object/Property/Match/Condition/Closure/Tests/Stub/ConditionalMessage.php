@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Closure\Tests\Stub;
 
-use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 
-#[ExceptionalValidation]
+#[Try_]
 final class ConditionalMessage
 {
     #[Catch_(ConditionallyCaughtException::class, 'oops', when: [self::class, 'firstPropertyMatchesException'])]
