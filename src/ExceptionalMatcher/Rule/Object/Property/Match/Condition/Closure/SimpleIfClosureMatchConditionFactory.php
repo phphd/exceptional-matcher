@@ -16,25 +16,25 @@ use Webmozart\Assert\Assert;
  *
  * @implements MatchConditionFactory<Throwable>
  */
-final class ClosureMatchConditionFactory implements MatchConditionFactory
+final class SimpleIfClosureMatchConditionFactory implements MatchConditionFactory
 {
     public function getCondition(Catch_ $catch, MatchingRule $parent): ?MatchCondition
     {
-        $when = $catch->getWhen();
+        $if = $catch->getIf();
 
-        if (null === $when) {
+        if (null === $if) {
             return null;
         }
 
-        Assert::methodExists(...$when);
+        Assert::methodExists(...$if);
 
         $object = $parent->getEnclosingObject();
 
-        if ($when[0] === $object::class) {
-            $when = [$object, $when[1]];
+        if ($if[0] === $object::class) {
+            $if = [$object, $if[1]];
         }
 
         /** @phpstan-ignore callable.nonCallable */
-        return new ClosureMatchCondition($when(...));
+        return new ClosureMatchCondition($if(...));
     }
 }

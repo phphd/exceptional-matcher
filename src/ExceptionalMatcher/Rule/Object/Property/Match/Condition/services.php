@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition;
 
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionFactory;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure\ClosureMatchConditionFactory;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure\SimpleIfClosureMatchConditionFactory;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionFactory;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Delegating\DelegatingMatchConditionFactory;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\ExceptionOriginMatchConditionFactory;
@@ -28,7 +28,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
                     ->args([
                         tagged_locator(MatchConditionFactory::class, 'id'),
                     ]),
-                inline_service(ClosureMatchConditionFactory::class),
+                inline_service(SimpleIfClosureMatchConditionFactory::class),
             ],
         ])
     ;
