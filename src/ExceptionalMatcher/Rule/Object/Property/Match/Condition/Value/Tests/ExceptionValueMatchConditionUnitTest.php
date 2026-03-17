@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\Tests\Stub\SomeValueException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;

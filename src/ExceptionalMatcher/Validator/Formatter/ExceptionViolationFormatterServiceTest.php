@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Validator\Formatter;
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
-use PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\Delegating\DelegatingMatchedExceptionFormatter;
-use PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
-use PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\DelegatingMatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
+use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\MainExceptionViolationFormatter;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\ValidationFailedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListException;

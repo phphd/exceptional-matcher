@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object;
 
-use PhPhD\ExceptionalMatcher\Rule\Exception\ExceptionReciprocal;
+use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 

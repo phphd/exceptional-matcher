@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Exception;
+namespace PhPhD\ExceptionalMatcher\Exception;
 
 use Countable;
-use PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use Throwable;
 
 use function array_merge;

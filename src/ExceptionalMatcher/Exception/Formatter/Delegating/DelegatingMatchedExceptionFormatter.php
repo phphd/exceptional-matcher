@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\Delegating;
+namespace PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating;
 
 use LogicException;
-use PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\MatchedExceptionFormatter;
-use PhPhD\ExceptionalMatcher\Rule\Exception\MatchedException;
+use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Exception\MatchedException;
 use Psr\Container\ContainerInterface;
 use Throwable;
 

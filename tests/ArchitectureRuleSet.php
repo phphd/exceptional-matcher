@@ -16,6 +16,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssemble
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchConditionFactory;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
@@ -68,6 +69,12 @@ final class ArchitectureRuleSet
     public function testMatchConditionDependencies(): BuildStep
     {
         return $this->layerRule('matchCondition');
+    }
+
+    #[TestRule]
+    public function testExceptionDependencies(): BuildStep
+    {
+        return $this->layerRule('exception');
     }
 
     #[TestRule]
@@ -131,6 +138,7 @@ final class ArchitectureRuleSet
             'validatorMatcher' => [
                 'deps' => [
                     $this->matcher(),
+                    $this->exception(),
                     $this->model(),
                     Selector::inNamespace('Symfony\Component\Validator'),
                     Selector::classname(TranslatorInterface::class),
@@ -142,6 +150,7 @@ final class ArchitectureRuleSet
                 'deps' => [
                     Selector::classname(MatchingRuleSetAssemblerService::class),
                     Selector::classname(ObjectMatchingRuleSetAssembler::class),
+                    $this->exception(),
                     $this->model(),
                     Selector::AllOf(
                         Selector::isInterface(),
@@ -171,8 +180,17 @@ final class ArchitectureRuleSet
                     Selector::classname(InvalidUidException::class),
                 ],
             ],
+            'exception' => [
+                'deps' => [
+                    Selector::classname(MatchExceptionRule::class),
+                    Selector::classname(Assert::class),
+                    Selector::classname(ContainerInterface::class),
+                ],
+                'description' => 'Exception Models must not depend on anything else',
+            ],
             'model' => [
                 'deps' => [
+                    $this->exception(),
                     Selector::classname(Assert::class),
                     Selector::classname(ContainerInterface::class),
                     Selector::classname(ValidationFailedException::class),
@@ -194,6 +212,7 @@ final class ArchitectureRuleSet
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher'),
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Bundle')),
+            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Exception')),
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule')),
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator')),
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Upgrade')),
@@ -239,6 +258,11 @@ final class ArchitectureRuleSet
             Selector::classname(MatchConditionFactory::class),
             Selector::implements(MatchConditionFactory::class),
         );
+    }
+
+    public function exception(): SelectorInterface
+    {
+        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Exception');
     }
 
     public function model(): SelectorInterface
