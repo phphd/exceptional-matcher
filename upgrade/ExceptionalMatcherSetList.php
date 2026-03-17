@@ -13,7 +13,7 @@ use function sprintf;
 use function version_compare;
 
 /** @api */
-final class ExceptionalValidationSetList
+final class ExceptionalMatcherSetList
 {
     private const VERSIONS = [
         '2.0' => __DIR__.'/2.0.php',
