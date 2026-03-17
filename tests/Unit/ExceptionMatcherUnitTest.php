@@ -36,9 +36,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalMatcher\Rule\CompositeMatchingRule
  * @covers \PhPhD\ExceptionalMatcher\Rule\LazyMatchingRule
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath
- * @covers \PhPhD\ExceptionalMatcher\Rule\Exception\ExceptionReciprocal
- * @covers \PhPhD\ExceptionalMatcher\Rule\Exception\MatchedException
- * @covers \PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList
+ * @covers \PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal
+ * @covers \PhPhD\ExceptionalMatcher\Exception\MatchedException
+ * @covers \PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList
  * @covers \PhPhD\ExceptionalMatcher\Rule\Assembler\CompositeRuleSetAssemblerService
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssemblerService

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Validator;
 
 use Closure;
+use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\MatchedExceptionFormatter;
-use PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Validator\ConstraintViolationInterface;

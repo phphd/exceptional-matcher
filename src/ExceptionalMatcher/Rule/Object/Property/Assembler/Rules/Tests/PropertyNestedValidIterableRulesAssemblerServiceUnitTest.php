@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Assembler\Rules\Tests;
 
 use ArrayObject;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Assembler\Rules\Tests\Stub\RootObject;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
