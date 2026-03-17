@@ -41,7 +41,7 @@ final class Catch_
         /** @var ?array{object|class-string,string} */
         private readonly ?array $when = null,
         /** @note formatter type is contravariant to the exception */
-        private readonly string $formatter = MainExceptionViolationFormatter::class, // @phpstan-ignore phpat.testModelDependencies (really, that's a fair catch - it should not depend on the formatter)
+        private readonly string $formatter = MainExceptionViolationFormatter::class, // @phpstan-ignore phpat.testModelDependencies (really, this's a fair catch - it should not depend on the formatter)
     ) {
         if (null !== $this->when) {
             Assert::count($this->when, 2);
