@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Origi
 
 use InvalidArgumentException;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
-use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
+use PhPhD\ExceptionalValidation\ExceptionMatcher;
 use PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Email;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;

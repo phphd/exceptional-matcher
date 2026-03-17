@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests;
 
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
-use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
-use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\ExceptionViolationFormatter;
+use PhPhD\ExceptionalValidation\ExceptionMatcher;
 use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
+use PhPhD\ExceptionalValidation\Validator\Formatter\ExceptionViolationFormatter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Validator\ConstraintViolationInterface;

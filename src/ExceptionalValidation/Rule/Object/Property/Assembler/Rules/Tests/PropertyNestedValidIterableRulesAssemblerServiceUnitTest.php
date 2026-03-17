@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\Tests
 
 use ArrayObject;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
-use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
+use PhPhD\ExceptionalValidation\ExceptionMatcher;
 use PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\Tests\Stub\RootObject;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemMatchedException;

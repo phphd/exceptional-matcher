@@ -6,8 +6,7 @@ namespace PhPhD\ExceptionalValidation\Tests\Unit;
 
 use ArrayObject;
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
-use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
-use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
+use PhPhD\ExceptionalValidation\ExceptionMatcher;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
@@ -18,6 +17,7 @@ use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedHandleableMessage;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedItem;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NotHandleableMessageStub;
+use PhPhD\ExceptionalValidation\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -26,10 +26,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @covers \PhPhD\ExceptionalValidation
- * @covers \PhPhD\ExceptionalValidation\Catch_
+ * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_
  * @covers \PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension
- * @covers \PhPhD\ExceptionalValidation\Matcher\MainExceptionMatcher
- * @covers \PhPhD\ExceptionalValidation\Matcher\Validator\ExceptionToViolationListMatcher
+ * @covers \PhPhD\ExceptionalValidation\MainExceptionMatcher
+ * @covers \PhPhD\ExceptionalValidation\Validator\ExceptionToViolationListMatcher
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectMatchingRuleSet
  * @covers \PhPhD\ExceptionalValidation\Rule\ItemOfIterableMatchingRule
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyMatchingRuleSet
