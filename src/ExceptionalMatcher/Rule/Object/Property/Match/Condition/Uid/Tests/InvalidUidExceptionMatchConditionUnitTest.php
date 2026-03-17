@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\Tests;
 
 use InvalidArgumentException;
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\Tests\Stub\MessageWithInvalidUidCondition;
@@ -21,7 +21,7 @@ use function property_exists;
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\InvalidUidExceptionMatchConditionFactory
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionFactory
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Bool\FalseCondition
- * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
  *
  * @internal
  */
@@ -38,7 +38,7 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
             self::markTestSkipped('Installed version of Symfony Uid component does not fit for matching.');
         }
 
-        $container = (new PhdExceptionalValidationExtension())->getContainer([
+        $container = (new PhdExceptionalMatcherExtension())->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);

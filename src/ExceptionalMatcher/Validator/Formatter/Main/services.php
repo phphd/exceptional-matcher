@@ -16,7 +16,7 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $builder): void {
-    if (false === $builder->getParameter('phd_exceptional_validation.validator_available')) {
+    if (false === $builder->getParameter('phd_exceptional_matcher.validator_available')) {
         return;
     }
 

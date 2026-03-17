@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Tests\Bench;
 
 use ArrayObject;
 use LogicException;
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedException;
@@ -26,7 +26,7 @@ final class ContainerBench
 {
     public function __construct()
     {
-        if (PhdExceptionalValidationExtension::nativeProxiesAreSupported()) {
+        if (PhdExceptionalMatcherExtension::nativeProxiesAreSupported()) {
             throw new LogicException('This bench is only useful for PHP <= 8.4 (when there were no native proxies)');
         }
     }
@@ -111,7 +111,7 @@ final class ContainerBench
 
     private function createContainer(bool $allowGeneratedProxies): ContainerBuilder
     {
-        $container = (new PhdExceptionalValidationExtension($allowGeneratedProxies))->getContainer([
+        $container = (new PhdExceptionalMatcherExtension($allowGeneratedProxies))->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);

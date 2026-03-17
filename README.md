@@ -106,7 +106,7 @@ Exceptional Validation:
 2. Enable bundles in the `bundles.php`:
 
     ```php
-    PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalValidationBundle::class => ['all' => true],
+    PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle::class => ['all' => true],
     PhPhD\ExceptionToolkit\Bundle\PhdExceptionToolkitBundle::class => ['all' => true],
     ```
 
@@ -354,9 +354,9 @@ You can create a Service Container (`symfony/dependency-injection` is required) 
 and use it to get necessary services:
 
 ```php
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 
-$container = (new PhdExceptionalValidationExtension())->getContainer([
+$container = (new PhdExceptionalMatcherExtension())->getContainer([
     'kernel.environment' => 'prod',
     'kernel.build_dir' => __DIR__.'/var/cache',
 ]);

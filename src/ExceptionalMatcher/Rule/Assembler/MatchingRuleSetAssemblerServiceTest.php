@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Assembler;
 
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssemblerService;
@@ -17,8 +17,8 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Assembler\PropertyMatchi
 use Symfony\Component\VarExporter\LazyObjectInterface;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalValidationBundle
- * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
  *
  * @internal
  */
@@ -50,7 +50,7 @@ final class MatchingRuleSetAssemblerServiceTest extends BundleTestCase
         $propertyRulesAssembler = self::getContainer()->get(MatchingRuleSetAssemblerService::class.'<'.PropertyMatchingRulesAssembler::class.'>');
         self::assertInstanceOf(MatchingRuleSetAssemblerService::class, $propertyRulesAssembler);
 
-        if (PhdExceptionalValidationExtension::nativeProxiesAreSupported()) {
+        if (PhdExceptionalMatcherExtension::nativeProxiesAreSupported()) {
             self::assertInstanceOf(CompositeRuleSetAssemblerService::class, $propertyRulesAssembler);
             $compositeInnerAssemblers = $this->getCompositeInnerAssemblers($propertyRulesAssembler);
         } else {

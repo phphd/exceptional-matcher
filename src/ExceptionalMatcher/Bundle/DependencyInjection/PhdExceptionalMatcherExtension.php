@@ -24,9 +24,9 @@ use function interface_exists;
 use function version_compare;
 
 /** @api */
-final class PhdExceptionalValidationExtension extends AbstractExtension implements CompilerPassInterface
+final class PhdExceptionalMatcherExtension extends AbstractExtension implements CompilerPassInterface
 {
-    public const ALIAS = 'phd_exceptional_validation';
+    public const ALIAS = 'phd_exceptional_matcher';
 
     private readonly bool $nativeProxiesSupported;
 
@@ -79,15 +79,15 @@ final class PhdExceptionalValidationExtension extends AbstractExtension implemen
      */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        $builder->set('phd_exceptional_validation.lazy_proxy', $this->lazyProxy(...));
-        $builder->setParameter('phd_exceptional_validation.validator_available', interface_exists(ValidatorInterface::class));
-        $builder->setParameter('phd_exceptional_validation.messenger_available', interface_exists(MessengerMiddlewareInterface::class));
+        $builder->set('phd_exceptional_matcher.lazy_proxy', $this->lazyProxy(...));
+        $builder->setParameter('phd_exceptional_matcher.validator_available', interface_exists(ValidatorInterface::class));
+        $builder->setParameter('phd_exceptional_matcher.messenger_available', interface_exists(MessengerMiddlewareInterface::class));
 
         $container->import(__DIR__.'/../../**/services.php');
 
-        $builder->set('phd_exceptional_validation.lazy_proxy', null);
-        $builder->setParameter('phd_exceptional_validation.validator_available', null);
-        $builder->setParameter('phd_exceptional_validation.messenger_available', null);
+        $builder->set('phd_exceptional_matcher.lazy_proxy', null);
+        $builder->setParameter('phd_exceptional_matcher.validator_available', null);
+        $builder->setParameter('phd_exceptional_matcher.messenger_available', null);
     }
 
     /** @override */

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Tests\Unit;
 
 use ArrayObject;
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeException;
@@ -27,7 +27,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Try_
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_
- * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
  * @covers \PhPhD\ExceptionalMatcher\MainExceptionMatcher
  * @covers \PhPhD\ExceptionalMatcher\Validator\ExceptionToViolationListMatcher
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ObjectMatchingRuleSet
@@ -66,7 +66,7 @@ final class ExceptionalValidationUnitTest extends TestCase
     {
         parent::setUp();
 
-        $container = (new PhdExceptionalValidationExtension())->getContainer([
+        $container = (new PhdExceptionalMatcherExtension())->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
             'phd_exceptional_validation.translation_domain' => 'domain',

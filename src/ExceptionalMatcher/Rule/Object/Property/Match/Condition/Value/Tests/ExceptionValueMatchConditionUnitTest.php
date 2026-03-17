@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\Tests;
 
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\Tests\Stub\SomeValueException;
@@ -30,7 +30,7 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
     {
         parent::setUp();
 
-        $container = (new PhdExceptionalValidationExtension())->getContainer([
+        $container = (new PhdExceptionalMatcherExtension())->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);

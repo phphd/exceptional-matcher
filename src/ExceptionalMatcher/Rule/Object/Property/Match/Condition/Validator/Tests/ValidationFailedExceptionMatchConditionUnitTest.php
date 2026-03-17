@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\Tests;
 
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Validation;
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchConditionFactory
  * @covers \PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\ValidationFailedExceptionFormatter
  * @covers \PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\ValidationFailedExceptionAdapter
- * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
  *
  * @internal
  */
@@ -32,7 +32,7 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
     {
         parent::setUp();
 
-        $container = (new PhdExceptionalValidationExtension())->getContainer([
+        $container = (new PhdExceptionalMatcherExtension())->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);

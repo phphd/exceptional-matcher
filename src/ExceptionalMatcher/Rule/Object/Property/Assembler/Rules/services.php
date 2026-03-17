@@ -19,7 +19,7 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
     $services = $containerConfigurator->services();
 
     /** @var Closure(class-string):((bool|class-string)) $lazy */
-    $lazy = $builder->get('phd_exceptional_validation.lazy_proxy');
+    $lazy = $builder->get('phd_exceptional_matcher.lazy_proxy');
 
     $services
         ->set(
