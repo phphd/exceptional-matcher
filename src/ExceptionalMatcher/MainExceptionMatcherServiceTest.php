@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher;
 
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionToolkit\Unwrapper\Messenger\MessengerExceptionUnwrapper;
@@ -22,7 +22,7 @@ final class MainExceptionMatcherServiceTest extends BundleTestCase
         $exceptionMatcher = self::getContainer()->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
         self::assertInstanceOf(ExceptionMatcher::class, $exceptionMatcher);
 
-        if (PhdExceptionalValidationExtension::nativeProxiesAreSupported()) {
+        if (PhdExceptionalMatcherExtension::nativeProxiesAreSupported()) {
             self::assertInstanceOf(MainExceptionMatcher::class, $exceptionMatcher);
         } else {
             self::assertNotInstanceOf(MainExceptionMatcher::class, $exceptionMatcher);

@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $builder): void {
-    if (false === $builder->getParameter('phd_exceptional_validation.validator_available')) {
+    if (false === $builder->getParameter('phd_exceptional_matcher.validator_available')) {
         return;
     }
 
