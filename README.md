@@ -813,18 +813,20 @@ of our thrown exceptions will be processed, and the user will get the complete s
 ## Upgrading 👻
 
 The basic upgrade can be performed by [Rector](https://getrector.com/documentation) using
-`ExceptionalValidationSetList` \
+`ExceptionalMatcherSetList` \
 that comes with the library and contains automatic upgrade rules.
 
 To upgrade a project to the latest version of `exceptional-validation`, \
 add the following configuration to your `rector.php` file:
 
 ```php
+use PhPhD\ExceptionalMatcher\Upgrade\ExceptionalMatcherSetList;
+
 return RectorConfig::configure()
     ->withPaths([ __DIR__ . '/src'])
     ->withImportNames(removeUnusedImports: true)
     // Upgrading from your version (e.g. 1.4) to the latest version
-    ->withSets(ExceptionalValidationSetList::fromVersion('1.4')->getSetList());
+    ->withSets(ExceptionalMatcherSetList::fromVersion('1.4')->getSetList());
 ```
 
 Make sure to specify your current version of the library so that upgrade sets will be matched correctly.
