@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
+namespace PhPhD\ExceptionalMatcher\Tests\Unit\Stub;
 
 use ArrayObject;
 use InvalidArgumentException;
 use LogicException;
-use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Catch_;
-use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\Tests\Stub\MessageContainingException;
-use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
-use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Validator\ValidationFailedExceptionFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
-use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Closure\Tests\Stub\ConditionalMessage;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchCondition;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchCondition;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Value\Tests\Stub\SomeValueException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\AnException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
+use PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
+use PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure\Tests\Stub\ConditionalMessage;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchCondition;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchCondition;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\Tests\Stub\SomeValueException;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\Tests\Stub\MessageContainingException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\ValidationFailedExceptionFormatter;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 /** @psalm-suppress InvalidAttribute ("Attribute Catch_ is not repeatable") */
-#[ExceptionalValidation]
+#[Try_]
 final class HandleableMessageStub
 {
     #[Catch_(AnException::class, 'oops')]

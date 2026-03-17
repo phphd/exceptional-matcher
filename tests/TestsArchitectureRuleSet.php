@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Tests;
+namespace PhPhD\ExceptionalMatcher\Tests;
 
 use PHPat\Selector\Selector;
 use PHPat\Test\Attributes\TestRule;

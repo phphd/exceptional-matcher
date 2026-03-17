@@ -1,4 +1,5 @@
-This file contains notable (mostly breaking) changes to the library and migrating instructions.
+This file contains notable (mostly breaking) changes to the library and migrating instructions \
+for the changes not covered by automatic upgrade via Rector (see the "Upgrading" section in README.md).
 
 ## 2.0
 
@@ -9,4 +10,4 @@ This file contains notable (mostly breaking) changes to the library and migratin
   and reference `@phd_exceptional_validation` middleware service instead.
 
 * Removed: `PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter`. \
-  Use `PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList::format()` instead. 
+  Use `PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList::format()` instead. 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
+namespace PhPhD\ExceptionalMatcher\Tests\Unit\Stub;
 
 use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 use Symfony\Component\Validator\Validation;
