@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher;
 
+use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
+use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService;
-use PhPhD\ExceptionalMatcher\Rule\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Throwable;

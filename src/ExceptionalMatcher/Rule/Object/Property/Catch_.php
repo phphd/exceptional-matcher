@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property;
 
 use Attribute;
-use PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\MainExceptionViolationFormatter;
 use Throwable;
@@ -41,7 +41,7 @@ final class Catch_
         /** @var ?array{object|class-string,string} */
         private readonly ?array $when = null,
         /** @note formatter type is contravariant to the exception */
-        private readonly string $formatter = MainExceptionViolationFormatter::class,
+        private readonly string $formatter = MainExceptionViolationFormatter::class, // @phpstan-ignore phpat.testModelDependencies (really, this's a fair catch - it should not depend on the formatter)
     ) {
         if (null !== $this->when) {
             Assert::count($this->when, 2);

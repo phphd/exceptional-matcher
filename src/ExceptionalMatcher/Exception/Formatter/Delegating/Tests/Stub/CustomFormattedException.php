@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\Delegating\Tests\Stub;
+namespace PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub;
 
 use RuntimeException;
 

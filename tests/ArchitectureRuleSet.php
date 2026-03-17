@@ -13,10 +13,9 @@ use PHPat\Test\PHPat;
 use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssembler;
 use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService;
 use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchConditionFactory;
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -35,39 +34,15 @@ use Webmozart\Assert\Assert;
 final class ArchitectureRuleSet
 {
     #[TestRule]
-    public function testBundleDependencies(): BuildStep
-    {
-        return $this->layerRule('bundle');
-    }
-
-    #[TestRule]
-    public function testMessengerValidatorMiddlewareDependencies(): BuildStep
-    {
-        return $this->layerRule('messengerValidatorMiddleware');
-    }
-
-    #[TestRule]
-    public function testValidatorMiddlewareDependencies(): BuildStep
-    {
-        return $this->layerRule('validatorMiddleware');
-    }
-
-    #[TestRule]
     public function testMatcherDependencies(): BuildStep
     {
         return $this->layerRule('matcher');
     }
 
     #[TestRule]
-    public function testValidatorMatcherDependencies(): BuildStep
+    public function testExceptionDependencies(): BuildStep
     {
-        return $this->layerRule('validatorMatcher');
-    }
-
-    #[TestRule]
-    public function testMatchConditionDependencies(): BuildStep
-    {
-        return $this->layerRule('matchCondition');
+        return $this->layerRule('exception');
     }
 
     #[TestRule]
@@ -80,6 +55,36 @@ final class ArchitectureRuleSet
     public function testModelDependencies(): BuildStep
     {
         return $this->layerRule('model');
+    }
+
+    #[TestRule]
+    public function testMatchConditionDependencies(): BuildStep
+    {
+        return $this->layerRule('matchCondition');
+    }
+
+    #[TestRule]
+    public function testValidatorMatcherDependencies(): BuildStep
+    {
+        return $this->layerRule('validatorMatcher');
+    }
+
+    #[TestRule]
+    public function testValidatorMiddlewareDependencies(): BuildStep
+    {
+        return $this->layerRule('validatorMiddleware');
+    }
+
+    #[TestRule]
+    public function testMessengerValidatorMiddlewareDependencies(): BuildStep
+    {
+        return $this->layerRule('messengerValidatorMiddleware');
+    }
+
+    #[TestRule]
+    public function testBundleDependencies(): BuildStep
+    {
+        return $this->layerRule('bundle');
     }
 
     public function layerRule(string $name): BuildStep
@@ -105,11 +110,63 @@ final class ArchitectureRuleSet
     public function layers(): array
     {
         return [
-            'bundle' => [
+            'matcher' => [
                 'deps' => [
-                    Selector::inNamespace('Symfony\Component'),
-                    Selector::classname(InstalledVersions::class),
-                    Selector::inNamespace('PhPhD\ExceptionToolkit'),
+                    Selector::classname(MatchingRuleSetAssemblerService::class),
+                    Selector::classname(ObjectMatchingRuleSetAssembler::class),
+                    $this->exception(),
+                    $this->model(),
+                    Selector::classname(ExceptionUnwrapper::class),
+                ],
+            ],
+            'exception' => [
+                'deps' => [
+                    Selector::classname(MatchExceptionRule::class),
+                    Selector::classname(Assert::class),
+                    Selector::classname(ContainerInterface::class), // formatter
+                ],
+                'description' => 'Exception Models must not depend on anything else',
+            ],
+            'matchingRuleSetAssembler' => [
+                'deps' => [
+                    $this->model(),
+                    $this->matchCondition(),
+                    Selector::classname(Valid::class),
+                    Selector::classname(Assert::class),
+                ],
+            ],
+            'model' => [
+                'deps' => [
+                    $this->exception(),
+                    Selector::classname(Assert::class),
+                    Selector::classname(ContainerInterface::class),
+                ],
+                'description' => 'Model classes must not depend on anything else',
+            ],
+            'matchCondition' => [
+                'deps' => [
+                    $this->model(),
+                    Selector::classname(Assert::class),
+                    Selector::inNamespace('Psr\Container'),
+                    // Third-party
+                    Selector::classname(ValidationFailedException::class),
+                    Selector::classname(InvalidUidException::class),
+                ],
+            ],
+            'validatorMatcher' => [
+                'deps' => [
+                    $this->matcher(),
+                    $this->exception(),
+                    $this->model(),
+                    Selector::inNamespace('Symfony\Component\Validator'),
+                    Selector::classname(TranslatorInterface::class),
+                    Selector::classname(Assert::class),
+                    Selector::inNamespace('Psr\Container'),
+                ],
+            ],
+            'validatorMiddleware' => [
+                'deps' => [
+                    Selector::inNamespace('Symfony\Component\Validator'),
                 ],
             ],
             'messengerValidatorMiddleware' => [
@@ -123,62 +180,12 @@ final class ArchitectureRuleSet
                     Selector::classname(ConstraintViolationListInterface::class),
                 ],
             ],
-            'validatorMiddleware' => [
+            'bundle' => [
                 'deps' => [
-                    Selector::inNamespace('Symfony\Component\Validator'),
+                    Selector::inNamespace('Symfony\Component'),
+                    Selector::classname(InstalledVersions::class),
+                    Selector::inNamespace('PhPhD\ExceptionToolkit'),
                 ],
-            ],
-            'validatorMatcher' => [
-                'deps' => [
-                    $this->matcher(),
-                    $this->model(),
-                    Selector::inNamespace('Symfony\Component\Validator'),
-                    Selector::classname(TranslatorInterface::class),
-                    Selector::classname(Assert::class),
-                    Selector::inNamespace('Psr\Container'),
-                ],
-            ],
-            'matcher' => [
-                'deps' => [
-                    Selector::classname(MatchingRuleSetAssemblerService::class),
-                    Selector::classname(ObjectMatchingRuleSetAssembler::class),
-                    $this->model(),
-                    Selector::AllOf(
-                        Selector::isInterface(),
-                        $this->validatorMatcher(),
-                    ),
-                    Selector::classname(ExceptionUnwrapper::class),
-                ],
-            ],
-            'matchingRuleSetAssembler' => [
-                'deps' => [
-                    $this->model(),
-                    $this->matchCondition(),
-                    Selector::classname(Try_::class),
-                    Selector::classname(Catch_::class),
-                    Selector::classname(Valid::class),
-                    Selector::classname(Assert::class),
-                ],
-            ],
-            'matchCondition' => [
-                'deps' => [
-                    $this->model(),
-                    Selector::classname(Catch_::class),
-                    Selector::classname(Assert::class),
-                    Selector::inNamespace('Psr\Container'),
-                    // Third-party
-                    Selector::classname(ValidationFailedException::class),
-                    Selector::classname(InvalidUidException::class),
-                ],
-            ],
-            'model' => [
-                'deps' => [
-                    Selector::classname(Assert::class),
-                    Selector::classname(ContainerInterface::class),
-                    Selector::classname(ValidationFailedException::class),
-                    Selector::classname(ContainerInterface::class),
-                ],
-                'description' => 'Model classes must not depend on anything else',
             ],
         ];
     }
@@ -194,6 +201,7 @@ final class ArchitectureRuleSet
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher'),
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Bundle')),
+            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Exception')),
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule')),
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator')),
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Upgrade')),
@@ -241,13 +249,17 @@ final class ArchitectureRuleSet
         );
     }
 
+    public function exception(): SelectorInterface
+    {
+        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Exception');
+    }
+
     public function model(): SelectorInterface
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule'),
             Selector::NOT($this->matchCondition()),
             Selector::NOT($this->matchingRuleSetAssembler()),
-            Selector::NOT(Selector::classname(Catch_::class)),
         );
     }
 }
