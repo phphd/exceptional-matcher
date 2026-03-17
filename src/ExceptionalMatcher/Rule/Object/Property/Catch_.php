@@ -39,12 +39,12 @@ final class Catch_
         /** @note condition type is contravariant to the exception */
         private readonly ?string $condition = null,
         /** @var ?array{object|class-string,string} */
-        private readonly ?array $when = null,
+        private readonly ?array $if = null,
         /** @note formatter type is contravariant to the exception */
         private readonly string $formatter = MainExceptionViolationFormatter::class, // @phpstan-ignore phpat.testModelDependencies (really, this's a fair catch - it should not depend on the formatter)
     ) {
-        if (null !== $this->when) {
-            Assert::count($this->when, 2);
+        if (null !== $this->if) {
+            Assert::count($this->if, 2);
         }
 
         if (is_array($this->from)) {
@@ -84,9 +84,9 @@ final class Catch_
     }
 
     /** @return ?array{object|class-string,string} */
-    public function getWhen(): ?array
+    public function getIf(): ?array
     {
-        return $this->when;
+        return $this->if;
     }
 
     /**
