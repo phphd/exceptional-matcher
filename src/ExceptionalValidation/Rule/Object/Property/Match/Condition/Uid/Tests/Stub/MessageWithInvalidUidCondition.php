@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Uid\Tests\Stub;
 
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Catch_;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Uid\InvalidUidExceptionMatchCondition;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 

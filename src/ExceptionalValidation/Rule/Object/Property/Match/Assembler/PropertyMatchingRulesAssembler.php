@@ -6,9 +6,9 @@ namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Assembler;
 
 use ArrayIterator;
 use Generator;
-use PhPhD\ExceptionalValidation\Catch_;
 use PhPhD\ExceptionalValidation\Rule\Assembler\MatchingRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\CompositeMatchingRule;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\MatchConditionFactory;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\MatchExceptionRule;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyMatchingRuleSet;

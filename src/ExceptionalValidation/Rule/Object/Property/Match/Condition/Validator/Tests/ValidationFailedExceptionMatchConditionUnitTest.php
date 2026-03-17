@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Validator\Tests;
 
 use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
-use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
+use PhPhD\ExceptionalValidation\ExceptionMatcher;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Length;
@@ -17,8 +17,8 @@ use Symfony\Component\Validator\Validation;
 /**
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchCondition
  * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Validator\ValidationFailedExceptionFormatter
- * @covers \PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\Validator\ValidationFailedExceptionAdapter
+ * @covers \PhPhD\ExceptionalValidation\Validator\Formatter\Validator\ValidationFailedExceptionFormatter
+ * @covers \PhPhD\ExceptionalValidation\Validator\Formatter\Validator\ValidationFailedExceptionAdapter
  * @covers \PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension
  *
  * @internal

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
 
 use PhPhD\ExceptionalValidation;
-use PhPhD\ExceptionalValidation\Catch_;
-use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\ViolationList\Tests\Stub\ViolationListExampleException;
-use PhPhD\ExceptionalValidation\Matcher\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Closure\Tests\Stub\ConditionalMessage;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedPropertyMatchedException;
+use PhPhD\ExceptionalValidation\Validator\Formatter\ViolationList\Tests\Stub\ViolationListExampleException;
+use PhPhD\ExceptionalValidation\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
 use Symfony\Component\Validator\Constraints\Valid;
 
 #[ExceptionalValidation]

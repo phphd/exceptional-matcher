@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition;
 
-use PhPhD\ExceptionalValidation\Catch_;
 use PhPhD\ExceptionalValidation\Rule\MatchingRule;
+use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 use Throwable;
 
 /**
