@@ -1,4 +1,5 @@
-This file contains notable (mostly breaking) changes to the library and migrating instructions.
+This file contains notable (mostly breaking) changes to the library and migrating instructions \
+for the changes not covered by automatic upgrade via Rector (see the "Upgrading" section in README.md).
 
 ## 2.0
 
