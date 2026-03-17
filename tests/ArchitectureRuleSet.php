@@ -13,11 +13,9 @@ use PHPat\Test\PHPat;
 use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssembler;
 use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService;
 use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchConditionFactory;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule;
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -163,8 +161,6 @@ final class ArchitectureRuleSet
                 'deps' => [
                     $this->model(),
                     $this->matchCondition(),
-                    Selector::classname(Try_::class),
-                    Selector::classname(Catch_::class),
                     Selector::classname(Valid::class),
                     Selector::classname(Assert::class),
                 ],
@@ -172,7 +168,6 @@ final class ArchitectureRuleSet
             'matchCondition' => [
                 'deps' => [
                     $this->model(),
-                    Selector::classname(Catch_::class),
                     Selector::classname(Assert::class),
                     Selector::inNamespace('Psr\Container'),
                     // Third-party
@@ -271,7 +266,6 @@ final class ArchitectureRuleSet
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule'),
             Selector::NOT($this->matchCondition()),
             Selector::NOT($this->matchingRuleSetAssembler()),
-            Selector::NOT(Selector::classname(Catch_::class)),
         );
     }
 }
