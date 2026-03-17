@@ -25,10 +25,10 @@ return static function (ContainerConfigurator $containerConfigurator, ContainerB
         ->public()
         ->args([
             service(MatchingRuleSetAssemblerService::class.'<'.ObjectMatchingRuleSetAssembler::class.'>'),
-            service('phd_exceptional_validation.exception_unwrapper'),
+            service('phd_exceptional_matcher.exception_unwrapper'),
         ])
         ->lazy($lazy(ExceptionMatcher::class))
     ;
 
-    $services->alias('phd_exceptional_validation.exception_unwrapper', ExceptionUnwrapper::class);
+    $services->alias('phd_exceptional_matcher.exception_unwrapper', ExceptionUnwrapper::class);
 };
