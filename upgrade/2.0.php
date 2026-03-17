@@ -23,5 +23,6 @@ return static function (RectorConfig $rectorConfig): void {
         'PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException' => 'PhPhD\ExceptionalMatcher\Validator\Middleware\ExceptionalValidationFailedException',
         'PhPhD\ExceptionalValidation\Middleware\Messenger\ExceptionalValidationMiddleware' => 'PhPhD\ExceptionalMatcher\Validator\Middleware\Messenger\ExceptionalValidationMiddleware',
         'PhPhD\ExceptionalValidation\Mapper\Validator\Middleware\Messenger\ExceptionalValidationFailedMessengerException' => 'PhPhD\ExceptionalMatcher\Validator\Middleware\Messenger\ExceptionalValidationFailedMessengerException',
+        'PhPhD\ExceptionalValidation\Mapper\ExceptionMapper' => 'PhPhD\ExceptionalMatcher\ExceptionMatcher',
     ]);
 };
