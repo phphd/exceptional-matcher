@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\Delegating\Tests;
+namespace PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
+use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
-use PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\ExceptionViolationFormatter;
 use PHPUnit\Framework\TestCase;
@@ -16,7 +16,7 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Rule\Exception\Formatter\Delegating\DelegatingMatchedExceptionFormatter
+ * @covers \PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\DelegatingMatchedExceptionFormatter
  *
  * @internal
  */

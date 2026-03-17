@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
-use PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList;
+use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionToolkit\Unwrapper\Messenger\MessengerExceptionUnwrapper;
 use Symfony\Component\VarExporter\LazyObjectInterface;
 
