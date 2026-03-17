@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
+namespace PhPhD\ExceptionalMatcher\Tests\Unit\Stub;
 
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Closure\Tests\Stub\ConditionalMessage;
-use PhPhD\ExceptionalValidation\Rule\Object\Try_;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedPropertyMatchedException;
-use PhPhD\ExceptionalValidation\Validator\Formatter\ViolationList\Tests\Stub\ViolationListExampleException;
-use PhPhD\ExceptionalValidation\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure\Tests\Stub\ConditionalMessage;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedPropertyMatchedException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\Tests\Stub\ViolationListExampleException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
 use Symfony\Component\Validator\Constraints\Valid;
 
 #[Try_]

@@ -10,4 +10,4 @@ for the changes not covered by automatic upgrade via Rector (see the "Upgrading"
   and reference `@phd_exceptional_validation` middleware service instead.
 
 * Removed: `PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter`. \
-  Use `PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList::format()` instead. 
+  Use `PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList::format()` instead. 
