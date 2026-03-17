@@ -440,12 +440,12 @@ class TransferMoneyCommand
 
     public function isWithdrawalCardBlocked(BlockedCardException $exception): bool
     {
-        return $exception->getCardId() === $this->withdrawalCardId;
+        return $this->withdrawalCardId === $exception->getCardId();
     }
 
     public function isDepositCardBlocked(BlockedCardException $exception): bool
     {
-        return $exception->getCardId() === $this->depositCardId;
+        return $this->depositCardId === $exception->getCardId();
     }
 }
 ```
