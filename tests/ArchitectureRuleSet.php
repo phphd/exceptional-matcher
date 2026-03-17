@@ -116,10 +116,6 @@ final class ArchitectureRuleSet
                     Selector::classname(ObjectMatchingRuleSetAssembler::class),
                     $this->exception(),
                     $this->model(),
-                    Selector::AllOf(
-                        Selector::isInterface(),
-                        $this->validatorMatcher(),
-                    ),
                     Selector::classname(ExceptionUnwrapper::class),
                 ],
             ],
@@ -127,7 +123,7 @@ final class ArchitectureRuleSet
                 'deps' => [
                     Selector::classname(MatchExceptionRule::class),
                     Selector::classname(Assert::class),
-                    Selector::classname(ContainerInterface::class),
+                    Selector::classname(ContainerInterface::class), // formatter
                 ],
                 'description' => 'Exception Models must not depend on anything else',
             ],
@@ -143,8 +139,6 @@ final class ArchitectureRuleSet
                 'deps' => [
                     $this->exception(),
                     Selector::classname(Assert::class),
-                    Selector::classname(ContainerInterface::class),
-                    Selector::classname(ValidationFailedException::class),
                     Selector::classname(ContainerInterface::class),
                 ],
                 'description' => 'Model classes must not depend on anything else',
