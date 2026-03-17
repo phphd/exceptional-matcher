@@ -55,7 +55,6 @@ It's all for the sake of being able to display a nice validation message on the 
 
 Thus, the domain services and model end up naked, \
 all business rules having been leaked elsewhere.
-
 ### Exceptional Validation 💡
 
 On the other hand, it's a common practice in DDD for domain objects to be responsible for their own validation rules.
@@ -165,7 +164,7 @@ You can serialize this violation list into a json-response or render a form with
 > Note that the default messages translation domain is `validators`, \
 > inherited from `validator.translation_domain` parameter.
 >
-> You can change it by setting `phd_exceptional_validation.translation_domain` parameter.
+> You can change it by setting `phd_exceptional_matcher.translation_domain` parameter.
 
 ## How is this different from a standard validation? ⚖️
 
