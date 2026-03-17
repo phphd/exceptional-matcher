@@ -144,15 +144,15 @@ Matching takes place when the matcher is used:
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 
 /** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
+$matcher = $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>'); 
+$command = new RegisterUserCommand($login, $password);
 
 try {
-    $command = new RegisterUserCommand($login, $password);
-
     $this->service->register($command);
 } catch (DomainException $exception) {
     $violationList = $matcher->match($exception, $command);
 
-    return new JsonResponse($violationList, Response::HTTP_UNPROCESSABLE_ENTITY);
+    return new JsonResponse($violationList, 422);
 }
 ```
 
@@ -405,7 +405,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use Symfony\Component\Uid\Uuid;
 
 #[Try_]
-class ConfirmPackageCommand
+class ConfirmPackageDeliveryCommand
 {
     #[Catch_(\InvalidArgumentException::class, from: [Uuid::class, 'fromString'])]
     public string $uid;
@@ -431,20 +431,20 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 #[Try_]
 class TransferMoneyCommand
 {
-    #[Catch_(BlockedCardException::class, when: [self::class, 'isWithdrawalCardBlocked'])]
-    public int $withdrawalCardId;
+    #[Catch_(BlockedCardException::class, when: [self::class, 'isWithdrawalCard'])]
+    public int $fromCardId;
 
-    #[Catch_(BlockedCardException::class, when: [self::class, 'isDepositCardBlocked'])]
-    public int $depositCardId;
+    #[Catch_(BlockedCardException::class, when: [self::class, 'isDepositCard'])]
+    public int $toCardId;
 
-    public function isWithdrawalCardBlocked(BlockedCardException $exception): bool
+    public function isWithdrawalCard(BlockedCardException $exception): bool
     {
-        return $this->withdrawalCardId === $exception->getCardId();
+        return $this->fromCardId === $exception->getCardId();
     }
 
-    public function isDepositCardBlocked(BlockedCardException $exception): bool
+    public function isDepositCard(BlockedCardException $exception): bool
     {
-        return $this->depositCardId === $exception->getCardId();
+        return $this->toCardId === $exception->getCardId();
     }
 }
 ```
