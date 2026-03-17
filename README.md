@@ -302,8 +302,8 @@ bin/console debug:container ExceptionMatcher
 This should provide you with a list, similar to this:
 
 ```text
-[0] PhPhD\ExceptionalMatcher\Matcher\ExceptionMatcher<PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList>
-[1] PhPhD\ExceptionalMatcher\Matcher\ExceptionMatcher<Symfony\Component\Validator\ConstraintViolationListInterface>
+[0] PhPhD\ExceptionalMatcher\ExceptionMatcher<PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList>
+[1] PhPhD\ExceptionalMatcher\ExceptionMatcher<Symfony\Component\Validator\ConstraintViolationListInterface>
 ```
 
 These matchers format the Exception to their respective format, specified as a generic parameter. \
