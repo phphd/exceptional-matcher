@@ -23,7 +23,7 @@ return RectorConfig::configure()
             __DIR__.'/src/*/services.php',
         ],
         ClassPropertyAssignToConstructorPromotionRector::class => [
-            __DIR__.'/src/ExceptionalMatcher/Rule/Exception/ExceptionReciprocal.php',
+            __DIR__.'/src/ExceptionalMatcher/Exception/ExceptionReciprocal.php',
             __DIR__.'/src/ExceptionalMatcher/Rule/LazyMatchingRule.php',
         ],
         StringClassNameToClassConstantRector::class => [

@@ -302,7 +302,7 @@ bin/console debug:container ExceptionMatcher
 This should provide you with a list, similar to this:
 
 ```text
-[0] PhPhD\ExceptionalMatcher\ExceptionMatcher<PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList>
+[0] PhPhD\ExceptionalMatcher\ExceptionMatcher<PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList>
 [1] PhPhD\ExceptionalMatcher\ExceptionMatcher<Symfony\Component\Validator\ConstraintViolationListInterface>
 ```
 
@@ -633,7 +633,7 @@ For example, pass additional parameters to the message translation.
 You can create custom violation formatter by implementing `ExceptionViolationFormatter` interface:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Exception\MatchedException;
+use PhPhD\ExceptionalMatcher\Exception\MatchedException;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\ExceptionViolationFormatter;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
