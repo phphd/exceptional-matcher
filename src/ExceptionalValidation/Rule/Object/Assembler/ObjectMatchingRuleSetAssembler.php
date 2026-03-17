@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalValidation\Rule\Object\Assembler;
 
 use Generator;
-use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Rule\Assembler\MatchingRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\CompositeMatchingRule;
 use PhPhD\ExceptionalValidation\Rule\LazyMatchingRule;
 use PhPhD\ExceptionalValidation\Rule\MatchingRule;
 use PhPhD\ExceptionalValidation\Rule\Object\ObjectMatchingRuleSet;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyMatchingRuleSetAssembler;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 use ReflectionClass;
 
 /** @internal */
@@ -59,7 +59,7 @@ final class ObjectMatchingRuleSetAssembler implements MatchingRuleSetAssembler
 
     private function isMarkedWithAnAttribute(): bool
     {
-        return [] !== $this->reflectionClass->getAttributes(ExceptionalValidation::class);
+        return [] !== $this->reflectionClass->getAttributes(Try_::class);
     }
 
     private function getPropertyRules(ObjectMatchingRuleSet $objectRuleSet, ObjectMatchingRuleSetAssemblerService $service): Generator

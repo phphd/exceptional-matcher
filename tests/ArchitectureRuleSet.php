@@ -13,13 +13,13 @@ use PHPat\Selector\SelectorInterface;
 use PHPat\Test\Attributes\TestRule;
 use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\PHPat;
-use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Rule\Assembler\MatchingRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Assembler\MatchingRuleSetAssemblerService;
 use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\MatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\MatchConditionFactory;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -156,7 +156,7 @@ final class ArchitectureRuleSet
                 'deps' => [
                     $this->model(),
                     $this->matchCondition(),
-                    Selector::classname(ExceptionalValidation::class),
+                    Selector::classname(Try_::class),
                     Selector::classname(Catch_::class),
                     Selector::classname(Valid::class),
                     Selector::classname(Assert::class),
@@ -194,7 +194,7 @@ final class ArchitectureRuleSet
     public function matcher(): AllOfSelectorModifier
     {
         return Selector::AllOf(
-            Selector::inNamespace(ExceptionalValidation::class),
+            Selector::inNamespace('PhPhD\ExceptionalValidation'),
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Bundle')),
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Rule')),
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Validator')),

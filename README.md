@@ -115,17 +115,17 @@ Exceptional Validation:
 
 ## Get Started 🎯
 
-Mark a message with `#[ExceptionalValidation]` attribute. \
+Mark a message with `#[Try_]` attribute. \
 It's used by matcher to include this object for processing.
 
 Define `#[Catch_]` matching rules for your properties. \
 These declaratively describe what properties what exceptions correlate with:
 
 ```php
-use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 
-#[ExceptionalValidation]
+#[Try_]
 class RegisterUserCommand
 {
     #[Catch_(LoginAlreadyTakenException::class, 'auth.login.already_taken')]
@@ -178,7 +178,7 @@ For example, let's take the same `RegisterUserCommand` as used before.
 A comparison of the approaches would look something like this:
 
 ```diff
-+#[ExceptionalValidation]
++#[Try_]
  class RegisterUserCommand
  {
 -    #[App\Assert\UniqueLogin]
@@ -371,7 +371,7 @@ Herein, you create a Container, compile it, and use to get `ExceptionMatcher`.
 
 ## Features 📙
 
-`#[ExceptionalValidation]` and `#[Catch_]` attributes allow implementing very flexible matching rules. \
+`#[Try_]` and `#[Catch_]` attributes allow implementing very flexible matching rules. \
 It's highly recommended to see the examples below to know the power of these solutions.
 
 ### Match Conditions
@@ -384,10 +384,10 @@ Matches the exception by its class name using `instanceof` check, \
 acting similarly to `catch` operation.
 
 ```php
-use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 
-#[ExceptionalValidation]
+#[Try_]
 class PublishMessageCommand
 {
     #[Catch_(MessageNotFoundException::class)]
@@ -401,11 +401,11 @@ Filters the exception by its origin place, \
 specifying whence it was to be raised from (class name and method name).
 
 ```php
-use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 use Symfony\Component\Uid\Uuid;
 
-#[ExceptionalValidation]
+#[Try_]
 class ConfirmPackageCommand
 {
     #[Catch_(\InvalidArgumentException::class, from: [Uuid::class, 'fromString'])]
@@ -426,10 +426,10 @@ whether particular instance of the exception should be matched with a given prop
 This is particularly useful when the same exception could be originated from multiple places:
 
 ```php
-use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 
-#[ExceptionalValidation]
+#[Try_]
 class TransferMoneyCommand
 {
     #[Catch_(BlockedCardException::class, when: [self::class, 'isWithdrawalCardBlocked'])]
@@ -465,12 +465,12 @@ You can match Symfony's `InvalidArgumentException` from the `Uid` component
 using `InvalidUidExceptionMatchCondition`:
 
 ```php
-use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Uid\InvalidUidExceptionMatchCondition;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 
-#[ExceptionalValidation]
+#[Try_]
 class ApproveVerificationCommand
 {
     #[Catch_(InvalidUidException::class, condition: InvalidUidExceptionMatchCondition::class)]
@@ -495,11 +495,11 @@ implementing `when:` closure every time.
 This way it's possible to avoid much of the boilerplate code, keeping it clean:
 
 ```php
-use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchCondition;
 
-#[ExceptionalValidation]
+#[Try_]
 class TransferMoneyCommand
 {
     #[Catch_(BlockedCardException::class, condition: ExceptionValueMatchCondition::class)]
@@ -540,12 +540,12 @@ with the difference that it integrates Symfony's native `ValidationFailedExcepti
 Specify `ValidationFailedExceptionMatchCondition` to correlate validation exception's value with a property value:
 
 ```php
-use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchCondition;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-#[ExceptionalValidation]
+#[Try_]
 class RegisterUserCommand
 {
     #[Catch_(
@@ -601,11 +601,11 @@ final class CardNumberValidationFailedException extends \RuntimeException implem
 Then, specify `ViolationListExceptionFormatter` as a `formatter:` for the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalValidation\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
 
-#[ExceptionalValidation]
+#[Try_]
 class IssueCreditCardCommand
 {
     #[Catch_(
@@ -692,10 +692,10 @@ services:
 Finally, specify formatter in the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 
-#[ExceptionalValidation]
+#[Try_]
 final class RegisterUserCommand
 {
     #[Catch_(LoginAlreadyTakenException::class, formatter: LoginAlreadyTakenViolationFormatter::class)]
@@ -716,18 +716,18 @@ Though not recommended, you might use a single formatter for the two.
 
 > The approach described is done away with.
 
-`#[ExceptionalValidation]` attribute works side-by-side with Symfony Validator's `#[Valid]` attribute.
+`#[Try_]` attribute works side-by-side with Symfony Validator's `#[Valid]` attribute.
 
 Once you define `#[Valid]` on an object/iterable property, \
 the matcher will pick it up for a nested analysis, \
 providing a respective property path for the created violations.
 
 ```php
-use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ExceptionalValidation]
+#[Try_]
 class CreateOrderCommand
 {
     /** @var OrderItemDto[] */
@@ -735,7 +735,7 @@ class CreateOrderCommand
     public array $items;
 }
 
-#[ExceptionalValidation]
+#[Try_]
 class OrderItemDto
 {
     public int $productId;

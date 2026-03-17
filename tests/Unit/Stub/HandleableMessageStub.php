@@ -7,7 +7,6 @@ namespace PhPhD\ExceptionalValidation\Tests\Unit\Stub;
 use ArrayObject;
 use InvalidArgumentException;
 use LogicException;
-use PhPhD\ExceptionalValidation;
 use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalValidation\Rule\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
@@ -15,6 +14,7 @@ use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Closure\Tes
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchCondition;
 use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Value\Tests\Stub\SomeValueException;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
 use PhPhD\ExceptionalValidation\Validator\Formatter\Main\Tests\Stub\MessageContainingException;
@@ -24,7 +24,7 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 /** @psalm-suppress InvalidAttribute ("Attribute Catch_ is not repeatable") */
-#[ExceptionalValidation]
+#[Try_]
 final class HandleableMessageStub
 {
     #[Catch_(AnException::class, 'oops')]

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\Tests\Stub;
 
-use PhPhD\ExceptionalValidation;
+use PhPhD\ExceptionalValidation\Rule\Object\Try_;
 
-#[ExceptionalValidation]
+#[Try_]
 final class RootObject
 {
     private array $notTypedArray;

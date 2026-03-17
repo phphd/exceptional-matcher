@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhPhD;
+namespace PhPhD\ExceptionalValidation\Rule\Object;
 
 use Attribute;
 
 /** @api */
 #[Attribute(Attribute::TARGET_CLASS)]
-final class ExceptionalValidation
+final class Try_
 {
 }
