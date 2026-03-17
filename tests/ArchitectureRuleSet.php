@@ -96,6 +96,7 @@ final class ArchitectureRuleSet
             ->classes(Selector::AllOf(
                 $layerClassesSelector,
                 Selector::NOT(Selector::classname('/\\\Tests\\\/', true)),
+                Selector::NOT(Selector::extends(TestCase::class)),
             ))
             ->canOnlyDependOn()
             ->classes($layerClassesSelector, ...$layer['deps'])
@@ -186,12 +187,12 @@ final class ArchitectureRuleSet
     }
 
     /** @psalm-suppress UnusedMethod */
-    public function bundle(): ClassNamespace
+    public function bundle(): SelectorInterface
     {
         return Selector::inNamespace('PhPhD\ExceptionalValidation\Bundle');
     }
 
-    public function matcher(): AllOfSelectorModifier
+    public function matcher(): SelectorInterface
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalValidation'),
@@ -199,20 +200,18 @@ final class ArchitectureRuleSet
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Rule')),
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Validator')),
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Upgrade')),
-            Selector::NOT(Selector::extends(TestCase::class)),
         );
     }
 
-    public function validatorMatcher(): AllOfSelectorModifier
+    public function validatorMatcher(): SelectorInterface
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalValidation\Validator'),
             Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Validator\Middleware')),
-            Selector::NOT(Selector::extends(TestCase::class)),
         );
     }
 
-    public function validatorMiddleware(): AllOfSelectorModifier
+    public function validatorMiddleware(): SelectorInterface
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalValidation\Validator\Middleware'),
@@ -221,15 +220,12 @@ final class ArchitectureRuleSet
     }
 
     /** @psalm-suppress UnusedMethod */
-    public function messengerValidatorMiddleware(): AllOfSelectorModifier
+    public function messengerValidatorMiddleware(): SelectorInterface
     {
-        return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalValidation\Validator\Middleware\Messenger'),
-            Selector::NOT(Selector::extends(TestCase::class)),
-        );
+        return Selector::inNamespace('PhPhD\ExceptionalValidation\Validator\Middleware\Messenger');
     }
 
-    public function matchingRuleSetAssembler(): AnyOfSelectorModifier
+    public function matchingRuleSetAssembler(): SelectorInterface
     {
         return Selector::AnyOf(
             Selector::classname(MatchingRuleSetAssembler::class),
@@ -239,7 +235,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function matchCondition(): AnyOfSelectorModifier
+    public function matchCondition(): SelectorInterface
     {
         return Selector::AnyOf(
             Selector::implements(MatchCondition::class),
@@ -248,14 +244,13 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function model(): AllOfSelectorModifier
+    public function model(): SelectorInterface
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalValidation\Rule'),
             Selector::NOT($this->matchCondition()),
             Selector::NOT($this->matchingRuleSetAssembler()),
             Selector::NOT(Selector::classname(Catch_::class)),
-            Selector::NOT(Selector::extends(TestCase::class)),
         );
     }
 }
