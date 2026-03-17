@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Bundle\DependencyInjection;
 
 use Composer\InstalledVersions;
 use Exception;
+use LogicException;
 use PhPhD\ExceptionToolkit\Bundle\DependencyInjection\PhdExceptionToolkitExtension;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
@@ -21,6 +22,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use function array_keys;
 use function array_map;
 use function interface_exists;
+use function sprintf;
 use function version_compare;
 
 /** @api */
@@ -99,6 +101,7 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
     public function process(ContainerBuilder $container): void
     {
         $this->checkTranslatorDependency($container);
+        $this->failOnUnresolvedBackwardCompatibilityBreaks($container);
     }
 
     public function lazyProxy(string $interface): bool|string
@@ -133,7 +136,34 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
             return;
         }
 
-        $container->removeDefinition('phd_exceptional_validation.translator');
-        $container->getParameterBag()->remove('phd_exceptional_validation.translation_domain');
+        $container->removeDefinition('phd_exceptional_matcher.translator');
+        $container->getParameterBag()->remove('phd_exceptional_matcher.translation_domain');
+    }
+
+    private function failOnUnresolvedBackwardCompatibilityBreaks(ContainerBuilder $container): void
+    {
+        if ($container->has($id = 'phd_exceptional_validation.translator')) {
+            throw new LogicException(sprintf(
+                'Translator service %s is not available anymore. Please use %s instead.',
+                $id,
+                'phd_exceptional_matcher.translator',
+            ));
+        }
+
+        if ($container->hasParameter('phd_exceptional_validation.translation_domain')) {
+            throw new LogicException(sprintf(
+                'Parameter %s is not available anymore. Please use %s instead.',
+                'phd_exceptional_validation.translation_domain',
+                'phd_exceptional_matcher.translation_domain',
+            ));
+        }
+
+        if ($container->has($id = 'phd_exceptional_validation.exception_unwrapper')) {
+            throw new LogicException(sprintf(
+                'Service %s is not available anymore. Please use %s instead.',
+                $id,
+                'phd_exceptional_matcher.exception_unwrapper',
+            ));
+        }
     }
 }

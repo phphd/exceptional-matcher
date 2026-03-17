@@ -33,7 +33,7 @@ final class MainExceptionMatcherServiceTest extends BundleTestCase
 
     public function testExceptionUnwrapper(): void
     {
-        $exceptionUnwrapper = self::getContainer()->get('phd_exceptional_validation.exception_unwrapper');
+        $exceptionUnwrapper = self::getContainer()->get('phd_exceptional_matcher.exception_unwrapper');
         self::assertInstanceOf(LazyObjectInterface::class, $exceptionUnwrapper);
         self::assertFalse($exceptionUnwrapper->isLazyObjectInitialized());
         self::assertInstanceOf(MessengerExceptionUnwrapper::class, $exceptionUnwrapper->initializeLazyObject());

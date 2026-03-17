@@ -57,7 +57,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * @internal
  */
-final class ExceptionalValidationUnitTest extends TestCase
+final class ExceptionMatcherUnitTest extends TestCase
 {
     /** @var ExceptionMatcher<ConstraintViolationListInterface> */
     private ExceptionMatcher $exceptionMatcher;
@@ -69,7 +69,7 @@ final class ExceptionalValidationUnitTest extends TestCase
         $container = (new PhdExceptionalMatcherExtension())->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
-            'phd_exceptional_validation.translation_domain' => 'domain',
+            'phd_exceptional_matcher.translation_domain' => 'domain',
         ]);
 
         $translator = $this->createMock(TranslatorInterface::class);
