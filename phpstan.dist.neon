@@ -41,10 +41,10 @@ parameters:
 
 services:
     -
-        class: PhPhD\ExceptionalValidation\Tests\ArchitectureRuleSet
+        class: PhPhD\ExceptionalMatcher\Tests\ArchitectureRuleSet
         tags:
             - phpat.test
     -
-        class: PhPhD\ExceptionalValidation\Tests\TestsArchitectureRuleSet
+        class: PhPhD\ExceptionalMatcher\Tests\TestsArchitectureRuleSet
         tags:
             - phpat.test

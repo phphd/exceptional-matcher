@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Upgrade;
+namespace PhPhD\ExceptionalMatcher\Upgrade;
 
 use LogicException;
 use Rector\Application\VersionResolver;

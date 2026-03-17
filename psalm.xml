@@ -37,13 +37,13 @@
         </PropertyNotSetInConstructor>
         <UnnecessaryVarAnnotation>
             <errorLevel type="suppress">
-                <file name="src/ExceptionalValidation/Rule/Object/Property/Match/Condition/Composite/CompositeMatchConditionFactory.php"/>
+                <file name="src/ExceptionalMatcher/Rule/Object/Property/Match/Condition/Composite/CompositeMatchConditionFactory.php"/>
             </errorLevel>
         </UnnecessaryVarAnnotation>
         <LessSpecificImplementedReturnType>
             <errorLevel type="suppress">
                 <!-- Psalm doesn't infer it quite well -->
-                <file name="src/ExceptionalValidation/Validator/Formatter/Validator/ValidationFailedExceptionFormatter.php"/>
+                <file name="src/ExceptionalMatcher/Validator/Formatter/Validator/ValidationFailedExceptionFormatter.php"/>
             </errorLevel>
         </LessSpecificImplementedReturnType>
         <MissingOverrideAttribute>
