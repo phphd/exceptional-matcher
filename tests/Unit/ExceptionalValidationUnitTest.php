@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Tests\Unit;
+namespace PhPhD\ExceptionalMatcher\Tests\Unit;
 
 use ArrayObject;
-use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
-use PhPhD\ExceptionalValidation\ExceptionMatcher;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\AnException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemMatchedException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedPropertyMatchedException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedHandleableMessage;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedItem;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NotHandleableMessageStub;
-use PhPhD\ExceptionalValidation\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
+use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeException;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedException;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedPropertyMatchedException;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedHandleableMessage;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedItem;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NotHandleableMessageStub;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -25,35 +25,35 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Try_
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_
- * @covers \PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension
- * @covers \PhPhD\ExceptionalValidation\MainExceptionMatcher
- * @covers \PhPhD\ExceptionalValidation\Validator\ExceptionToViolationListMatcher
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\ObjectMatchingRuleSet
- * @covers \PhPhD\ExceptionalValidation\Rule\ItemOfIterableMatchingRule
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\PropertyMatchingRuleSet
- * @covers \PhPhD\ExceptionalValidation\Rule\CompositeMatchingRule
- * @covers \PhPhD\ExceptionalValidation\Rule\LazyMatchingRule
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Path\PropertyPath
- * @covers \PhPhD\ExceptionalValidation\Rule\Exception\ExceptionReciprocal
- * @covers \PhPhD\ExceptionalValidation\Rule\Exception\MatchedException
- * @covers \PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList
- * @covers \PhPhD\ExceptionalValidation\Rule\Assembler\CompositeRuleSetAssemblerService
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectMatchingRuleSetAssemblerService
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyMatchingRuleSetAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\PropertyMatchingRuleSetAssemblerService
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Assembler\PropertyMatchingRulesAssembler
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Assembler\PropertyMatchingRulesAssemblerService
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssemblerService
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssemblerService
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\MatchExceptionRule
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Delegating\DelegatingMatchConditionFactory
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Composite\CompositeMatchCondition
- * @covers \PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionFactory
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Try_
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension
+ * @covers \PhPhD\ExceptionalMatcher\MainExceptionMatcher
+ * @covers \PhPhD\ExceptionalMatcher\Validator\ExceptionToViolationListMatcher
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ObjectMatchingRuleSet
+ * @covers \PhPhD\ExceptionalMatcher\Rule\ItemOfIterableMatchingRule
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMatchingRuleSet
+ * @covers \PhPhD\ExceptionalMatcher\Rule\CompositeMatchingRule
+ * @covers \PhPhD\ExceptionalMatcher\Rule\LazyMatchingRule
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Exception\ExceptionReciprocal
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Exception\MatchedException
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Assembler\CompositeRuleSetAssemblerService
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssemblerService
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Assembler\PropertyMatchingRuleSetAssembler
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Assembler\PropertyMatchingRuleSetAssemblerService
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Assembler\PropertyMatchingRulesAssembler
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Assembler\PropertyMatchingRulesAssemblerService
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssemblerService
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssemblerService
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchCondition
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionFactory
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Delegating\DelegatingMatchConditionFactory
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchCondition
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionFactory
  *
  * @internal
  */

@@ -106,7 +106,7 @@ Exceptional Validation:
 2. Enable bundles in the `bundles.php`:
 
     ```php
-    PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle::class => ['all' => true],
+    PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalValidationBundle::class => ['all' => true],
     PhPhD\ExceptionToolkit\Bundle\PhdExceptionToolkitBundle::class => ['all' => true],
     ```
 
@@ -122,8 +122,8 @@ Define `#[Catch_]` matching rules for your properties. \
 These declaratively describe what properties what exceptions correlate with:
 
 ```php
-use PhPhD\ExceptionalValidation\Rule\Object\Try_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 
 #[Try_]
 class RegisterUserCommand
@@ -142,7 +142,7 @@ while `password` - to `WeakPasswordException`.
 Matching takes place when the matcher is used:
 
 ```php
-use PhPhD\ExceptionalValidation\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 
 /** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
 
@@ -303,8 +303,8 @@ bin/console debug:container ExceptionMatcher
 This should provide you with a list, similar to this:
 
 ```text
-[0] PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher<PhPhD\ExceptionalValidation\Rule\Exception\MatchedExceptionList>
-[1] PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher<Symfony\Component\Validator\ConstraintViolationListInterface>
+[0] PhPhD\ExceptionalMatcher\Matcher\ExceptionMatcher<PhPhD\ExceptionalMatcher\Rule\Exception\MatchedExceptionList>
+[1] PhPhD\ExceptionalMatcher\Matcher\ExceptionMatcher<Symfony\Component\Validator\ConstraintViolationListInterface>
 ```
 
 These matchers format the Exception to their respective format, specified as a generic parameter. \
@@ -313,7 +313,7 @@ Format could be `ConstraintViolationList`, or `MatchedExceptionList`, or anythin
 Therefore, you can inject the wanted service into your own code:
 
 ```php
-use PhPhD\ExceptionalValidation\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class SignDocumentActivity
@@ -354,7 +354,7 @@ You can create a Service Container (`symfony/dependency-injection` is required) 
 and use it to get necessary services:
 
 ```php
-use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
 
 $container = (new PhdExceptionalValidationExtension())->getContainer([
     'kernel.environment' => 'prod',
@@ -384,8 +384,8 @@ Matches the exception by its class name using `instanceof` check, \
 acting similarly to `catch` operation.
 
 ```php
-use PhPhD\ExceptionalValidation\Rule\Object\Try_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 
 #[Try_]
 class PublishMessageCommand
@@ -401,8 +401,8 @@ Filters the exception by its origin place, \
 specifying whence it was to be raised from (class name and method name).
 
 ```php
-use PhPhD\ExceptionalValidation\Rule\Object\Try_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use Symfony\Component\Uid\Uuid;
 
 #[Try_]
@@ -426,8 +426,8 @@ whether particular instance of the exception should be matched with a given prop
 This is particularly useful when the same exception could be originated from multiple places:
 
 ```php
-use PhPhD\ExceptionalValidation\Rule\Object\Try_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 
 #[Try_]
 class TransferMoneyCommand
@@ -465,9 +465,9 @@ You can match Symfony's `InvalidArgumentException` from the `Uid` component
 using `InvalidUidExceptionMatchCondition`:
 
 ```php
-use PhPhD\ExceptionalValidation\Rule\Object\Try_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Uid\InvalidUidExceptionMatchCondition;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\InvalidUidExceptionMatchCondition;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 
 #[Try_]
@@ -495,9 +495,9 @@ implementing `when:` closure every time.
 This way it's possible to avoid much of the boilerplate code, keeping it clean:
 
 ```php
-use PhPhD\ExceptionalValidation\Rule\Object\Try_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchCondition;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchCondition;
 
 #[Try_]
 class TransferMoneyCommand
@@ -516,7 +516,7 @@ depending on the `cardId` value from the exception.
 And `BlockedCardException` itself must implement `ValueException` interface:
 
 ```php
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Value\ValueException;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ValueException;
 
 class BlockedCardException extends DomainException implements ValueException
 {
@@ -540,9 +540,9 @@ with the difference that it integrates Symfony's native `ValidationFailedExcepti
 Specify `ValidationFailedExceptionMatchCondition` to correlate validation exception's value with a property value:
 
 ```php
-use PhPhD\ExceptionalValidation\Rule\Object\Try_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchCondition;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchCondition;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 #[Try_]
@@ -579,7 +579,7 @@ that contain a `ConstraintViolationList` from the validator.
 Such exceptions should implement `ViolationListException` interface:
 
 ```php
-use PhPhD\ExceptionalValidation\Validator\Formatter\ViolationList\ViolationListException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 final class CardNumberValidationFailedException extends \RuntimeException implements ViolationListException
@@ -601,9 +601,9 @@ final class CardNumberValidationFailedException extends \RuntimeException implem
 Then, specify `ViolationListExceptionFormatter` as a `formatter:` for the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionalValidation\Rule\Object\Try_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalValidation\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
 
 #[Try_]
 class IssueCreditCardCommand
@@ -634,8 +634,8 @@ For example, pass additional parameters to the message translation.
 You can create custom violation formatter by implementing `ExceptionViolationFormatter` interface:
 
 ```php
-use PhPhD\ExceptionalValidation\Rule\Exception\MatchedException;
-use PhPhD\ExceptionalValidation\Validator\Formatter\ExceptionViolationFormatter;
+use PhPhD\ExceptionalMatcher\Rule\Exception\MatchedException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\ExceptionViolationFormatter;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
 /** @implements ExceptionViolationFormatter<LoginAlreadyTakenException|WeakPasswordException> */
@@ -692,8 +692,8 @@ services:
 Finally, specify formatter in the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionalValidation\Rule\Object\Try_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 
 #[Try_]
 final class RegisterUserCommand
@@ -723,8 +723,8 @@ the matcher will pick it up for a nested analysis, \
 providing a respective property path for the created violations.
 
 ```php
-use PhPhD\ExceptionalValidation\Rule\Object\Try_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[Try_]

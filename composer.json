@@ -57,12 +57,12 @@
     "autoload": {
         "psr-4": {
             "PhPhD\\": "src",
-            "PhPhD\\ExceptionalValidation\\Upgrade\\": "upgrade"
+            "PhPhD\\ExceptionalMatcher\\Upgrade\\": "upgrade"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PhPhD\\ExceptionalValidation\\Tests\\": "tests"
+            "PhPhD\\ExceptionalMatcher\\Tests\\": "tests"
         }
     },
     "scripts": {

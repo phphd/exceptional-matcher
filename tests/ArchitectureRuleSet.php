@@ -2,24 +2,21 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Tests;
+namespace PhPhD\ExceptionalMatcher\Tests;
 
 use Composer\InstalledVersions;
-use PHPat\Selector\ClassNamespace;
-use PHPat\Selector\Modifier\AllOfSelectorModifier;
-use PHPat\Selector\Modifier\AnyOfSelectorModifier;
 use PHPat\Selector\Selector;
 use PHPat\Selector\SelectorInterface;
 use PHPat\Test\Attributes\TestRule;
 use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\PHPat;
-use PhPhD\ExceptionalValidation\Rule\Assembler\MatchingRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Assembler\MatchingRuleSetAssemblerService;
-use PhPhD\ExceptionalValidation\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\MatchCondition;
-use PhPhD\ExceptionalValidation\Rule\Object\Property\Match\Condition\MatchConditionFactory;
-use PhPhD\ExceptionalValidation\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssembler;
+use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService;
+use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchConditionFactory;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -189,40 +186,40 @@ final class ArchitectureRuleSet
     /** @psalm-suppress UnusedMethod */
     public function bundle(): SelectorInterface
     {
-        return Selector::inNamespace('PhPhD\ExceptionalValidation\Bundle');
+        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Bundle');
     }
 
     public function matcher(): SelectorInterface
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalValidation'),
-            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Bundle')),
-            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Rule')),
-            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Validator')),
-            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Upgrade')),
+            Selector::inNamespace('PhPhD\ExceptionalMatcher'),
+            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Bundle')),
+            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule')),
+            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator')),
+            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Upgrade')),
         );
     }
 
     public function validatorMatcher(): SelectorInterface
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalValidation\Validator'),
-            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Validator\Middleware')),
+            Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator'),
+            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator\Middleware')),
         );
     }
 
     public function validatorMiddleware(): SelectorInterface
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalValidation\Validator\Middleware'),
-            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalValidation\Validator\Middleware\Messenger')),
+            Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator\Middleware'),
+            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator\Middleware\Messenger')),
         );
     }
 
     /** @psalm-suppress UnusedMethod */
     public function messengerValidatorMiddleware(): SelectorInterface
     {
-        return Selector::inNamespace('PhPhD\ExceptionalValidation\Validator\Middleware\Messenger');
+        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator\Middleware\Messenger');
     }
 
     public function matchingRuleSetAssembler(): SelectorInterface
@@ -247,7 +244,7 @@ final class ArchitectureRuleSet
     public function model(): SelectorInterface
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalValidation\Rule'),
+            Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule'),
             Selector::NOT($this->matchCondition()),
             Selector::NOT($this->matchingRuleSetAssembler()),
             Selector::NOT(Selector::classname(Catch_::class)),
