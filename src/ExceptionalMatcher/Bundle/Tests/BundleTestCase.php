@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Bundle\Tests;
 
 use Nyholm\BundleTest\TestKernel;
-use PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalValidationBundle;
+use PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle;
 use PhPhD\ExceptionToolkit\Bundle\PhdExceptionToolkitBundle;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -33,7 +33,7 @@ abstract class BundleTestCase extends KernelTestCase
         /** @var TestKernel $kernel */
         $kernel = parent::createKernel($options);
 
-        $kernel->addTestBundle(PhdExceptionalValidationBundle::class);
+        $kernel->addTestBundle(PhdExceptionalMatcherBundle::class);
         $kernel->addTestBundle(PhdExceptionToolkitBundle::class);
         // Priority 105 is necessary for interface autoconfiguration (ResolveInstanceofConditionalsPass) to work properly
         $kernel->addTestCompilerPass(new TestServicesCompilerPass(), priority: 105);
