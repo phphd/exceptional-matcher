@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalValidation\Tests\Bench;
+namespace PhPhD\ExceptionalMatcher\Tests\Bench;
 
 use ArrayObject;
 use LogicException;
-use PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension;
-use PhPhD\ExceptionalValidation\Matcher\ExceptionMatcher;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\AnException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\Exception\NestedItemMatchedException;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\HandleableMessageStub;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NestedItem;
-use PhPhD\ExceptionalValidation\Tests\Unit\Stub\NotHandleableMessageStub;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedException;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedItem;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NotHandleableMessageStub;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -26,7 +26,7 @@ final class ContainerBench
 {
     public function __construct()
     {
-        if (PhdExceptionalValidationExtension::nativeProxiesAreSupported()) {
+        if (PhdExceptionalMatcherExtension::nativeProxiesAreSupported()) {
             throw new LogicException('This bench is only useful for PHP <= 8.4 (when there were no native proxies)');
         }
     }
@@ -111,7 +111,7 @@ final class ContainerBench
 
     private function createContainer(bool $allowGeneratedProxies): ContainerBuilder
     {
-        $container = (new PhdExceptionalValidationExtension($allowGeneratedProxies))->getContainer([
+        $container = (new PhdExceptionalMatcherExtension($allowGeneratedProxies))->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);
