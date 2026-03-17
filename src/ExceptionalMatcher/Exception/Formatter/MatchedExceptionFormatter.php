@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Exception\Formatter;
+namespace PhPhD\ExceptionalMatcher\Exception\Formatter;
 
-use PhPhD\ExceptionalMatcher\Rule\Exception\MatchedException;
+use PhPhD\ExceptionalMatcher\Exception\MatchedException;
 use Throwable;
 
 /**

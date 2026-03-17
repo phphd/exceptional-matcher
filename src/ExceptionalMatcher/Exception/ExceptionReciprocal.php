@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Exception;
+namespace PhPhD\ExceptionalMatcher\Exception;
 
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule;
 use Throwable;
