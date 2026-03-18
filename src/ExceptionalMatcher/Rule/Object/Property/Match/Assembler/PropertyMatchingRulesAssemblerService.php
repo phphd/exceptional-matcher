@@ -20,13 +20,13 @@ final class PropertyMatchingRulesAssemblerService implements MatchingRuleSetAsse
     /** @api */
     public function __construct(
         /** @var MatchConditionFactory<Throwable> */
-        private readonly MatchConditionFactory $conditionFactory,
+        private readonly MatchConditionFactory $matchConditionFactory,
     ) {
     }
 
     /** @param PropertyMatchingRulesAssembler $assembler */
     public function assemble(MatchingRuleSetAssembler $assembler): ?CompositeMatchingRule
     {
-        return $assembler->assembleRules($this->conditionFactory);
+        return $assembler->assembleRules($this->matchConditionFactory);
     }
 }

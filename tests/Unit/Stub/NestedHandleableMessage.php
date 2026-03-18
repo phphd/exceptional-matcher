@@ -21,7 +21,7 @@ final class NestedHandleableMessage
     #[Valid]
     private ConditionalMessage $conditionalMessage;
 
-    #[Catch_(ViolationListExampleException::class, formatter: ViolationListExceptionFormatter::class)]
+    #[Catch_(ViolationListExampleException::class, format: ViolationListExceptionFormatter::class)]
     private int $violationListCapturedProperty;
 
     public static function createWithConditionalMessage(ConditionalMessage $conditionalMessage): self
