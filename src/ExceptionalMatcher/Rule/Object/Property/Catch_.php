@@ -25,10 +25,10 @@ final class Catch_
 {
     /**
      * @phpstan-param ?class-string<MatchCondition<T1>> $match
-     * @phpstan-param class-string<MatchedExceptionFormatter<T2,mixed>> $formatter
+     * @phpstan-param class-string<MatchedExceptionFormatter<T2,mixed>> $format
      *
      * @psalm-param ?class-string<MatchCondition> $match
-     * @psalm-param class-string<MatchedExceptionFormatter> $formatter
+     * @psalm-param class-string<MatchedExceptionFormatter> $format
      */
     public function __construct(
         /** @var class-string<T1&T2> */
@@ -41,7 +41,7 @@ final class Catch_
         /** @var ?array{object|class-string,string} */
         private readonly ?array $if = null,
         /** @note formatter class is contravariant to the exception */
-        private readonly string $formatter = MainExceptionViolationFormatter::class, // @phpstan-ignore phpat.testModelDependencies (really, this's a fair catch - it should not depend on the formatter)
+        private readonly string $format = MainExceptionViolationFormatter::class, // @phpstan-ignore phpat.testModelDependencies (really, this's a fair catch - it should not depend on the formatter)
     ) {
         if (null !== $this->if) {
             Assert::count($this->if, 2);
@@ -94,8 +94,8 @@ final class Catch_
      *
      * @psalm-return class-string<MatchedExceptionFormatter>
      */
-    public function getFormatter(): string
+    public function getFormat(): string
     {
-        return $this->formatter;
+        return $this->format;
     }
 }

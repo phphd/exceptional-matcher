@@ -12,8 +12,14 @@ for the changes not covered by automatic upgrade via Rector (see the "Upgrading"
 * Removed: `PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter`. \
   Use `PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList::format()` instead. 
 
+* Renamed: `PhPhD\ExceptionalValidation\Capture` \
+  was renamed into `PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_`. 
+
 * Renamed: `PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_::$when` \
-  was renamed into `$if`
+  was renamed into `$if`.
 
 * Renamed: `PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_::$condition` \
-  was renamed into `$match`
+  was renamed into `$match`.
+
+* Renamed: `PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_::$formatter` \
+  was renamed into `$format`.
