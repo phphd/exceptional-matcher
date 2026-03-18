@@ -24,10 +24,10 @@ use function is_string;
 final class Catch_
 {
     /**
-     * @phpstan-param ?class-string<MatchCondition<T1>> $condition
+     * @phpstan-param ?class-string<MatchCondition<T1>> $match
      * @phpstan-param class-string<MatchedExceptionFormatter<T2,mixed>> $formatter
      *
-     * @psalm-param ?class-string<MatchCondition> $condition
+     * @psalm-param ?class-string<MatchCondition> $match
      * @psalm-param class-string<MatchedExceptionFormatter> $formatter
      */
     public function __construct(
@@ -36,11 +36,11 @@ final class Catch_
         private readonly ?string $message = null,
         /** @var null|class-string|array{class-string,non-empty-string} The origin of the exception */
         private readonly array|string|null $from = null,
-        /** @note condition type is contravariant to the exception */
-        private readonly ?string $condition = null,
+        /** @note match condition class is contravariant to the exception */
+        private readonly ?string $match = null,
         /** @var ?array{object|class-string,string} */
         private readonly ?array $if = null,
-        /** @note formatter type is contravariant to the exception */
+        /** @note formatter class is contravariant to the exception */
         private readonly string $formatter = MainExceptionViolationFormatter::class, // @phpstan-ignore phpat.testModelDependencies (really, this's a fair catch - it should not depend on the formatter)
     ) {
         if (null !== $this->if) {
@@ -78,9 +78,9 @@ final class Catch_
      *
      * @psalm-return ?class-string<MatchCondition>
      */
-    public function getCondition(): ?string
+    public function getMatch(): ?string
     {
-        return $this->condition;
+        return $this->match;
     }
 
     /** @return ?array{object|class-string,string} */

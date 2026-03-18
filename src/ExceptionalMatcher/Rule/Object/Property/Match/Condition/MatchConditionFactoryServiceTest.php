@@ -57,7 +57,7 @@ final class MatchConditionFactoryServiceTest extends BundleTestCase
         $factory = $this->getDelegatingMatchConditionFactory($matchConditionFactory);
 
         /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */
-        return (static fn (): ContainerInterface => $factory->conditionFactoryRegistry) // @phpstan-ignore-line
+        return (static fn (): ContainerInterface => $factory->matchConditionFactoryRegistry) // @phpstan-ignore-line
             ->bindTo(null, DelegatingMatchConditionFactory::class)->__invoke()
         ;
     }
