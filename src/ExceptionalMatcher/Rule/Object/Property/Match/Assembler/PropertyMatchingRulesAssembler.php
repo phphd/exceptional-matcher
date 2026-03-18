@@ -39,8 +39,8 @@ final class PropertyMatchingRulesAssembler implements MatchingRuleSetAssembler
             $rules->append(new MatchExceptionRule(
                 $ruleSet,
                 $condition,
-                $catchAttribute->getMessage(),
                 $catchAttribute->getFormat(),
+                $catchAttribute->getMessage(),
             ));
         }
 

@@ -33,7 +33,6 @@ final class Catch_
     public function __construct(
         /** @var class-string<T1&T2> */
         private readonly string $exception,
-        private readonly ?string $message = null,
         /** @var null|class-string|array{class-string,non-empty-string} The origin of the exception */
         private readonly array|string|null $from = null,
         /** @note match condition class is contravariant to the exception */
@@ -42,6 +41,7 @@ final class Catch_
         private readonly ?array $if = null,
         /** @note formatter class is contravariant to the exception */
         private readonly string $format = MainExceptionViolationFormatter::class, // @phpstan-ignore phpat.testModelDependencies (really, this's a fair catch - it should not depend on the formatter)
+        private readonly ?string $message = null,
     ) {
         if (null !== $this->if) {
             Assert::count($this->if, 2);
@@ -56,11 +56,6 @@ final class Catch_
     public function getExceptionClass(): string
     {
         return $this->exception;
-    }
-
-    public function getMessage(): ?string
-    {
-        return $this->message;
     }
 
     /** @return ?array{class-string,?non-empty-string} */
@@ -97,5 +92,10 @@ final class Catch_
     public function getFormat(): string
     {
         return $this->format;
+    }
+
+    public function getMessage(): ?string
+    {
+        return $this->message;
     }
 }

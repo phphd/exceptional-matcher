@@ -12,7 +12,7 @@ use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 final class NotHandleableMessageStub
 {
     public function __construct(
-        #[Catch_(AnException::class, 'not matched')]
+        #[Catch_(AnException::class, message: 'not matched')]
         private readonly int $property,
     ) {
     }
