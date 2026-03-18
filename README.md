@@ -420,7 +420,7 @@ and check whether the exception was originated from that origin `from:` place.
 
 #### When-Closure Condition
 
-`#[Catch_]` attribute allows to specify `when:` argument with a callback function to be used to determine \
+`#[Catch_]` attribute allows to specify `if:` argument with a callback function to be used to determine \
 whether particular instance of the exception should be matched with a given property or not. \
 This is particularly useful when the same exception could be originated from multiple places:
 
@@ -431,10 +431,10 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 #[Try_]
 class TransferMoneyCommand
 {
-    #[Catch_(BlockedCardException::class, when: [self::class, 'isWithdrawalCard'])]
+    #[Catch_(BlockedCardException::class, if: [self::class, 'isWithdrawalCard'])]
     public int $fromCardId;
 
-    #[Catch_(BlockedCardException::class, when: [self::class, 'isDepositCard'])]
+    #[Catch_(BlockedCardException::class, if: [self::class, 'isDepositCard'])]
     public int $toCardId;
 
     public function isWithdrawalCard(BlockedCardException $exception): bool
@@ -489,7 +489,7 @@ Only string property values are allowed for this condition.
 
 Since in most cases matching conditions come down to the simple value comparison, it's easier to make the exception
 implement `ValueException` interface and specify `condition: ExceptionValueMatchCondition::class` instead of
-implementing `when:` closure every time.
+implementing `if:` closure every time.
 
 This way it's possible to avoid much of the boilerplate code, keeping it clean:
 
@@ -739,7 +739,7 @@ class OrderItemDto
 {
     public int $productId;
 
-    #[Catch_(InsufficientStockException::class, when: [self::class, 'isStockExceptionForThisItem'])]
+    #[Catch_(InsufficientStockException::class, if: [self::class, 'isStockExceptionForThisItem'])]
     public string $quantity;
 
     public function isStockExceptionForThisItem(InsufficientStockException $exception): bool
