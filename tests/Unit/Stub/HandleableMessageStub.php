@@ -54,12 +54,12 @@ final class HandleableMessageStub
     #[Catch_(LogicException::class, 'oops')]
     private string $messageText;
 
-    #[Catch_(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
-    #[Catch_(ValidationFailedException::class, condition: ValidationFailedExceptionMatchCondition::class, formatter: ValidationFailedExceptionFormatter::class)]
+    #[Catch_(SomeValueException::class, 'oops', match: ExceptionValueMatchCondition::class)]
+    #[Catch_(ValidationFailedException::class, match: ValidationFailedExceptionMatchCondition::class, formatter: ValidationFailedExceptionFormatter::class)]
     private string $notMatchedProperty = 'not matched';
 
-    #[Catch_(SomeValueException::class, 'oops', condition: ExceptionValueMatchCondition::class)]
-    #[Catch_(ValidationFailedException::class, condition: ValidationFailedExceptionMatchCondition::class, formatter: ValidationFailedExceptionFormatter::class)]
+    #[Catch_(SomeValueException::class, 'oops', match: ExceptionValueMatchCondition::class)]
+    #[Catch_(ValidationFailedException::class, match: ValidationFailedExceptionMatchCondition::class, formatter: ValidationFailedExceptionFormatter::class)]
     private string $matchedProperty = 'matched!';
 
     #[Catch_(SomeValueException::class, 'oops')]

@@ -14,3 +14,6 @@ for the changes not covered by automatic upgrade via Rector (see the "Upgrading"
 
 * Renamed: `PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_::$when` \
   was renamed into `$if`
+
+* Renamed: `PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_::$condition` \
+  was renamed into `$match`

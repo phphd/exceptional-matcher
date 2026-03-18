@@ -15,7 +15,7 @@ final class MessageWithInvalidUidCondition
     public function __construct(
         #[Catch_(
             InvalidUidException::class,
-            condition: InvalidUidExceptionMatchCondition::class,
+            match: InvalidUidExceptionMatchCondition::class,
         )]
         public mixed $uid,
     ) {
