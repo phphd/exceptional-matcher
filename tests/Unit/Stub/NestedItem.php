@@ -12,7 +12,7 @@ use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedExceptio
 final class NestedItem
 {
     public function __construct(
-        #[Catch_(NestedItemMatchedException::class, 'oops', if: [self::class, 'matchesValue'])]
+        #[Catch_(NestedItemMatchedException::class, if: [self::class, 'matchesValue'], message: 'oops')]
         private readonly int $property,
     ) {
     }

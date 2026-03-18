@@ -127,10 +127,10 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 #[Try_]
 class RegisterUserCommand
 {
-    #[Catch_(LoginAlreadyTakenException::class, 'auth.login.already_taken')]
+    #[Catch_(LoginAlreadyTakenException::class, message: 'auth.login.already_taken')]
     public string $login;
 
-    #[Catch_(WeakPasswordException::class, 'auth.password.weak')]
+    #[Catch_(WeakPasswordException::class, message: 'auth.password.weak')]
     public string $password;
 }
 ```
@@ -181,11 +181,11 @@ A comparison of the approaches would look something like this:
  class RegisterUserCommand
  {
 -    #[App\Assert\UniqueLogin]
-+    #[Catch_(LoginAlreadyTakenException::class, 'auth.login.already_taken')]
++    #[Catch_(LoginAlreadyTakenException::class, message: 'auth.login.already_taken')]
      public string $login;
 
 -    #[Assert\PasswordStrength(minScore: 2)]
-+    #[Catch_(WeakPasswordException::class, 'auth.password.weak')]
++    #[Catch_(WeakPasswordException::class, message: 'auth.password.weak')]
      public string $password;
  }
 ```
