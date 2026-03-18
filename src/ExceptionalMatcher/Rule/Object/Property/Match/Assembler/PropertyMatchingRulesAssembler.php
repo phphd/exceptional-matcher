@@ -25,14 +25,14 @@ final class PropertyMatchingRulesAssembler implements MatchingRuleSetAssembler
     ) {
     }
 
-    /** @param MatchConditionFactory<Throwable> $conditionFactory */
-    public function assembleRules(MatchConditionFactory $conditionFactory): ?CompositeMatchingRule
+    /** @param MatchConditionFactory<Throwable> $matchConditionFactory */
+    public function assembleRules(MatchConditionFactory $matchConditionFactory): ?CompositeMatchingRule
     {
         $rules = new ArrayIterator();
         $ruleSet = new CompositeMatchingRule($this->parentRule, $rules);
 
         foreach ($this->getCatchAttributes() as $catchAttribute) {
-            $condition = $conditionFactory->getCondition($catchAttribute, $this->parentRule);
+            $condition = $matchConditionFactory->getCondition($catchAttribute, $this->parentRule);
 
             Assert::notNull($condition);
 
@@ -40,7 +40,7 @@ final class PropertyMatchingRulesAssembler implements MatchingRuleSetAssembler
                 $ruleSet,
                 $condition,
                 $catchAttribute->getMessage(),
-                $catchAttribute->getFormatter(),
+                $catchAttribute->getFormat(),
             ));
         }
 
