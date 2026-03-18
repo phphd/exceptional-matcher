@@ -597,7 +597,7 @@ final class CardNumberValidationFailedException extends \RuntimeException implem
 }
 ```
 
-Then, specify `ViolationListExceptionFormatter` as a `formatter:` for the `#[Catch_]` attribute:
+Then, specify `ViolationListExceptionFormatter` as a `format:` for the `#[Catch_]` attribute:
 
 ```php
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
@@ -609,7 +609,7 @@ class IssueCreditCardCommand
 {
     #[Catch_(
         exception: CardNumberValidationFailedException::class, 
-        formatter: ViolationListExceptionFormatter::class,
+        format: ViolationListExceptionFormatter::class,
     )]
     private string $cardNumber;
 }
@@ -697,10 +697,10 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 #[Try_]
 final class RegisterUserCommand
 {
-    #[Catch_(LoginAlreadyTakenException::class, formatter: LoginAlreadyTakenViolationFormatter::class)]
+    #[Catch_(LoginAlreadyTakenException::class, format: LoginAlreadyTakenViolationFormatter::class)]
     private string $login;
 
-    #[Catch_(WeakPasswordException::class, formatter: WeakPasswordViolationFormatter::class)]
+    #[Catch_(WeakPasswordException::class, format: WeakPasswordViolationFormatter::class)]
     private string $password;
 }
 ```
