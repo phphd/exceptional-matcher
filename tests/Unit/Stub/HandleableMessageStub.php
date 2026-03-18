@@ -30,7 +30,7 @@ final class HandleableMessageStub
     #[Catch_(AnException::class, 'oops')]
     private int $property;
 
-    #[Catch_(CustomFormattedException::class, 'oops', formatter: CustomExceptionViolationFormatter::class)]
+    #[Catch_(CustomFormattedException::class, 'oops', format: CustomExceptionViolationFormatter::class)]
     private string $formatted;
 
     #[Catch_(ObjectPropertyMatchedException::class, 'oops')]
@@ -55,11 +55,11 @@ final class HandleableMessageStub
     private string $messageText;
 
     #[Catch_(SomeValueException::class, 'oops', match: ExceptionValueMatchCondition::class)]
-    #[Catch_(ValidationFailedException::class, match: ValidationFailedExceptionMatchCondition::class, formatter: ValidationFailedExceptionFormatter::class)]
+    #[Catch_(ValidationFailedException::class, match: ValidationFailedExceptionMatchCondition::class, format: ValidationFailedExceptionFormatter::class)]
     private string $notMatchedProperty = 'not matched';
 
     #[Catch_(SomeValueException::class, 'oops', match: ExceptionValueMatchCondition::class)]
-    #[Catch_(ValidationFailedException::class, match: ValidationFailedExceptionMatchCondition::class, formatter: ValidationFailedExceptionFormatter::class)]
+    #[Catch_(ValidationFailedException::class, match: ValidationFailedExceptionMatchCondition::class, format: ValidationFailedExceptionFormatter::class)]
     private string $matchedProperty = 'matched!';
 
     #[Catch_(SomeValueException::class, 'oops')]
