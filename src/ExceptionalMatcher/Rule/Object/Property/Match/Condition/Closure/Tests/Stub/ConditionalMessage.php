@@ -10,10 +10,10 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 #[Try_]
 final class ConditionalMessage
 {
-    #[Catch_(ConditionallyCaughtException::class, 'oops', when: [self::class, 'firstPropertyMatchesException'])]
+    #[Catch_(ConditionallyCaughtException::class, 'oops', if: [self::class, 'firstPropertyMatchesException'])]
     private int $firstProperty;
 
-    #[Catch_(ConditionallyCaughtException::class, 'oops', when: [self::class, 'secondPropertyMatchesException'])]
+    #[Catch_(ConditionallyCaughtException::class, 'oops', if: [self::class, 'secondPropertyMatchesException'])]
     private int $secondProperty;
 
     public static function createWithConditionalProperties(int $firstConditionalProperty, int $secondConditionalProperty): self
