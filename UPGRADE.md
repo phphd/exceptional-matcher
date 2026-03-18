@@ -23,3 +23,12 @@ for the changes not covered by automatic upgrade via Rector (see the "Upgrading"
 
 * Renamed: `PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_::$formatter` \
   was renamed into `$format`.
+
+* Parameter Moved: `PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_::$message` \
+  was moved to be after `$format`.
+
+  Not moving it will cause this error:
+  > Parameter #2 `$from` of attribute class `PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_` constructor expects `array{class-string, non-empty-string}|class-string|null`,  
+  > `'exception.message'` given.
+
+  Fix it by passing it as a named parameter: `message: 'exception.message'`.

@@ -27,16 +27,16 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 #[Try_]
 final class HandleableMessageStub
 {
-    #[Catch_(AnException::class, 'oops')]
+    #[Catch_(AnException::class, message: 'oops')]
     private int $property;
 
-    #[Catch_(CustomFormattedException::class, 'oops', format: CustomExceptionViolationFormatter::class)]
+    #[Catch_(CustomFormattedException::class, format: CustomExceptionViolationFormatter::class, message: 'oops')]
     private string $formatted;
 
-    #[Catch_(ObjectPropertyMatchedException::class, 'oops')]
+    #[Catch_(ObjectPropertyMatchedException::class, message: 'oops')]
     private object $objectProperty;
 
-    #[Catch_(StaticPropertyMatchedException::class, 'oops')]
+    #[Catch_(StaticPropertyMatchedException::class, message: 'oops')]
     private static string $staticProperty = 'foo';
 
     private NestedHandleableMessage $nestedObject;
@@ -51,24 +51,24 @@ final class HandleableMessageStub
     #[Catch_(InvalidArgumentException::class, from: [Uuid::class, 'fromString'])]
     private string $uid;
 
-    #[Catch_(LogicException::class, 'oops')]
+    #[Catch_(LogicException::class, message: 'oops')]
     private string $messageText;
 
-    #[Catch_(SomeValueException::class, 'oops', match: ExceptionValueMatchCondition::class)]
+    #[Catch_(SomeValueException::class, match: ExceptionValueMatchCondition::class, message: 'oops')]
     #[Catch_(ValidationFailedException::class, match: ValidationFailedExceptionMatchCondition::class, format: ValidationFailedExceptionFormatter::class)]
     private string $notMatchedProperty = 'not matched';
 
-    #[Catch_(SomeValueException::class, 'oops', match: ExceptionValueMatchCondition::class)]
+    #[Catch_(SomeValueException::class, match: ExceptionValueMatchCondition::class, message: 'oops')]
     #[Catch_(ValidationFailedException::class, match: ValidationFailedExceptionMatchCondition::class, format: ValidationFailedExceptionFormatter::class)]
     private string $matchedProperty = 'matched!';
 
-    #[Catch_(SomeValueException::class, 'oops')]
+    #[Catch_(SomeValueException::class, message: 'oops')]
     private string $anotherMatchedAsNoCondition;
 
     #[Catch_(MessageContainingException::class)]
     private int $fallBackToExceptionMessage;
 
-    #[Catch_(MessageContainingException::class, '')]
+    #[Catch_(MessageContainingException::class, message: '')]
     private string $emptyTranslationMessage;
 
     private function __construct()

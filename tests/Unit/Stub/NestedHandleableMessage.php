@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints\Valid;
 #[Try_]
 final class NestedHandleableMessage
 {
-    #[Catch_(NestedPropertyMatchedException::class, 'nested.message')]
+    #[Catch_(NestedPropertyMatchedException::class, message: 'nested.message')]
     private string $nestedProperty;
 
     #[Valid]

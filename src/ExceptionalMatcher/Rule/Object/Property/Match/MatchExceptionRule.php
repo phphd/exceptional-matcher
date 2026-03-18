@@ -22,9 +22,9 @@ final class MatchExceptionRule implements MatchingRule
         private readonly MatchingRule $parent,
         /** @var MatchCondition<TException> */
         private readonly MatchCondition $condition,
-        private readonly ?string $messageTemplate,
         /** @var class-string<MatchedExceptionFormatter<TException,mixed>> */
         private readonly string $formatterId,
+        private readonly ?string $messageTemplate,
     ) {
     }
 
@@ -66,14 +66,14 @@ final class MatchExceptionRule implements MatchingRule
         return $this->condition->matches($exception);
     }
 
-    public function getMessageTemplate(): ?string
-    {
-        return $this->messageTemplate;
-    }
-
     /** @return class-string<MatchedExceptionFormatter<TException,mixed>> */
     public function getFormatterId(): string
     {
         return $this->formatterId;
+    }
+
+    public function getMessageTemplate(): ?string
+    {
+        return $this->messageTemplate;
     }
 }
