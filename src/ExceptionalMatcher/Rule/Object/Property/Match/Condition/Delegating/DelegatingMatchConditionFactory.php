@@ -24,28 +24,28 @@ final class DelegatingMatchConditionFactory implements MatchConditionFactory
      *
      * @template T of Throwable
      *
-     * @param ContainerInterface<class-string<MatchCondition<T>>,MatchConditionFactory<T>> $conditionFactoryRegistry
+     * @param ContainerInterface<class-string<MatchCondition<T>>,MatchConditionFactory<T>> $matchConditionFactoryRegistry
      */
     public function __construct(
-        private readonly ContainerInterface $conditionFactoryRegistry,
+        private readonly ContainerInterface $matchConditionFactoryRegistry,
     ) {
     }
 
     public function getCondition(Catch_ $catch, MatchingRule $parent): ?MatchCondition
     {
-        $conditionFactoryId = $catch->getCondition();
+        $factoryId = $catch->getMatch();
 
-        if (null === $conditionFactoryId) {
+        if (null === $factoryId) {
             return null;
         }
 
-        if (!$this->conditionFactoryRegistry->has($conditionFactoryId)) {
-            throw new LogicException('Condition factory not found: '.$conditionFactoryId);
+        if (!$this->matchConditionFactoryRegistry->has($factoryId)) {
+            throw new LogicException('Condition factory not found: '.$factoryId);
         }
 
-        $conditionFactory = $this->conditionFactoryRegistry->get($conditionFactoryId);
+        $matchConditionFactory = $this->matchConditionFactoryRegistry->get($factoryId);
 
-        /** @var MatchConditionFactory<Throwable> $conditionFactory */
-        return $conditionFactory->getCondition($catch, $parent);
+        /** @var MatchConditionFactory<Throwable> $matchConditionFactory */
+        return $matchConditionFactory->getCondition($catch, $parent);
     }
 }

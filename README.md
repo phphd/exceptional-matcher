@@ -472,7 +472,7 @@ use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidExcept
 #[Try_]
 class ApproveVerificationCommand
 {
-    #[Catch_(InvalidUidException::class, condition: InvalidUidExceptionMatchCondition::class)]
+    #[Catch_(InvalidUidException::class, match: InvalidUidExceptionMatchCondition::class)]
     public string $id;
 }
 ```
@@ -488,7 +488,7 @@ Only string property values are allowed for this condition.
 #### ValueException Condition
 
 Since in most cases matching conditions come down to the simple value comparison, it's easier to make the exception
-implement `ValueException` interface and specify `condition: ExceptionValueMatchCondition::class` instead of
+implement `ValueException` interface and specify `match: ExceptionValueMatchCondition::class` instead of
 implementing `if:` closure every time.
 
 This way it's possible to avoid much of the boilerplate code, keeping it clean:
@@ -501,10 +501,10 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\Exceptio
 #[Try_]
 class TransferMoneyCommand
 {
-    #[Catch_(BlockedCardException::class, condition: ExceptionValueMatchCondition::class)]
+    #[Catch_(BlockedCardException::class, match: ExceptionValueMatchCondition::class)]
     public int $withdrawalCardId;
 
-    #[Catch_(BlockedCardException::class, condition: ExceptionValueMatchCondition::class)]
+    #[Catch_(BlockedCardException::class, match: ExceptionValueMatchCondition::class)]
     public int $depositCardId;
 }
 ```
@@ -550,7 +550,7 @@ class RegisterUserCommand
     #[Catch_(
         exception: ValidationFailedException::class,
         from: Password::class,
-        condition: ValidationFailedExceptionMatchCondition::class,
+        match: ValidationFailedExceptionMatchCondition::class,
     )]
     public string $password;
 }
