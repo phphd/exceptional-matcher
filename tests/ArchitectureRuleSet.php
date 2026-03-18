@@ -20,7 +20,6 @@ use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
-use Symfony\Component\Validator\Constraints\Valid;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -131,7 +130,6 @@ final class ArchitectureRuleSet
                 'deps' => [
                     $this->model(),
                     $this->matchCondition(),
-                    Selector::classname(Valid::class),
                     Selector::classname(Assert::class),
                 ],
             ],
