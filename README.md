@@ -1,6 +1,6 @@
-# Exceptional Validation 🏹
+# Exceptional Matcher 🏹
 
-🧰 Correlate Domain Exceptions with Object Properties
+💼 Match the Exceptions to the Object's Properties
 
 [![Build Status](https://img.shields.io/github/actions/workflow/status/phphd/exceptional-validation/ci.yaml?branch=main&logo=github&logoColor=024C1A&cacheSeconds=3600)](https://github.com/phphd/exceptional-validation/actions?query=branch%3Amain)
 [![Codecov](https://codecov.io/gh/phphd/exceptional-validation/graph/badge.svg?token=GZRXWYT55Z)](https://codecov.io/gh/phphd/exceptional-validation)
@@ -368,12 +368,12 @@ $matcher = $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListIn
 
 Herein, you create a Container, compile it, and use to get `ExceptionMatcher`.
 
-## Features 📙
+## Features 💎
 
 `#[Try_]` and `#[Catch_]` attributes allow implementing very flexible matching rules. \
 It's highly recommended to see the examples below to know the power of these solutions.
 
-### Match Conditions
+### Match Conditions 🖇️
 
 #### Exception Class Condition
 
@@ -625,7 +625,7 @@ formatter makes sure that a proper representation of this exception in a `Constr
 > Besides that, it's also possible to use `ValidationFailedExceptionFormatter`, \
 > which can format Symfony's native `ValidationFailedException`.
 
-#### Custom Violation Formatters
+#### Custom Violation Formatters 🎨🖌️
 
 In some cases, you might want to customize the created violations. \
 For example, pass additional parameters to the message translation.
@@ -813,7 +813,7 @@ of our thrown exceptions will be processed, and the user will get the complete s
 
 The basic upgrade can be performed by [Rector](https://getrector.com/documentation) using
 `ExceptionalMatcherSetList` \
-that comes with the library and contains automatic upgrade rules.
+which comes with the library and contains automatic upgrade rules.
 
 To upgrade a project to the latest version of `exceptional-validation`, \
 add the following configuration to your `rector.php` file:
@@ -830,4 +830,4 @@ return RectorConfig::configure()
 
 Make sure to specify your current version of the library so that upgrade sets will be matched correctly.
 
-You should also check [UPGRADE.md](UPGRADE.md) for additional instructions and breaking changes.
+You should also check [UPGRADE.md](UPGRADE.md) for breaking changes and additional instructions.
