@@ -231,6 +231,63 @@ if ($this->userRepository->loginExists($command->login)) {
 }
 ```
 
+## Direct Usage 🔌
+
+> It's possible to use features of this library without necessarily depending on the frameworks.
+> See [Standalone Usage](#standalone-usage-) section.
+
+If you're using Symfony, you can check what exception matchers are available using this command:
+
+```shell
+bin/console debug:container ExceptionMatcher
+```
+
+This should provide you with a list, similar to this:
+
+```text
+[0] PhPhD\ExceptionalMatcher\ExceptionMatcher<PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList>
+[1] PhPhD\ExceptionalMatcher\ExceptionMatcher<Symfony\Component\Validator\ConstraintViolationListInterface>
+```
+
+These matchers format the Exception to their respective format, specified as a generic parameter. \
+Format could be `ConstraintViolationList`, or `MatchedExceptionList`, or anything else dumped by the command.
+
+Therefore, you can inject the wanted service into your own code:
+
+```php
+use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+
+class SignDocumentActivity
+{
+    public function __construct(
+        /** @var ExceptionMatcher<ConstraintViolationListInterface> */
+        #[Autowire(service: ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>')]
+        private ExceptionMatcher $exceptionMatcher,
+    ) {
+    }
+
+    public function sign(SignCommand $command): string
+    {
+        try {
+            return $command->process();
+        } catch (DomainException $e) {
+            /** @var ConstraintViolationListInterface $violationList */
+            $violationList = $this->exceptionMatcher->match($e, $command);
+
+            throw new ApplicationFailure(
+                'Validation Failed',
+                $this->encode($violationList),
+                previous: $e,
+            );
+        }
+    }
+}
+```
+
+In this example, we use `ExceptionMatcher` to relate the exception to some property of the `$command`, \
+which produces `ConstraintViolationListInterface` that can be used however you want to.
+
 ## Usage with Command Bus 📇
 
 If you are using Symfony Messenger as a Command Bus, \
@@ -287,63 +344,6 @@ violations.
 This diagram represents the concept:
 
 ![Exceptional Validation.svg](https://raw.githubusercontent.com/phphd/exceptional-validation/refs/heads/main/assets/Exceptional%20Validation.svg)
-
-## Custom Usage 🔌
-
-It's possible to use features of this bundle without necessarily depending on Command Bus middleware, nor on the
-Messenger component.
-
-If you're using Symfony, you can check what exception matchers are available using this command:
-
-```shell
-bin/console debug:container ExceptionMatcher
-```
-
-This should provide you with a list, similar to this:
-
-```text
-[0] PhPhD\ExceptionalMatcher\ExceptionMatcher<PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList>
-[1] PhPhD\ExceptionalMatcher\ExceptionMatcher<Symfony\Component\Validator\ConstraintViolationListInterface>
-```
-
-These matchers format the Exception to their respective format, specified as a generic parameter. \
-Format could be `ConstraintViolationList`, or `MatchedExceptionList`, or anything else dumped by the command.
-
-Therefore, you can inject the wanted service into your own code:
-
-```php
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
-
-class SignDocumentActivity
-{
-    public function __construct(
-        /** @var ExceptionMatcher<ConstraintViolationListInterface> */
-        #[Autowire(service: ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>')]
-        private ExceptionMatcher $exceptionMatcher,
-    ) {
-    }
-
-    public function sign(SignCommand $command): string
-    {
-        try {
-            return $command->process();
-        } catch (DomainException $e) {
-            /** @var ConstraintViolationListInterface $violationList */
-            $violationList = $this->exceptionMatcher->match($e, $command);
-
-            throw new ApplicationFailure(
-                'Validation Failed',
-                $this->encode($violationList),
-                previous: $e,
-            );
-        }
-    }
-}
-```
-
-In this example, we use `ExceptionMatcher` to relate the exception to some property of the `$command`, \
-which produces `ConstraintViolationListInterface` that can be used however you want to.
 
 ## Standalone Usage 🔧
 
