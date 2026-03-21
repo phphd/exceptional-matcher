@@ -168,9 +168,10 @@ You can serialize this violation list into a json-response or render a form with
 
 ## How is this different from a standard validation? ⚖️
 
-You might be wondering why we wouldn't just use simple validation asserts right in the command?
+Conceptually.
 
-This is a logical question. A simple answer is that this's not always convenient / best.
+If you're wondering why we wouldn't use "normal" validation asserts right in the command, \
+I'll say to you that this is not always best / convenient.
 
 For example, let's take the same `RegisterUserCommand` as used before.
 
@@ -180,7 +181,7 @@ A comparison of the approaches would look something like this:
 +#[Try_]
  class RegisterUserCommand
  {
--    #[App\Assert\UniqueLogin]
+-    #[AppAssert\UniqueLogin]
 +    #[Catch_(LoginAlreadyTakenException::class, message: 'auth.login.already_taken')]
      public string $login;
 
@@ -270,17 +271,22 @@ class SignDocumentActivity
     public function sign(SignCommand $command): string
     {
         try {
-            return $command->process();
+            return $command->businessLogic($this);
         } catch (DomainException $e) {
-            /** @var ConstraintViolationListInterface $violationList */
-            $violationList = $this->exceptionMatcher->match($e, $command);
-
-            throw new ApplicationFailure(
-                'Validation Failed',
-                $this->encode($violationList),
-                previous: $e,
-            );
+            throw $this->failure($e, $command);
         }
+    }
+
+    private function failure(Throwable $e, SignCommand $command): Throwable
+    {
+        /** @var ?ConstraintViolationListInterface $violationList */
+        $violationList = $this->exceptionMatcher->match($e, $command);
+
+        if (null === $violationList) {
+            return $e;
+        }
+
+        return new ApplicationFailure('Validation Failed', $this->encode($violationList), previous: $e);    
     }
 }
 ```
@@ -387,10 +393,10 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 
 #[Try_]
-class PublishMessageCommand
+class SubmitOrderCommand
 {
-    #[Catch_(MessageNotFoundException::class)]
-    public string $messageId;
+    #[Catch_(OrderSubmissionPeriodClosedException::class)]
+    public string $id;
 }
 ```
 
@@ -405,7 +411,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use Symfony\Component\Uid\Uuid;
 
 #[Try_]
-class ConfirmPackageDeliveryCommand
+class ConfirmParcelDeliveryCommand
 {
     #[Catch_(\InvalidArgumentException::class, from: [Uuid::class, 'fromString'])]
     public string $uid;
@@ -431,25 +437,25 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 #[Try_]
 class TransferMoneyCommand
 {
-    #[Catch_(BlockedCardException::class, if: [self::class, 'isWithdrawalCard'])]
-    public int $fromCardId;
+    #[Catch_(CardBlockedException::class, if: [self::class, 'isWithdrawalCard'])]
+    public int $withdrawFromCardId;
 
-    #[Catch_(BlockedCardException::class, if: [self::class, 'isDepositCard'])]
-    public int $toCardId;
+    #[Catch_(CardBlockedException::class, if: [self::class, 'isDepositCard'])]
+    public int $depositToCardId;
 
-    public function isWithdrawalCard(BlockedCardException $exception): bool
+    public function isWithdrawalCard(CardBlockedException $exception): bool
     {
-        return $this->fromCardId === $exception->getCardId();
+        return $this->withdrawFromCardId === $exception->getCardId();
     }
 
-    public function isDepositCard(BlockedCardException $exception): bool
+    public function isDepositCard(CardBlockedException $exception): bool
     {
-        return $this->toCardId === $exception->getCardId();
+        return $this->depositToCardId === $exception->getCardId();
     }
 }
 ```
 
-In this example, once we've matched `BlockedCardException` by class, custom closure is called.
+In this example, once we've matched `CardBlockedException` by class, custom closure is called.
 
 If `isWithdrawalCardBlocked()` callback returns `true`, the exception is matched for `withdrawalCardId` property.
 
@@ -501,23 +507,23 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\Exceptio
 #[Try_]
 class TransferMoneyCommand
 {
-    #[Catch_(BlockedCardException::class, match: ExceptionValueMatchCondition::class)]
+    #[Catch_(CardBlockedException::class, match: ExceptionValueMatchCondition::class)]
     public int $withdrawalCardId;
 
-    #[Catch_(BlockedCardException::class, match: ExceptionValueMatchCondition::class)]
+    #[Catch_(CardBlockedException::class, match: ExceptionValueMatchCondition::class)]
     public int $depositCardId;
 }
 ```
 
-In this example `BlockedCardException` could be matched either with `withdrawalCardId` or with `depositCardId`, \
+In this example `CardBlockedException` could be matched either with `withdrawalCardId` or with `depositCardId`, \
 depending on the `cardId` value from the exception.
 
-And `BlockedCardException` itself must implement `ValueException` interface:
+And `CardBlockedException` itself must implement `ValueException` interface:
 
 ```php
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ValueException;
 
-class BlockedCardException extends DomainException implements ValueException
+class CardBlockedException extends DomainException implements ValueException
 {
     public function __construct(private Card $card) 
     {
