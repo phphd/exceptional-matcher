@@ -17,7 +17,7 @@ use Throwable;
  */
 final class ExceptionOriginMatchConditionFactory implements MatchConditionFactory
 {
-    public function getCondition(Catch_ $catch, MatchingRule $parent): ?MatchCondition
+    public function getCondition(Catch_ $catch, MatchingRule $owner): ?MatchCondition
     {
         $origin = $catch->getFrom();
 

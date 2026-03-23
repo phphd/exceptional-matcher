@@ -29,12 +29,12 @@ final class CompositeMatchConditionFactory implements MatchConditionFactory
     ) {
     }
 
-    public function getCondition(Catch_ $catch, MatchingRule $parent): ?MatchCondition
+    public function getCondition(Catch_ $catch, MatchingRule $owner): ?MatchCondition
     {
         $conditions = [];
 
         foreach ($this->factories as $factory) {
-            $matchCondition = $factory->getCondition($catch, $parent);
+            $matchCondition = $factory->getCondition($catch, $owner);
 
             if ($matchCondition instanceof FalseCondition) {
                 return $matchCondition;

@@ -21,12 +21,12 @@ const exception_value = ExceptionValueMatchCondition::class;
  */
 final class ExceptionValueMatchConditionFactory implements MatchConditionFactory
 {
-    public function getCondition(Catch_ $catch, MatchingRule $parent): ExceptionValueMatchCondition
+    public function getCondition(Catch_ $catch, MatchingRule $owner): ExceptionValueMatchCondition
     {
         if (!is_a($catch->getExceptionClass(), ValueException::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('ExceptionValueMatchCondition can only be used for exception classes that implement ValueException');
         }
 
-        return new ExceptionValueMatchCondition($parent->getValue());
+        return new ExceptionValueMatchCondition($owner->getValue());
     }
 }

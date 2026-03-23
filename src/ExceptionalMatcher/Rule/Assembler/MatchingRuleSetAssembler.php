@@ -9,5 +9,5 @@ use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
 /** @internal */
 interface MatchingRuleSetAssembler
 {
-    public function getParentRule(): ?MatchingRule;
+    public function getOwnerRule(): ?MatchingRule;
 }

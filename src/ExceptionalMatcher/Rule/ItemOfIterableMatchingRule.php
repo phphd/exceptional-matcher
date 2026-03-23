@@ -15,7 +15,7 @@ final class ItemOfIterableMatchingRule implements MatchingRule
 {
     public function __construct(
         private readonly int|string $key,
-        private readonly MatchingRule $parent,
+        private readonly MatchingRule $owner,
         private readonly MatchingRule $objectRuleSet,
     ) {
     }
@@ -25,24 +25,24 @@ final class ItemOfIterableMatchingRule implements MatchingRule
         return $this->objectRuleSet->process($reciprocal);
     }
 
-    public function getParent(): MatchingRule
+    public function getOwner(): MatchingRule
     {
-        return $this->parent;
+        return $this->owner;
     }
 
     public function getPropertyPath(): PropertyPath
     {
-        return $this->parent->getPropertyPath()->at($this->key);
+        return $this->owner->getPropertyPath()->at($this->key);
     }
 
     public function getEnclosingObject(): object
     {
-        return $this->parent->getEnclosingObject();
+        return $this->owner->getEnclosingObject();
     }
 
     public function getRootObject(): object
     {
-        return $this->parent->getRootObject();
+        return $this->owner->getRootObject();
     }
 
     public function getValue(): object

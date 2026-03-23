@@ -35,7 +35,7 @@ final class PropertyNestedValidIterableRulesAssemblerService implements Matching
     /** @param PropertyMatchingRulesAssembler $assembler */
     public function assemble(MatchingRuleSetAssembler $assembler): ?MatchingRule
     {
-        $propertyRuleSet = $assembler->getParentRule();
+        $propertyRuleSet = $assembler->getOwnerRule();
         $propertyValue = $propertyRuleSet->getValue();
 
         if (!is_iterable($propertyValue)) {
@@ -52,23 +52,23 @@ final class PropertyNestedValidIterableRulesAssemblerService implements Matching
     }
 
     /** @param iterable<array-key,mixed> $items */
-    private function createRuleSet(iterable $items, PropertyMatchingRuleSet $parent): CompositeMatchingRule
+    private function createRuleSet(iterable $items, PropertyMatchingRuleSet $ownerRuleSet): CompositeMatchingRule
     {
         return new CompositeMatchingRule(
-            $parent,
-            $this->getRules($items, $parent),
+            $ownerRuleSet,
+            $this->getRules($items, $ownerRuleSet),
         );
     }
 
     /** @param iterable<array-key,mixed> $items */
-    private function getRules(iterable $items, PropertyMatchingRuleSet $parentRuleSet): Generator
+    private function getRules(iterable $items, PropertyMatchingRuleSet $ownerRuleSet): Generator
     {
         foreach ($items as $key => $item) {
             if (!is_object($item)) {
                 continue;
             }
 
-            $rule = $this->getIterableItemMatchingRule($parentRuleSet, $key, $item);
+            $rule = $this->getIterableItemMatchingRule($ownerRuleSet, $key, $item);
 
             if (null !== $rule) {
                 yield $rule;
@@ -76,12 +76,12 @@ final class PropertyNestedValidIterableRulesAssemblerService implements Matching
         }
     }
 
-    private function getIterableItemMatchingRule(PropertyMatchingRuleSet $parentRuleSet, int|string $key, object $object): ?MatchingRule
+    private function getIterableItemMatchingRule(PropertyMatchingRuleSet $ownerRuleSet, int|string $key, object $object): ?MatchingRule
     {
         $wrappedObjectRuleSet = new LazyMatchingRule(
             /** @param LazyMatchingRule<MatchingRule> $lazyObjectRuleSet */
-            function (LazyMatchingRule $lazyObjectRuleSet) use ($key, $parentRuleSet, $object): ?MatchingRule {
-                $itemOfIterableRule = new ItemOfIterableMatchingRule($key, $parentRuleSet, $lazyObjectRuleSet);
+            function (LazyMatchingRule $lazyObjectRuleSet) use ($key, $ownerRuleSet, $object): ?MatchingRule {
+                $itemOfIterableRule = new ItemOfIterableMatchingRule($key, $ownerRuleSet, $lazyObjectRuleSet);
 
                 return $this->objectRuleSetAssemblerService
                     ->assemble(new ObjectMatchingRuleSetAssembler($object, $itemOfIterableRule))
@@ -89,6 +89,6 @@ final class PropertyNestedValidIterableRulesAssemblerService implements Matching
             },
         );
 
-        return $wrappedObjectRuleSet->build()?->getParent();
+        return $wrappedObjectRuleSet->build()?->getOwner();
     }
 }

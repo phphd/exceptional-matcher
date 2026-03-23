@@ -29,7 +29,7 @@ final class PropertyNestedValidObjectRuleAssemblerService implements MatchingRul
     /** @param PropertyMatchingRulesAssembler $assembler */
     public function assemble(MatchingRuleSetAssembler $assembler): ?MatchingRule
     {
-        $propertyRuleSet = $assembler->getParentRule();
+        $propertyRuleSet = $assembler->getOwnerRule();
         $propertyValue = $propertyRuleSet->getValue();
 
         if (!is_object($propertyValue)) {
