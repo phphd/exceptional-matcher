@@ -472,13 +472,14 @@ using `InvalidUidExceptionMatchCondition`:
 ```php
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\InvalidUidExceptionMatchCondition;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
+
+use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\uid_value;
 
 #[Try_]
 class ApproveVerificationCommand
 {
-    #[Catch_(InvalidUidException::class, match: InvalidUidExceptionMatchCondition::class)]
+    #[Catch_(InvalidUidException::class, match: uid_value)]
     public string $id;
 }
 ```
@@ -502,15 +503,16 @@ This way it's possible to avoid much of the boilerplate code, keeping it clean:
 ```php
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchCondition;
+
+use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;
 
 #[Try_]
 class TransferMoneyCommand
 {
-    #[Catch_(CardBlockedException::class, match: ExceptionValueMatchCondition::class)]
+    #[Catch_(CardBlockedException::class, match: exception_value)]
     public int $withdrawalCardId;
 
-    #[Catch_(CardBlockedException::class, match: ExceptionValueMatchCondition::class)]
+    #[Catch_(CardBlockedException::class, match: exception_value)]
     public int $depositCardId;
 }
 ```
@@ -547,8 +549,9 @@ Specify `ValidationFailedExceptionMatchCondition` to correlate validation except
 ```php
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchCondition;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
+
+use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
 
 #[Try_]
 class RegisterUserCommand
@@ -556,7 +559,7 @@ class RegisterUserCommand
     #[Catch_(
         exception: ValidationFailedException::class,
         from: Password::class,
-        match: ValidationFailedExceptionMatchCondition::class,
+        match: validated_value,
     )]
     public string $password;
 }

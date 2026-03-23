@@ -21,6 +21,7 @@ return RectorConfig::configure()
         ...stubExclusions(),
         ArrayToFirstClassCallableRector::class => [
             __DIR__.'/src/*/services.php',
+            __DIR__.'/src/*/*CompilerPass.php',
         ],
         ClassPropertyAssignToConstructorPromotionRector::class => [
             __DIR__.'/src/ExceptionalMatcher/Exception/ExceptionReciprocal.php',

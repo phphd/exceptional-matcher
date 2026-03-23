@@ -1,4 +1,5 @@
 /*
 !/.gitignore
+!/autoload_constants.php
 !/bootstrap.php
 !/composer.json

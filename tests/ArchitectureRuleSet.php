@@ -19,6 +19,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
@@ -180,6 +181,7 @@ final class ArchitectureRuleSet
             ],
             'bundle' => [
                 'deps' => [
+                    Selector::implements(CompilerPassInterface::class),
                     Selector::inNamespace('Symfony\Component'),
                     Selector::classname(InstalledVersions::class),
                     Selector::inNamespace('PhPhD\ExceptionToolkit'),
@@ -258,6 +260,7 @@ final class ArchitectureRuleSet
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule'),
             Selector::NOT($this->matchCondition()),
             Selector::NOT($this->matchingRuleSetAssembler()),
+            Selector::NOT(Selector::implements(CompilerPassInterface::class)),
         );
     }
 }
