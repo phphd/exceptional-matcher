@@ -22,7 +22,7 @@ final class ObjectMatchingRuleSetAssembler implements MatchingRuleSetAssembler
 
     public function __construct(
         private readonly object $message,
-        private readonly ?MatchingRule $parentRule = null,
+        private readonly ?MatchingRule $ownerRule = null,
     ) {
         $this->reflectionClass = new ReflectionClass($this->message::class);
     }
@@ -38,7 +38,7 @@ final class ObjectMatchingRuleSetAssembler implements MatchingRuleSetAssembler
             function (LazyMatchingRule $lazyWrappedRuleSet) use ($service): CompositeMatchingRule {
                 $objectRuleSet = new ObjectMatchingRuleSet(
                     $this->message,
-                    $this->parentRule,
+                    $this->ownerRule,
                     $lazyWrappedRuleSet,
                 );
 
@@ -49,12 +49,12 @@ final class ObjectMatchingRuleSetAssembler implements MatchingRuleSetAssembler
             },
         );
 
-        return $wrappedRuleSet->build()?->getParent();
+        return $wrappedRuleSet->build()?->getOwner();
     }
 
-    public function getParentRule(): ?MatchingRule
+    public function getOwnerRule(): ?MatchingRule
     {
-        return $this->parentRule;
+        return $this->ownerRule;
     }
 
     private function isMarkedWithAnAttribute(): bool
