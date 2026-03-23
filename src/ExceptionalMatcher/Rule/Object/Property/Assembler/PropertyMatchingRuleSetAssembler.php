@@ -16,7 +16,7 @@ use ReflectionProperty;
 final class PropertyMatchingRuleSetAssembler implements MatchingRuleSetAssembler
 {
     public function __construct(
-        private readonly ObjectMatchingRuleSet $parentRule,
+        private readonly ObjectMatchingRuleSet $ownerRule,
         private readonly ReflectionProperty $reflectionProperty,
     ) {
     }
@@ -26,10 +26,10 @@ final class PropertyMatchingRuleSetAssembler implements MatchingRuleSetAssembler
         $matchingRuleSet = new LazyMatchingRule(
             /** @param LazyMatchingRule<MatchingRule> $lazyMatchingRuleSet */
             function (LazyMatchingRule $lazyMatchingRuleSet) use ($service): ?MatchingRule {
-                $object = $this->parentRule->getValue();
+                $object = $this->ownerRule->getValue();
 
                 $propertyRuleSet = new PropertyMatchingRuleSet(
-                    $this->parentRule,
+                    $this->ownerRule,
                     $this->getName(),
                     $this->getPropertyValue($object),
                     $lazyMatchingRuleSet,
@@ -41,12 +41,12 @@ final class PropertyMatchingRuleSetAssembler implements MatchingRuleSetAssembler
             },
         );
 
-        return $matchingRuleSet->build()?->getParent();
+        return $matchingRuleSet->build()?->getOwner();
     }
 
-    public function getParentRule(): ObjectMatchingRuleSet
+    public function getOwnerRule(): ObjectMatchingRuleSet
     {
-        return $this->parentRule;
+        return $this->ownerRule;
     }
 
     private function getName(): string
