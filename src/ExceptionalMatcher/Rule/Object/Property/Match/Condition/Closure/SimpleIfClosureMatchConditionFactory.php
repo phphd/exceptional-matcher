@@ -18,7 +18,7 @@ use Webmozart\Assert\Assert;
  */
 final class SimpleIfClosureMatchConditionFactory implements MatchConditionFactory
 {
-    public function getCondition(Catch_ $catch, MatchingRule $parent): ?MatchCondition
+    public function getCondition(Catch_ $catch, MatchingRule $owner): ?MatchCondition
     {
         $if = $catch->getIf();
 
@@ -28,7 +28,7 @@ final class SimpleIfClosureMatchConditionFactory implements MatchConditionFactor
 
         Assert::methodExists(...$if);
 
-        $object = $parent->getEnclosingObject();
+        $object = $owner->getEnclosingObject();
 
         if ($if[0] === $object::class) {
             $if = [$object, $if[1]];

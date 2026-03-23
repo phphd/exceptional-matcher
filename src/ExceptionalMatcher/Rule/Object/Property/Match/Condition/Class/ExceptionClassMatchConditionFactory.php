@@ -16,7 +16,7 @@ use Throwable;
  */
 final class ExceptionClassMatchConditionFactory implements MatchConditionFactory
 {
-    public function getCondition(Catch_ $catch, MatchingRule $parent): ExceptionClassMatchCondition
+    public function getCondition(Catch_ $catch, MatchingRule $owner): ExceptionClassMatchCondition
     {
         return new ExceptionClassMatchCondition($catch->getExceptionClass());
     }
