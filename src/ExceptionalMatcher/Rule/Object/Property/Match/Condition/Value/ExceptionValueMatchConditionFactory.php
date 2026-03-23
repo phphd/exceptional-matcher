@@ -11,6 +11,9 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition
 
 use function is_a;
 
+/** @api */
+const exception_value = ExceptionValueMatchCondition::class;
+
 /**
  * @internal
  *

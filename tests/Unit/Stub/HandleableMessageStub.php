@@ -11,8 +11,6 @@ use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomExc
 use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure\Tests\Stub\ConditionalMessage;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchCondition;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\Tests\Stub\SomeValueException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
@@ -23,7 +21,13 @@ use PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\ValidationFailedExcep
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-/** @psalm-suppress InvalidAttribute ("Attribute Catch_ is not repeatable") */
+use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
+use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;
+
+/**
+ * @psalm-suppress InvalidAttribute ("Attribute Catch_ is not repeatable")
+ * @psalm-suppress ArgumentTypeCoercion
+ */
 #[Try_]
 final class HandleableMessageStub
 {
@@ -54,12 +58,12 @@ final class HandleableMessageStub
     #[Catch_(LogicException::class, message: 'oops')]
     private string $messageText;
 
-    #[Catch_(SomeValueException::class, match: ExceptionValueMatchCondition::class, message: 'oops')]
-    #[Catch_(ValidationFailedException::class, match: ValidationFailedExceptionMatchCondition::class, format: ValidationFailedExceptionFormatter::class)]
+    #[Catch_(SomeValueException::class, match: exception_value, message: 'oops')]
+    #[Catch_(ValidationFailedException::class, match: validated_value, format: ValidationFailedExceptionFormatter::class)]
     private string $notMatchedProperty = 'not matched';
 
-    #[Catch_(SomeValueException::class, match: ExceptionValueMatchCondition::class, message: 'oops')]
-    #[Catch_(ValidationFailedException::class, match: ValidationFailedExceptionMatchCondition::class, format: ValidationFailedExceptionFormatter::class)]
+    #[Catch_(SomeValueException::class, match: exception_value, message: 'oops')]
+    #[Catch_(ValidationFailedException::class, match: validated_value, format: ValidationFailedExceptionFormatter::class)]
     private string $matchedProperty = 'matched!';
 
     #[Catch_(SomeValueException::class, message: 'oops')]

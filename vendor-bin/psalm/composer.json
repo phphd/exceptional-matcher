@@ -6,6 +6,7 @@
     },
     "autoload-dev": {
         "files": [
+            "autoload_constants.php",
             "bootstrap.php"
         ]
     },
