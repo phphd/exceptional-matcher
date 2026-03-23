@@ -19,7 +19,7 @@ use Webmozart\Assert\Assert;
 final class PropertyMatchingRulesAssembler implements MatchingRuleSetAssembler
 {
     public function __construct(
-        private readonly PropertyMatchingRuleSet $parentRule,
+        private readonly PropertyMatchingRuleSet $ownerRule,
         private readonly ReflectionProperty $reflectionProperty,
     ) {
     }
@@ -27,10 +27,10 @@ final class PropertyMatchingRulesAssembler implements MatchingRuleSetAssembler
     public function assemble(PropertyMatchingRulesAssemblerService $service): ?CompositeMatchingRule
     {
         $rules = new ArrayIterator();
-        $ruleSet = new CompositeMatchingRule($this->parentRule, $rules);
+        $ruleSet = new CompositeMatchingRule($this->ownerRule, $rules);
 
         foreach ($this->getCatchAttributes() as $catchAttribute) {
-            $condition = $service->matchConditionFactory->getCondition($catchAttribute, $this->parentRule);
+            $condition = $service->matchConditionFactory->getCondition($catchAttribute, $this->ownerRule);
 
             Assert::notNull($condition);
 
@@ -49,9 +49,9 @@ final class PropertyMatchingRulesAssembler implements MatchingRuleSetAssembler
         return $ruleSet;
     }
 
-    public function getParentRule(): PropertyMatchingRuleSet
+    public function getOwnerRule(): PropertyMatchingRuleSet
     {
-        return $this->parentRule;
+        return $this->ownerRule;
     }
 
     /** @return Generator<Catch_<Throwable,Throwable>> */
