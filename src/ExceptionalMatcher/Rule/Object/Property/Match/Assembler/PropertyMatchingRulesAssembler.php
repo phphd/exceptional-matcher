@@ -9,7 +9,6 @@ use Generator;
 use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssembler;
 use PhPhD\ExceptionalMatcher\Rule\CompositeMatchingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchConditionFactory;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMatchingRuleSet;
 use ReflectionProperty;
@@ -25,14 +24,13 @@ final class PropertyMatchingRulesAssembler implements MatchingRuleSetAssembler
     ) {
     }
 
-    /** @param MatchConditionFactory<Throwable> $matchConditionFactory */
-    public function assembleRules(MatchConditionFactory $matchConditionFactory): ?CompositeMatchingRule
+    public function assemble(PropertyMatchingRulesAssemblerService $service): ?CompositeMatchingRule
     {
         $rules = new ArrayIterator();
         $ruleSet = new CompositeMatchingRule($this->parentRule, $rules);
 
         foreach ($this->getCatchAttributes() as $catchAttribute) {
-            $condition = $matchConditionFactory->getCondition($catchAttribute, $this->parentRule);
+            $condition = $service->matchConditionFactory->getCondition($catchAttribute, $this->parentRule);
 
             Assert::notNull($condition);
 

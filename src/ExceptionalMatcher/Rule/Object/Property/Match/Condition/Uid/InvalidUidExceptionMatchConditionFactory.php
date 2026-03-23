@@ -16,6 +16,9 @@ use Webmozart\Assert\Assert;
 
 use function is_a;
 
+/** @api */
+const uid_value = InvalidUidExceptionMatchCondition::class;
+
 /**
  * @internal
  *
