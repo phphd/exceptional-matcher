@@ -12,6 +12,9 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 use function is_a;
 
+/** @api */
+const validated_value = ValidationFailedExceptionMatchCondition::class;
+
 /**
  * @internal
  *
