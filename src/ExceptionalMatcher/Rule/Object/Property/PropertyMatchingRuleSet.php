@@ -12,7 +12,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 final class PropertyMatchingRuleSet implements MatchingRule
 {
     public function __construct(
-        private readonly MatchingRule $parent,
+        private readonly MatchingRule $owner,
         private readonly string $name,
         private readonly mixed $value,
         private readonly MatchingRule $ruleSet,
@@ -24,24 +24,24 @@ final class PropertyMatchingRuleSet implements MatchingRule
         return $this->ruleSet->process($reciprocal);
     }
 
-    public function getParent(): MatchingRule
+    public function getOwner(): MatchingRule
     {
-        return $this->parent;
+        return $this->owner;
     }
 
     public function getPropertyPath(): PropertyPath
     {
-        return $this->parent->getPropertyPath()->with($this->name);
+        return $this->owner->getPropertyPath()->with($this->name);
     }
 
     public function getEnclosingObject(): object
     {
-        return $this->parent->getEnclosingObject();
+        return $this->owner->getEnclosingObject();
     }
 
     public function getRootObject(): object
     {
-        return $this->parent->getRootObject();
+        return $this->owner->getRootObject();
     }
 
     public function getValue(): mixed

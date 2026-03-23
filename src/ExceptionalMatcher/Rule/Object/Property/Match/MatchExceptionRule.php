@@ -19,7 +19,7 @@ use Throwable;
 final class MatchExceptionRule implements MatchingRule
 {
     public function __construct(
-        private readonly MatchingRule $parent,
+        private readonly MatchingRule $owner,
         /** @var MatchCondition<TException> */
         private readonly MatchCondition $condition,
         /** @var class-string<MatchedExceptionFormatter<TException,mixed>> */
@@ -35,29 +35,29 @@ final class MatchExceptionRule implements MatchingRule
         return $reciprocal->isReciprocated();
     }
 
-    public function getParent(): MatchingRule
+    public function getOwner(): MatchingRule
     {
-        return $this->parent;
+        return $this->owner;
     }
 
     public function getPropertyPath(): PropertyPath
     {
-        return $this->parent->getPropertyPath();
+        return $this->owner->getPropertyPath();
     }
 
     public function getEnclosingObject(): object
     {
-        return $this->parent->getEnclosingObject();
+        return $this->owner->getEnclosingObject();
     }
 
     public function getRootObject(): object
     {
-        return $this->parent->getRootObject();
+        return $this->owner->getRootObject();
     }
 
     public function getValue(): mixed
     {
-        return $this->parent->getValue();
+        return $this->owner->getValue();
     }
 
     /** @param TException $exception */

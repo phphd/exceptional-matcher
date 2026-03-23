@@ -31,7 +31,7 @@ final class DelegatingMatchConditionFactory implements MatchConditionFactory
     ) {
     }
 
-    public function getCondition(Catch_ $catch, MatchingRule $parent): ?MatchCondition
+    public function getCondition(Catch_ $catch, MatchingRule $owner): ?MatchCondition
     {
         $factoryId = $catch->getMatch();
 
@@ -46,6 +46,6 @@ final class DelegatingMatchConditionFactory implements MatchConditionFactory
         $matchConditionFactory = $this->matchConditionFactoryRegistry->get($factoryId);
 
         /** @var MatchConditionFactory<Throwable> $matchConditionFactory */
-        return $matchConditionFactory->getCondition($catch, $parent);
+        return $matchConditionFactory->getCondition($catch, $owner);
     }
 }

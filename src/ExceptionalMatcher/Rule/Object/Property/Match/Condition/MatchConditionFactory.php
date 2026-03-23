@@ -20,5 +20,5 @@ interface MatchConditionFactory
      *
      * @return ?MatchCondition<T>
      */
-    public function getCondition(Catch_ $catch, MatchingRule $parent): ?MatchCondition;
+    public function getCondition(Catch_ $catch, MatchingRule $owner): ?MatchCondition;
 }

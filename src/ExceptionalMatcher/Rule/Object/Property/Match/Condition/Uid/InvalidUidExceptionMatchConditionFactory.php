@@ -26,13 +26,13 @@ const uid_value = InvalidUidExceptionMatchCondition::class;
  */
 final class InvalidUidExceptionMatchConditionFactory implements MatchConditionFactory
 {
-    public function getCondition(Catch_ $catch, MatchingRule $parent): MatchCondition
+    public function getCondition(Catch_ $catch, MatchingRule $owner): MatchCondition
     {
         if (!is_a($catch->getExceptionClass(), InvalidUidException::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('InvalidUidExceptionMatchCondition can only be used for '.InvalidUidException::class);
         }
 
-        $value = $parent->getValue();
+        $value = $owner->getValue();
 
         if (null === $value) {
             /** @psalm-var FalseCondition<InvalidUidException> */

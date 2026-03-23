@@ -11,7 +11,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 final class CompositeMatchingRule implements MatchingRule
 {
     public function __construct(
-        private readonly MatchingRule $parent,
+        private readonly MatchingRule $owner,
         /** @var iterable<MatchingRule> $rules */
         private readonly iterable $rules,
     ) {
@@ -28,28 +28,28 @@ final class CompositeMatchingRule implements MatchingRule
         return false;
     }
 
-    public function getParent(): MatchingRule
+    public function getOwner(): MatchingRule
     {
-        return $this->parent;
+        return $this->owner;
     }
 
     public function getPropertyPath(): PropertyPath
     {
-        return $this->parent->getPropertyPath();
+        return $this->owner->getPropertyPath();
     }
 
     public function getEnclosingObject(): object
     {
-        return $this->parent->getEnclosingObject();
+        return $this->owner->getEnclosingObject();
     }
 
     public function getRootObject(): object
     {
-        return $this->parent->getRootObject();
+        return $this->owner->getRootObject();
     }
 
     public function getValue(): mixed
     {
-        return $this->parent->getValue();
+        return $this->owner->getValue();
     }
 }

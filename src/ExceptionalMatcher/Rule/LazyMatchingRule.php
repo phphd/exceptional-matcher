@@ -34,9 +34,9 @@ final class LazyMatchingRule implements MatchingRule
         return $this->innerRule()->process($reciprocal);
     }
 
-    public function getParent(): ?MatchingRule
+    public function getOwner(): ?MatchingRule
     {
-        return $this->innerRule()->getParent();
+        return $this->innerRule()->getOwner();
     }
 
     public function getPropertyPath(): PropertyPath

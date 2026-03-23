@@ -13,7 +13,7 @@ interface MatchingRule
     /** Returns TRUE if all exceptions were matched; FALSE otherwise */
     public function process(ExceptionReciprocal $reciprocal): bool;
 
-    public function getParent(): ?self;
+    public function getOwner(): ?self;
 
     public function getPropertyPath(): PropertyPath;
 

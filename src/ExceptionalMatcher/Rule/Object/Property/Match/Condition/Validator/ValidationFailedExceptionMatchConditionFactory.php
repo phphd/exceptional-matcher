@@ -22,12 +22,12 @@ const validated_value = ValidationFailedExceptionMatchCondition::class;
  */
 final class ValidationFailedExceptionMatchConditionFactory implements MatchConditionFactory
 {
-    public function getCondition(Catch_ $catch, MatchingRule $parent): ValidationFailedExceptionMatchCondition
+    public function getCondition(Catch_ $catch, MatchingRule $owner): ValidationFailedExceptionMatchCondition
     {
         if (!is_a($catch->getExceptionClass(), ValidationFailedException::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('ValidationFailedExceptionMatchCondition can only be used for ValidationFailedException');
         }
 
-        return new ValidationFailedExceptionMatchCondition($parent->getValue());
+        return new ValidationFailedExceptionMatchCondition($owner->getValue());
     }
 }

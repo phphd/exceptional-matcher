@@ -13,7 +13,7 @@ final class ObjectMatchingRuleSet implements MatchingRule
 {
     public function __construct(
         private readonly object $object,
-        private readonly ?MatchingRule $parent,
+        private readonly ?MatchingRule $owner,
         private readonly MatchingRule $ruleSet,
     ) {
     }
@@ -23,14 +23,14 @@ final class ObjectMatchingRuleSet implements MatchingRule
         return $this->ruleSet->process($reciprocal);
     }
 
-    public function getParent(): ?MatchingRule
+    public function getOwner(): ?MatchingRule
     {
-        return $this->parent;
+        return $this->owner;
     }
 
     public function getPropertyPath(): PropertyPath
     {
-        return $this->parent?->getPropertyPath() ?? PropertyPath::empty();
+        return $this->owner?->getPropertyPath() ?? PropertyPath::empty();
     }
 
     public function getEnclosingObject(): object
@@ -40,7 +40,7 @@ final class ObjectMatchingRuleSet implements MatchingRule
 
     public function getRootObject(): object
     {
-        return $this->parent?->getRootObject() ?? $this->object;
+        return $this->owner?->getRootObject() ?? $this->object;
     }
 
     public function getValue(): object

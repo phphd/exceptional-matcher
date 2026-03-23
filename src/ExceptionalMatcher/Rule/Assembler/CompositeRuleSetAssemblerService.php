@@ -29,10 +29,10 @@ final class CompositeRuleSetAssemblerService implements MatchingRuleSetAssembler
     {
         $rules = new ArrayIterator();
 
-        $parentRule = $assembler->getParentRule();
-        Assert::notNull($parentRule);
+        $ownerRule = $assembler->getOwnerRule();
+        Assert::notNull($ownerRule);
 
-        $ruleSet = new CompositeMatchingRule($parentRule, $rules);
+        $ruleSet = new CompositeMatchingRule($ownerRule, $rules);
 
         foreach ($this->assemblers as $a) {
             $innerRuleSet = $a->assemble($assembler);
