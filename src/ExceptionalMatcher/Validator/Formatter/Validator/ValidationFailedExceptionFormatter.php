@@ -10,8 +10,11 @@ use PhPhD\ExceptionalMatcher\Validator\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListException;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
+/** @api */
+const validator_violations = ValidationFailedExceptionFormatter::class;
+
 /**
- * @api
+ * @api - use {@see validator_violations} constant for a class reference instead
  *
  * @implements ExceptionViolationFormatter<ValidationFailedException>
  */
