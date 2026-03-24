@@ -17,12 +17,12 @@ use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\Tests\Stub\MessageContainingException;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\ValidationFailedExceptionFormatter;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\validator_violations;
 
 /**
  * @psalm-suppress InvalidAttribute ("Attribute Catch_ is not repeatable")
@@ -59,11 +59,11 @@ final class HandleableMessageStub
     private string $messageText;
 
     #[Catch_(SomeValueException::class, match: exception_value, message: 'oops')]
-    #[Catch_(ValidationFailedException::class, match: validated_value, format: ValidationFailedExceptionFormatter::class)]
+    #[Catch_(ValidationFailedException::class, match: validated_value, format: validator_violations)]
     private string $notMatchedProperty = 'not matched';
 
     #[Catch_(SomeValueException::class, match: exception_value, message: 'oops')]
-    #[Catch_(ValidationFailedException::class, match: validated_value, format: ValidationFailedExceptionFormatter::class)]
+    #[Catch_(ValidationFailedException::class, match: validated_value, format: validator_violations)]
     private string $matchedProperty = 'matched!';
 
     #[Catch_(SomeValueException::class, message: 'oops')]

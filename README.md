@@ -544,7 +544,7 @@ class CardBlockedException extends DomainException implements ValueException
 This one is very similar to `ValueException` condition \
 with the difference that it integrates Symfony's native `ValidationFailedException`.
 
-Specify `ValidationFailedExceptionMatchCondition` to correlate validation exception's value with a property value:
+Specify `validated_value` match condition to compare property's value against exception's validated value:
 
 ```php
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
@@ -552,15 +552,12 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\validator_violations;
 
 #[Try_]
 class RegisterUserCommand
 {
-    #[Catch_(
-        exception: ValidationFailedException::class,
-        from: Password::class,
-        match: validated_value,
-    )]
+    #[Catch_(ValidationFailedException::class, from: Password::class, match: validated_value, format: validator_violations)]
     public string $password;
 }
 ```
@@ -611,15 +608,13 @@ Then, specify `ViolationListExceptionFormatter` as a `format:` for the `#[Catch_
 ```php
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
+
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\included_violations;
 
 #[Try_]
 class IssueCreditCardCommand
 {
-    #[Catch_(
-        exception: CardNumberValidationFailedException::class, 
-        format: ViolationListExceptionFormatter::class,
-    )]
+    #[Catch_(CardNumberValidationFailedException::class, format: included_violations)]
     private string $cardNumber;
 }
 ```
@@ -631,7 +626,7 @@ formatter makes sure that a proper representation of this exception in a `Constr
 > it would've been ignored in favour of `ConstraintViolationList` messages.
 
 
-> Besides that, it's also possible to use `ValidationFailedExceptionFormatter`, \
+> Besides that, it's also possible to use `validator_violations` formatter, \
 > which can format Symfony's native `ValidationFailedException`.
 
 #### Custom Violation Formatters 🎨🖌️
@@ -646,8 +641,8 @@ use PhPhD\ExceptionalMatcher\Exception\MatchedException;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\ExceptionViolationFormatter;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
-/** @implements ExceptionViolationFormatter<LoginAlreadyTakenException|WeakPasswordException> */
-final class RegistrationViolationsFormatter implements ExceptionViolationFormatter
+/** @implements ExceptionViolationFormatter<LoginAlreadyTakenException> */
+final class LoginAlreadyTakenViolationFormatter implements ExceptionViolationFormatter
 {
     public function __construct(
         #[Autowire(service: ExceptionViolationFormatter::class.'<Throwable>')]
@@ -662,20 +657,15 @@ final class RegistrationViolationsFormatter implements ExceptionViolationFormatt
         // and then adjust only the necessary parts
         [$violation] = $this->formatter->format($matchedException);
 
+        /** @var LoginAlreadyTakenException $exception */
         $exception = $matchedException->getException();
 
-        if ($exception instanceof LoginAlreadyTakenException) {
-            $violation = new ConstraintViolation(
-                $violation->getMessage(),
-                $violation->getMessageTemplate(),
-                ['loginHolder' => $exception->getLoginHolder()],
-                // ...
-            );
-        }
-
-        if ($exception instanceof WeakPasswordException) {
+        $violation = new ConstraintViolation(
+            $violation->getMessage(),
+            $violation->getMessageTemplate(),
+            ['loginHolder' => $exception->getLoginHolder()],
             // ...
-        }
+        );
 
         return [$violation];
     }
@@ -686,7 +676,7 @@ Then, register it as a service:
 
 ```yaml
 services:
-    App\Auth\User\Features\Registration\Validation\RegistrationViolationsFormatter:
+    App\Auth\User\Support\Validation\LoginAlreadyTakenViolationFormatter:
         autoconfigure: true
 ```
 
@@ -714,11 +704,8 @@ final class RegisterUserCommand
 }
 ```
 
-In this example, `LoginAlreadyTakenViolationFormatter` is used to format constraint violation for
-`LoginAlreadyTakenException`, \
-and `WeakPasswordViolationFormatter` formats `WeakPasswordException`.
-
-Though not recommended, you might use a single formatter for the two.
+In this example, `LoginAlreadyTakenViolationFormatter` formats constraint violation for `LoginAlreadyTakenException`, \
+while `WeakPasswordViolationFormatter` formats `WeakPasswordException`.
 
 ### In-depth analysis
 
