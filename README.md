@@ -10,385 +10,300 @@
 [![Packagist downloads](https://img.shields.io/packagist/dt/phphd/exceptional-validation?logo=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAACwAAAAsCAMAAAApWqozAAAC%2FVBMVEUAAAAFBQVVWF8DBAQAAAABAQEMDAy1u8slJioDBAQCAQEAAAAAAAAAAACPk6CDg4RJS1I6PEFjZ28uLzMmEQIlDwAJCAgKCAcDBAQAAAABAQEAAAAAAAAAAAAAAABxdX4oDgAjDgAfHyEcHSAXFxgWFhYEBAUZGRwdHiAJBAEHAgAODg8EBAUEBQUAAABMTEyYnatxdYCJjpqFipV9gYwhIiUdHR5scHlmanN8gIsfDABucnthZG0bHB5DRUsvMTUTBgBWWWBDRktMT1YRERMkDQAkJSkVFhgrEAA3OT5ERkwrLDBSVVwuMDMqEQEGAQAfHyIRBwAGBgYpFAYsEAAKCgsNDQ8xMzgmJysODxATBwAICAkZGh0fHyI5O0ArLTEXFxoHBwdOTk7Z4PPZ4fTb4vXQ1%2BnW3e%2FU2%2B3CyNnc4%2FbY3%2FLX3vDN1OXM0uSUmaZfYmra4fXIz%2BHGzN2lq7mBOADT2uzEy9y%2Fxtaorr2Wm6h%2Bgo1bXmZQU1o2OD0CAQDHzt%2B9w9S5vs%2Bxt8ado7Can6yMkJ1scHhnanNhZG5dYGhGSU8%2FQkhfKAD%2F%2F%2F%2FS2erK0OK2vMuvtcW8vLyiqLeepLKIjJeEiJSBhZF1eYRwdH5kaHFSVVxJS1FDRUs%2BQEU9PkIwMTYlJipSIwBEHQDd5Pfw8PDU2%2B7P1efDytm%2BxNK7wdG5wNCus8OsssGTl6OJjZl7f4p6foh5fIZ2e4V%2BfoBgYmVhYWJWWWFOUFhLTlUfHyEUFBYODg4DBghtLgBXJAD29fXs7Oy0ucmhp7SoqKiQkJF2eoJ4eXpqbXZycnIPQl1KTFNOTk8FNU9KS046PEE0NDchIiUYGx8CEBlwMABkKgBZJgD6%2Bvrd5fff39%2FU0tHIycisscAAeLeysrOsrKwGcqmmpKMEaaCQk52YmJkAYZWHiYtxdYAGT3YmU2sVTmsfTWZdXV0AOVgySldVVVYDK0IbMD0AJTssLjIqKiopIyWGOwB8NgB4NABLIABBGQA8GQA3FgAsEgCoWa7%2BAAAAY3RSTlMACf5REQ4H%2FpiQgkQtIf7%2B7ejm1aqainFjXTkzJRsW%2Fv38sKainZyQfn5zbmtNNQr9%2B%2Fr4%2BPf39vbz8%2B7u7uzr6%2Bbj4N%2Fd29XV0s7My8vKyr29ubi4s6ypo5ycmJOLeHNsXg8rMEp9AAAD%2FElEQVQ4y6WUZXDbUBCElaRtmqTMzMzMzMzM7T2Z2a4ZQmY7nIY5ZWZuU2ZmZmbmTiXbsV1wnJnujzen0aedu5V02L%2FUel5rrJAqNndM%2BZEzSxaK9WnQLkQiuDHIrzBw8TA%2BEArtGFi0AKpkk0YlsBIN4wCRMKJoyzVu5QEtMaOcP7d3vV5asAsBUxhTtqVf8SmVqhT7w3VqD%2FlaZQxFSE0ysmwwX5tmoES192dHRWdW%2FY31K1uKp088%2FV4MQNXxKCQsN7GJk5ayVbEvdIB790UGL9sWiUO0iRGi3S%2BV0BEhKgvEdHbw9nWqs6LEQDe4Zl%2BZHAE%2FWZSwKTZ24wLc1jNTt%2FHgYcXxxbjQuKRMdTe4u4SGYGH6shOL9lxbtFlog7kH9%2B65XHobUa5aI2rhgmt0xsnp01eXvv783tPDOhJemKo%2FduzRVR75XFRYU7fYapMwx7z%2F6KubJ5%2Bd44ZzZRJQvzt558ndUxwyxRWVXHC12jhCEJ1Jy3jzctfOXdv0hrTTmdmanW8ffsjaggAhemMXHHSEdFZuwP3P7dJoNlDJzMKyNJrz57dSLGsIH0Fxt5j1OPBXEylEblHz4pD9dQefMabIcFieLUawZLILnh5O3E2iAUpW4Ay6SCalko2u5B1iI2CkcBCw%2BtfKZ2v1ZANQlTSIVFNiTMnhIWwWCQMzTk0BhoFNlG1a5sNVVQwAvjGeY96hsLBtnP24khUNFPViopQ4m26gIydeoVZtPJNtSwrZBMylO1RSE5esWeXzv7yG8aQTg3ciYvNqAJdzcMbRA9mJthKV9XHAlRXkJVr3IOKFv50L1Yn4AEtOLYo10QVkOjSncytfMT0GGMbYiNfr7bCYrreEsaibDmSaN6TKCJhe3%2Fk7%2B81qPq7UUtWtiM2PkaMNxoLtlvU7zCtxJNzCZSFuZcxNNefMbl567yblQsdwXEPY%2Bp1rWETJFNwvM6JJEewP1bt9SLmUiJeMOARwldyWjLRDmRY%2B2F%2Bq1ilh31b6WoojjSjipIb3q1LDhbqrWQKeeFYG4MyPciSjqsfNUQ44aTQXHGlY0bWGx801jImS5M6XQvOViod6Xkv12SCxCB2BCFLkaPkkzKOCfFmwjBeC275n5XKAUlUwzwrgUUHg6xsvoGuPhxIDDi%2BKFaBGqcSAoYrkpLXBCPAuQQVv54C25Gw4vli0gBEX4G2XT4znI1iVnprAkX6s5gUuMmQ7B0CYTkWcrG%2FNvMBN69ZJC1%2B1zrxSlKH5OcGLcUBdqzXna05e3iXrhTpjixZMB1789Hm3NSf3e651d26QF%2BfRA%2Fv8yM3Z%2FeXCxbxulap76bkWFnhpvl2jfDCvqj6tYsWKFSpUGF8Z%2Bx%2F9Aipg0qzWNVY9AAAAAElFTkSuQmCC&color=%23F28D1A&cacheSeconds=3600)](https://packagist.org/packages/phphd/exceptional-validation)
 [![Licence](https://img.shields.io/github/license/phphd/exceptional-validation.svg?color=3DA639)](https://github.com/phphd/exceptional-validation/blob/main/LICENSE)
 
-A library that matches exceptions against object properties.
+A lightweight bridge from domain exceptions to validation violations.
 
-**No** longer do you need any **peripheral validation** for your objects \
-that doesn't really dig down into the domain.
+![Exceptional Matcher.svg](https://raw.githubusercontent.com/phphd/exceptional-validation/refs/heads/main/assets/Exceptional%20Matcher.svg)
 
-Instead, build full-fledged declarative feature-rich domain **validation** with full **use of exceptions** \
-and let this library to **_relate_** these **exceptions _to_** their **originator fields**.
+Your domain code that processes Dto (e.g. services / value objects) can throw a business exception. \
+Using Matcher, you can correlate it to the property that originated it –
+allowing to return precise field-specific validation errors inferred from the exceptions.
 
-Eventually, you can return a normal validation failed response.
+Thence it makes up for what was lacking in tools for relating validation exceptions to their originator fields.
 
-## A Validation Library? 🤔
+## Quick Start ⚡
 
-It's not a validation library. Not ever intended to be. \
-It doesn't provide validation rules, constraints, or validators.
+### Install 📥
 
-It is **exception handling** library, specifically featured with usefulties for validation.
-
-You can validate business logic with any third-party library (or even plain PHP), \
-while the library will be **_correlating_** these **validation exceptions** to the specific properties \
-whose invalid values caused them.
-
-It's not a strict requirement to use Symfony Validator as a validation component, \
-though this library integrates it well.
-
-## Why Exceptional Validation? ✨
-
-Ordinarily, validation flows through two different layers:
-
-- HTTP/form level;
-- domain layer.
-
-It leads to duplication and potential inconsistencies of validation rules.
-
-### Traditional Validation 🕯️
-
-The traditional validation uses an attribute-based approach, \
-which strips the domain layer from most business logic.
-
-Besides that, any custom validation you'd normally implement in a service \
-must be wrapped in a custom validator attribute and moved away from the service.
-
-It's all for the sake of being able to display a nice validation message on the form.
-
-Thus, the domain services and model end up naked, \
-all business rules having been leaked elsewhere.
-### Exceptional Validation 💡
-
-On the other hand, it's a common practice in DDD for domain objects to be responsible for their own validation rules.
-
-- `Email` value object validates its own format and naturally throws an exception that represents validation failure.
-- `RegisterUserService` normally verifies email is not yet taken and naturally throws an exception.
-
-That is the kind of code that utterly expresses the model of the business, \
-which should not be stripped down.
-
-Yet, with a domain-driven approach, it's not possible to use standard validation tools, \
-as these drain domain from all logic.
-
-How then do we show contextual validation errors to the users? \
-It's a task of relating a thrown exception with the property which value caused this exception.
-
-To return a neat json-response with `email` as a property path and validation error description, \
-it's necessary to match `EmailAlreadyTakenException` with a `$email` property of the original `RegisterUserCommand`.
-
-This is what Exceptional Validation was designed for.
-
-Throwing exceptions like `EmailValidationFailedException` and matching them with the particular form fields as
-`$email`, \
-you maintain a **single source of truth** for the domain validation logic.
-
-Domain enforces its invariants via exceptions in value objects and services, \
-while this library ensures that these validation failures will properly match form fields
-and appear correct in your API responses or forms.
-
-### Key takeways
-
-Exceptional Validation:
-
-- Eliminates duplicate validation across HTTP/application and domain layers;
-- Keeps business rules where they belong — in the domain;
-- Makes validation logic easily unit-testable;
-- Reduces complexity of nested validation scenarios;
-- Eliminates the need for validation groups and custom validators.
-
-## Installation 📥
-
-1. Install via composer:
+1. Require via composer:
 
     ```sh
     composer require phphd/exceptional-validation
     ```
 
-2. Enable bundles in the `bundles.php`:
+2. \[Symfony\] enable the bundles in the `bundles.php`:
 
-    ```php
-    PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle::class => ['all' => true],
-    PhPhD\ExceptionToolkit\Bundle\PhdExceptionToolkitBundle::class => ['all' => true],
-    ```
+   ```php
+   PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle::class => ['all' => true],
+   PhPhD\ExceptionToolkit\Bundle\PhdExceptionToolkitBundle::class => ['all' => true],
+   ```
 
-   > Note: `PhdExceptionToolkitBundle` is a required dependency\
+   > Note: `PhdExceptionToolkitBundle` is a required dependency \
    > that provides exception unwrapping needful for this library.
 
-## Get Started 🎯
+3. \[Non-Symfony\] configure the container:
 
-Mark a message with `#[Try_]` attribute to let the matcher know to include it for processing.
+   You can use features of this library outside frameworks. \
+   See [Standalone Usage](#standalone-usage-).
 
-Define `#[Catch_]` rules for your properties. \
-These describe what properties what exceptions correlate with:
+### Define the Mapping 🔗
+
+Mark a command or dto with `#[Try_]` attribute to let the matcher know it's included for processing.
+
+Define `#[Catch_]` attributes with rules for your properties.
 
 ```php
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 
 #[Try_]
-class RegisterUserCommand
+class RegisterUserDto
 {
     #[Catch_(LoginAlreadyTakenException::class)]
     public string $login;
 
-    #[Catch_(WeakPasswordException::class)]
+    #[Catch_(PasswordCompromisedException::class)]
     public string $password;
 }
 ```
 
-For example, here the `login` property is related to `LoginAlreadyTakenException`, \
-while `password` property - to `WeakPasswordException`.
+> Note: we've named this class as `RegisterUserDto` for the sake of demonstration. \
+> Normally, we'd name it as `RegisterUserCommand` ([CQS](https://martinfowler.com/bliki/CommandQuerySeparation.html)).
 
-Matching takes place when the matcher is used:
+
+These describe what exceptions what properties correlate with.
+
+Here, `LoginAlreadyTakenException` is bound to the `login` property, \
+while `PasswordCompromisedException` is bound to the `password` property.
+
+> You can have additional matching conditions beyond just the exception class name. \
+> See [Match Conditions 🖇️](docs/config/match-conditions.md).
+
+The equivalent (very simplified) rough manual logic if not using this library:
 
 ```php
+$errors = [];
+
 try {
-    $this->service->register($command);
-} catch (DomainException $exception) {
-    $matchedList = $matcher->match($exception, $command);
-
-    return new JsonResponse($matchedList, 422);
+    return $this->register($dto);
+} catch (LoginAlreadyTakenException $e) {
+    $errors['login'] = $e->getMessage();
+} catch (PasswordCompromisedException $e) {
+    $errors['password'] = $e->getMessage();
 }
 ```
 
-Each exception, when matched, results in a `ConstraintViolation` (default) object \
-that contains a property path and a message translation.
+### Match the Exception 🎯
 
-You can serialize this violation list into a json-response or render a form with it.
-
-> Note that the default messages translation domain is `validators`, \
-> inherited from `validator.translation_domain` parameter.
->
-> You can change it by setting `phd_exceptional_matcher.translation_domain` parameter.
-
-## How is this different from a standard validation? ⚖️
-
-Conceptually.
-
-If you're wondering why we wouldn't use "normal" validation asserts right in the command, \
-I'll say to you that this is not always best / convenient.
-
-For example, let's take the same `RegisterUserCommand` as used before.
-
-A comparison of the approaches would look something like this:
-
-```diff
-+#[Try_]
- class RegisterUserCommand
- {
--    #[AppAssert\UniqueLogin]
-+    #[Catch_(LoginAlreadyTakenException::class, message: 'auth.login.already_taken')]
-     public string $login;
-
--    #[Assert\PasswordStrength(minScore: 2)]
-+    #[Catch_(WeakPasswordException::class, message: 'auth.password.weak')]
-     public string $password;
- }
-```
-
-The main difference between the two is that standard validation runs before your actual business logic. \
-This alone means that for every domain-specific rule like "login must be unique" it's necessary to create \
-a custom validation constraint and a validator that implements this business logic.
-
-Thereby, the main problem with the standard approach is that domain leaks into validators. \
-That code, which you would've normally implemented in the service, you are obliged to wrap into the validator.
-
-One more point is that oftentimes there are multiple actions that use the same validations.
-
-For example, login uniqueness is validated both during registration and during profile update. \
-Even though a "login is unique" rule is conceptually obvious, \
-a validator approach is fraught with problems to check that a user's own login isn't taken into account when validating.
-
-Exceptional validation doesn't force you to write business logic in any validators. \
-Instead, you can throw an instance of exception in whatever scenario you would like to, \
-and then the library will retroactively analyse it.
-
-Another example is a password validation, which's used both during registration and during password reset. \
-Using the validation attributes results in duplicated asserts between the two, \
-while this business conceptually belongs to `Password`, \
-which most properly would be represented as a value object, used in both actions.
-
-With exceptional validation you just write business logic in your domain and then retroactively relate violations. \
-Retroactively — after your business logic has worked out. \
-Representation of the errors to the user is separate from the business logic concern which's managed by this library.
-
-Finally, this approach gives a lot of flexibility, \
-removing the need for custom validators, validation groups, duplicate validation rules, \
-allowing you to keep the domain code in the domain objects, \
-resulting in a better design of the system.
-
-Focus on the domain and let the library take care of the exception representation:
-
-```php
-// RegisterUserService
-
-if ($this->userRepository->loginExists($command->login)) {
-    throw new LoginAlreadyTakenException($command->login);
-}
-```
-
-## Direct Usage 🔌
-
-> It's possible to use features of this library without necessarily depending on the frameworks.
-> See [Standalone Usage](#standalone-usage-) section.
-
-If you're using Symfony, you can check what exception matchers are available using this command:
-
-```shell
-bin/console debug:container ExceptionMatcher
-```
-
-This should provide you with a list, similar to this:
-
-```text
-[0] PhPhD\ExceptionalMatcher\ExceptionMatcher<PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList>
-[1] PhPhD\ExceptionalMatcher\ExceptionMatcher<Symfony\Component\Validator\ConstraintViolationListInterface>
-```
-
-These matchers format the Exception to their respective format, specified as a generic parameter. \
-Format could be `ConstraintViolationList`, or `MatchedExceptionList`, or anything else dumped by the command.
-
-Therefore, you can inject the wanted service into your own code:
+Matching takes place wherever the matcher is used. \
+Exception, matched against an object, results in a `ConstraintViolation` list (or custom format):
 
 ```php
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
-class SignDocumentActivity
+class RegisterUserApiPoint
 {
     public function __construct(
         /** @var ExceptionMatcher<ConstraintViolationListInterface> */
         #[Autowire(service: ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>')]
-        private ExceptionMatcher $exceptionMatcher,
-    ) {
-    }
+        private ExceptionMatcher $matcher,
+    ) {}
 
-    public function sign(SignCommand $command): string
+    #[Route(path: '/register', methods: ['POST'])]
+    public function __invoke(RegisterUserDto $dto): Response
     {
         try {
-            return $command->businessLogic($this);
-        } catch (DomainException $e) {
-            throw $this->failure($e, $command);
+            return $this->register($dto);
+        } catch (Throwable $exception) {
+            return $this->handleError($exception, $dto);
         }
     }
 
-    private function failure(Throwable $e, SignCommand $command): Throwable
+    private function handleError(Throwable $exception, RegisterUserDto $dto): Response
     {
         /** @var ?ConstraintViolationListInterface $violationList */
-        $violationList = $this->exceptionMatcher->match($e, $command);
+        $violationList = $this->matcher->match($exception, $dto);
 
         if (null === $violationList) {
-            return $e;
+            throw $exception;
         }
 
-        return new ApplicationFailure('Validation Failed', $this->encode($violationList), previous: $e);    
+        return new JsonResponse($violationList, HTTP_UNPROCESSABLE_ENTITY);   
     }
 }
 ```
 
-In this example, we use `ExceptionMatcher` to relate the exception to some property of the `$command`, \
-which produces `ConstraintViolationListInterface` that can be used however you want to.
+> Note: response formatting is simplified for the demonstration's sake.
 
-## Usage with Command Bus 📇
+Created `ConstraintViolationList` contains violation-objects with matched property path, message translation, and
+invalid value.
 
-If you are using Symfony Messenger as a Command Bus, \
-it's recommended to use this package
-as [Symfony Messenger Middleware](https://symfony.com/doc/current/messenger.html#middleware).
+You can serialize it into a json-response or render on a form.
 
-> If you are not using `Messenger` component, you can still leverage features of this library, \
-> as it provides a rigorously structured set of tools w/o depending on any particular implementation. \
-> Installation of third-party dependencies is optional — they won't be installed unless you need it.
-
-Add `phd_exceptional_validation` middleware to the list:
-
-```diff
- framework:
-     messenger:
-         buses:
-             command.bus:
-                 middleware:
-                     - validation
-+                    - phd_exceptional_validation
-                     - doctrine_transaction
+```json
+{
+    "propertyPath": "login",
+    "invalidValue": "jzs",
+    "message": "Login is already taken. Try another one."
+}
 ```
 
-Once you have done this, the middleware will take care of exception capturing, matching, and re-throwing
-`ExceptionalValidationFailedException`.
+## Why Exceptional Matcher ✨
 
-You can use it to catch and process it:
+Exceptional Matcher aims for a full-fledged expressive domain-embedded **validation** that makes **full use of
+exceptions**. \
+
+With Exceptional Matcher you can **omit** any **peripheral validation** off of your dto objects, \
+and rely solely on validation in real code (services, value objects) – that belongs to and resides in the domain.
+
+Read more in: [Exceptional Validation](docs/exceptional-validation/exceptional-validation.md).
+
+### Where is the Power 🚀
+
+Consider another use-case: \
+After registration, the user should be able to _update_ his _profile_ (login, password). \
+Updating the login must ensure its uniqueness in spite of the current user.
+
+Here's what we'd have to do with an upfront attribute-driven validation:
 
 ```php
-$command = new RegisterUserCommand($login, $password);
-
-try {
-    $this->commandBus->dispatch($command);
-} catch (ExceptionalValidationFailedException $exception) {
-    $violationList = $exception->getViolationList();
-
-    return $this->render('registrationForm.html.twig', ['errors' => $violationList]);
-} 
+#[UniqueEntity(
+    fields: ['login'],
+    entityClass: User::class,
+    identifierFieldNames: ['user' => 'id'],
+)]
+class UpdateUserProfileDto
+{ ... }
 ```
 
-This exception just wraps respectively created `ConstraintViolationList` with all your messages and property paths.
-
-### How it works ⚙️
-
-Primarily, it works as
-a [Command Bus](https://symfony.com/doc/current/messenger.html#multiple-buses-command-event-buses)
-middleware that intercepts exceptions and performs their matching to object's properties by an exception matcher,
-eventually formatting matched exceptions as standard [SF Validator](https://symfony.com/doc/current/validation.html)
-violations.
-
-> Besides that, `ExceptionMatcher` is also available for direct use w/o any middleware. \
-> You can reference it as `ExceptionMatcher<ConstraintViolationListInterface>` service.
-
-This diagram represents the concept:
-
-![Exceptional Validation.svg](https://raw.githubusercontent.com/phphd/exceptional-validation/refs/heads/main/assets/Exceptional%20Validation.svg)
-
-## Standalone Usage 🔧
-
-If you are not using a Symfony framework, you still have a great opportunity of taking advantage of this library.
-
-You can create a Service Container (`symfony/dependency-injection` is required) \
-and use it to get necessary services:
+Compare this to `#[Catch_]` and discern which communicates the intent better.
 
 ```php
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-
-$container = (new PhdExceptionalMatcherExtension())->getContainer([
-    'kernel.environment' => 'prod',
-    'kernel.build_dir' => __DIR__.'/var/cache',
-]);
-
-$container->compile();
-
-/** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
-$matcher = $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>');
+#[Catch_(LoginAlreadyTakenException::class)]
+public string $login;
 ```
 
-Herein, you create a Container, compile it, and use to get `ExceptionMatcher`.
+The first approach is very imperative, verbose. \
+The second declaratively states the fact.
+
+Moreover, now you don't restrain yourself by the framework's limitations. \
+You can implement just anything you need just as fast and just as good as possible.
+
+Now, the mapping for profile update `Dto` is just as high-level as with [registration `Dto`](#define-the-mapping-):
+
+```php
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+
+#[Try_]
+class UpdateUserProfileDto
+{
+    public User $user;
+
+    #[Catch_(LoginAlreadyTakenException::class)]
+    public string $login;
+
+    #[Catch_(PasswordCompromisedException::class)]
+    #[Catch_(PasswordCannotBeReusedException::class)]
+    public string $password;
+}
+```
+
+No custom validators, no attribute-driven-rules - just pure business description.
+
+The main code is just as simple as it could be:
+
+```php
+$userWithTheSameLogin = $userRepository->whereLogin($dto->login)->firstOrNull();
+
+if ($userWithTheSameLogin?->is($currentUser) === false) {
+    throw new LoginAlreadyTakenException($dto->login);
+}
+```
+
+We've reused the same `LoginAlreadyTakenException` as used in registration, yet under another condition.
+
+This communicates the design much better than what we've seen thus far.
+
+This is where the power comes from. You don't cram the validation into the framework. \
+You broaden the framework so that it embraces your validation in a way that it naturally fits in.
+
+## Interaction approaches 🔁
+
+The library provides a few interaction points:
+
+- [Matcher Service](docs/interaction/direct-matcher-service-usage.md) – manual handling
+  (just [as shown](#match-the-exception-));
+- [Bus Middleware](docs/interaction/command-bus-middleware.md) – automated handling.
 
 ## Features 💎
 
-`#[Try_]` and `#[Catch_]` attributes allow implementing very flexible matching rules. \
-It's highly recommended to see the examples below to know the power of these solutions.
+`#[Try_]` and `#[Catch_]` attributes allow implementation of very flexible matching rules. \
+It's highly recommended to get acquainted with the examples to apprehend the full power of these solutions.
 
-### Match Conditions 🖇️
+There are two configuration features:
 
-See [Match Conditions](docs/match-conditions.md) for more details.
+- [Match Conditions 🖇️](docs/config/match-conditions.md) – determine whether a given exception should match the given
+  property;
+- [Violation Formatters 🎨](docs/config/violation-formatters.md) – represent the exception in a desired format.
 
-### Violation Formatters 🎨
+That's really all this library does – matches the exception and formats it.
 
-See [Violation Formatters](docs/violation-formatters.md) for more details.
+#### Cheat Sheet 📝
 
-### In-depth analysis
+For a cheat-sheet example of configuration, check the following:
 
-> The approach described is done away with.
+```php
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-`#[Try_]` attribute works side-by-side with Symfony Validator's `#[Valid]` attribute.
+use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\uid_value;
+use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
+use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\validator_violations;
 
-Once you define `#[Valid]` on an object/iterable property, \
-the matcher will pick it up for a nested analysis, \
-providing a respective property path for the created violations.
+#[Try_]
+class ImportProductDto
+{
+    #[Catch_(InvalidUidException::class, match: uid_value, message: 'This is not a valid UUID.')]
+    public string $id;
+
+    #[Catch_(CategoryNotFoundException::class, match: exception_value)] // Message is derived from Exception
+    public string $categoryId;
+
+    #[Catch_(ValidationFailedException::class, from: ProductDescription::class, match: validated_value, format: validator_violations)]
+    public string $description;
+
+    #[Catch_(BackorderDisabledForCategoryException::class, if: [self::class, 'thisProductViolatesBackorder'])]
+    public ?int $backorderLimit;
+
+    /**
+     * Needed in case of deep analysis.
+     * 
+     * If this method returns TRUE, the exception is linked to $backorderLimit of *this object*;
+     * otherwise this exception has nothing to do with this object. 
+     */
+    public function thisProductViolatesBackorder(BackorderDisabledForCategoryException $exception): bool
+    {
+        if ($exception->categoryId !== $this->categoryId) {
+            return false; // Backorder configuration of the given category has nothing to do with this category.
+        }
+
+        if (null === $this->backorderLimit) {
+            return false; // The product didn't even enable backorder, much less violated it.
+        }
+
+        return true;
+    }
+}
+```
+
+### Deep analysis 🌊
+
+The matcher automatically picks all nested objects for analysis, provided that they define `#[Try_]` attribute.
 
 ```php
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
@@ -396,96 +311,102 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[Try_]
-class CreateOrderCommand
+class ImportProductBatchDto
 {
-    /** @var OrderItemDto[] */
-    #[Assert\Valid]
+    /** @var ImportProductDto[] */
     public array $items;
 }
+```
 
-#[Try_]
-class OrderItemDto
-{
-    public int $productId;
+With nested matching with array properties, property paths are formatted differently.
 
-    #[Catch_(InsufficientStockException::class, if: [self::class, 'isStockExceptionForThisItem'])]
-    public string $quantity;
+In the example above, when the exception is matched, the path would be `items[<index>].<filed>`:
 
-    public function isStockExceptionForThisItem(InsufficientStockException $exception): bool
-    {
-        return $exception->getProductId() === $this->productId;
-    }
+- `<index>` - a particular array index;
+- `<field>` - a particualr property name of that object.
+
+When nesting is really deep, the resulting property path of the formatted violation
+would include all intermediary properties in its path,
+starting from the root, down to the leaf item where the exception was actually matched.
+
+#### Need for conditions
+
+Finding a match for the exception in `array` field is like finding your luggage in the _baggage claim_ \
+when everyone else took just the _same alike red backpack_ as you did.
+
+<img src="https://raw.githubusercontent.com/phphd/exceptional-validation/refs/heads/main/assets/Red Backpack.jpeg" alt="Red Backpack" width="75px">
+
+When many backpacks are as yours, you must know which one is yours.
+
+Similarly, finding a match for `BackorderDisabledForCategoryException` across `ImportProductDto[]` must know which
+one to relate to, lest it would choose the first object by exception's `class:` condition (i.e. "grab the first red one
+and go").
+
+To find your backpack, you would look at some other characteristics that discern it from the rest, \
+yea, up to the point of opening it and discovering (or not discovering) your stuff in there.
+
+```php
+if ($exception->categoryId !== $this->categoryId) {
+    // not my backpack
 }
 ```
 
-In this example, every time exception is processed, it will also be matched with inner objects from `items` property,
-until it finally arrives at `items[*].quantity` (`*` stands for the particular array item index) property, being matched
-by `InsufficientStockException` class name, and custom closure condition that makes sure that it was this particular
-`OrderItemDto` that caused the exception.
+That's what `if:` condition is there for – to relate an exception to `$this` particular object.
 
-The resulting property path of the caught violation includes all intermediary items, starting from the root of the tree,
-proceeding down to the leaf item, where the exception was actually caught.
+In our example, we check that the object's category (e.g. stuff in a backpack) is the same as the one we seek for of the
+exception.
 
-### Matching multiple exceptions
+If the category is different, the object is skipped and another is taken for consideration.
 
-Typically, validation is expected to return all present violations at once (not just the first one) so they can be shown
-to the user.
-
-Though due to the limitations of the sequential computation model, only one instruction can be executed at a time, and
-therefore, only one exception can be thrown at a time. This leads to a situation where validation ends up in only the
-first exception being thrown, while the rest are not even reached.
-
-For example, if we consider user registration with `RegisterUserCommand` from the code above, we'd like to capture both
-`LoginAlreadyTakenException` and `WeakPasswordException` at once, so that the user can fix all the form errors at once,
-rather than sorting them out one by one.
-
-This limitation can be overcome by implementing some concepts from an Interaction Calculus model in a sequential PHP
-environment. The key idea is to use a semi-parallel execution flow instead of a purely sequential.
-
-In practice, if validation is split into multiple functions, each of which may throw an exception, the concept can be
-implemented by calling them one by one and collecting any exceptions as they raise. If there were any, they are wrapped
-into a composite exception that is eventually thrown.
-
-Fortunately, you don't need to implement this manually, since `amphp/amp` library already provides a more efficient
-solution than one you'd likely write yourself, using async Futures:
+The same applies to the products that don't enable backorder (`backorderLimit` is not filled):
 
 ```php
-/**
- * @var Login $login 
- * @var Password $password 
- */
-[$login, $password] = await([
-    // validate and create an instance of Login
-    async($this->createLogin(...), $service),
-    // validate and create an instance of Password
-    async($this->createPassword(...), $service),
-]);
+if (null === $this->backorderLimit) {
+    // It's not my BackorderDisabledForCategoryException! I didn't enable backorder! 
+}
 ```
 
-In this example, `createLogin()` method could throw `LoginAlreadyTakenException` and `createPassword()` method could
-throw `WeakPasswordException`.
+Thus, we prevent false attribution of the exception to an object that had nothing to do with it.
 
-By using `async` and `awaitAnyN` functions, we are leveraging semi-parallel execution flow instead of sequential, so
-that both `createLogin()` and `createPassword()` methods are executed regardless of thrown exceptions.
+## Advanced 🛠️
 
-If no exceptions were thrown, then `$login` and `$password` variables are populated with the respective return
-values. But if there were indeed some exceptions then `Amp\CompositeException` will be thrown with all the wrapped
-exceptions inside.
+- [Matching multiple exceptions 🕎](docs/multi-match/matching-multiple-exceptions.md) – beyond just one
+  thrown exception.
 
-> If you would like to use a custom composite exception, make sure to read
-> about [ExceptionUnwrapper](https://github.com/phphd/exception-toolkit?tab=readme-ov-file#exception-unwrapper)
+## Standalone Usage 🔧
 
-Since the library is capable of processing composite exceptions (with unwrappers for Amp and Messenger exceptions), all
-of our thrown exceptions will be processed, and the user will get the complete stack of validation errors at hand.
+If you are not using a Symfony framework, you can still have a great advantage of this library.
+
+In your vanilla project, create a Service Container (`symfony/dependency-injection` is required) \
+and use it to get necessary services:
+
+```php
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
+
+$container = (new PhdExceptionalMatcherExtension())->getContainer([
+    // These are not used but still required by Symfony DI
+    'kernel.environment' => 'prod',
+    'kernel.build_dir' => __DIR__.'/var/cache',
+]);
+
+$container->compile();
+
+/** @var ExceptionMatcher<MatchedExceptionList> $matcher */
+$matcher = $container->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
+```
+
+Herein, you create a Container, compile it, and use to get `ExceptionMatcher`.
 
 ## Upgrading 👻
 
-The basic upgrade can be performed by [Rector](https://getrector.com/documentation) using
+The basic upgrade should be performed by [Rector](https://getrector.com/documentation) using
 `ExceptionalMatcherSetList` \
-which comes with the library and contains automatic upgrade rules.
+that comes with the library and contains automatic upgrade rules.
 
 To upgrade a project to the latest version of `exceptional-validation`, \
-add the following configuration to your `rector.php` file:
+make the following configuration to your `rector.php` file:
 
 ```php
 use PhPhD\ExceptionalMatcher\Upgrade\ExceptionalMatcherSetList;
@@ -499,4 +420,4 @@ return RectorConfig::configure()
 
 Make sure to specify your current version of the library so that upgrade sets will be matched correctly.
 
-You should also check [UPGRADE.md](UPGRADE.md) for breaking changes and additional instructions.
+You should also check [UPGRADE.md](UPGRADE.md) for the list of breaking changes and additional instructions.
