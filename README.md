@@ -114,11 +114,10 @@ Exceptional Validation:
 
 ## Get Started 🎯
 
-Mark a message with `#[Try_]` attribute. \
-It's used by matcher to include this object for processing.
+Mark a message with `#[Try_]` attribute to let the matcher know to include it for processing.
 
-Define `#[Catch_]` matching rules for your properties. \
-These declaratively describe what properties what exceptions correlate with:
+Define `#[Catch_]` rules for your properties. \
+These describe what properties what exceptions correlate with:
 
 ```php
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
@@ -127,37 +126,31 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 #[Try_]
 class RegisterUserCommand
 {
-    #[Catch_(LoginAlreadyTakenException::class, message: 'auth.login.already_taken')]
+    #[Catch_(LoginAlreadyTakenException::class)]
     public string $login;
 
-    #[Catch_(WeakPasswordException::class, message: 'auth.password.weak')]
+    #[Catch_(WeakPasswordException::class)]
     public string $password;
 }
 ```
 
-For example, we say that `login` property is related to `LoginAlreadyTakenException`, \
-while `password` - to `WeakPasswordException`.
+For example, here the `login` property is related to `LoginAlreadyTakenException`, \
+while `password` property - to `WeakPasswordException`.
 
 Matching takes place when the matcher is used:
 
 ```php
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-
-/** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
-$matcher = $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>'); 
-$command = new RegisterUserCommand($login, $password);
-
 try {
     $this->service->register($command);
 } catch (DomainException $exception) {
-    $violationList = $matcher->match($exception, $command);
+    $matchedList = $matcher->match($exception, $command);
 
-    return new JsonResponse($violationList, 422);
+    return new JsonResponse($matchedList, 422);
 }
 ```
 
-Each exception, when matched, results in a `ConstraintViolation` object, \
-which contains a property path, and a message translation.
+Each exception, when matched, results in a `ConstraintViolation` (default) object \
+that contains a property path and a message translation.
 
 You can serialize this violation list into a json-response or render a form with it.
 
