@@ -1,23 +1,49 @@
 # Violation Formatters 🎨
 
-There are two main built-in violation formatters you can use: `DefaultExceptionViolationFormatter` and
-`ViolationListExceptionFormatter`.
+Violation Formatters are used to represent the exception in a desired format.
 
-If needed, create a custom violation formatter as described below.
+There are two built-in violation formatters you can use:
+- `MainExceptionViolationFormatter`;
+- `ViolationListExceptionFormatter`.
+
+If needed, you can create a custom violation formatter as described below.
 
 ## Main
 
 `MainExceptionViolationFormatter` is used by default if another formatter is not specified.
 
-It provides a basic way of creating a `ConstraintViolation` with these parameters: \
+It creates a basic `ConstraintViolation` with these parameters: \
 `$root`, `$message`, `$propertyPath`, `$value`.
 
-## Constraint Violation List Formatter
+> The default messages translation domain is `validators`, \
+> inherited from `validator.translation_domain` parameter.
+>
+> You can change it by setting `phd_exceptional_matcher.translation_domain` parameter.
 
-`ViolationListExceptionFormatter` allows formatting the exceptions \
-that contain a `ConstraintViolationList` from the validator.
+## Embedded Violations Formatter
 
-Such exceptions should implement `ViolationListException` interface:
+Allows returning `ConstraintViolationList` directly from the exception.
+
+Specify `included_violations` as a `format:` for the `#[Catch_]` attribute:
+
+```php
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\included_violations;
+
+#[Try_]
+class IssueCreditCardCommand
+{
+    #[Catch_(CardNumberValidationFailedException::class, format: included_violations)]
+    private string $cardNumber;
+}
+```
+
+> If `#[Catch_]` attribute specified a message, \
+> it would've been ignored in favour of `ConstraintViolationList` messages.
+
+The exception must contain `ConstraintViolationList` from the validator, implementing `ViolationListException`:
 
 ```php
 use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListException;
@@ -39,31 +65,32 @@ final class CardNumberValidationFailedException extends \RuntimeException implem
 }
 ```
 
-Then, specify `ViolationListExceptionFormatter` as a `format:` for the `#[Catch_]` attribute:
+Thus, once `cardNumber` property gets a hold of `CardNumberValidationFailedException`, \
+formatter makes sure that a proper representation of this exception in a `ConstraintViolation` form is created for this property.
+
+## ValidationFailedException Formatter
+
+Integrates Symfony's `Validator\Exception\ValidationFailedException` similarly to [ViolationListException](#embedded-violations-formatter), 
+returning embedded `ConstraintViolationList`.
+
+Specify `validator_violations` as a `format:` for the `#[Catch_]` attribute:
 
 ```php
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\included_violations;
+use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\validator_violations;
 
 #[Try_]
-class IssueCreditCardCommand
+class RegisterUserCommand
 {
-    #[Catch_(CardNumberValidationFailedException::class, format: included_violations)]
-    private string $cardNumber;
+    #[Catch_(ValidationFailedException::class, from: Login::class, match: validated_value, format: validator_violations)]
+    public string $login;
 }
 ```
-
-Thus, once `cardNumber` property gets a hold of `CardNumberValidationFailedException`, \
-formatter makes sure that a proper representation of this exception in a `ConstraintViolation` form is created for this property.
-
-> If `#[Catch_]` attribute specified a message, \
-> it would've been ignored in favour of `ConstraintViolationList` messages.
-
-
-> Besides that, it's also possible to use `validator_violations` formatter, \
-> which can format Symfony's native `ValidationFailedException`.
+> Normally, you should match it with [`validated_value`](./match-conditions.md#validationfailedexception-condition) to prevent collisions.
 
 ## Custom Violation Formatters 🎨🖌️
 
@@ -116,12 +143,11 @@ services:
         autoconfigure: true
 ```
 
-> In order for violation formatter to be recognized by the bundle, \
+> For violation formatter to be recognized by the bundle, \
 > its service must be tagged with `MatchedExceptionFormatter` class-name tag.
 >
-> If you are using [autoconfiguration](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option),
-> this will be done automatically by the service container, \
-> owing to the fact that `MatchedExceptionFormatter` interface is implemented.
+> If you're using [autoconfiguration](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option),
+> it will be done automatically by the service container.
 
 Finally, specify formatter in the `#[Catch_]` attribute:
 
