@@ -1,12 +1,15 @@
 {
     "name": "phphd/exceptional-validation",
-    "description": "Match exceptions with the properties that caused them",
+    "description": "Match exceptions to the properties that originated them",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
         {
             "name": "Yevhen Sidelnyk",
             "email": "zsidelnik@gmail.com"
+        },
+        {
+            "name": "Jesus – Savior and Son of God"
         }
     ],
     "minimum-stability": "stable",
