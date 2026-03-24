@@ -9,7 +9,7 @@ use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidExcept
 use Throwable;
 
 /**
- * @api - use uid_value constant for a class name instead
+ * @api - use {@see uid_value} constant for a class reference instead
  *
  * @implements MatchCondition<InvalidUidException>
  */
