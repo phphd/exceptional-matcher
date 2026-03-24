@@ -14,8 +14,11 @@ use Webmozart\Assert\Assert;
 use function array_map;
 use function iterator_to_array;
 
+/** @api */
+const included_violations = ViolationListExceptionFormatter::class;
+
 /**
- * @api
+ * @api - use {@see included_violations} constant for a class reference instead
  *
  * @implements ExceptionViolationFormatter<ViolationListException>
  */
