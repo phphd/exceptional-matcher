@@ -6,6 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Assembler\Autoload;
 
 use function array_map;
 use function glob;
+use function implode;
+use function range;
 use function sprintf;
 use function str_repeat;
 
@@ -21,11 +23,16 @@ final class ConstantsClassLoader
     /** @codeCoverageIgnore */
     public static function loadFiles(string $basePath, int $depth = 7): void
     {
-        $nestingPattern = str_repeat('{,*/}', $depth);
+        $prefixes = array_map(
+            static fn (int $level): string => str_repeat('*/', $level),
+            range(1, $depth),
+        );
+
+        $nestingPattern = '{'.implode(',', $prefixes).'}';
 
         /** @var list<string> $glob */
         $glob = glob(
-            $basePath.sprintf('/%s*MatchConditionFactory.php', $nestingPattern),
+            $basePath.sprintf('/%s*{MatchConditionFactory,ExceptionFormatter}.php', $nestingPattern),
             GLOB_BRACE | GLOB_NOSORT,
         );
 

@@ -9,9 +9,11 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure\Tests\
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedPropertyMatchedException;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\Tests\Stub\ViolationListExampleException;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
 use Symfony\Component\Validator\Constraints\Valid;
 
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\included_violations;
+
+/** @psalm-suppress ArgumentTypeCoercion */
 #[Try_]
 final class NestedHandleableMessage
 {
@@ -21,7 +23,7 @@ final class NestedHandleableMessage
     #[Valid]
     private ConditionalMessage $conditionalMessage;
 
-    #[Catch_(ViolationListExampleException::class, format: ViolationListExceptionFormatter::class)]
+    #[Catch_(ViolationListExampleException::class, format: included_violations)]
     private int $violationListCapturedProperty;
 
     public static function createWithConditionalMessage(ConditionalMessage $conditionalMessage): self

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Assembler\Autoload;
 
+use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService;
 use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchConditionFactory;
@@ -22,6 +23,7 @@ final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         $classNamesSet = $this->getMatchConditionFactoryIds($container);
+        $classNamesSet += $this->getExceptionFormatterIds($container);
 
         $definition = $container->getDefinition(MatchingRuleSetAssemblerService::class.'<'.ObjectMatchingRuleSetAssembler::class.'>');
 
@@ -40,6 +42,24 @@ final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
     {
         $classNames = [];
         $taggedServiceIds = array_keys($container->findTaggedServiceIds(MatchConditionFactory::class));
+
+        foreach ($taggedServiceIds as $taggedServiceId) {
+            $def = $container->getDefinition($taggedServiceId);
+
+            /** @var class-string $className */
+            $className = $def->getClass();
+
+            $classNames[$className] = true;
+        }
+
+        return $classNames;
+    }
+
+    /** @return array<class-string,true> */
+    private function getExceptionFormatterIds(ContainerBuilder $container): array
+    {
+        $classNames = [];
+        $taggedServiceIds = array_keys($container->findTaggedServiceIds(MatchedExceptionFormatter::class));
 
         foreach ($taggedServiceIds as $taggedServiceId) {
             $def = $container->getDefinition($taggedServiceId);
