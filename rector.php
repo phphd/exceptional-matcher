@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use PhPhD\CodingStandard\ValueObject\Set\PhdSetList;
+use Rector\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector;
 use Rector\DeadCode\Rector\If_\ReduceAlwaysFalseIfOrRector;
@@ -27,12 +28,15 @@ return RectorConfig::configure()
             __DIR__.'/src/ExceptionalMatcher/Exception/ExceptionReciprocal.php',
             __DIR__.'/src/ExceptionalMatcher/Rule/LazyMatchingRule.php',
         ],
+        IssetOnPropertyObjectToPropertyExistsRector::class => [
+            __DIR__.'/src/ExceptionalMatcher/Rule/Object/Property/Match/Condition/Origin/ExceptionOriginMatchCondition.php',
+        ],
         StringClassNameToClassConstantRector::class => [
             __DIR__.'/upgrade',
         ],
         ReduceAlwaysFalseIfOrRector::class => [
             __DIR__.'/upgrade',
-        ]
+        ],
     ]);
 
 function stubExclusions(): array
