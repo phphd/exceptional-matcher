@@ -41,8 +41,8 @@
             </errorLevel>
         </UnnecessaryVarAnnotation>
         <LessSpecificImplementedReturnType>
+            <!-- Psalm doesn't infer it quite well -->
             <errorLevel type="suppress">
-                <!-- Psalm doesn't infer it quite well -->
                 <file name="src/ExceptionalMatcher/Validator/Formatter/Validator/ValidationFailedExceptionFormatter.php"/>
             </errorLevel>
         </LessSpecificImplementedReturnType>
@@ -52,6 +52,12 @@
                 <directory name="tests"/>
             </errorLevel>
         </MissingOverrideAttribute>
+        <UndefinedPropertyFetch>
+            <!-- This property was added in newer versions -->
+            <errorLevel type="suppress">
+                <referencedProperty name="Symfony\Component\Uid\Exception\InvalidArgumentException::$invalidValue"/>
+            </errorLevel>
+        </UndefinedPropertyFetch>
     </issueHandlers>
     <plugins>
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
