@@ -207,3 +207,49 @@ class RegisterUserCommand
 ```
 
 > Normally, you should format it with [`validator_violations`](./violation-formatters.md#validationfailedexception-formatter) to keep all contained violations.
+
+## Enum Condition
+
+Matches native `ValueError` thrown by `BackendEnum::from()` method.
+
+Specify `enum_value` match condition to compare property's value against the invalid value of thrown exception:
+
+```php
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+
+use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\enum_value;
+
+#[Try_]
+class ImportScheduleCommand
+{
+    #[Catch_(\ValueError::class, from: WeekDay::class, match: enum_value, message: 'schedule.weekday.invalid')]
+    public string $weekDay;
+}
+```
+
+Enum class:
+
+```php
+enum WeekDay: string
+{
+    case MONDAY = 'monday';
+    case TUESDAY = 'tuesday';
+}
+```
+
+Code that throws:
+
+```php
+$command = new ImportScheduleCommand('thursday');
+
+// ValueError thrown hence will match Command's weekDay
+$weekDay = WeekDay::from($command->weekDay);
+
+// ValueError thrown hence won't match anything
+$weekDay = WeekDay::from('unrelated');
+```
+
+> Normally, you should specify `message:` with your custom message. \
+> Otherwise, exception's system message will be exposed revealing details like this: \
+> `"thursday" is not a valid backing value for enum App\WeekDay`

@@ -32,7 +32,7 @@
         "symfony/messenger": ">=6.4",
         "symfony/uid": ">=6.0@dev",
         "symfony/var-dumper": ">=6.0",
-        "phphd/coding-standard": "~0.7.0",
+        "phphd/coding-standard": "~1.0.0",
         "tomasvotruba/type-coverage": "^2.1.0",
         "phpstan/phpstan-phpunit": "^2.0.16",
         "nyholm/symfony-bundle-test": "^3.1",
@@ -75,8 +75,7 @@
         "ci:pack": [
             "@ci:ecs",
             "@ci:rector",
-            "@ci:phpstan",
-            "@ci:psalm",
+            "@ci:static",
             "@ci:unit-test",
             "@ci:integration-test"
         ],
@@ -84,6 +83,10 @@
         "ci:ecs-fix": "vendor/bin/ecs check --fix",
         "ci:rector": "vendor/bin/rector process --dry-run",
         "ci:rector-fix": "vendor/bin/rector process",
+        "ci:static": [
+            "@ci:phpstan",
+            "@ci:psalm"
+        ],
         "ci:phpstan": "vendor/bin/phpstan analyze",
         "ci:psalm": "vendor-bin/psalm/psalm",
         "ci:test": "vendor/bin/phpunit --testdox --colors=always",
