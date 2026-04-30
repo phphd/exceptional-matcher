@@ -39,12 +39,17 @@ final class InvalidUidExceptionMatchConditionFactory implements MatchConditionFa
             return new FalseCondition();
         }
 
+        return new InvalidUidExceptionMatchCondition($this->string($value));
+    }
+
+    private function string(mixed $value): string
+    {
         if ($value instanceof Stringable) {
-            $value = (string)$value;
-        } else {
-            Assert::string($value, 'InvalidUidExceptionMatchCondition requires a stringable value, got: %s.');
+            return (string)$value;
         }
 
-        return new InvalidUidExceptionMatchCondition($value);
+        Assert::string($value, 'InvalidUidExceptionMatchCondition requires a stringable value, got: %s.');
+
+        return $value;
     }
 }

@@ -11,6 +11,10 @@ parameters:
         -
             message: '#^Parameter \#9 \$constraint of class Symfony\\Component\\Validator\\ConstraintViolation constructor expects Symfony\\Component\\Validator\\Constraint\|null, mixed given\.$#'
             identifier: argument.type
-            count: 1
             path: src/ExceptionalMatcher/Validator/Formatter/ViolationList/ViolationListExceptionFormatter.php
+            reportUnmatched: false
+        -
+            message: '#^Access to an undefined property Symfony\\Component\\Uid\\Exception\\InvalidArgumentException\:\:\$invalidValue\.$#'
+            identifier: property.notFound
+            path: src/ExceptionalMatcher/Rule/Object/Property/Match/Condition/Uid/InvalidUidExceptionMatchCondition.php
             reportUnmatched: false
