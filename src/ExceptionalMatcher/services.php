@@ -14,11 +14,11 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $builder): void {
-    $services = $containerConfigurator->services();
+return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
+    $services = $configurator->services();
 
     /** @var Closure(class-string):((bool|class-string)) $lazy */
-    $lazy = $builder->get('phd_exceptional_matcher.lazy_proxy');
+    $lazy = $container->get('phd_exceptional_matcher.lazy_proxy');
 
     $services
         ->set(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>', MainExceptionMatcher::class)

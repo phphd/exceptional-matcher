@@ -7,7 +7,8 @@
     "autoload-dev": {
         "files": [
             "autoload_constants.php",
-            "bootstrap.php"
+            "bootstrap.php",
+            "../../stubs/conditional.php"
         ]
     },
     "config": {

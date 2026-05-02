@@ -9,12 +9,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $builder): void {
-    if (false === $builder->getParameter('phd_exceptional_matcher.validator_available')) {
+return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
+    if (false === $container->getParameter('phd_exceptional_matcher.validator_available')) {
         return;
     }
 
-    $services = $containerConfigurator->services();
+    $services = $configurator->services();
 
     $services
         ->set(MatchConditionFactory::class.'<'.ValidationFailedException::class.'>', ValidationFailedExceptionMatchConditionFactory::class)
