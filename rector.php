@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use PhPhD\CodingStandard\ValueObject\Set\PhdSetList;
+use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector;
+use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
 use Rector\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector;
@@ -20,6 +22,7 @@ return RectorConfig::configure()
     ->withPhpVersion(PhpVersion::PHP_81)
     ->withSkip([
         ...stubExclusions(),
+        SimplifyIfElseToTernaryRector::class,
         ArrayToFirstClassCallableRector::class => [
             __DIR__.'/src/*/services.php',
             __DIR__.'/src/*/*CompilerPass.php',
