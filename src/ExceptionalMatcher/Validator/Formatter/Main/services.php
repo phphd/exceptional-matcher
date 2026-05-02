@@ -15,13 +15,13 @@ use Symfony\Component\DependencyInjection\Reference;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $builder): void {
-    if (false === $builder->getParameter('phd_exceptional_matcher.validator_available')) {
+return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
+    if (false === $container->getParameter('phd_exceptional_matcher.validator_available')) {
         return;
     }
 
-    $parameters = $containerConfigurator->parameters();
-    $services = $containerConfigurator->services();
+    $parameters = $configurator->parameters();
+    $services = $configurator->services();
 
     $services
         ->set(ExceptionViolationFormatter::class.'<Throwable>', MainExceptionViolationFormatter::class)
