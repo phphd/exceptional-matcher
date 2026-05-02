@@ -260,9 +260,10 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
+use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\enum_value;
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\uid_value;
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;
+use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
 use const PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\validator_violations;
 
 #[Try_]
@@ -273,6 +274,9 @@ class ImportProductDto
 
     #[Catch_(CategoryNotFoundException::class, match: exception_value)] // Message is derived from Exception
     public string $categoryId;
+
+    #[Catch_(\ValueError::class, from: ProductStatus::class, match: enum_value, message: 'The value you selected is not a valid choice.')]
+    public string $status;
 
     #[Catch_(ValidationFailedException::class, from: ProductDescription::class, match: validated_value, format: validator_violations)]
     public string $description;

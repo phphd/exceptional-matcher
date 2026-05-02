@@ -1,10 +1,10 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <psalm
         errorLevel="2"
         resolveFromConfigFile="true"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="https://getpsalm.org/schema/config"
-        xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://getpsalm.org/schema/config vendor-bin/psalm/vendor/vimeo/psalm/config.xsd"
         findUnusedBaselineEntry="true"
         findUnusedCode="true"
 >
@@ -41,8 +41,8 @@
             </errorLevel>
         </UnnecessaryVarAnnotation>
         <LessSpecificImplementedReturnType>
+            <!-- Psalm doesn't infer it quite well -->
             <errorLevel type="suppress">
-                <!-- Psalm doesn't infer it quite well -->
                 <file name="src/ExceptionalMatcher/Validator/Formatter/Validator/ValidationFailedExceptionFormatter.php"/>
             </errorLevel>
         </LessSpecificImplementedReturnType>
@@ -60,6 +60,8 @@
         <file name="stubs/WrappedExceptionsInterface.stub"/>
         <file name="stubs/ContainerInterface.stub"/>
         <file name="stubs/ConstraintViolationInterface.stub"/>
-        <file name="stubs/SymfonyUidInvalidArgumentException.php"/>
+
+        <!-- This one is included directly in psalm's composer autoloader: -->
+        <!-- <file name="stubs/conditional.php"/> -->
     </stubs>
 </psalm>

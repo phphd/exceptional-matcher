@@ -81,17 +81,17 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
      *
      * @throws Exception
      */
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
+    public function loadExtension(array $config, ContainerConfigurator $configurator, ContainerBuilder $container): void
     {
-        $builder->set('phd_exceptional_matcher.lazy_proxy', $this->lazyProxy(...));
-        $builder->setParameter('phd_exceptional_matcher.validator_available', interface_exists(ValidatorInterface::class));
-        $builder->setParameter('phd_exceptional_matcher.messenger_available', interface_exists(MessengerMiddlewareInterface::class));
+        $container->set('phd_exceptional_matcher.lazy_proxy', $this->lazyProxy(...));
+        $container->setParameter('phd_exceptional_matcher.validator_available', interface_exists(ValidatorInterface::class));
+        $container->setParameter('phd_exceptional_matcher.messenger_available', interface_exists(MessengerMiddlewareInterface::class));
 
-        $container->import(__DIR__.'/../../**/services.php');
+        $configurator->import(__DIR__.'/../../**/services.php');
 
-        $builder->set('phd_exceptional_matcher.lazy_proxy', null);
-        $builder->setParameter('phd_exceptional_matcher.validator_available', null);
-        $builder->setParameter('phd_exceptional_matcher.messenger_available', null);
+        $container->set('phd_exceptional_matcher.lazy_proxy', null);
+        $container->setParameter('phd_exceptional_matcher.validator_available', null);
+        $container->setParameter('phd_exceptional_matcher.messenger_available', null);
     }
 
     /** @override */

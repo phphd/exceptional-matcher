@@ -7,6 +7,8 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionFactory;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Delegating\DelegatingMatchConditionFactory;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\EnumValueMatchCondition;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\EnumValueMatchConditionFactory;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\InvalidUidExceptionMatchCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\InvalidUidExceptionMatchConditionFactory;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchCondition;
@@ -15,11 +17,12 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\Exceptio
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchConditionFactory;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
-use Symfony\Component\Uid\Exception\InvalidArgumentException;
+use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 use Throwable;
 
 use function class_exists;
 use function krsort;
+use function property_exists;
 
 /**
  * @coversNothing
@@ -43,9 +46,10 @@ final class MatchConditionFactoryServiceTest extends BundleTestCase
             ExceptionValueMatchCondition::class => ExceptionValueMatchConditionFactory::class,
             ValidationFailedExceptionMatchCondition::class => ValidationFailedExceptionMatchConditionFactory::class,
             InvalidUidExceptionMatchCondition::class => InvalidUidExceptionMatchConditionFactory::class,
+            EnumValueMatchCondition::class => EnumValueMatchConditionFactory::class,
         ];
 
-        if (!class_exists(InvalidArgumentException::class)) {
+        if (!class_exists(InvalidUidException::class) || !property_exists(InvalidUidException::class, 'invalidValue')) {
             unset($expected[InvalidUidExceptionMatchCondition::class]);
         }
 

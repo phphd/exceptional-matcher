@@ -16,15 +16,15 @@ use Throwable;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $builder): void {
-    if (false === $builder->getParameter('phd_exceptional_matcher.validator_available')) {
+return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
+    if (false === $container->getParameter('phd_exceptional_matcher.validator_available')) {
         return;
     }
 
     /** @var Closure(class-string):((bool|class-string)) $lazy */
-    $lazy = $builder->get('phd_exceptional_matcher.lazy_proxy');
+    $lazy = $container->get('phd_exceptional_matcher.lazy_proxy');
 
-    $services = $containerConfigurator->services();
+    $services = $configurator->services();
 
     $services
         ->set(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>', ExceptionToViolationListMatcher::class)
