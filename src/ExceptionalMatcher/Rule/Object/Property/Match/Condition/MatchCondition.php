@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition;
 use Throwable;
 
 /**
- * @internal - this might be exposed as an api in some future versions
+ * @api
  *
  * @phpstan-template-contravariant T of Throwable
  *
