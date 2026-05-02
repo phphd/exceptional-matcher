@@ -9,12 +9,12 @@ use PhPhD\ExceptionalMatcher\Validator\Formatter\ExceptionViolationFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $containerConfigurator, ContainerBuilder $builder): void {
-    if (false === $builder->getParameter('phd_exceptional_matcher.validator_available')) {
+return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
+    if (false === $container->getParameter('phd_exceptional_matcher.validator_available')) {
         return;
     }
 
-    $services = $containerConfigurator->services();
+    $services = $configurator->services();
 
     $services
         ->set(ExceptionViolationFormatter::class.'<'.ViolationListException::class.'>', ViolationListExceptionFormatter::class)

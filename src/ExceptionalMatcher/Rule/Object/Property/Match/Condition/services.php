@@ -15,8 +15,8 @@ use Throwable;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\inline_service;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_locator;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
-    $services = $containerConfigurator->services();
+return static function (ContainerConfigurator $configurator): void {
+    $services = $configurator->services();
 
     $services
         ->set(MatchConditionFactory::class.'<'.Throwable::class.'>', CompositeMatchConditionFactory::class)

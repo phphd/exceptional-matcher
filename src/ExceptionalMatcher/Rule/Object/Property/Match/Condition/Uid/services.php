@@ -11,12 +11,12 @@ use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidExcept
 use function class_exists;
 use function property_exists;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (ContainerConfigurator $configurator): void {
     if (!class_exists(InvalidUidException::class) || !property_exists(InvalidUidException::class, 'invalidValue')) {
         return;
     }
 
-    $services = $containerConfigurator->services();
+    $services = $configurator->services();
 
     $services
         ->set(MatchConditionFactory::class.'<'.InvalidUidException::class.'>', InvalidUidExceptionMatchConditionFactory::class)
