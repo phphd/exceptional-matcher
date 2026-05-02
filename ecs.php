@@ -14,5 +14,8 @@ return static function (ECSConfig $ecsConfig): void {
         Symplify\CodingStandard\Fixer\ArrayNotation\ArrayOpenerAndCloserNewlineFixer::class => [
             __DIR__.'/**/services.php',
         ],
+        PhpCsFixer\Fixer\Import\FullyQualifiedStrictTypesFixer::class => [ // Conflicts with rector's removeUnusedImports()
+           __DIR__.'/src/ExceptionalMatcher/Bundle/DependencyInjection/PhdExceptionalMatcherExtension.php',
+        ],
     ]);
 };

@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Rule;
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 
-/** @internal */
+/** @api */
 interface MatchingRule
 {
     /** Returns TRUE if all exceptions were matched; FALSE otherwise */
