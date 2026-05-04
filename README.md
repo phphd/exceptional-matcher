@@ -45,32 +45,50 @@ Thence it makes up for what was lacking in tools for relating validation excepti
    You can use features of this library outside frameworks. \
    See [Standalone Usage](#standalone-usage-).
 
-### Define the Mapping 🔗
+### Map and Throw 🎯
 
-Mark a command or dto with `#[Try_]` attribute to let the matcher know it's included for processing.
+Mark a command or dto with `#[Try_]` attribute, and properties with `#[Catch_]`.
 
-Define `#[Catch_]` attributes with rules for your properties.
+`#[Try_]` lets the matcher know it's included for processing. \
+`#[Catch_]` defines rules about "what" and "how" to catch.
+
+Finally, throw those exceptions from your use-case handler:
 
 ```php
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 
 #[Try_]
-class RegisterUserDto
+class UserRegistration
 {
     #[Catch_(LoginAlreadyTakenException::class)]
     public string $login;
 
     #[Catch_(PasswordCompromisedException::class)]
     public string $password;
+
+    public function process(UserRegistrationServices $services): void
+    {
+        $userWithTheSameLogin = $services->userRepository->whereLogin($this->login)->firstOrNull();
+
+        if (null !== $userWithTheSameLogin) {
+            throw new LoginAlreadyTakenException($this->login);        
+        }
+
+        if ($services->passwordSecurity->isCompromised($this->password)) {
+            throw new PasswordCompromisedException($this->password);
+        }
+
+        $services->entityManager->persist(new User($this->login, $this->password));
+        $services->entityManager->flush();
+    }
 }
 ```
 
-> Note: we've named this class as `RegisterUserDto` for the sake of demonstration. \
-> Normally, we'd name it as `RegisterUserCommand` ([CQS](https://martinfowler.com/bliki/CommandQuerySeparation.html)).
+> Note: in this example `UserRegistration` is created both for data (DTO) and behavior (Service) over this data, \
+> providing a well-understood Object-Oriented Design.
 
-
-These describe what exceptions what properties correlate with.
+These mappings describe what exceptions what properties correlate with.
 
 Here, `LoginAlreadyTakenException` is bound to the `login` property, \
 while `PasswordCompromisedException` is bound to the `password` property.
@@ -78,13 +96,14 @@ while `PasswordCompromisedException` is bound to the `password` property.
 > You can have additional matching conditions beyond just the exception class name. \
 > See [Match Conditions 🖇️](docs/config/match-conditions.md).
 
-The equivalent (very simplified) rough manual logic if not using this library:
+The equivalent (very rough) simplified manual logic if not using this library:
 
 ```php
-$errors = [];
+$registration = new UserRegistration('jzs', 'jn3.16');
 
+$errors = [];
 try {
-    return $this->register($dto);
+    return $registration->process($services);
 } catch (LoginAlreadyTakenException $e) {
     $errors['login'] = $e->getMessage();
 } catch (PasswordCompromisedException $e) {
@@ -92,10 +111,21 @@ try {
 }
 ```
 
-### Match the Exception 🎯
+### Catch and Match 🎣
 
-Matching takes place wherever the matcher is used. \
-Exception, matched against an object, results in a `ConstraintViolation` list (or custom format):
+Consider the parable of fisherman.
+
+> One man went out to **fish carps**. \
+> He casts a fishing rod and waits... \
+> And there it is! It's biting! \
+> In anticipation of a good catch, he starts reeling it up... \
+> Yet, to his disappointment, it's a fry and not a fish! \
+> He throws it back.
+> The second time does he cast the line... \
+> Now, he gets a good old 2kg carp. \
+> He takes and roasts it to eat.
+
+The code:
 
 ```php
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
@@ -111,19 +141,21 @@ class RegisterUserApiPoint
     ) {}
 
     #[Route(path: '/register', methods: ['POST'])]
-    public function __invoke(RegisterUserDto $dto): Response
+    public function __invoke(#[MapRequestPayload] UserRegistration $registration): Response
     {
         try {
-            return $this->register($dto);
+            $registration->process($this->services);
+
+            return new Response(status: HTTP_CREATED);
         } catch (Throwable $exception) {
-            return $this->handleError($exception, $dto);
+            return $this->handleError($exception, $registration);
         }
     }
 
-    private function handleError(Throwable $exception, RegisterUserDto $dto): Response
+    private function handleError(Throwable $exception, UserRegistration $registration): Response
     {
         /** @var ?ConstraintViolationListInterface $violationList */
-        $violationList = $this->matcher->match($exception, $dto);
+        $violationList = $this->matcher->match($exception, $registration);
 
         if (null === $violationList) {
             throw $exception;
@@ -134,10 +166,24 @@ class RegisterUserApiPoint
 }
 ```
 
-> Note: response formatting is simplified for the demonstration's sake.
+The cue to a parable:
+- Exception is the fish;
+- Code that catches is the fisherman;
+- Data object's mappings - man's expectation of a carp;
+- ConstraintViolation - the fish after roasting.
 
-Created `ConstraintViolationList` contains violation-objects with matched property path, message translation, and
-invalid value.
+Fisherman evaluates the fish against his expectation - \
+`ExceptionMatcher` matches the exception against `UserRegistration` object.
+
+Fisherman roasts the fish - \
+`ExceptionMatcher` returns the `ConstraintViolation` list (or custom format) created of the exception.
+
+Fisherman releases the fry - \
+`ExceptionMatcher` didn't match, and the main code `throws $exception;` back.
+
+
+Finally, the created `ConstraintViolationList` contains violation-objects with matched property path,
+message translation, and invalid value.
 
 You can serialize it into a json-response or render on a form.
 
