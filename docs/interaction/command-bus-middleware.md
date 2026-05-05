@@ -41,7 +41,7 @@ Once added, the middleware:
 
 This diagram represents the concept:
 
-![Exceptional Validation.svg](https://raw.githubusercontent.com/phphd/exceptional-validation/refs/heads/main/assets/Exceptional%20Validation.svg)
+![Exceptional Validation.svg](https://raw.githubusercontent.com/phphd/exceptional-matcher/refs/heads/main/assets/Exceptional%20Validation.svg)
 
 ## Catch 🏈
 
