@@ -73,7 +73,7 @@ class RegisterUserDto
 ```php
 class ResetPasswordDto
 {
-    #[Assert\NotBlank]
+    #[Assert\NotBlank] // 🤔 Deja vu
     #[Assert\Length(min: 8, max: 31)]
     #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_MEDIUM)]
     #[AppAssert\PasswordNotCompromised]
