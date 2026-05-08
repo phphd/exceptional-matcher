@@ -14,9 +14,9 @@ A lightweight bridge from domain exceptions to validation violations.
 
 ![Exceptional Matcher.svg](https://raw.githubusercontent.com/phphd/exceptional-matcher/refs/heads/main/assets/Exceptional%20Matcher.svg)
 
-Your domain code that processes Dto (e.g. services / value objects) can throw a business exception. \
+Your domain code that processes Dto (i.e. services / entities) can run [validation by throwing](./docs/exceptional-validation/exceptional-validation.md) business exceptions. \
 Using Matcher, you can correlate it to the property that originated it –
-allowing to return precise field-specific validation errors inferred from the exceptions.
+thereby allowing to return precise field-specific validation errors inferred from the exceptions.
 
 Thence it makes up for what was lacking in tools for relating validation exceptions to their originator fields.
 
@@ -85,8 +85,8 @@ class UserRegistration
 }
 ```
 
-> Note: in this example `UserRegistration` is created both for data (DTO) and behavior (Service) over this data, \
-> providing a well-understood Object-Oriented Design.
+> Note: `UserRegistration` embodies both data (DTO) and behavior (Service) over this data, \
+> effectively attaining well-comprehensible Object-Oriented Design.
 
 These mappings describe what exceptions what properties correlate with.
 
@@ -113,43 +113,54 @@ try {
 
 ### Catch and Match 🎣
 
-Consider the parable of fisherman.
+[Exceptional Validation](./docs/exceptional-validation/exceptional-validation.md) is like a parable of fisherman.
 
 > One man went out to **fish carps**. \
-> He casts a fishing rod and waits... \
+> Having cast a fishing rod, he waits... \
 > And there it is! It's biting! \
-> In anticipation of a good catch, he starts reeling it up... \
+> In anticipation of a catch, he starts reeling up... \
 > Yet, to his disappointment, it's a fry and not a fish! \
 > He throws it back.
-> The second time does he cast the line... \
-> Now, he gets a good old 2kg carp. \
-> He takes and roasts it to eat.
+> 
+> The second time he casts the line... \
+> In faith of a good catch, he waits... \
+> And now at last, he pulls a fine 5-pound carp. \
+> He takes it home and roasts it to eat.
 
 The code:
 
 ```php
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
+#[AsController]
 class RegisterUserApiPoint
 {
     public function __construct(
         /** @var ExceptionMatcher<ConstraintViolationListInterface> */
         #[Autowire(service: ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>')]
         private ExceptionMatcher $matcher,
-    ) {}
+        private UserRegistrationServices $services,
+    ) { }
 
-    #[Route(path: '/register', methods: ['POST'])]
-    public function __invoke(#[MapRequestPayload] UserRegistration $registration): Response
-    {
+    #[Route(
+        path: '/register',
+        name: 'user_register',
+        methods: ['POST'],
+    )]
+    public function __invoke(
+        #[MapRequestPayload] UserRegistration $registration,
+    ): Response {
         try {
             $registration->process($this->services);
-
-            return new Response(status: HTTP_CREATED);
         } catch (Throwable $exception) {
             return $this->handleError($exception, $registration);
         }
+
+        return new Response(status: HTTP_CREATED);
     }
 
     private function handleError(Throwable $exception, UserRegistration $registration): Response
@@ -169,8 +180,8 @@ class RegisterUserApiPoint
 The cue to a parable:
 - Exception is the fish;
 - Code that catches is the fisherman;
-- Data object's mappings - man's expectation of a carp;
-- ConstraintViolation - the fish after roasting.
+- Data object's mappings – man's expectation of a carp;
+- ConstraintViolation – the fish after roasting.
 
 Fisherman evaluates the fish against his expectation - \
 `ExceptionMatcher` matches the exception against `UserRegistration` object.
@@ -197,19 +208,17 @@ You can serialize it into a json-response or render on a form.
 
 ## Why Exceptional Matcher ✨
 
-Exceptional Matcher aims for a full-fledged expressive domain-embedded **validation** that makes **full use of
-exceptions**. \
-
-With Exceptional Matcher you can **omit** any **peripheral validation** off of your dto objects, \
+Exceptional Matcher opens the way for [Exceptional Validation](./docs/exceptional-validation/exceptional-validation.md),
+wherewith you can **omit** any **peripheral validation** off of your dto objects, \
 and rely solely on validation in real code (services, value objects) – that belongs to and resides in the domain.
 
-Read more in: [Exceptional Validation](docs/exceptional-validation/exceptional-validation.md).
+Thus, you have a full-fledged domain-embedded **validation** that naturally expresses itself with the **exceptions**.
 
 ### Where is the Power 🚀
 
-Consider another use-case: \
-After registration, the user should be able to _update_ his _profile_ (login, password). \
-Updating the login must ensure its uniqueness in spite of the current user.
+Consider another use-case: after registration, the user should be able to _update_ his _profile_.
+
+Updating the _login_ must ensure its _uniqueness_ in spite of the current user.
 
 Here's what we'd have to do with an upfront attribute-driven validation:
 
@@ -219,68 +228,86 @@ Here's what we'd have to do with an upfront attribute-driven validation:
     entityClass: User::class,
     identifierFieldNames: ['user' => 'id'],
 )]
-class UpdateUserProfileDto
-{ ... }
+class UserProfileUpdate
+{ 
+    public string $login; 
+@@
 ```
 
-Compare this to `#[Catch_]` and discern which communicates the intent better.
+Compare this to `#[Catch_]` approach and recognize which communicates the intent better:
 
 ```php
-#[Catch_(LoginAlreadyTakenException::class)]
-public string $login;
+#[Try_]
+class UserProfileUpdate
+{ 
+    #[Catch_(LoginAlreadyTakenException::class)]
+    public string $login;
+@@
 ```
 
 The first approach is very imperative, verbose. \
 The second declaratively states the fact.
 
-Moreover, now you don't restrain yourself by the framework's limitations. \
-You can implement just anything you need just as fast and just as good as possible.
+Moreover, now you don't restrain yourself with the limitations of the framework. \
+You don't have limitations at all. \
+[Exceptional Validation](./docs/exceptional-validation/exceptional-validation.md) enables you to implement everything at the highest quality possible.
 
-Now, the mapping for profile update `Dto` is just as high-level as with [registration `Dto`](#define-the-mapping-):
+The mapping for profile update `Dto` is just as high-level as it was for [registration `Dto`](#map-and-throw-):
 
 ```php
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 
 #[Try_]
-class UpdateUserProfileDto
+class UserProfileUpdate
 {
-    public User $user;
-
     #[Catch_(LoginAlreadyTakenException::class)]
     public string $login;
 
     #[Catch_(PasswordCompromisedException::class)]
     #[Catch_(PasswordCannotBeReusedException::class)]
     public string $password;
+    
+    public function process(User $user, UserProfileUpdateServices $services): void
+    {
+        $userWithTheSameLogin = $services->userRepository->whereLogin($this->login)->firstOrNull();
+
+        if ($userWithTheSameLogin?->is($user) === false) {
+            throw new LoginAlreadyTakenException($this->login);
+        }
+
+        if ($services->passwordSecurity->isCompromised($this->password)) {
+            throw new PasswordCompromisedException($this->password);
+        }
+
+        // Could throw PasswordCannotBeReusedException
+        $user->updateProfile($this->login, $this->password);
+
+        $services->entityManager->flush();
+    }
 }
 ```
 
 No custom validators, no attribute-driven-rules - just pure business description.
 
-The main code is just as simple as it could be:
-
-```php
-$userWithTheSameLogin = $userRepository->whereLogin($dto->login)->firstOrNull();
-
-if ($userWithTheSameLogin?->is($currentUser) === false) {
-    throw new LoginAlreadyTakenException($dto->login);
-}
-```
-
-We've reused the same `LoginAlreadyTakenException` as used in registration, yet under another condition.
+The main code is just as simple as it could be, throwing the same elucidated exceptions:
+- the same `LoginAlreadyTakenException` as used in registration, just under another condition.
+- the same check of `PasswordCompromisedException` as with registration.
+- additional `PasswordCannotBeReusedException`, specific to profile update.
 
 This communicates the design much better than what we've seen thus far.
 
 This is where the power comes from. You don't cram the validation into the framework. \
 You broaden the framework so that it embraces your validation in a way that it naturally fits in.
 
+Read more in: [Exceptional Validation](docs/exceptional-validation/exceptional-validation.md).
+
 ## Interaction approaches 🔁
 
 The library provides a few interaction points:
 
 - [Matcher Service](docs/interaction/direct-matcher-service-usage.md) – manual handling
-  (just [as shown](#match-the-exception-));
+  (just [as shown](#catch-and-match-));
 - [Bus Middleware](docs/interaction/command-bus-middleware.md) – automated handling.
 
 ## Features 💎
@@ -294,7 +321,7 @@ There are two configuration features:
   property;
 - [Violation Formatters 🎨](docs/config/violation-formatters.md) – represent the exception in a desired format.
 
-That's really all this library does – matches the exception and formats it.
+That's really all this library does – matches the exception and formats it (i.e. roasts the fish).
 
 #### Cheat Sheet 📝
 
