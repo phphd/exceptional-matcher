@@ -8,8 +8,10 @@ use InvalidArgumentException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Email;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\Email;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\EntityWithHook;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\OriginConditionMessage;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\ProductConditionMessage;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
@@ -52,7 +54,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
         } catch (ValidationFailedException $originalException) {
         }
 
-        $message = HandleableMessageStub::create();
+        $message = new OriginConditionMessage('non-email', 'uid');
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -73,7 +75,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
         } catch (InvalidArgumentException $originalException) {
         }
 
-        $message = HandleableMessageStub::create();
+        $message = new OriginConditionMessage('email', 'invalid-uuid');
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -83,5 +85,30 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
         [$matchedException] = $matchedExceptionList->toArray();
 
         self::assertSame('uid', $matchedException->getRule()->getPropertyPath()->join('.'));
+    }
+
+    public function testMatchExceptionByOriginPropertyHook(): void
+    {
+        if (\PHP_VERSION_ID < 80400) {
+            self::markTestSkipped('Property hooks require PHP 8.4.');
+        }
+
+        try {
+            EntityWithHook::createWithTitle('');
+
+            self::fail('The exception must be thrown.');
+        } catch (ValidationFailedException $originalException) {
+        }
+
+        $message = new ProductConditionMessage('');
+
+        $matchedExceptionList = $this->matcher->match($originalException, $message);
+
+        self::assertNotNull($matchedExceptionList);
+        self::assertCount(1, $matchedExceptionList);
+
+        [$matchedException] = $matchedExceptionList->toArray();
+
+        self::assertSame('title', $matchedException->getRule()->getPropertyPath()->join('.'));
     }
 }
