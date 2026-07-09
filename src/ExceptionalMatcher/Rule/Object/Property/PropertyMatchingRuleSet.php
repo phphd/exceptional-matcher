@@ -31,7 +31,9 @@ final class PropertyMatchingRuleSet implements MatchingRule
 
     public function getPropertyPath(): PropertyPath
     {
-        return $this->owner->getPropertyPath()->with($this->name);
+        return $this->owner->getPropertyPath()
+            ->with($this->name)
+        ;
     }
 
     public function getEnclosingObject(): object

@@ -36,8 +36,9 @@ final class ViolationListExceptionFormatter implements ExceptionViolationFormatt
 
         $rule = $matchedException->getRule();
         $root = $rule->getRootObject();
-        $propertyPath = $rule->getPropertyPath()->join('.');
-
+        $propertyPath = $rule->getPropertyPath()
+            ->join('.')
+        ;
         /** @var list<ConstraintViolationInterface> $violationList */
         $violationList = iterator_to_array($exception->getViolationList());
 
