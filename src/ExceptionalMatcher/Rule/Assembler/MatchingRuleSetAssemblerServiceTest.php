@@ -91,6 +91,8 @@ final class MatchingRuleSetAssemblerServiceTest extends BundleTestCase
          *
          * @psalm-suppress UndefinedThisPropertyFetch
          */
-        return (fn (): iterable => $this->assemblers)->call($propertyRulesAssembler);
+        return (fn (): iterable => $this->assemblers)
+            ->call($propertyRulesAssembler)
+        ;
     }
 }
