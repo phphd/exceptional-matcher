@@ -351,6 +351,11 @@ class ImportProductDto
     #[Catch_(\ValueError::class, from: ProductStatus::class, match: enum_value, message: 'The value you selected is not a valid choice.')]
     public string $status;
 
+    // PHP 8.4+ property hook origin
+    #[Catch_(ValidationFailedException::class, from: [Product::class, '$title::set'], format: validator_violations)]
+    public string $title;
+
+    // Value-object class origin
     #[Catch_(ValidationFailedException::class, from: ProductDescription::class, match: validated_value, format: validator_violations)]
     public string $description;
 

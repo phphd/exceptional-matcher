@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Tests\Unit\Stub;
+namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub;
 
 use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 use Symfony\Component\Validator\Validation;
@@ -14,12 +14,12 @@ final class Email
     ) {
     }
 
-    public static function fromString(string $uuid): self
+    public static function fromString(string $email): self
     {
         $validate = Validation::createCallable(new EmailConstraint());
 
         /** @var string $email */
-        $email = $validate($uuid);
+        $email = $validate($email);
 
         return new self($email);
     }
