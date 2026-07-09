@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Tests\Unit\Stub;
 
 use ArrayObject;
-use InvalidArgumentException;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
@@ -17,7 +16,6 @@ use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\Tests\Stub\MessageContainingException;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
@@ -48,12 +46,6 @@ final class HandleableMessageStub
     private array $nestedArrayItems; // @phpstan-ignore missingType.iterableValue
 
     private ArrayObject $nestedIterableItems; // @phpstan-ignore missingType.generics
-
-    #[Catch_(ValidationFailedException::class, from: Email::class)]
-    private string $email = 'matched!';
-
-    #[Catch_(InvalidArgumentException::class, from: [Uuid::class, 'fromString'])]
-    private string $uid;
 
     #[Catch_(LogicException::class, message: 'oops')]
     private string $messageText;
