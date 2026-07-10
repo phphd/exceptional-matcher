@@ -69,8 +69,8 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
 
     public function testFormatException(): void
     {
-        $originalException = new AnException();
         $message = HandleableMessageStub::create();
+        $originalException = new AnException();
 
         $violationList = $this->matcher->match($originalException, $message);
 
@@ -89,8 +89,8 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
 
     public function testPropertyInvalidValueIsCollected(): void
     {
-        $exception = new LogicException();
         $message = HandleableMessageStub::create()->withMessageText('invalid text value');
+        $exception = new LogicException();
 
         /** @var ConstraintViolationListInterface $violationList */
         $violationList = $this->matcher->match($exception, $message);
@@ -103,8 +103,8 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
 
     public function testObjectInvalidValueIsCollected(): void
     {
-        $originalException = new ObjectPropertyMatchedException();
         $message = HandleableMessageStub::create()->withObjectProperty($object = new stdClass());
+        $originalException = new ObjectPropertyMatchedException();
 
         /** @var ConstraintViolationListInterface $violationList */
         $violationList = $this->matcher->match($originalException, $message);
@@ -117,11 +117,12 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
 
     public function testViolationMessageFallsBackToExceptionMessage(): void
     {
+        $message = HandleableMessageStub::create();
+
         $exceptionAdapter = new CompositeException([
             new MessageContainingException(),
             new MessageContainingException(),
         ]);
-        $message = HandleableMessageStub::create();
 
         $violationList = $this->matcher->match($exceptionAdapter, $message);
 

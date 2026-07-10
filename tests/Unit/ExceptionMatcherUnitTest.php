@@ -98,8 +98,8 @@ final class ExceptionMatcherUnitTest extends TestCase
 
     public function testExceptionIsNotCapturedForMessageWithoutExceptionalValidationAttribute(): void
     {
-        $exception = new AnException();
         $message = new NotHandleableMessageStub(123);
+        $exception = new AnException();
 
         $violationList = $this->exceptionMatcher->match($exception, $message);
 
@@ -108,8 +108,8 @@ final class ExceptionMatcherUnitTest extends TestCase
 
     public function testCaptureExceptionMappedToProperty(): void
     {
-        $originalException = new AnException();
         $message = HandleableMessageStub::create();
+        $originalException = new AnException();
 
         $violationList = $this->exceptionMatcher->match($originalException, $message);
 
@@ -123,8 +123,8 @@ final class ExceptionMatcherUnitTest extends TestCase
 
     public function testCaptureExceptionMappedToStaticProperty(): void
     {
-        $originalException = new StaticPropertyMatchedException();
         $message = HandleableMessageStub::create();
+        $originalException = new StaticPropertyMatchedException();
 
         /** @var ConstraintViolationListInterface $violationList */
         $violationList = $this->exceptionMatcher->match($originalException, $message);
@@ -138,8 +138,8 @@ final class ExceptionMatcherUnitTest extends TestCase
 
     public function testNestedObjectIsNotCapturedWhenPropertyIsNotInitialized(): void
     {
-        $exception = new NestedPropertyMatchedException();
         $message = HandleableMessageStub::create();
+        $exception = new NestedPropertyMatchedException();
 
         $violationList = $this->exceptionMatcher->match($exception, $message);
 
@@ -148,8 +148,8 @@ final class ExceptionMatcherUnitTest extends TestCase
 
     public function testCaptureNestedObjectPropertyException(): void
     {
-        $originalException = new NestedPropertyMatchedException();
         $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());
+        $originalException = new NestedPropertyMatchedException();
 
         $violationList = $this->exceptionMatcher->match($originalException, $message);
 
@@ -167,17 +167,17 @@ final class ExceptionMatcherUnitTest extends TestCase
 
     public function testUncaughtExceptionsAreNotAllowed(): void
     {
-        $exceptionAdapter = new CompositeException([
-            new NestedItemMatchedException(code: 1),
-            new NestedItemMatchedException(code: 3), // not caught
-        ]);
-
         $message = HandleableMessageStub::create()
             ->withNestedArrayItems([
                 'first' => new NestedItem(1),
                 'second' => new NestedItem(2),
             ])
         ;
+
+        $exceptionAdapter = new CompositeException([
+            new NestedItemMatchedException(code: 1),
+            new NestedItemMatchedException(code: 3), // not caught
+        ]);
 
         $violationList = $this->exceptionMatcher->match($exceptionAdapter, $message);
 
@@ -186,13 +186,6 @@ final class ExceptionMatcherUnitTest extends TestCase
 
     public function testCaptureMultipleExceptions(): void
     {
-        $exceptionAdapter = new CompositeException([
-            new NestedItemMatchedException(code: 1),
-            new AnException(),
-            new ObjectPropertyMatchedException(),
-            new NestedItemMatchedException(code: 2),
-        ]);
-
         $message = HandleableMessageStub::create()
             ->withNestedArrayItems([
                 'first' => new NestedItem(2),
@@ -201,6 +194,13 @@ final class ExceptionMatcherUnitTest extends TestCase
                 'second' => new NestedItem(1),
             ]))
         ;
+
+        $exceptionAdapter = new CompositeException([
+            new NestedItemMatchedException(code: 1),
+            new AnException(),
+            new ObjectPropertyMatchedException(),
+            new NestedItemMatchedException(code: 2),
+        ]);
 
         $violationList = $this->exceptionMatcher->match($exceptionAdapter, $message);
 

@@ -48,8 +48,8 @@ final class DelegatingMatchedExceptionFormatterUnitTest extends TestCase
 
     public function testCustomViolationFormatter(): void
     {
-        $originalException = new CustomFormattedException();
         $message = HandleableMessageStub::create();
+        $originalException = new CustomFormattedException();
 
         $violationList = $this->matcher->match($originalException, $message);
 
