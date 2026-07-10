@@ -1,6 +1,6 @@
 # Research: Mapping Lint Command & Single Source of Truth
 
-> Status: research complete, implementation not started \
+> Status: research complete; implementation planned as a staged, always-green commit sequence \
 > Scope: `lint:exceptional-matcher` console command + domain model evolution required to support it
 
 ## The Ask
@@ -35,14 +35,14 @@ The recommended direction is a **Flyweight split** of the domain model:
 | Concept | Role | Lifetime |
 |---|---|---|
 | `MatchingPlan` | compiled, validated mapping of one class (intrinsic) | cached per class (flyweight) |
-| `MappingPlanCompiler` | the *single* validation boundary — all assertions live here or in the value objects it constructs | stateless service |
+| `MappingPlanCompiler` | the *single* validation boundary — all assertions live here or in the condition constructors it invokes | stateless service |
 | `PlanRegistry` | flyweight factory: `getPlan(class-string)` with per-process cache | service |
 | Match execution | binds a plan to a subject instance + exception list (extrinsic) | transient per match |
 
 With this split, **"the mapping compiles" ⇔ "the mapping is valid"**, and:
 
 - **Runtime** = compile (cached) + execute. Same errors, but fail-fast and only once per class.
-- **Lint** = compile every discovered class with a collecting diagnostics sink instead of a throwing one.
+- **Lint** = compile every discovered class with a collecting defect handler instead of a throwing one.
   Zero duplicated rules by construction — lint literally runs the same compiler.
 - **Bonus**: reflection + attribute instantiation stop being re-done on every `match()` call — a measurable
   performance win for long-running workers (messenger middleware).
@@ -55,15 +55,16 @@ With this split, **"the mapping compiles" ⇔ "the mapping is valid"**, and:
 | [02-current-architecture.md](02-current-architecture.md) | As-is walkthrough: assembly pipeline, where validation lives, why lint cannot be bolted on cleanly |
 | [03-design-options.md](03-design-options.md) | Four options evaluated (ghost dry-run, flyweight plan, parallel validator, probe exception) with decision matrix |
 | [04-target-model.md](04-target-model.md) | The proposed domain model in depth: ubiquitous language, plan structure, condition blueprints, compiler, executor, BC strategy |
-| [05-lint-command.md](05-lint-command.md) | Command UX, class discovery, diagnostic levels and codes, cache-warmup integration, standalone usage |
+| [05-lint-command.md](05-lint-command.md) | Command UX, class discovery, defect severities and codes, cache-warmup integration, standalone usage |
 | [06-migration-plan.md](06-migration-plan.md) | Staged implementation plan, testing strategy, behavior changes, risks, open questions |
 
 ## Recommendation (TL;DR)
 
 Adopt **Option B — the Flyweight plan split** ([03-design-options.md](03-design-options.md)), staged as:
 
-1. Two zero-regret centralization fixes shipped immediately (enum check ordering,
-   `exception:` class existence).
+1. A zero-regret centralization fix shipped immediately (enum check ordering). The `exception:` existence
+   check originally planned alongside it turned out to already exist in
+   `ExceptionClassMatchCondition::__construct`.
 2. Plan model introduced *behind* the existing `@api` surface — `ExceptionMatcher`, `Try_` / `Catch_`,
    `MatchCondition`, formatters, and the matched-rule owner chain are untouched; existing tests stay green.
 3. Condition compiler API with a BC adapter for legacy `MatchConditionFactory` implementations.

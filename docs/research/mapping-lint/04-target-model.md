@@ -9,12 +9,12 @@ All code below is a sketch conveying shape and responsibilities, not final namin
 |---|---|---|
 | **Mapping declaration** | The `#[Try_]` / `#[Catch_]` attributes as authored on a class | source text |
 | **Matching plan** | The compiled, *validated* mapping of one class: which properties catch what, under which conditions, formatted how | immutable value / **flyweight (intrinsic state)** |
-| **Plan compiler** | Turns a declaration into a plan; the **single validation boundary** — every catalog check runs here or in a value object it constructs | anti-corruption boundary; "parse, don't validate" |
+| **Plan compiler** | Turns a declaration into a plan; the **single validation boundary** — every catalog check runs here or in a condition constructor it invokes | anti-corruption boundary; "parse, don't validate" |
 | **Plan registry** | `getPlan(class-string): ?MatchingPlan`, compile-on-first-use, per-process cache | **flyweight factory** |
 | **Match scope** | The extrinsic context of one match attempt: subject instance, property value, owner chain, property path | extrinsic state |
 | **Plan executor** | Walks a plan against a scope and an `ExceptionReciprocal` | domain service |
-| **Diagnostic** | One mapping defect with location (class, property, attribute ordinal) and severity | reporting value |
-| **Diagnostic sink** | Strategy deciding whether compilation throws (runtime) or collects (lint) | policy |
+| **Mapping defect** | One found mapping problem with location (class, property, attribute ordinal) and severity | reporting value |
+| **Defect handler** | Strategy deciding whether a reported defect throws (runtime) or is collected (lint) | policy |
 
 The word *plan* is chosen over "metadata"/"blueprint-of-everything" because it names what the object is
 *for*: a precomputed course of action the executor follows. `compile` pairs with it naturally.
@@ -51,18 +51,20 @@ final class CatchPlan
 }
 ```
 
-## Value objects: invariants at construction
+## Invariants at construction: the conditions are their own validators
 
-The reference checks (catalog B1–B7) move out of factories/conditions into small value objects whose
-constructors enforce existence — *make invalid mappings unrepresentable*:
+The reference checks (catalog B1–B7) already live in condition constructors and factory guards. Because
+intrinsic conditions are now **constructed at plan-compile time**, those constructors become the
+compile-time validation home with no extraction needed:
 
-| Value object | Extracted from | Invariants |
-|---|---|---|
-| `CaughtExceptionType` | new (fixes silent B1/D4) | class or interface exists; a class must implement `Throwable` (interfaces exempt) |
-| `ExceptionOrigin` | `ExceptionOriginMatchCondition::__construct` (the asserts move; the condition then *receives* a valid VO and shrinks to pure trace-matching) | class exists; method / property hook / function exists; at least one component set |
-| `IfMethodReference` | `SimpleIfClosureMatchConditionFactory` | method exists; (warning-level) parameter compatible with `CaughtExceptionType`, returns `bool` |
+- `ExceptionClassMatchCondition::__construct` — B1/D4 (class exists + is `Throwable`) — already present today.
+- `ExceptionOriginMatchCondition::__construct` — B2–B6 — unchanged, now firing at compile.
+- `if:` method existence (B7) — `Assert::methodExists` in the if-condition compiler.
 
-Each rule keeps exactly one home; runtime conditions consume already-validated VOs instead of re-checking.
+*(Design change vs the first draft of this document: dedicated `CaughtExceptionType` / `ExceptionOrigin` /
+`IfMethodReference` value objects were dropped — once conditions are constructed at compile time their
+existing constructors ARE the single home, and the value objects would have added classes without adding a
+second call site.)*
 
 ## Conditions: blueprint (compile) vs binding (match)
 
@@ -92,9 +94,9 @@ Per built-in condition:
 
 | Condition | Compile-time (validated once, shared) | Bind-time |
 |---|---|---|
-| exception class | `CaughtExceptionType` | — condition is itself intrinsic: **one shared instance per plan**, `bind()` returns it |
-| origin (`from:`) | `ExceptionOrigin` | — intrinsic, shared instance |
-| `if:` closure | `IfMethodReference` (+ D3 signature warning) | rebind `[class, method]` to the scope's enclosing instance |
+| exception class | constructs `ExceptionClassMatchCondition` (ctor validates B1/D4) | — condition is itself intrinsic: **one shared instance per plan**, `bind()` returns it |
+| origin (`from:`) | constructs `ExceptionOriginMatchCondition` (ctor validates B2–B6) | — intrinsic, shared instance |
+| `if:` closure | `Assert::methodExists` (D3 signature warning is a follow-up) | rebind `[class, method]` to the scope's enclosing instance |
 | `match: enum_value` | `ValueError` subtype guard; `from:` is `BackedEnum` + `'from'` (B11 — now *structurally* unconditional); D1 type warning | null value ⇒ `FalseCondition`; coerce value `int\|string\|Stringable` |
 | `match: uid_value` | subtype guard; D2 type warning | null ⇒ `FalseCondition`; coerce stringable |
 | `match: exception_value` / `validated_value` | subtype guards | capture scope value |
@@ -105,35 +107,40 @@ Per built-in condition:
 uses (B10) — the registry stays the single source of *contents*; the formatter's own `has()` check remains
 as a safety net for containers assembled without the compiler.
 
-## The compiler and diagnostic sinks
+## The compiler and defect handlers
 
 One traversal, two policies:
 
 ```php
 final class MappingPlanCompiler
 {
-    public function compile(ReflectionClass $class, DiagnosticSink $sink): ?MatchingPlan
+    public function compile(ReflectionClass $class, DefectHandler $defectHandler): ?MatchingPlan
     {
-        // structural pass: C1 Catch_ without Try_ (error), C2 abstract (warning),
-        //                  C3 no catches (warning), C4 parent-private Catch_ (warning)
+        // structural pass: C1 Catch_ without Try_ (error — only reached via direct invocation, i.e. lint),
+        //                  C2 abstract (warning), C3 no catches (warning, plan still built),
+        //                  C4 parent-private Catch_ (warning)
         // per property, per Catch_ attribute:
-        //   try { newInstance(); conditionCompilers->compile(...); assert formatter registered; }
-        //   catch (Throwable $e) { $sink->report(Diagnostic::fromThrowable($location, $e)); }
+        //   try { newInstance(); conditionCompilers->compile(...); check formatter registered (warning); }
+        //   catch (Throwable $e) { $defectHandler->handle(MappingDefect::fromThrowable($location, $e)); }
     }
 }
 
-interface DiagnosticSink { public function report(MappingDiagnostic $diagnostic): void; }
+interface DefectHandler { public function handle(MappingDefect $defect): void; }
 
-final class ThrowingSink   { /* runtime: first error-severity diagnostic → throw  */ }
-final class CollectingSink { /* lint: accumulate everything, compiler continues with the next Catch_ */ }
+final class ThrowingDefectHandler   { /* runtime: first error-severity defect → InvalidMatchingPlanException */ }
+final class CollectingDefectHandler { /* lint: accumulate everything, compiler continues with the next Catch_ */ }
 ```
+
+`InvalidMatchingPlanException extends LogicException`; its message keeps the original assertion message
+verbatim as prefix and appends the location — ` ({Class}::${property}, #[Catch_] #{n})` — with the cause as
+`previous`.
 
 Notes:
 
 - **Per-`Catch_` isolation** is what gives lint its granularity *and* keeps individual compilers simple:
-  they stay plain `Assert`-style throwing code (single implementation), while the sink decides fail-fast vs
-  collect. Catalog entry B9 (undefined `match:` constant ⇒ `Error` at `newInstance()`) is caught by the same
-  isolation — hence `catch (Throwable)`, not `catch (InvalidArgumentException)`.
+  they stay plain `Assert`-style throwing code (single implementation), while the handler decides fail-fast
+  vs collect. Catalog entry B9 (undefined `match:` constant ⇒ `Error` at `newInstance()`) is caught by the
+  same isolation — hence `catch (Throwable)`, not `catch (InvalidArgumentException)`.
 - The constants-autoloading closure (currently triggered by `ObjectMatchingRuleSetAssemblerService`) moves to
   the compiler — the guarantee "constants are loaded before any attribute instantiation" holds for both
   runtime and lint by construction.
@@ -146,7 +153,9 @@ final class PlanRegistry
     /** @var array<class-string, ?MatchingPlan> */
     private array $plans = [];
 
-    public function getPlan(string $className): ?MatchingPlan;   // null ⇔ no #[Try_]; compiles once (ThrowingSink)
+    public function getPlan(string $className): ?MatchingPlan;
+    // null ⇔ no #[Try_], checked BEFORE compiling (Catch_-without-Try_ stays a silent skip at runtime;
+    // C1 is lint-only). Compiles once with ThrowingDefectHandler; failed compiles are not cached.
 }
 ```
 
@@ -182,9 +191,10 @@ What survives, what dissolves:
   `ObjectMatchingRuleSetAssembler` on the value).
 - **Dissolves**: `LazyMatchingRule`, the property-rules generator, `CompositeMatchingRule` as a structural
   node, the four assembler/assembler-service layers. The existing scope-like classes
-  (`ObjectMatchingRuleSet`, `PropertyMatchingRuleSet`, `ItemOfIterableMatchingRule`) either *become* the
-  scope implementations (likely just losing their `process()`/`$ruleSet` halves) or are replaced by
-  equivalents — they are `@internal`.
+  (`ObjectMatchingRuleSet`, `PropertyMatchingRuleSet`, `ItemOfIterableMatchingRule`) are replaced by fresh
+  `Rule\Scope\{ObjectScope, PropertyScope, IterableItemScope}` implementations (owner-chain halves
+  preserved; `process()` throws — the executor drives traversal) and deleted with the pipeline — all
+  `@internal`. Static properties keep participating exactly as today (pinned by an existing test).
 
 ## Backward compatibility
 
@@ -193,8 +203,8 @@ What survives, what dissolves:
 | `ExceptionMatcher`, `Try_`, `Catch_`, formatters, `MatchedException(List)` | untouched |
 | `MatchCondition` (@api, custom conditions) | untouched — blueprints *produce* `MatchCondition`s |
 | `MatchingRule` (@api, seen by custom factories as `$owner`) | scopes implement it; contract preserved |
-| `MatchConditionFactory` (@api, custom `match:` factories) | **adapter blueprint**: at compile, dry-run `getCondition($catch, $compileScope)` (null value, ghost enclosing object) so the factory's own assertions surface in lint; at bind, delegate with the real scope. Deprecate in favor of `CatchConditionCompiler`; rector rule candidate for `upgrade/ExceptionalMatcherSetList` |
-| Container service ids | the assembler-service ids either alias the new services for one minor version or are dropped — they are `@internal`; verify against the BC-break compiler-pass checks in `PhdExceptionalMatcherExtension::process()` |
+| `MatchConditionFactory` (@api, custom `match:` factories) | **adapter blueprint**: legacy factories stay resolvable via a second tagged locator consulted after the new `CatchConditionCompiler` tag; at compile, dry-run `getCondition($catch, $compileScope)` (null value, lazily-created ghost enclosing object) so the factory's own assertions surface in lint — dry-run failures are **warnings**; at bind, delegate with the real scope. Deprecated: `@deprecated` + one-time `E_USER_DEPRECATED` in the legacy path (no new dependency). **Not** rector-automatable — the compile/bind split is semantic; manual guide in `docs/config/match-conditions.md` |
+| Container service ids | the `@internal` assembler-service ids are dropped without aliases (nothing outside the library can construct meaningful arguments for them); the moved `ConstantsAutoloadingCompilerPass`/`ConstantsClassLoader` get `RenameClassRector` entries in `upgrade/2.1.php` |
 
 The compile-time dry-run of *legacy* factories is the one place the ghost-object trick from Option A
 survives — scoped to a deprecation window, and only for factories not yet migrated to the compiler API.
@@ -204,11 +214,12 @@ survives — scoped to a deprecation window, and only for factories not yet migr
 1. A broken `#[Catch_]` anywhere in a class now fails the *whole class* on first match attempt — today it
    can hide behind short-circuiting forever. This is the point of the exercise.
 2. Enum static checks (B11) fire even when the property value is null.
-3. `exception:` classes that don't exist (B1) or plain non-throwable classes (D4) now throw instead of
-   silently never matching.
+3. Mapping errors are wrapped in `InvalidMatchingPlanException` (extends `LogicException`; original message
+   kept verbatim as prefix, location appended, cause as `previous`) — a type change for code that caught raw
+   `InvalidArgumentException` from `match()` for *mapping* mistakes. Value-dependent bind-time assertions
+   (e.g. a non-stringable `uid_value` property value) are unchanged and stay raw.
 
-All three convert "silently wrong in production" into "loud at first use, and catchable ahead of time by
-lint / CI".
+All of these convert "late and hidden" into "loud at first use, and catchable ahead of time by lint / CI".
 
 ## Performance expectations
 

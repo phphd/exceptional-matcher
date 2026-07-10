@@ -7,13 +7,13 @@ standalone-usage story).
 
 ```
 MappingLinter (framework-agnostic core service)
-  = class discovery ∘ MappingPlanCompiler(CollectingSink) ∘ diagnostics report
+  = class discovery ∘ MappingPlanCompiler(CollectingDefectHandler) ∘ defect report
 
 LintExceptionalMatcherCommand (thin optional Symfony Console wrapper)
 ```
 
-`MappingLinter` takes an iterable of class names and returns `list<MappingDiagnostic>` — it contains **no
-checks of its own**; every diagnostic originates in the plan compiler ([04-target-model.md](04-target-model.md)).
+`MappingLinter` takes an iterable of class names and returns `list<MappingDefect>` — it contains **no
+checks of its own**; every defect originates in the plan compiler ([04-target-model.md](04-target-model.md)).
 
 ## Command UX
 
@@ -21,18 +21,18 @@ Mirrors the `lint:*` family (`lint:yaml config/`, `lint:twig templates/`):
 
 ```
 bin/console lint:exceptional-matcher src/ [more paths…]
-    [--format=txt|json|github]
+    [--format=txt|json]
     [--fail-on-warning]
 ```
 
 - **Arguments**: one or more files/directories, required (like `lint:yaml`/`lint:twig`). No bundle
   configuration needed to start using it.
-- **Exit codes**: `0` clean, `1` any error-severity diagnostic (or warning with `--fail-on-warning`),
+- **Exit codes**: `0` clean, `1` any error-severity defect (or warning with `--fail-on-warning`),
   `2` usage/discovery failure (path missing, discovery dependency absent).
-- **`--format=github`** emits workflow annotations (as `lint:yaml` does) so CI failures annotate the exact
-  attribute line where feasible (class + property is always available; line numbers via
-  `ReflectionProperty::getDeclaringClass()->getFileName()` + property line are best-effort).
-- Output groups diagnostics by class, one line per `Catch_`:
+- A `--format=github` workflow-annotations mode (as `lint:yaml` has) is a follow-up, not part of the
+  initial delivery; class + property location is already carried by every defect (line numbers best-effort
+  via reflection).
+- Output groups defects by class, one line per `Catch_`:
 
 ```
  ✗ App\Command\TransferMoneyCommand
@@ -43,7 +43,7 @@ bin/console lint:exceptional-matcher src/ [more paths…]
  2 classes scanned, 1 with errors (2 errors, 0 warnings)
 ```
 
-Diagnostic codes are the catalog ids ([01-failure-catalog.md](01-failure-catalog.md)) — stable identifiers
+Defect codes are the catalog ids ([01-failure-catalog.md](01-failure-catalog.md)) — stable identifiers
 that make CI baselines and docs cross-references possible; the human message is the original assertion
 message (webmozart texts are already good).
 
@@ -52,14 +52,14 @@ message (webmozart texts are already good).
 Requirements: find every class in the given paths, without executing side-effectful code beyond autoloading
 (same tolerance as `debug:router` and friends).
 
-Recommendation: **`composer/class-map-generator`** — the scanner composer itself uses; handles PSR
+Decision (maintainer-confirmed): **`composer/class-map-generator`** — the scanner composer itself uses; handles PSR
 violations, hidden files, syntax-error tolerance. As a dev-time-only need it goes to `require-dev` +
 `suggest`; the command degrades with an actionable error if the package is absent. Hand-rolling a
 `token_get_all` scanner (à la Symfony Routing's `AttributeFileLoader::findClass()`) remains the zero-dependency
 fallback; not preferred — parsing PHP is exactly the kind of code this library should not maintain.
 
 Per discovered name: `class_exists($name)` inside try/catch (autoload failures become EM-B9-style
-diagnostics), skip interfaces/traits/enums, then lint every class that has `#[Try_]` **or any property with
+defects), skip interfaces/traits/enums, then lint every class that has `#[Try_]` **or any property with
 `#[Catch_]`** — the latter is what catches C1 (`Catch_` without `Try_`), which pure `#[Try_]` filtering
 would silently skip, repeating the runtime's blind spot.
 
@@ -94,15 +94,15 @@ teams). This is a follow-up, not part of the initial delivery.
 
 ## Standalone (non-Symfony) usage
 
-`MappingLinter` + `CollectingSink` are plain services available from
+`MappingLinter` + `CollectingDefectHandler` are plain services available from
 `PhdExceptionalMatcherExtension::getContainer()`, so non-Symfony users can run lint in a test:
 
 ```php
-$diagnostics = $linter->lint([TransferMoneyCommand::class, RegisterUserCommand::class]);
-self::assertSame([], $diagnostics);
+$defects = $linter->lint([TransferMoneyCommand::class, RegisterUserCommand::class]);
+self::assertSame([], $defects);
 ```
 
 That "lint as a unit test" pattern is worth documenting even for Symfony users — it pins mapping validity to
-the test suite without any console invocation, and gives the library its own dogfooding surface (the test
-stubs under `src/**/Tests/Stub/` can be linted wholesale, with the intentionally-broken ones asserting
-specific diagnostic codes).
+the test suite without any console invocation, and gives the library its own dogfooding surface (the shared
+stubs under `tests/Unit/Stub/` are linted for zero defects, while the intentionally-broken
+`Tests/Stub/Invalid/` fixtures assert their specific defect codes).

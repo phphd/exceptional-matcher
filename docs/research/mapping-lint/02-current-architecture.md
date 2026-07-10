@@ -56,7 +56,7 @@ Two properties of this pipeline matter for lint:
 | enum `from:` is a `BackedEnum` + `'from'` method | `EnumValueMatchConditionFactory` | condition creation, **only when property value ≠ null** (the null early-return precedes the static checks) |
 | exception subtype guards (enum/uid/value/validated) | respective factories | condition creation (mid-match) |
 | `format:` formatter registered | `DelegatingMatchedExceptionFormatter` | formatting (post-match) |
-| `exception:` class existence | — | **never** |
+| `exception:` class exists + is `Throwable` | `ExceptionClassMatchCondition::__construct` | condition creation (mid-match) |
 | structural mistakes (C1–C4 in the catalog) | — | **never** |
 
 The key observation: the *rules themselves* are already centralized and well-factored — one condition type,

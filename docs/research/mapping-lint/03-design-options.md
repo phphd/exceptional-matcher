@@ -16,7 +16,7 @@ Required changes:
 1. Hoist the enum static checks above the null-value early return (catalog B11) — otherwise ghosts skip them.
 2. Expose traversal (e.g. `getRules()` on `CompositeMatchingRule`) plus a small recursive walker that
    `build()`s `LazyMatchingRule`s and exhausts generators, so factory assertions fire without `process()`.
-3. The linter itself: discovery → ghost → walk → catch assertion → diagnostic.
+3. The linter itself: discovery → ghost → walk → catch assertion → defect report.
 
 Properties:
 
@@ -41,11 +41,12 @@ Separate intrinsic from extrinsic state (see [02-current-architecture.md](02-cur
   the existing owner-chain objects (`ObjectMatchingRuleSet`, `PropertyMatchingRuleSet`, `MatchExceptionRule`)
   exactly as today, so formatters and the public `MatchedException` contract are untouched.
 - **All validation happens at compile.** Conditions split into a static half (validated blueprint) and a
-  bind-time half (value binding). The compiler emits into a `DiagnosticSink`: a throwing sink for runtime
-  (fail fast on first use of a broken class), a collecting sink for lint (all errors, per-`Catch_`
-  granularity).
+  bind-time half (value binding). The compiler reports into a `DefectHandler`: a throwing handler for
+  runtime (fail fast on first use of a broken class), a collecting handler for lint (all defects,
+  per-`Catch_` granularity).
 
-Then the linter is, definitionally, *the compiler run over discovered classes with a collecting sink* —
+Then the linter is, definitionally, *the compiler run over discovered classes with a collecting defect
+handler* —
 single source of truth holds by construction, not by discipline.
 
 Properties:
@@ -114,9 +115,10 @@ cheap if ever needed for a quick diagnostic.
 
 ## Recommendation
 
-**Option B**, staged so that value ships early (see [06-migration-plan.md](06-migration-plan.md)). The two
-Phase-0 fixes (enum ordering hoist, `exception:` existence check) are zero-regret under every option and
-should ship first regardless.
+**Option B**, staged so that value ships early (see [06-migration-plan.md](06-migration-plan.md)). The
+Phase-0 fix (enum ordering hoist) is zero-regret under every option and should ship first regardless (the
+`exception:` existence check originally planned alongside it already exists in
+`ExceptionClassMatchCondition::__construct`).
 
 Precedent: this is the `lint:container` philosophy — Symfony does not maintain a second validator for the
 container; *compiling* the container **is** the validation, and the lint command is just "compile with
