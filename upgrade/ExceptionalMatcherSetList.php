@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Upgrade;
 
+use Composer\InstalledVersions;
 use LogicException;
-use Rector\Application\VersionResolver;
 
 use function array_filter;
 use function array_values;
@@ -23,9 +23,11 @@ final class ExceptionalMatcherSetList
         /** @var array<string,string> */
         private readonly array $setList,
     ) {
-        if (version_compare(VersionResolver::PACKAGE_VERSION, '2.0', '<') // @phpstan-ignore booleanOr.leftAlwaysFalse
-            || version_compare(VersionResolver::PACKAGE_VERSION, '3.0', '>=')) { // @phpstan-ignore booleanOr.rightAlwaysFalse
-            throw new LogicException(sprintf('Version %s of rector is not supported by this version of library', VersionResolver::PACKAGE_VERSION));
+        $rectorVersion = InstalledVersions::getVersion('rector/rector') ?? '0';
+
+        if (version_compare($rectorVersion, '2.0', '<')
+            || version_compare($rectorVersion, '3.0', '>=')) {
+            throw new LogicException(sprintf('Version %s of rector is not supported by this version of library', $rectorVersion));
         }
     }
 

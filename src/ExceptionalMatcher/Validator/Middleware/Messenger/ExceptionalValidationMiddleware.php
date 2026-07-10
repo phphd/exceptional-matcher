@@ -27,7 +27,9 @@ final class ExceptionalValidationMiddleware implements MiddlewareInterface
     public function handle(Envelope $envelope, StackInterface $stack): Envelope
     {
         try {
-            return $stack->next()->handle($envelope, $stack);
+            return $stack->next()
+                ->handle($envelope, $stack)
+            ;
         } catch (Throwable $exception) {
             $message = $envelope->getMessage();
 
