@@ -53,10 +53,10 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
             Email::fromString('non-email')->getEmail(); // @phpstan-ignore method.resultUnused
 
             self::fail('The exception must be thrown.');
-        } catch (ValidationFailedException $originalException) {
+        } catch (ValidationFailedException $emailValidationException) {
         }
 
-        $matchedExceptionList = $this->matcher->match($originalException, $message);
+        $matchedExceptionList = $this->matcher->match($emailValidationException, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
@@ -74,10 +74,10 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
             Uuid::fromString('invalid-uuid');
 
             self::fail('The exception must be thrown.');
-        } catch (InvalidArgumentException $originalException) {
+        } catch (InvalidArgumentException $uidValidationException) {
         }
 
-        $matchedExceptionList = $this->matcher->match($originalException, $message);
+        $matchedExceptionList = $this->matcher->match($uidValidationException, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
@@ -93,16 +93,16 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
             self::markTestSkipped('Property hooks require PHP 8.4.');
         }
 
-        $message = new HookOriginConditionMessage('');
         $entity = new ProductHookedEntity();
+        $message = new HookOriginConditionMessage('');
 
         try {
             $entity->setTitle('');
             self::fail('The exception must be thrown.');
-        } catch (ValidationFailedException $originalException) {
+        } catch (ValidationFailedException $titleValidationException) {
         }
 
-        $matchedExceptionList = $this->matcher->match($originalException, $message);
+        $matchedExceptionList = $this->matcher->match($titleValidationException, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
@@ -110,5 +110,29 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
         [$matchedException] = $matchedExceptionList->toArray();
 
         self::assertSame('title', $matchedException->getRule()->getPropertyPath()->join('.'));
+    }
+
+    public function testDoesNotMatchExceptionThrownFromAnotherPropertyHook(): void
+    {
+        if (\PHP_VERSION_ID < 80400) {
+            self::markTestSkipped('Property hooks require PHP 8.4.');
+        }
+
+        $entity = new ProductHookedEntity();
+        $message = new HookOriginConditionMessage('invalid email');
+
+        $entity->setTitle('invalid email');
+
+        try {
+            /** @noinspection PhpExpressionResultUnusedInspection */
+            /** @psalm-suppress UnusedMethodCall */
+            $entity->getEmailTitle();
+            self::fail('The exception must be thrown.');
+        } catch (ValidationFailedException $emailValidationException) {
+        }
+
+        $matchedExceptionList = $this->matcher->match($emailValidationException, $message);
+
+        self::assertNull($matchedExceptionList);
     }
 }
