@@ -23,12 +23,13 @@ final class TestsArchitectureRuleSet
         return PHPat::rule()
             ->classes(Selector::AllOf(
                 Selector::extends(TestCase::class),
-                Selector::NOT(Selector::isAbstract()),
-                Selector::NOT(Selector::classname('/UnitTest$/', true)),
-                Selector::NOT(Selector::classname('/IntegrationTest$/', true)),
-                Selector::NOT(Selector::classname('/ServiceTest$/', true)),
+                Selector::Not(Selector::isAbstract()),
+                Selector::Not(Selector::classname('/UnitTest$/', true)),
+                Selector::Not(Selector::classname('/IntegrationTest$/', true)),
+                Selector::Not(Selector::classname('/ServiceTest$/', true)),
             ))
-            ->shouldNotExtend()
+            ->shouldNot()
+            ->extend()
             ->classes(Selector::classname(TestCase::class))
             ->because("Do you know what's worse than no tests? Tests that never run! The test is not included for PHPUnit!")
         ;

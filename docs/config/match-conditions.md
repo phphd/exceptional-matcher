@@ -97,7 +97,27 @@ class ConfirmParcelDeliveryCommand
 ```
 
 Therefore, Exception Matcher will analyse `InvalidArgumentException`'s trace \
-and only collect it if it's originated from `Uuid::fromString()` method.
+and only match it if it's originated from `Uuid::fromString()` method.
+
+The origin may as well be a [property hook](https://www.php.net/manual/en/language.oop5.property-hooks.php) (PHP 8.4+). \
+It is referenced the same way it appears in the exception trace: `$property::set` or `$property::get`:
+
+```php
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
+
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\validator_violations;
+
+#[Try_]
+class RenameProductCommand
+{
+    #[Catch_(ValidationFailedException::class, from: [Product::class, '$title::set'], format: validator_violations)]
+    public string $title;
+}
+```
+
+Here the exception is only matched when it originates from the `set` hook of the `Product::$title` property.
 
 ## Uid Condition
 

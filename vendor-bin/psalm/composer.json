@@ -2,7 +2,7 @@
     "require-dev": {
         "php": ">=8.1",
         "vimeo/psalm": "7.0.0-beta13 as dev-master",
-        "psalm/plugin-phpunit": "^0.19.5"
+        "psalm/plugin-phpunit": "^0.19.7"
     },
     "autoload-dev": {
         "files": [

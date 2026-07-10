@@ -97,10 +97,11 @@ final class ArchitectureRuleSet
         return PHPat::rule()
             ->classes(Selector::AllOf(
                 $layerClassesSelector,
-                Selector::NOT(Selector::classname('/\\\Tests\\\/', true)),
-                Selector::NOT(Selector::extends(TestCase::class)),
+                Selector::Not(Selector::classname('/\\\Tests\\\/', true)),
+                Selector::Not(Selector::extends(TestCase::class)),
             ))
-            ->canOnlyDependOn()
+            ->canOnly()
+            ->dependOn()
             ->classes($layerClassesSelector, ...$layer['deps'])
             ->because($layer['description'] ?? 'See its dependency rules in '.self::class.'::layers()')
         ;
@@ -200,11 +201,11 @@ final class ArchitectureRuleSet
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher'),
-            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Bundle')),
-            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Exception')),
-            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule')),
-            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator')),
-            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Upgrade')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Bundle')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Exception')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Upgrade')),
         );
     }
 
@@ -212,7 +213,7 @@ final class ArchitectureRuleSet
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator'),
-            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator\Middleware')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator\Middleware')),
         );
     }
 
@@ -220,7 +221,7 @@ final class ArchitectureRuleSet
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator\Middleware'),
-            Selector::NOT(Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator\Middleware\Messenger')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator\Middleware\Messenger')),
         );
     }
 
@@ -258,9 +259,9 @@ final class ArchitectureRuleSet
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule'),
-            Selector::NOT($this->matchCondition()),
-            Selector::NOT($this->matchingRuleSetAssembler()),
-            Selector::NOT(Selector::implements(CompilerPassInterface::class)),
+            Selector::Not($this->matchCondition()),
+            Selector::Not($this->matchingRuleSetAssembler()),
+            Selector::Not(Selector::implements(CompilerPassInterface::class)),
         );
     }
 }

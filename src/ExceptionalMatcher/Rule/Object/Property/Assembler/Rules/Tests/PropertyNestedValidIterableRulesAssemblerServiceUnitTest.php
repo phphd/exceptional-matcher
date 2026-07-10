@@ -43,12 +43,12 @@ final class PropertyNestedValidIterableRulesAssemblerServiceUnitTest extends Tes
 
     public function testExceptionCanBeCaughtOnNestedArrayItems(): void
     {
-        $originalException = new NestedItemMatchedException(code: 57);
         $message = HandleableMessageStub::create()->withNestedArrayItems([
             new NestedItem(41),
             new NestedItem(57),
             new NestedItem(32),
         ]);
+        $originalException = new NestedItemMatchedException(code: 57);
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -62,13 +62,13 @@ final class PropertyNestedValidIterableRulesAssemblerServiceUnitTest extends Tes
 
     public function testExceptionCanBeCaughtOnANestedIterableItems(): void
     {
-        $originalException = new NestedItemMatchedException(code: 3);
         $message = HandleableMessageStub::create()->withNestedIterableItems(new ArrayObject([
             'first' => new NestedItem(1),
             'second' => new NestedItem(2),
             'third' => new NestedItem(3),
             4 => new NestedItem(2),
         ]));
+        $originalException = new NestedItemMatchedException(code: 3);
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -81,13 +81,13 @@ final class PropertyNestedValidIterableRulesAssemblerServiceUnitTest extends Tes
 
     public function testExceptionCanBeCaughtOnMixedArrayItems(): void
     {
-        $originalException = new NestedItemMatchedException(code: 2);
         $message = RootObject::create()->withNotTypedArray([
             'not an object',
             new NotHandleableMessageStub(1),
             new NestedItem(2),
             new NotHandleableMessageStub(3),
         ]);
+        $originalException = new NestedItemMatchedException(code: 2);
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
