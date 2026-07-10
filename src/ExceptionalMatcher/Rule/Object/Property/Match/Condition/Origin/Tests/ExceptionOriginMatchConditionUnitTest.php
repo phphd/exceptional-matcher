@@ -9,9 +9,9 @@ use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExt
 use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\Email;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\EntityWithHook;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\Hook\HookOriginConditionMessage;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\Hook\ProductHookedEntity;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\OriginConditionMessage;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\ProductConditionMessage;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
@@ -46,6 +46,8 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
     public function testMatchExceptionByOriginClass(): void
     {
+        $message = new OriginConditionMessage('non-email', 'uid');
+
         try {
             /** @psalm-suppress UnusedMethodCall */
             Email::fromString('non-email')->getEmail(); // @phpstan-ignore method.resultUnused
@@ -53,8 +55,6 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
             self::fail('The exception must be thrown.');
         } catch (ValidationFailedException $originalException) {
         }
-
-        $message = new OriginConditionMessage('non-email', 'uid');
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -68,14 +68,14 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
     public function testMatchExceptionByOriginClassMethod(): void
     {
+        $message = new OriginConditionMessage('email', 'invalid-uuid');
+
         try {
             Uuid::fromString('invalid-uuid');
 
             self::fail('The exception must be thrown.');
         } catch (InvalidArgumentException $originalException) {
         }
-
-        $message = new OriginConditionMessage('email', 'invalid-uuid');
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -93,14 +93,14 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
             self::markTestSkipped('Property hooks require PHP 8.4.');
         }
 
-        try {
-            EntityWithHook::createWithTitle('');
+        $message = new HookOriginConditionMessage('');
+        $entity = new ProductHookedEntity();
 
+        try {
+            $entity->setTitle('');
             self::fail('The exception must be thrown.');
         } catch (ValidationFailedException $originalException) {
         }
-
-        $message = new ProductConditionMessage('');
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 

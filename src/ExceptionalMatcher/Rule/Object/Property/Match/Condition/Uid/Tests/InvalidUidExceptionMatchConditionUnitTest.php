@@ -52,14 +52,14 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
 
     public function testInvalidUidExceptionIsNotCapturedWhenValueIsNull(): void
     {
+        $message = new MessageWithInvalidUidCondition(null);
+
         try {
             Uuid::fromString('just bad');
 
             self::fail('The exception must be thrown.');
         } catch (InvalidUidException $originalException) {
         }
-
-        $message = new MessageWithInvalidUidCondition(null);
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -68,6 +68,10 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
 
     public function testInvalidUidExceptionIsNotCapturedSinceWhenValueIsNotStringable(): void
     {
+        $message = new MessageWithInvalidUidCondition([
+            'a' => 'very bad',
+        ]);
+
         try {
             Uuid::fromString('very bad');
 
@@ -78,23 +82,19 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
         $this->expectExceptionMessage('InvalidUidExceptionMatchCondition requires a stringable value, got: array');
         $this->expectException(InvalidArgumentException::class);
 
-        $message = new MessageWithInvalidUidCondition([
-            'a' => 'very bad',
-        ]);
-
         $this->matcher->match($originalException, $message);
     }
 
     public function testInvalidUidExceptionIsNotCapturedWhenValueIsDifferent(): void
     {
+        $message = new MessageWithInvalidUidCondition('way too bad');
+
         try {
             Uuid::fromString('just bad');
 
             self::fail('The exception must be thrown.');
         } catch (InvalidUidException $originalException) {
         }
-
-        $message = new MessageWithInvalidUidCondition('way too bad');
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -103,14 +103,14 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
 
     public function testInvalidUidExceptionIsCapturedWhenValueMatches(): void
     {
+        $message = new MessageWithInvalidUidCondition('bad');
+
         try {
             Uuid::fromString('bad');
 
             self::fail('The exception must be thrown.');
         } catch (InvalidUidException $originalException) {
         }
-
-        $message = new MessageWithInvalidUidCondition('bad');
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
