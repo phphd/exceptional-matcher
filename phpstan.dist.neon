@@ -19,7 +19,7 @@ parameters:
     excludePaths:
         analyse:
             # Property hook syntax is not supported at the minimum PHP version
-            - src/*/EntityWithHook.php
+            - src/*/*Hooked*.php
     fileExtensions:
         - 'php'
     stubFiles:

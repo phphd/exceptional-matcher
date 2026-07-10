@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub;
+namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\Hook;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Validation;
 
-final class EntityWithHook
+final class ProductHookedEntity
 {
     public string $title {
         set {
@@ -20,12 +20,8 @@ final class EntityWithHook
         }
     }
 
-    /** @psalm-suppress PossiblyUnusedReturnValue */
-    public static function createWithTitle(string $title): self
+    public function setTitle(string $title): void
     {
-        $product = new self();
-        $product->title = $title;
-
-        return $product;
+        $this->title = $title;
     }
 }

@@ -48,8 +48,8 @@ final class ViolationListExceptionFormatterUnitTest extends TestCase
     {
         $violationList = Validation::createValidator()->validate('123', [$constraint = new Length(max: 2)]);
 
-        $originalException = new ViolationListExampleException($violationList);
         $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());
+        $originalException = new ViolationListExampleException($violationList);
 
         $violationList = $this->matcher->match($originalException, $message);
 

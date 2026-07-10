@@ -48,8 +48,8 @@ final class ContainerBench
 
         $matcher = $this->createMatcher($isProxyAllowed);
 
-        $exception = new AnException();
         $message = new NotHandleableMessageStub(123);
+        $exception = new AnException();
 
         $violationList = $matcher->match($exception, $message);
 
@@ -75,13 +75,13 @@ final class ContainerBench
 
         $matcher = $this->createMatcher($isProxyAllowed);
 
-        $originalException = new NestedItemMatchedException(code: 2);
         $message = HandleableMessageStub::create()->withNestedIterableItems(new ArrayObject([
             'first' => new NestedItem(1),
             'second' => new NestedItem(2),
             'third' => new NestedItem(3),
             4 => new NestedItem(2),
         ]));
+        $originalException = new NestedItemMatchedException(code: 2);
 
         /** @var ConstraintViolationListInterface $violationList */
         $violationList = $matcher->match($originalException, $message);
