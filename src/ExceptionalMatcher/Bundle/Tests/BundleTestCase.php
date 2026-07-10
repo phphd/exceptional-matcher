@@ -18,7 +18,9 @@ abstract class BundleTestCase extends KernelTestCase
         $container = self::getContainer();
 
         $translator = $this->createMock(TranslatorInterface::class);
-        $translator->method('trans')->willReturnCallback(static fn (string $id): string => $id);
+        $translator->method('trans')
+            ->willReturnCallback(static fn (string $id): string => $id)
+        ;
         $container->set('translator', $translator);
     }
 

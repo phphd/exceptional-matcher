@@ -56,47 +56,51 @@ final class EnumValueMatchConditionUnitTest extends TestCase
     public function testThrowsWhenMatchConditionIsForNonEnumExceptionClass(): void
     {
         $message = new NonEnumExceptionClassConditionMessage('pend');
+        $exception = new RuntimeException('oops');
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('EnumValueMatchCondition can only be used for ValueError');
 
-        $this->matcher->match(new RuntimeException('oops'), $message);
+        $this->matcher->match($exception, $message);
     }
 
     public function testThrowsWhenFromClauseIsMissing(): void
     {
         $message = new MissingEnumFromConditionMessage('pend');
+        $exception = $this->weekDayEnumError('mon');
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: NULL');
 
-        $this->matcher->match($this->weekDayEnumError('mon'), $message);
+        $this->matcher->match($exception, $message);
     }
 
     public function testThrowsWhenFromClassIsNotBackedEnum(): void
     {
         $message = new NonBackedEnumConditionMessage('pend');
+        $exception = $this->weekDayEnumError('mon');
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(sprintf('EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: %s', var_export(NonBackedStatus::class, true)));
 
-        $this->matcher->match($this->weekDayEnumError('mon'), $message);
+        $this->matcher->match($exception, $message);
     }
 
     public function testThrowsWhenFromMethodIsNotEnumFrom(): void
     {
         $message = new InvalidEnumFromMethodConditionMessage('pend');
+        $exception = $this->weekDayEnumError('tue');
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("EnumValueMatchCondition must specify `from: [WeekDay::class, 'from']`, got: `from: [WeekDay::class, 'tryFrom']`.");
 
-        $this->matcher->match($this->weekDayEnumError('tue'), $message);
+        $this->matcher->match($exception, $message);
     }
 
     public function testDoesNotCaptureStringEnumErrorWhenRuleValueIsNull(): void
     {
-        $originalException = $this->weekDayEnumError('');
         $message = new WeekDayConditionMessage(null);
+        $originalException = $this->weekDayEnumError('');
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -105,8 +109,8 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
     public function testDoesNotCaptureStringEnumErrorWhenValueDiffers(): void
     {
-        $originalException = $this->weekDayEnumError('mon');
         $message = new WeekDayConditionMessage('monday');
+        $originalException = $this->weekDayEnumError('mon');
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -115,8 +119,8 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
     public function testCapturesStringEnumErrorWhenValueIsSame(): void
     {
-        $originalException = $this->weekDayEnumError('tue');
         $message = new WeekDayConditionMessage('tue');
+        $originalException = $this->weekDayEnumError('tue');
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -125,8 +129,8 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
     public function testDoesNotCaptureIntEnumErrorWhenRuleValueIsNull(): void
     {
-        $originalException = $this->weekDayNumberEnumError(0);
         $message = new WeekDayNumberConditionMessage(null);
+        $originalException = $this->weekDayNumberEnumError(0);
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -135,8 +139,8 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
     public function testDoesNotCaptureIntEnumErrorWhenValueDiffers(): void
     {
-        $originalException = $this->weekDayNumberEnumError(8);
         $message = new WeekDayNumberConditionMessage(7);
+        $originalException = $this->weekDayNumberEnumError(8);
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -145,8 +149,8 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
     public function testCapturesIntEnumErrorWhenValueIsSame(): void
     {
-        $originalException = $this->weekDayNumberEnumError(8);
         $message = new WeekDayNumberConditionMessage(8);
+        $originalException = $this->weekDayNumberEnumError(8);
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 

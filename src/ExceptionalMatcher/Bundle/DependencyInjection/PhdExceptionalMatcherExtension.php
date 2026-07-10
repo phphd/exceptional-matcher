@@ -139,7 +139,9 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
         }
 
         $container->removeDefinition('phd_exceptional_matcher.translator');
-        $container->getParameterBag()->remove('phd_exceptional_matcher.translation_domain');
+        $container->getParameterBag()
+            ->remove('phd_exceptional_matcher.translation_domain')
+        ;
     }
 
     private function failOnUnresolvedBackwardCompatibilityBreaks(ContainerBuilder $container): void

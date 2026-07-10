@@ -32,7 +32,9 @@ final class ItemOfIterableMatchingRule implements MatchingRule
 
     public function getPropertyPath(): PropertyPath
     {
-        return $this->owner->getPropertyPath()->at($this->key);
+        return $this->owner->getPropertyPath()
+            ->at($this->key)
+        ;
     }
 
     public function getEnclosingObject(): object
