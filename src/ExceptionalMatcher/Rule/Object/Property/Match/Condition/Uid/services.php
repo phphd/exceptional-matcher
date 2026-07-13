@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid;
 
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchConditionFactory;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 
@@ -19,7 +19,7 @@ return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
 
     $services
-        ->set(MatchConditionFactory::class.'<'.InvalidUidException::class.'>', InvalidUidExceptionMatchConditionFactory::class)
-        ->tag(MatchConditionFactory::class, ['id' => InvalidUidExceptionMatchCondition::class])
+        ->set(MatchConditionCompiler::class.'<'.InvalidUidException::class.'>', InvalidUidExceptionMatchConditionCompiler::class)
+        ->tag(MatchConditionCompiler::class, ['id' => InvalidUidExceptionMatchCondition::class])
     ;
 };
