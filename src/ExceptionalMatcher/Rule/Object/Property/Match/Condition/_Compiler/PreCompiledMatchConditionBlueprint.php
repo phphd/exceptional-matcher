@@ -9,6 +9,8 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition
 use Throwable;
 
 /**
+ * @api
+ *
  * @template T of Throwable
  *
  * @implements MatchConditionBlueprint<T>

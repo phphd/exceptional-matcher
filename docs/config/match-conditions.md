@@ -19,18 +19,20 @@ class SubmitOrderCommand
 }
 ```
 
-Code that throws:
+The exception, mapped by the command we be intercepted:
 
 ```php
 if (!$this->isSubmissionPeriodOpen()) {
-    // This will be linked to Command's id property:
+    // This exception will be linked to Command's id property:
     throw new OrderSubmissionPeriodClosedException();
 }
 ```
 
+On the other hand, any unrelated exceptions will be re-thrown (not matched):
+
 ```php
 if (!$connection->ping()) {
-    // This will not be linked to anything (e.g. it's 500):
+    // This exception will not be linked to command (i.e. it's 500):
     throw new DriverException('oops');
 }
 ```
@@ -118,6 +120,27 @@ class RenameProductCommand
 ```
 
 Here the exception is only matched when it originates from the `set` hook of the `Product::$title` property.
+
+```php
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Constraints as Assert;
+
+#[ORM\Entity]
+class Product
+{
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    private Uuid $id;
+
+    #[ORM\Column]
+    public string $title {
+        set => Validation::createCallable(
+            new Assert\NotBlank(),
+            new Assert\Length(min: 4, max: 255),
+        )($value);
+    }
+}
+```
 
 ## Uid Condition
 
@@ -261,15 +284,159 @@ enum WeekDay: string
 Code that throws:
 
 ```php
-$command = new ImportScheduleCommand('thursday');
+$command = new ImportScheduleCommand('fifthday');
 
-// ValueError thrown hence will match Command's weekDay
-$weekDay = WeekDay::from($command->weekDay);
+$weekDay = WeekDay::from($command->weekDay); // This ValueError will match Command's weekDay
 
-// ValueError thrown hence won't match anything
-$weekDay = WeekDay::from('unrelated');
+$weekDay = WeekDay::from('unrelated'); // This ValueError won't match anything
 ```
 
 > Normally, you should specify `message:` with your custom message. \
 > Otherwise, exception's system message will be exposed revealing details like this: \
-> `"thursday" is not a valid backing value for enum App\WeekDay`
+> `"fifthday" is not a valid backing value for enum App\WeekDay`
+
+## Custom Conditions 📝
+
+When the relation between an exception and a property cannot be reasonably expressed with built-in conditions, \
+you can create a custom condition, and reference it with `match:`.
+
+```php
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use App\Identity\Role\Exception\ConflictingRolesException;
+
+use const App\Identity\Role\Validation\disqualified_roles;
+
+#[Try_]
+class GrantRolesCommand
+{
+    /** @var list<string> */
+    #[Catch_(ConflictingRolesException::class, match: disqualified_roles)]
+    public array $roleIds;
+}
+```
+
+The domain logic of granting roles could throw `ConflictingRolesException` with the list of disqualifying roles. \
+The exception belongs to the property when every disqualified role is among the requested `$roleIds` —
+a subset check no built-in condition expresses.
+
+A custom condition requires three pieces:
+
+| Piece     | Interface                 | Responsibility                                                                                         |
+|-----------|---------------------------|--------------------------------------------------------------------------------------------------------|
+| Condition | `MatchCondition`          | decides whether the exception matches:<br> `matches($exception): bool`                                 |
+| Blueprint | `MatchConditionBlueprint` | a compiled blueprint of the condition;<br> applying it to the property produces the Condition          |
+| Compiler  | `MatchConditionCompiler`  | compiles the `#[Catch_]` declaration into a blueprint,<br> validating the declaration at the same time |
+
+So, in our example, the condition itself:
+
+```php
+use App\Identity\Role\Exception\ConflictingRolesException;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
+use Throwable;
+
+/** @implements MatchCondition<ConflictingRolesException> */
+final class DisqualifiedRolesMatchCondition implements MatchCondition
+{
+    public function __construct(
+        /** @var list<string> */
+        private readonly array $roleIds,
+    ) {
+    }
+
+    /** @param ConflictingRolesException $exception */
+    public function matches(Throwable $exception): bool
+    {
+        // every disqualified role is among the requested $roleIds
+        return [] === array_diff($exception->getDisqualifiedRoleIds(), $this->roleIds);
+    }
+}
+```
+
+Then the compiler and the blueprint to create the condition (both implemented in one class, as the blueprint is stateless):
+
+```php
+use App\Identity\Role\Exception\ConflictingRolesException;
+use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Bool\FalseCondition;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+
+/** Configuration to use in `match: disqualified_roles` */
+const disqualified_roles = DisqualifiedRolesMatchCondition::class;
+
+/**
+ * @implements MatchConditionCompiler<ConflictingRolesException>
+ * @implements MatchConditionBlueprint<ConflictingRolesException>
+ */
+#[AutoconfigureTag(MatchConditionCompiler::class, ['id' => disqualified_roles])]
+final class DisqualifiedRolesMatchConditionCompiler implements MatchConditionCompiler, MatchConditionBlueprint
+{
+    /** @return MatchConditionBlueprint<ConflictingRolesException> */
+    public function compile(Catch_ $catch): MatchConditionBlueprint
+    {
+        if (!is_a($catch->getExceptionClass(), ConflictingRolesException::class, true)) {
+            throw new LogicException('DisqualifiedRolesMatchCondition can only be used for '.ConflictingRolesException::class);
+        }
+
+        return $this;
+    }
+
+    /** @return MatchCondition<ConflictingRolesException> */
+    public function bind(MatchingRule $rule): MatchCondition
+    {
+        /** @var list<string> $roleIds */
+        $roleIds = $rule->getValue();
+
+        // If no roles, nothing could conflict
+        if ([] === $roleIds) {
+            /** @psalm-var FalseCondition<ConflictingRolesException> */
+            return new FalseCondition();
+        }
+
+        return new DisqualifiedRolesMatchCondition($roleIds);
+    }
+}
+```
+
+It has two parts:
+
+- `compile()` — validates the **declaration** (the `Catch_` attribute), throwing `LogicException` on anything wrong.
+
+  > Validating only in `compile()` is what lets a mapping be checked without running any code.
+
+- `bind()` — read the **runtime context** via `MatchingRule` (`getValue()`, `getEnclosingObject()`, etc.).
+  > If you need no property value for the condition, you can return the condition \
+  > right from the `compile()` method by wrapping it into `new PreCompiledMatchConditionBlueprint()`.
+
+Register the compiler service, so it's available for `match:` to resolve:
+
+```yaml
+services:
+    App\Identity\Role\Validation\DisqualifiedRolesMatchConditionCompiler:
+        autoconfigure: true
+```
+
+> For compiler to be recognized by the bundle, \
+> its service must be tagged with `MatchConditionCompiler` class-name tag.
+>
+> To do it, you can use `#[AutoconfigureTag(MatchConditionCompiler::class, ['id' => your_condition_id])]` \
+> along with [autoconfiguration](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option), as shown above.
+
+
+Finally, the condition is ready:
+
+```php
+#[Try_]
+class GrantRolesCommand
+{
+    /** @var list<string> */
+    #[Catch_(ConflictingRolesException::class, match: disqualified_roles)]
+    public array $roleIds;
+}
+```
+
+It will be combined (logical AND) with any other clauses of the `#[Catch_]` in this order: \
+the `exception:` class check, `from:` origin, your `match:` condition, then `if:` condition.
