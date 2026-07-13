@@ -13,8 +13,9 @@ use PHPat\Test\PHPat;
 use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssembler;
 use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService;
 use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchConditionFactory;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
@@ -245,8 +246,10 @@ final class ArchitectureRuleSet
     {
         return Selector::AnyOf(
             Selector::implements(MatchCondition::class),
-            Selector::classname(MatchConditionFactory::class),
-            Selector::implements(MatchConditionFactory::class),
+            Selector::classname(MatchConditionCompiler::class),
+            Selector::implements(MatchConditionCompiler::class),
+            Selector::classname(MatchConditionBlueprint::class),
+            Selector::implements(MatchConditionBlueprint::class),
         );
     }
 
