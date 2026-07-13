@@ -32,7 +32,7 @@ final class ConstantsClassLoader
 
         /** @var list<string> $glob */
         $glob = glob(
-            $basePath.sprintf('/%s*{MatchConditionFactory,ExceptionFormatter}.php', $nestingPattern),
+            $basePath.sprintf('/%s*{MatchConditionCompiler,ExceptionFormatter}.php', $nestingPattern),
             GLOB_BRACE | GLOB_NOSORT,
         );
 

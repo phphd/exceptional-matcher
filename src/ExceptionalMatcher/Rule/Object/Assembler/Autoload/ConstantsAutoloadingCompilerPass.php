@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Assembler\Autoload;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService;
 use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchConditionFactory;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -22,7 +22,7 @@ final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
 
     public function process(ContainerBuilder $container): void
     {
-        $classNamesSet = $this->getMatchConditionFactoryIds($container);
+        $classNamesSet = $this->getMatchConditionCompilerIds($container);
         $classNamesSet += $this->getExceptionFormatterIds($container);
 
         $definition = $container->getDefinition(MatchingRuleSetAssemblerService::class.'<'.ObjectMatchingRuleSetAssembler::class.'>');
@@ -38,10 +38,10 @@ final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
     }
 
     /** @return array<class-string,true> */
-    private function getMatchConditionFactoryIds(ContainerBuilder $container): array
+    private function getMatchConditionCompilerIds(ContainerBuilder $container): array
     {
         $classNames = [];
-        $taggedServiceIds = array_keys($container->findTaggedServiceIds(MatchConditionFactory::class));
+        $taggedServiceIds = array_keys($container->findTaggedServiceIds(MatchConditionCompiler::class));
 
         foreach ($taggedServiceIds as $taggedServiceId) {
             $def = $container->getDefinition($taggedServiceId);

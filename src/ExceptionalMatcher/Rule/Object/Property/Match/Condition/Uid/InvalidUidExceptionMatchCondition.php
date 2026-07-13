@@ -16,13 +16,13 @@ use Throwable;
 final class InvalidUidExceptionMatchCondition implements MatchCondition
 {
     public function __construct(
-        private readonly string $value,
+        private readonly string $propertyValue,
     ) {
     }
 
     /** @param InvalidUidException $exception */
     public function matches(Throwable $exception): bool
     {
-        return $exception->invalidValue === $this->value;
+        return $exception->invalidValue === $this->propertyValue;
     }
 }

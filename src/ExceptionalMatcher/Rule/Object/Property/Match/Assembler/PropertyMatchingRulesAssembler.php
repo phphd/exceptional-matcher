@@ -30,13 +30,13 @@ final class PropertyMatchingRulesAssembler implements MatchingRuleSetAssembler
         $ruleSet = new CompositeMatchingRule($this->ownerRule, $rules);
 
         foreach ($this->getCatchAttributes() as $catchAttribute) {
-            $condition = $service->matchConditionFactory->getCondition($catchAttribute, $this->ownerRule);
+            $conditionBlueprint = $service->matchConditionCompiler->compile($catchAttribute);
 
-            Assert::notNull($condition);
+            Assert::notNull($conditionBlueprint);
 
             $rules->append(new MatchExceptionRule(
                 $ruleSet,
-                $condition,
+                $conditionBlueprint->bind($this->ownerRule),
                 $catchAttribute->getFormat(),
                 $catchAttribute->getMessage(),
             ));
