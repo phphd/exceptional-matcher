@@ -7,9 +7,10 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Bool\FalseCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchConditionFactory;
 use Stringable;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 use Webmozart\Assert\Assert;
@@ -22,17 +23,25 @@ const uid_value = InvalidUidExceptionMatchCondition::class;
 /**
  * @internal
  *
- * @implements MatchConditionFactory<InvalidUidException>
+ * @implements MatchConditionCompiler<InvalidUidException>
+ * @implements MatchConditionBlueprint<InvalidUidException>
  */
-final class InvalidUidExceptionMatchConditionFactory implements MatchConditionFactory
+final class InvalidUidExceptionMatchConditionCompiler implements MatchConditionCompiler, MatchConditionBlueprint
 {
-    public function getCondition(Catch_ $catch, MatchingRule $owner): MatchCondition
+    /** @return MatchConditionBlueprint<InvalidUidException> */
+    public function compile(Catch_ $catch): MatchConditionBlueprint
     {
         if (!is_a($catch->getExceptionClass(), InvalidUidException::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('InvalidUidExceptionMatchCondition can only be used for '.InvalidUidException::class);
         }
 
-        $value = $owner->getValue();
+        return $this;
+    }
+
+    /** @return MatchCondition<InvalidUidException> */
+    public function bind(MatchingRule $rule): MatchCondition
+    {
+        $value = $rule->getValue();
 
         if (null === $value) {
             /** @psalm-var FalseCondition<InvalidUidException> */

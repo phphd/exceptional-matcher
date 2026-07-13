@@ -36,19 +36,22 @@ final class EnumValueMatchCondition implements MatchCondition
             $value = self::quote($propertyValue);
         }
 
-        if (\PHP_VERSION_ID < 80200) {
-            $enumReference = self::quote($enumClassName);
-        } else {
-            $enumReference = $enumClassName;
-        }
-
-        $this->expectedMessage = $value.' is not a valid backing value for enum '.$enumReference;
+        $this->expectedMessage = $value.' is not a valid backing value for enum '.self::enumReference($enumClassName);
     }
 
     /** @param ValueError $exception */
     public function matches(Throwable $exception): bool
     {
         return $exception->getMessage() === $this->expectedMessage;
+    }
+
+    private static function enumReference(string $enumClassName): string
+    {
+        if (\PHP_VERSION_ID < 80200) {
+            return self::quote($enumClassName);
+        }
+
+        return $enumClassName;
     }
 
     private static function quote(int|string $value): string

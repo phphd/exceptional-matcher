@@ -8,7 +8,7 @@ use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService;
 use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssemblerService;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchConditionFactory;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListExceptionFormatter;
 
@@ -43,7 +43,7 @@ final class ConstantsAutoloadingCompilerPassIntegrationTest extends BundleTestCa
         $rule = $this->assembler->assemble(new ObjectMatchingRuleSetAssembler($message));
 
         self::assertNotNull($rule);
-        self::assertTrue(class_exists(ExceptionValueMatchConditionFactory::class, false));
+        self::assertTrue(class_exists(ExceptionValueMatchConditionCompiler::class, false));
         self::assertTrue(class_exists(ViolationListExceptionFormatter::class, false));
     }
 }

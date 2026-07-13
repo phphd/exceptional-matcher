@@ -35,11 +35,6 @@
                 <directory name="**/Tests/Stub"/>
             </errorLevel>
         </PropertyNotSetInConstructor>
-        <UnnecessaryVarAnnotation>
-            <errorLevel type="suppress">
-                <file name="src/ExceptionalMatcher/Rule/Object/Property/Match/Condition/Composite/CompositeMatchConditionFactory.php"/>
-            </errorLevel>
-        </UnnecessaryVarAnnotation>
         <LessSpecificImplementedReturnType>
             <!-- Psalm doesn't infer it quite well -->
             <errorLevel type="suppress">

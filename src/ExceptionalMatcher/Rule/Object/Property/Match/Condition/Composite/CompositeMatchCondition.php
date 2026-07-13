@@ -15,8 +15,8 @@ use Throwable;
 final class CompositeMatchCondition implements MatchCondition
 {
     public function __construct(
-        /** @var list<MatchCondition<Throwable>> */
-        private readonly array $conditions,
+        /** @var iterable<MatchCondition<Throwable>> */
+        private readonly iterable $conditions,
     ) {
     }
 
