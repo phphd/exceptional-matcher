@@ -132,6 +132,7 @@ class Product
     #[ORM\Column(type: 'uuid')]
     private Uuid $id;
 
+    /** The title is always valid, being validated right off */
     #[ORM\Column]
     public string $title {
         set => Validation::createCallable(
