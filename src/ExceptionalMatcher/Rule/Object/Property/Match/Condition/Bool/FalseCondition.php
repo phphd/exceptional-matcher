@@ -8,7 +8,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition
 use Throwable;
 
 /**
- * @internal
+ * @api
  *
  * @template T of Throwable
  *
