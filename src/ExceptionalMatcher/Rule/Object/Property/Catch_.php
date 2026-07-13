@@ -9,9 +9,7 @@ use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\MainExceptionViolationFormatter;
 use Throwable;
-use Webmozart\Assert\Assert;
 
-use function is_array;
 use function is_string;
 
 /**
@@ -43,13 +41,6 @@ final class Catch_
         private readonly string $format = MainExceptionViolationFormatter::class, // @phpstan-ignore phpat.testModelDependencies (really, this's a fair catch - it should not depend on the formatter)
         private readonly ?string $message = null,
     ) {
-        if (null !== $this->if) {
-            Assert::count($this->if, 2);
-        }
-
-        if (is_array($this->from)) {
-            Assert::count($this->from, 2);
-        }
     }
 
     /** @return class-string<T1&T2> */
