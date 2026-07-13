@@ -22,7 +22,9 @@ Thence it makes up for what was lacking in tools for relating validation excepti
 
 ## Quick Start ⚡
 
-### Install 📥
+### 1. Install 📥
+
+Install it in either a vanilla PHP project or a Symfony project.
 
 1. Require via composer:
 
@@ -45,7 +47,7 @@ Thence it makes up for what was lacking in tools for relating validation excepti
    You can use features of this library outside frameworks. \
    See [Standalone Usage](#standalone-usage-).
 
-### Map and Throw 🎯
+### 2. Map and Throw 🎯
 
 Mark a command or dto with `#[Try_]` attribute, and properties with `#[Catch_]`.
 
@@ -96,7 +98,7 @@ while `PasswordCompromisedException` is bound to the `password` property.
 > You can have additional matching conditions beyond just the exception class name. \
 > See [Match Conditions 🖇️](docs/config/match-conditions.md).
 
-The equivalent (very rough) simplified manual logic if not using this library:
+The equivalent (very rough) manual logic this library automates:
 
 ```php
 $registration = new UserRegistration('jzs', 'jn3.16');
@@ -111,7 +113,7 @@ try {
 }
 ```
 
-### Catch and Match 🎣
+### 3. Catch and Match 🎣
 
 [Exceptional Validation](./docs/exceptional-validation/exceptional-validation.md) is like a parable of fisherman.
 
@@ -146,14 +148,9 @@ class RegisterUserApiPoint
         private UserRegistrationServices $services,
     ) { }
 
-    #[Route(
-        path: '/register',
-        name: 'user_register',
-        methods: ['POST'],
-    )]
-    public function __invoke(
-        #[MapRequestPayload] UserRegistration $registration,
-    ): Response {
+    #[Route(path: '/register', name: 'user_register', methods: ['POST'])]
+    public function __invoke(#[MapRequestPayload] UserRegistration $registration): Response
+    {
         try {
             $registration->process($this->services);
         } catch (Throwable $exception) {
@@ -345,12 +342,6 @@ class ImportProductDto
     #[Catch_(InvalidUidException::class, match: uid_value, message: 'This is not a valid UUID.')]
     public string $id;
 
-    #[Catch_(CategoryNotFoundException::class, match: exception_value)] // Message is derived from Exception
-    public string $categoryId;
-
-    #[Catch_(\ValueError::class, from: ProductStatus::class, match: enum_value, message: 'The value you selected is not a valid choice.')]
-    public string $status;
-
     // PHP 8.4+ property hook origin
     #[Catch_(ValidationFailedException::class, from: [Product::class, '$title::set'], format: validator_violations)]
     public string $title;
@@ -358,6 +349,13 @@ class ImportProductDto
     // Value-object class origin
     #[Catch_(ValidationFailedException::class, from: ProductDescription::class, match: validated_value, format: validator_violations)]
     public string $description;
+
+    // Enum origin
+    #[Catch_(\ValueError::class, from: ProductStatus::class, match: enum_value, message: 'The value you selected is not a valid choice.')]
+    public string $status;
+
+    #[Catch_(CategoryNotFoundException::class, match: exception_value)]
+    public string $categoryId;
 
     #[Catch_(BackorderDisabledForCategoryException::class, if: [self::class, 'thisProductViolatesBackorder'])]
     public ?int $backorderLimit;
