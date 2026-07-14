@@ -10,6 +10,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition
 use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\MainExceptionViolationFormatter;
 use Throwable;
 
+use function is_callable;
 use function is_string;
 
 /**
@@ -31,7 +32,7 @@ final class Catch_
     public function __construct(
         /** @var class-string<T1&T2> */
         private readonly string $exception,
-        /** @var null|class-string|array{class-string,non-empty-string} The origin of the exception */
+        /** @var null|class-string|array{class-string,non-empty-string}|callable-string The origin of the exception */
         private readonly array|string|null $from = null,
         /** @note match condition class is contravariant to the exception */
         private readonly ?string $match = null,
@@ -49,10 +50,16 @@ final class Catch_
         return $this->exception;
     }
 
-    /** @return ?array{class-string,?non-empty-string} */
+    /** @return null|array{class-string,non-empty-string}|array{class-string,null}|array{null,callable-string} */
     public function getFrom(): ?array
     {
         if (is_string($this->from)) {
+            // callable-string
+            if (is_callable($this->from)) {
+                return [null, $this->from];
+            }
+
+            // class-string
             return [$this->from, null];
         }
 
