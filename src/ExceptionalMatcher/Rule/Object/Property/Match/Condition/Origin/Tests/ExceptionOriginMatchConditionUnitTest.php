@@ -12,11 +12,15 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\S
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\Hook\HookOriginConditionMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\Hook\ProductHookedEntity;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\OriginConditionMessage;
+
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
+use function PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\validate_email_string;
+
 /**
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\ExceptionOriginMatchCondition
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\ExceptionOriginMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\PreCompiledMatchConditionBlueprint
@@ -49,7 +53,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
     public function testMatchExceptionByOriginClass(): void
     {
-        $message = new OriginConditionMessage('non-email', 'uid');
+        $message = new OriginConditionMessage(email: 'non-email');
 
         try {
             /** @psalm-suppress UnusedMethodCall */
@@ -71,7 +75,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
     public function testMatchExceptionByOriginClassMethod(): void
     {
-        $message = new OriginConditionMessage('email', 'invalid-uuid');
+        $message = new OriginConditionMessage(uid: 'invalid-uuid');
 
         try {
             Uuid::fromString('invalid-uuid');
@@ -88,6 +92,27 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
         [$matchedException] = $matchedExceptionList->toArray();
 
         self::assertSame('uid', $matchedException->getRule()->getPropertyPath()->join('.'));
+    }
+
+    public function testMatchExceptionByCallableStringOrigin(): void
+    {
+        $message = new OriginConditionMessage(anotherEmail: 'non-email');
+
+        try {
+            validate_email_string('non-email');
+
+            self::fail('The exception must be thrown.');
+        } catch (ValidationFailedException $originValidationException) {
+        }
+
+        $matchedExceptionList = $this->matcher->match($originValidationException, $message);
+
+        self::assertNotNull($matchedExceptionList);
+        self::assertCount(1, $matchedExceptionList);
+
+        [$matchedException] = $matchedExceptionList->toArray();
+
+        self::assertSame('anotherEmail', $matchedException->getRule()->getPropertyPath()->join('.'));
     }
 
     public function testMatchExceptionByOriginPropertyHook(): void
