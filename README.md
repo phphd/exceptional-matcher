@@ -325,16 +325,7 @@ That's really all this library does – matches the exception and formats it (i.
 For a cheat-sheet example of configuration, check the following:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
-use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
-use Symfony\Component\Validator\Exception\ValidationFailedException;
-
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\enum_value;
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\uid_value;
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\validator_violations;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Rule\Object\Try_;use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\enum_value;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\uid_value;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\embedded_violations;
 
 #[Try_]
 class ImportProductDto
@@ -343,11 +334,11 @@ class ImportProductDto
     public string $id;
 
     // PHP 8.4+ property hook origin
-    #[Catch_(ValidationFailedException::class, from: [Product::class, '$title::set'], format: validator_violations)]
+    #[Catch_(ValidationFailedException::class, from: [Product::class, '$title::set'], format: embedded_violations)]
     public string $title;
 
     // Value-object class origin
-    #[Catch_(ValidationFailedException::class, from: ProductDescription::class, match: validated_value, format: validator_violations)]
+    #[Catch_(ValidationFailedException::class, from: ProductDescription::class, match: validated_value, format: embedded_violations)]
     public string $description;
 
     // Enum origin

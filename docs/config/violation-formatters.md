@@ -30,12 +30,12 @@ Specify `included_violations` as a `format:` for the `#[Catch_]` attribute:
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\included_violations;
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\embedded_violations;
 
 #[Try_]
 class IssueCreditCardCommand
 {
-    #[Catch_(CardNumberValidationFailedException::class, format: included_violations)]
+    #[Catch_(CardNumberValidationFailedException::class, format: embedded_violations)]
     private string $cardNumber;
 }
 ```
@@ -76,17 +76,12 @@ returning embedded `ConstraintViolationList`.
 Specify `validator_violations` as a `format:` for the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use Symfony\Component\Validator\Exception\ValidationFailedException;
-
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\validator_violations;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Rule\Object\Try_;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\embedded_violations;
 
 #[Try_]
 class RegisterUserCommand
 {
-    #[Catch_(ValidationFailedException::class, from: Login::class, match: validated_value, format: validator_violations)]
+    #[Catch_(ValidationFailedException::class, from: Login::class, match: validated_value, format: embedded_violations)]
     public string $login;
 }
 ```

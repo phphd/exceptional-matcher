@@ -9,30 +9,31 @@ use PhPhD\ExceptionalMatcher\Exception\MatchedException;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\ExceptionViolationFormatter;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Webmozart\Assert\Assert;
 
 use function array_map;
 use function iterator_to_array;
 
 /** @api */
-const included_violations = ViolationListExceptionFormatter::class;
+const embedded_violations = EmbeddedViolationListFormatter::class;
 
 /**
- * @api - use {@see included_violations} constant for a class reference instead
+ * @internal - use {@see embedded_violations} constant for a class reference instead
  *
  * @implements ExceptionViolationFormatter<ViolationListException>
  */
-final class ViolationListExceptionFormatter implements ExceptionViolationFormatter
+final class EmbeddedViolationListFormatter implements ExceptionViolationFormatter
 {
     /**
-     * @param MatchedException<ViolationListException> $matchedException
+     * @param MatchedException<ViolationListException|ValidationFailedException> $matchedException
      *
      * @return non-empty-list<ConstraintViolation>
      */
     public function format(MatchedException $matchedException): array
     {
         $exception = $matchedException->getException();
-        Assert::isInstanceOf($exception, ViolationListException::class); // @phpstan-ignore staticMethod.alreadyNarrowedType
+        Assert::isInstanceOfAny($exception, [ViolationListException::class, ValidationFailedException::class]);
 
         $rule = $matchedException->getRule();
         $root = $rule->getRootObject();
@@ -40,7 +41,7 @@ final class ViolationListExceptionFormatter implements ExceptionViolationFormatt
             ->join('.')
         ;
         /** @var list<ConstraintViolationInterface> $violationList */
-        $violationList = iterator_to_array($exception->getViolationList());
+        $violationList = iterator_to_array($exception->getViolations());
 
         if ([] === $violationList) {
             throw new LogicException('Violation list must not be empty');

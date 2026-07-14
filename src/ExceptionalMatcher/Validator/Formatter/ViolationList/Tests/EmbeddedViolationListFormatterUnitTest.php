@@ -19,11 +19,11 @@ use function array_flip;
 use function array_intersect_key;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListExceptionFormatter
+ * @covers \PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\EmbeddedViolationListFormatter
  *
  * @internal
  */
-final class ViolationListExceptionFormatterUnitTest extends TestCase
+final class EmbeddedViolationListFormatterUnitTest extends TestCase
 {
     /** @var ExceptionMatcher<ConstraintViolationListInterface> */
     private ExceptionMatcher $matcher;

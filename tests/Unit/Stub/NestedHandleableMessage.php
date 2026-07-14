@@ -11,7 +11,7 @@ use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedPropertyMatchedExce
 use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\Tests\Stub\ViolationListExampleException;
 use Symfony\Component\Validator\Constraints\Valid;
 
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\included_violations;
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\embedded_violations;
 
 /** @psalm-suppress ArgumentTypeCoercion */
 #[Try_]
@@ -23,7 +23,7 @@ final class NestedHandleableMessage
     #[Valid]
     private ConditionalMessage $conditionalMessage;
 
-    #[Catch_(ViolationListExampleException::class, format: included_violations)]
+    #[Catch_(ViolationListExampleException::class, format: embedded_violations)]
     private int $violationListCapturedProperty;
 
     public static function createWithConditionalMessage(ConditionalMessage $conditionalMessage): self

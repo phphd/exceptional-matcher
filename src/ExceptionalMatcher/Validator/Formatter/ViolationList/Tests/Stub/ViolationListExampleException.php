@@ -16,7 +16,7 @@ final class ViolationListExampleException extends RuntimeException implements Vi
         parent::__construct();
     }
 
-    public function getViolationList(): ConstraintViolationListInterface
+    public function getViolations(): ConstraintViolationListInterface
     {
         return $this->violationList;
     }

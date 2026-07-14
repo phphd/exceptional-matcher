@@ -8,6 +8,9 @@ use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\ExceptionViolationFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
+
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
     if (false === $container->getParameter('phd_exceptional_matcher.validator_available')) {
@@ -17,7 +20,15 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
     $services = $configurator->services();
 
     $services
-        ->set(ExceptionViolationFormatter::class.'<'.ViolationListException::class.'>', ViolationListExceptionFormatter::class)
-        ->tag(MatchedExceptionFormatter::class, ['id' => ViolationListExceptionFormatter::class])
+        ->set(ExceptionViolationFormatter::class.'<'.ViolationListException::class.'>', EmbeddedViolationListFormatter::class)
+        ->args([
+            service(ExceptionViolationFormatter::class.'<'.ViolationListException::class.'>'),
+        ])
+        ->tag(MatchedExceptionFormatter::class, ['id' => EmbeddedViolationListFormatter::class])
     ;
+
+    $services->alias(
+        ExceptionViolationFormatter::class.'<'.ValidationFailedException::class.'>',
+        ExceptionViolationFormatter::class.'<'.ViolationListException::class.'>',
+    );
 };
