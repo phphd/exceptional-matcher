@@ -176,7 +176,7 @@ The positions of previous duplication now point to the well-organised value obje
 #[Try_]
 class RegisterUserDto
 {
-    #[Catch_(ValidationFailedException::class, from: Password::class, match: validated_value, format: validator_violations)]
+    #[Catch_(ValidationFailedException::class, from: Password::class, match: validated_value, format: embedded_violations)]
     public string $password;
 }
 ```
@@ -185,7 +185,7 @@ class RegisterUserDto
 #[Try_]
 class ResetPasswordDto
 {
-    #[Catch_(ValidationFailedException::class, from: Password::class, match: validated_value, format: validator_violations)]
+    #[Catch_(ValidationFailedException::class, from: Password::class, match: validated_value, format: embedded_violations)]
     public string $password;
 }
 ```

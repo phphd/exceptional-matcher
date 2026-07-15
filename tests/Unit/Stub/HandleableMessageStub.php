@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\validator_violations;
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\embedded_violations;
 
 /**
  * @psalm-suppress InvalidAttribute ("Attribute Catch_ is not repeatable")
@@ -51,11 +51,11 @@ final class HandleableMessageStub
     private string $messageText;
 
     #[Catch_(SomeValueException::class, match: exception_value, message: 'oops')]
-    #[Catch_(ValidationFailedException::class, match: validated_value, format: validator_violations)]
+    #[Catch_(ValidationFailedException::class, match: validated_value, format: embedded_violations)]
     private string $notMatchedProperty = 'not matched';
 
     #[Catch_(SomeValueException::class, match: exception_value, message: 'oops')]
-    #[Catch_(ValidationFailedException::class, match: validated_value, format: validator_violations)]
+    #[Catch_(ValidationFailedException::class, match: validated_value, format: embedded_violations)]
     private string $matchedProperty = 'matched!';
 
     #[Catch_(SomeValueException::class, message: 'oops')]

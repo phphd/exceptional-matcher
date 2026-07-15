@@ -2,37 +2,38 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList;
+namespace PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded;
 
 use LogicException;
 use PhPhD\ExceptionalMatcher\Exception\MatchedException;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\ExceptionViolationFormatter;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Webmozart\Assert\Assert;
 
 use function array_map;
 use function iterator_to_array;
 
 /** @api */
-const included_violations = ViolationListExceptionFormatter::class;
+const embedded_violations = ViolationsEmbeddedExceptionFormatter::class;
 
 /**
- * @api - use {@see included_violations} constant for a class reference instead
+ * @internal - use {@see embedded_violations} constant for a class reference instead
  *
- * @implements ExceptionViolationFormatter<ViolationListException>
+ * @implements ExceptionViolationFormatter<ViolationsEmbeddedException|ValidationFailedException>
  */
-final class ViolationListExceptionFormatter implements ExceptionViolationFormatter
+final class ViolationsEmbeddedExceptionFormatter implements ExceptionViolationFormatter
 {
     /**
-     * @param MatchedException<ViolationListException> $matchedException
+     * @param MatchedException<ViolationsEmbeddedException|ValidationFailedException> $matchedException
      *
      * @return non-empty-list<ConstraintViolation>
      */
     public function format(MatchedException $matchedException): array
     {
         $exception = $matchedException->getException();
-        Assert::isInstanceOf($exception, ViolationListException::class); // @phpstan-ignore staticMethod.alreadyNarrowedType
+        Assert::isInstanceOfAny($exception, [ViolationsEmbeddedException::class, ValidationFailedException::class]);
 
         $rule = $matchedException->getRule();
         $root = $rule->getRootObject();
@@ -40,7 +41,7 @@ final class ViolationListExceptionFormatter implements ExceptionViolationFormatt
             ->join('.')
         ;
         /** @var list<ConstraintViolationInterface> $violationList */
-        $violationList = iterator_to_array($exception->getViolationList());
+        $violationList = iterator_to_array($exception->getViolations());
 
         if ([] === $violationList) {
             throw new LogicException('Violation list must not be empty');

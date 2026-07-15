@@ -20,10 +20,10 @@ final class ExceptionalValidationFailedMessengerException extends ValidationFail
 {
     public function __construct(
         object $violatingMessage,
-        private readonly ConstraintViolationListInterface $violationList,
+        ConstraintViolationListInterface $violations,
         Throwable $previous,
     ) {
-        parent::__construct($violatingMessage, $violationList);
+        parent::__construct($violatingMessage, $violations);
 
         Exception::__construct(sprintf('Message of type "%s" has failed exceptional validation.', $violatingMessage::class), previous: $previous);
     }
@@ -34,8 +34,8 @@ final class ExceptionalValidationFailedMessengerException extends ValidationFail
         return parent::getViolatingMessage();
     }
 
-    public function getViolationList(): ConstraintViolationListInterface
+    public function getViolations(): ConstraintViolationListInterface
     {
-        return $this->violationList;
+        return parent::getViolations();
     }
 }
