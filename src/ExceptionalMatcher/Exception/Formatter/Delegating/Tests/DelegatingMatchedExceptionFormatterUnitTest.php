@@ -8,8 +8,8 @@ use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExt
 use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ExceptionViolationFormatter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Validator\ConstraintViolationInterface;
