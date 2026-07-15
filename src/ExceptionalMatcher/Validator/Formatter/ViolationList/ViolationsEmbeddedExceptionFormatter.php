@@ -16,24 +16,24 @@ use function array_map;
 use function iterator_to_array;
 
 /** @api */
-const embedded_violations = EmbeddedViolationListFormatter::class;
+const embedded_violations = ViolationsEmbeddedExceptionFormatter::class;
 
 /**
- * @internal - use {@see embedded_violations} constant for a class reference instead
+ * @api - use {@see embedded_violations} constant for a class reference instead
  *
- * @implements ExceptionViolationFormatter<ViolationListException>
+ * @implements ExceptionViolationFormatter<ViolationsEmbeddedException|ValidationFailedException>
  */
-final class EmbeddedViolationListFormatter implements ExceptionViolationFormatter
+final class ViolationsEmbeddedExceptionFormatter implements ExceptionViolationFormatter
 {
     /**
-     * @param MatchedException<ViolationListException|ValidationFailedException> $matchedException
+     * @param MatchedException<ViolationsEmbeddedException|ValidationFailedException> $matchedException
      *
      * @return non-empty-list<ConstraintViolation>
      */
     public function format(MatchedException $matchedException): array
     {
         $exception = $matchedException->getException();
-        Assert::isInstanceOfAny($exception, [ViolationListException::class, ValidationFailedException::class]);
+        Assert::isInstanceOfAny($exception, [ViolationsEmbeddedException::class, ValidationFailedException::class]);
 
         $rule = $matchedException->getRule();
         $root = $rule->getRootObject();

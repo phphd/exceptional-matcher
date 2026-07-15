@@ -46,10 +46,10 @@ class IssueCreditCardCommand
 The exception must contain `ConstraintViolationList` from the validator, implementing `ViolationListException`:
 
 ```php
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationsEmbeddedException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
-final class CardNumberValidationFailedException extends \RuntimeException implements ViolationListException
+final class CardNumberValidationFailedException extends \RuntimeException implements ViolationsEmbeddedException
 {
     public function __construct(
         private readonly string $cardNumber,
@@ -58,7 +58,7 @@ final class CardNumberValidationFailedException extends \RuntimeException implem
         parent::__construct('Card Number Validation Failed');
     }
 
-    public function getViolationList(): ConstraintViolationListInterface
+    public function getViolations(): ConstraintViolationListInterface
     {
         return $this->violationList;
     }

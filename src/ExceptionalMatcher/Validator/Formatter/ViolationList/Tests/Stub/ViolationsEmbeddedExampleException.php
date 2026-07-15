@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\Tests\Stub;
 
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationsEmbeddedException;
 use RuntimeException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
-final class ViolationListExampleException extends RuntimeException implements ViolationListException
+final class ViolationsEmbeddedExampleException extends RuntimeException implements ViolationsEmbeddedException
 {
     public function __construct(
-        private readonly ConstraintViolationListInterface $violationList,
+        private readonly ConstraintViolationListInterface $violations,
     ) {
         parent::__construct();
     }
 
     public function getViolations(): ConstraintViolationListInterface
     {
-        return $this->violationList;
+        return $this->violations;
     }
 }

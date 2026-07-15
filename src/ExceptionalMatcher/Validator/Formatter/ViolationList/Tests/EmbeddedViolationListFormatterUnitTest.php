@@ -8,7 +8,7 @@ use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExt
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedHandleableMessage;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\Tests\Stub\ViolationListExampleException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\Tests\Stub\ViolationsEmbeddedExampleException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -19,7 +19,7 @@ use function array_flip;
 use function array_intersect_key;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\EmbeddedViolationListFormatter
+ * @covers \PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationsEmbeddedExceptionFormatter
  *
  * @internal
  */
@@ -49,7 +49,7 @@ final class EmbeddedViolationListFormatterUnitTest extends TestCase
         $violationList = Validation::createValidator()->validate('123', [$constraint = new Length(max: 2)]);
 
         $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());
-        $originalException = new ViolationListExampleException($violationList);
+        $originalException = new ViolationsEmbeddedExampleException($violationList);
 
         $violationList = $this->matcher->match($originalException, $message);
 

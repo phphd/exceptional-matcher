@@ -9,8 +9,8 @@ use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\DelegatingMatchedExc
 use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\MainExceptionViolationFormatter;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\EmbeddedViolationListFormatter;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationsEmbeddedException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationsEmbeddedExceptionFormatter;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -34,11 +34,11 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
         $defaultFormatter = $this->get(ExceptionViolationFormatter::class.'<Throwable>');
         self::assertInstanceOf(MainExceptionViolationFormatter::class, $defaultFormatter);
 
-        $violationListExceptionFormatter = $this->get(ExceptionViolationFormatter::class.'<'.ViolationListException::class.'>');
-        self::assertInstanceOf(EmbeddedViolationListFormatter::class, $violationListExceptionFormatter);
+        $violationListExceptionFormatter = $this->get(ExceptionViolationFormatter::class.'<'.ViolationsEmbeddedException::class.'>');
+        self::assertInstanceOf(ViolationsEmbeddedExceptionFormatter::class, $violationListExceptionFormatter);
 
         $validationFailedExceptionFormatter = $this->get(ExceptionViolationFormatter::class.'<'.ValidationFailedException::class.'>');
-        self::assertInstanceOf(EmbeddedViolationListFormatter::class, $validationFailedExceptionFormatter);
+        self::assertInstanceOf(ViolationsEmbeddedExceptionFormatter::class, $validationFailedExceptionFormatter);
 
         self::assertSame($violationListExceptionFormatter, $validationFailedExceptionFormatter);
 
@@ -48,7 +48,7 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
         $providedServices = $formatterRegistry->getProvidedServices();
         krsort($providedServices);
         self::assertSame([
-            EmbeddedViolationListFormatter::class => EmbeddedViolationListFormatter::class,
+            ViolationsEmbeddedExceptionFormatter::class => ViolationsEmbeddedExceptionFormatter::class,
             MainExceptionViolationFormatter::class => MainExceptionViolationFormatter::class,
             CustomExceptionViolationFormatter::class => CustomExceptionViolationFormatter::class,
         ], $providedServices);

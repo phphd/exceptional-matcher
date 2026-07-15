@@ -11,9 +11,9 @@ use Throwable;
 /**
  * @api
  *
- * @see ValidationFailedException from Symfony
+ * Also, {@see ValidationFailedException} of Symfony
  */
-interface ViolationListException extends Throwable
+interface ViolationsEmbeddedException extends Throwable
 {
     public function getViolations(): ConstraintViolationListInterface;
 }

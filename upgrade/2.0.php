@@ -19,8 +19,8 @@ return static function (RectorConfig $rectorConfig): void {
         'PhPhD\ExceptionalValidation\Model\Condition\Value\ValueException' => 'PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ValueException',
         'PhPhD\ExceptionalValidation\Model\Condition\Value\ValueExceptionMatchCondition' => 'PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchCondition',
         'PhPhD\ExceptionalValidation\Formatter\ExceptionViolationFormatter' => 'PhPhD\ExceptionalMatcher\Validator\Formatter\ExceptionViolationFormatter',
-        'PhPhD\ExceptionalValidation\Formatter\ViolationListException' => 'PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListException',
-        'PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter' => 'PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\EmbeddedViolationListFormatter',
+        'PhPhD\ExceptionalValidation\Formatter\ViolationListException' => 'PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationsEmbeddedException',
+        'PhPhD\ExceptionalValidation\Formatter\ViolationListExceptionFormatter' => 'PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationsEmbeddedExceptionFormatter',
         'PhPhD\ExceptionalValidation\Handler\ExceptionHandler' => 'Symfony\Component\Messenger\Middleware\MiddlewareInterface', // implement middleware instead
         'PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException' => 'PhPhD\ExceptionalMatcher\Validator\Middleware\ExceptionalValidationFailedException',
         'PhPhD\ExceptionalValidation\Middleware\Messenger\ExceptionalValidationMiddleware' => 'PhPhD\ExceptionalMatcher\Validator\Middleware\Messenger\ExceptionalValidationMiddleware',
@@ -29,6 +29,6 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
     /** @noinspection ClassConstantCanBeUsedInspection */
     $rectorConfig->ruleWithConfiguration(RenameMethodRector::class, [
-        new MethodCallRename('PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationListException', 'getViolationList', 'getViolations'),
+        new MethodCallRename('PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationsEmbeddedException', 'getViolationList', 'getViolations'),
     ]);
 };
