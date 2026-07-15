@@ -53,7 +53,7 @@ $command = new RegisterUserCommand($login, $password);
 try {
     $this->commandBus->dispatch($command);
 } catch (ExceptionalValidationFailedException $exception) {
-    $violationList = $exception->getViolationList();
+    $violationList = $exception->getViolations();
 
     return $this->render('registrationForm.html.twig', ['errors' => $violationList]);
 } 

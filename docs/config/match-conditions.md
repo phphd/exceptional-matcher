@@ -109,36 +109,84 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\validator_violations;
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
-class RenameProductCommand
+class UpdateDriverLicenceCommand
 {
-    #[Catch_(ValidationFailedException::class, from: [Product::class, '$title::set'], format: validator_violations)]
-    public string $title;
+    #[Catch_(ValidationFailedException::class, from: [DriverLicence::class, '$series::set'], format: embedded_violations)]
+    public string $series;
+
+    #[Catch_(ValidationFailedException::class, from: [DriverLicence::class, '$number::set'], format: embedded_violations)]
+    public string $number;
 }
 ```
 
-Here the exception is only matched when it originates from the `set` hook of the `Product::$title` property.
+Here the `ValidationFailedException` that's originated from `DriverLicence::$number::set` property hook will not be
+matchded against `$series` as it would otherwise w/o `from:` clause, but will rather match the `$number` field.
 
 ```php
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
-class Product
+class DriverLicence
 {
     #[ORM\Id]
     #[ORM\Column(type: 'uuid')]
     private Uuid $id;
 
-    /** The title is always valid, being validated right off */
+    /** The title is always valid, as it's validated right off */
     #[ORM\Column]
-    public string $title {
+    private ?string $series {
         set => Validation::createCallable(
             new Assert\NotBlank(),
-            new Assert\Length(min: 4, max: 255),
+            new Assert\Length(min: 2, max: 4),
         )($value);
+    }
+
+    #[ORM\Column]
+    private ?string $number {
+        set => Validation::createCallable(
+            new Assert\NotBlank(),
+            new Assert\Length(min: 4, max: 8),
+            new Assert\Type('digit')
+        )($value);
+    }
+}
+```
+
+In a normal use-case, the code's pretty straightforward:
+
+```php
+public function update(string $series, string $number)
+{
+    // Validates right in
+    $this->series = $series;
+    $this->number = = $number;
+}
+```
+
+But also, this type of fine-grained validation is extremely useful for _partial update_ use-cases in which
+some data may be invalid, but the rest must still be consumed:
+
+Say, importing driver licence data from a third-party api that might have incorrectly filled values,
+we'd need to ingest all the valid data, leaving `null` in place of the invalid values so that the user will fill them later.
+
+This is possible too:
+
+```php
+public function import(string $series, string $number)
+{
+    try {
+        $this->series = $series;
+    } catch (ValidationFailedException $exception) {
+        $this->series = null; // null on invalid 
+    }
+    try {
+        $this->number = $number;
+    } catch (ValidationFailedException $exception) {
+        $this->number = null;
     }
 }
 ```
@@ -240,17 +288,17 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\Validator\validator_violations;
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
 class RegisterUserCommand
 {
-    #[Catch_(ValidationFailedException::class, from: Password::class, match: validated_value, format: validator_violations)]
+    #[Catch_(ValidationFailedException::class, from: Password::class, match: validated_value, format: embedded_violations)]
     public string $password;
 }
 ```
 
-> Normally, you should format it with [`validator_violations`](./violation-formatters.md#validationfailedexception-formatter) to keep all contained violations.
+> Normally, you should format it with [`embedded_violations`](./violation-formatters.md#validationfailedexception-formatter) to keep all contained violations.
 
 ## Enum Condition
 

@@ -12,5 +12,5 @@ interface ExceptionalValidationFailedException extends Throwable
 {
     public function getViolatingMessage(): object;
 
-    public function getViolationList(): ConstraintViolationListInterface;
+    public function getViolations(): ConstraintViolationListInterface;
 }
