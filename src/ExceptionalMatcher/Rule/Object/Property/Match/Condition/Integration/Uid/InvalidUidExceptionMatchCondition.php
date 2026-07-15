@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid;
+namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Uid;
 
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;

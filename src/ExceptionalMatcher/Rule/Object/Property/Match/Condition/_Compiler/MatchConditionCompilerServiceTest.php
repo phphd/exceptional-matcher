@@ -9,10 +9,10 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\Comp
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Delegating\DelegatingMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\EnumValueMatchCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\EnumValueMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\InvalidUidExceptionMatchCondition;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\InvalidUidExceptionMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchCondition;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\ValidationFailedExceptionMatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Uid\InvalidUidExceptionMatchCondition;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Uid\InvalidUidExceptionMatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Validator\ValidationFailedExceptionMatchCondition;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Validator\ValidationFailedExceptionMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchConditionCompiler;
 use Psr\Container\ContainerInterface;
