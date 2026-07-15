@@ -94,7 +94,7 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
         self::assertSame($messengerException, $e->getPrevious());
         self::assertSame($envelope->getMessage(), $e->getViolatingMessage());
 
-        $violations = $e->getViolationList();
+        $violations = $e->getViolations();
         self::assertCount(2, $violations);
 
         self::assertSame('property', $violations->get(0)->getPropertyPath());

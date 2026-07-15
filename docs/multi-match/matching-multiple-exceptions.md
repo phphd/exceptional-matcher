@@ -13,10 +13,10 @@ For example, consider `RegisterUserDto` that catches validation exceptions from 
 #[Try_]
 class RegisterUserDto
 {
-    #[Catch_(ValidationFailedException::class, from: Login::class, format: validator_violations)]
+    #[Catch_(ValidationFailedException::class, from: Login::class, format: embedded_violations)]
     public string $login;
 
-    #[Catch_(ValidationFailedException::class, from: Password::class, format: validator_violations)]
+    #[Catch_(ValidationFailedException::class, from: Password::class, format: embedded_violations)]
     public string $password;
 }
 ```
