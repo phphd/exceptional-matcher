@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid;
+namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Uid;
 
 use LogicException;
 use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
