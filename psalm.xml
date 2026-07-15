@@ -35,12 +35,6 @@
                 <directory name="**/Tests/Stub"/>
             </errorLevel>
         </PropertyNotSetInConstructor>
-        <LessSpecificImplementedReturnType>
-            <!-- Psalm doesn't infer it quite well -->
-            <errorLevel type="suppress">
-                <file name="src/ExceptionalMatcher/Validator/Formatter/Validator/ValidationFailedExceptionFormatter.php"/>
-            </errorLevel>
-        </LessSpecificImplementedReturnType>
         <MissingOverrideAttribute>
             <errorLevel type="suppress">
                 <directory name="src"/>

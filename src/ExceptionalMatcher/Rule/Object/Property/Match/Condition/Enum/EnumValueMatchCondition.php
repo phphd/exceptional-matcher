@@ -14,7 +14,7 @@ use ValueError;
 use function sprintf;
 
 /**
- * @api - use {@see enum_value} constant for a class reference instead
+ * @internal - use {@see enum_value} constant for a class reference instead
  *
  * @implements MatchCondition<ValueError>
  */

@@ -8,7 +8,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition
 use Throwable;
 
 /**
- * @api - use {@see exception_value} constant for a class reference instead
+ * @internal - use {@see exception_value} constant for a class reference instead
  *
  * @implements MatchCondition<ValueException>
  */
