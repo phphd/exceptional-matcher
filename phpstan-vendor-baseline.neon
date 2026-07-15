@@ -16,5 +16,5 @@ parameters:
         -
             message: '#^Access to an undefined property Symfony\\Component\\Uid\\Exception\\InvalidArgumentException\:\:\$invalidValue\.$#'
             identifier: property.notFound
-            path: src/ExceptionalMatcher/Rule/Object/Property/Match/Condition/Uid/InvalidUidExceptionMatchCondition.php
+            path: src/ExceptionalMatcher/Rule/Object/Property/Match/Condition/Integration/Uid/InvalidUidExceptionMatchCondition.php
             reportUnmatched: false
