@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Tests\Unit;
 use ArrayObject;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
@@ -17,7 +18,6 @@ use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedHandleableMessage;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedItem;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NotHandleableMessageStub;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -29,7 +29,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_
  * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
  * @covers \PhPhD\ExceptionalMatcher\MainExceptionMatcher
- * @covers \PhPhD\ExceptionalMatcher\Validator\ExceptionToViolationListMatcher
+ * @covers \PhPhD\ExceptionalMatcher\Integration\Validator\ExceptionToViolationListMatcher
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ObjectMatchingRuleSet
  * @covers \PhPhD\ExceptionalMatcher\Rule\ItemOfIterableMatchingRule
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMatchingRuleSet
