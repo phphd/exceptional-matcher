@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Tests\Unit\Stub;
 
+use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\Tests\Stub\ViolationsEmbeddedExampleException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure\Tests\Stub\ConditionalMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedPropertyMatchedException;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\Tests\Stub\ViolationsEmbeddedExampleException;
 use Symfony\Component\Validator\Constraints\Valid;
 
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\embedded_violations;
+use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
 
 /** @psalm-suppress ArgumentTypeCoercion */
 #[Try_]
