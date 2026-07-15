@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Assembler\Autoload;
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
+use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\ViolationsEmbeddedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService;
 use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssemblerService;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\ViolationsEmbeddedExceptionFormatter;
 
 use function class_exists;
 

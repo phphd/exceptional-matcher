@@ -333,7 +333,7 @@ use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\enu
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\uid_value;
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\embedded_violations;
+use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
 class ImportProductDto

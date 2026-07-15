@@ -205,7 +205,7 @@ final class ArchitectureRuleSet
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Bundle')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Exception')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule')),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Upgrade')),
         );
     }
@@ -213,23 +213,23 @@ final class ArchitectureRuleSet
     public function validatorMatcher(): SelectorInterface
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator'),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator\Middleware')),
+            Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator'),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator\Middleware')),
         );
     }
 
     public function validatorMiddleware(): SelectorInterface
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator\Middleware'),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator\Middleware\Messenger')),
+            Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator\Middleware'),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger')),
         );
     }
 
     /** @psalm-suppress UnusedMethod */
     public function messengerValidatorMiddleware(): SelectorInterface
     {
-        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Validator\Middleware\Messenger');
+        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger');
     }
 
     public function matchingRuleSetAssembler(): SelectorInterface
