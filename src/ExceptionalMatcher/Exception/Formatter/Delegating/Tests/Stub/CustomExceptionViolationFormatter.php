@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub;
 
 use PhPhD\ExceptionalMatcher\Exception\MatchedException;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ExceptionViolationFormatter;
+use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\ExceptionViolationFormatter;
 use Symfony\Component\Validator\ConstraintViolation;
 use Throwable;
 

@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property;
 
 use Attribute;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\MainExceptionViolationFormatter;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\MainExceptionViolationFormatter;
 use Throwable;
 
 use function is_callable;
