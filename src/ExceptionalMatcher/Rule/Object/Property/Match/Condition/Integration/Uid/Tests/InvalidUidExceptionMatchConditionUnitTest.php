@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\Tests;
+namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Uid\Tests;
 
 use InvalidArgumentException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\Tests\Stub\MessageWithInvalidUidCondition;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Uid\Tests\Stub\MessageWithInvalidUidCondition;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 use Symfony\Component\Uid\Uuid;
@@ -17,8 +17,8 @@ use function class_exists;
 use function property_exists;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\InvalidUidExceptionMatchCondition
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\InvalidUidExceptionMatchConditionCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Uid\InvalidUidExceptionMatchCondition
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Uid\InvalidUidExceptionMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Bool\FalseCondition
  * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
