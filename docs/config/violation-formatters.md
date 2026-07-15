@@ -27,7 +27,7 @@ Allows the retrieval of prebuilt `ConstraintViolationList` directly from the exc
 The exception must implement `ViolationsEmbeddedException`, embedding `ConstraintViolationList` from the validator:
 
 ```php
-use PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\ViolationsEmbeddedException;
+use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\ViolationsEmbeddedException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 final class CardNumberValidationFailedException extends \RuntimeException implements ViolationsEmbeddedException
@@ -52,7 +52,7 @@ Finally, the DTO must specify `format: embedded_violations` for the `#[Catch_]` 
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\embedded_violations;
+use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
 class IssueCreditCardCommand
@@ -83,7 +83,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\embedded_violations;
+use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
 class RegisterUserCommand
@@ -105,7 +105,7 @@ You can create custom violation formatter by implementing `ExceptionViolationFor
 
 ```php
 use PhPhD\ExceptionalMatcher\Exception\MatchedException;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ExceptionViolationFormatter;
+use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\ExceptionViolationFormatter;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
 /** @implements ExceptionViolationFormatter<LoginAlreadyTakenException> */
