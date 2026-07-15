@@ -21,7 +21,7 @@ final class ConstantsClassLoader
     }
 
     /** @codeCoverageIgnore */
-    public static function loadFiles(string $basePath, int $depth = 7): void
+    public static function loadFiles(string $basePath, int $depth = 8): void
     {
         $prefixes = array_map(
             static fn (int $level): string => str_repeat('*/', $level),
