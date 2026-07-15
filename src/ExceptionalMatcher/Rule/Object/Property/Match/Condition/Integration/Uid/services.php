@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid;
+namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Uid;
 
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
