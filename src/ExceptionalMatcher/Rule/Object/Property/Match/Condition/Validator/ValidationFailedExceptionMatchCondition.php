@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Throwable;
 
 /**
- * @api - use {@see validated_value} constant for a class reference instead
+ * @internal - use {@see validated_value} constant for a class reference instead
  *
  * @implements MatchCondition<ValidationFailedException>
  */
