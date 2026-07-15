@@ -325,7 +325,7 @@ That's really all this library does – matches the exception and formats it (i.
 For a cheat-sheet example of configuration, check the following:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Rule\Object\Try_;use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\enum_value;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\uid_value;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\embedded_violations;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Rule\Object\Try_;use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\enum_value;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Uid\uid_value;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;use const PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
 class ImportProductDto

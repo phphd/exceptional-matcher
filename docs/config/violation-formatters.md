@@ -27,10 +27,7 @@ Allows returning `ConstraintViolationList` directly from the exception.
 Specify `included_violations` as a `format:` for the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\embedded_violations;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Rule\Object\Try_;use const PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
 class IssueCreditCardCommand
@@ -46,8 +43,7 @@ class IssueCreditCardCommand
 The exception must contain `ConstraintViolationList` from the validator, implementing `ViolationListException`:
 
 ```php
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationsEmbeddedException;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\ViolationsEmbeddedException;use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 final class CardNumberValidationFailedException extends \RuntimeException implements ViolationsEmbeddedException
 {
@@ -76,7 +72,7 @@ returning embedded `ConstraintViolationList`.
 Specify `validator_violations` as a `format:` for the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Rule\Object\Try_;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\embedded_violations;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Rule\Object\Try_;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;use const PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
 class RegisterUserCommand

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList;
+namespace PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded;
 
 use LogicException;
 use PhPhD\ExceptionalMatcher\Exception\MatchedException;
@@ -19,7 +19,7 @@ use function iterator_to_array;
 const embedded_violations = ViolationsEmbeddedExceptionFormatter::class;
 
 /**
- * @api - use {@see embedded_violations} constant for a class reference instead
+ * @internal - use {@see embedded_violations} constant for a class reference instead
  *
  * @implements ExceptionViolationFormatter<ViolationsEmbeddedException|ValidationFailedException>
  */

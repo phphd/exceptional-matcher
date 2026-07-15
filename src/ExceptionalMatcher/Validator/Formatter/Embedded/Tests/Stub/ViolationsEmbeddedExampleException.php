@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\Tests\Stub;
+namespace PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\Tests\Stub;
 
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationsEmbeddedException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\ViolationsEmbeddedException;
 use RuntimeException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 

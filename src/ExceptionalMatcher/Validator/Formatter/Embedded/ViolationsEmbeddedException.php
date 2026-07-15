@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList;
+namespace PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded;
 
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;

@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;
 use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\embedded_violations;
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\embedded_violations;
 
 /**
  * @psalm-suppress InvalidAttribute ("Attribute Catch_ is not repeatable")

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\Tests;
+namespace PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedHandleableMessage;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\Tests\Stub\ViolationsEmbeddedExampleException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\Tests\Stub\ViolationsEmbeddedExampleException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -19,7 +19,7 @@ use function array_flip;
 use function array_intersect_key;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationsEmbeddedExceptionFormatter
+ * @covers \PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\ViolationsEmbeddedExceptionFormatter
  *
  * @internal
  */

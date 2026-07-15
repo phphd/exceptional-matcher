@@ -10,7 +10,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssemble
 use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssemblerService;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationsEmbeddedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\ViolationsEmbeddedExceptionFormatter;
 
 use function class_exists;
 

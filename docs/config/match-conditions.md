@@ -105,7 +105,7 @@ The origin may as well be a [property hook](https://www.php.net/manual/en/langua
 It is referenced the same way it appears in the exception trace: `$property::set` or `$property::get`:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Rule\Object\Try_;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\embedded_violations;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Rule\Object\Try_;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
 class RenameProductCommand
@@ -231,7 +231,7 @@ comparing a property's value against the value of the exception.
 Specify `validated_value` match condition to compare property's value against exception's validated value:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Rule\Object\Try_;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\embedded_violations;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Rule\Object\Try_;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Validator\validated_value;use const PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
 class RegisterUserCommand

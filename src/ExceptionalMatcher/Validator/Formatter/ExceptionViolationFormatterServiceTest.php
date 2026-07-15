@@ -8,9 +8,9 @@ use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\DelegatingMatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\ViolationsEmbeddedException;
+use PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\ViolationsEmbeddedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Validator\Formatter\Main\MainExceptionViolationFormatter;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationsEmbeddedException;
-use PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\ViolationsEmbeddedExceptionFormatter;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -48,8 +48,8 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
         $providedServices = $formatterRegistry->getProvidedServices();
         krsort($providedServices);
         self::assertSame([
-            ViolationsEmbeddedExceptionFormatter::class => ViolationsEmbeddedExceptionFormatter::class,
             MainExceptionViolationFormatter::class => MainExceptionViolationFormatter::class,
+            ViolationsEmbeddedExceptionFormatter::class => ViolationsEmbeddedExceptionFormatter::class,
             CustomExceptionViolationFormatter::class => CustomExceptionViolationFormatter::class,
         ], $providedServices);
 

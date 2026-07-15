@@ -8,7 +8,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use const PhPhD\ExceptionalMatcher\Validator\Formatter\ViolationList\embedded_violations;
+use const PhPhD\ExceptionalMatcher\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
 final class HookOriginConditionMessage
