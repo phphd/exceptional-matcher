@@ -1,7 +1,18 @@
 # Research: Mapping Lint Command & Single Source of Truth
 
-> Status: research complete; implementation planned as a staged, always-green commit sequence \
+> Status: **implemented** (2.0, branch `feat-lint-console-command`) \
 > Scope: `lint:exceptional-matcher` console command + domain model evolution required to support it
+
+Implementation refined a few names and locations relative to the research vocabulary below:
+
+| Research term | Implemented as |
+|---|---|
+| `PlanRegistry` | `Rule\Object\ClassMatchingPlanRegistry` |
+| `MappingPlanCompiler` | dissolved — `Rule\Object\ClassMatchingPlanFactory` builds plans; each property's catch plans compile themselves on first access |
+| `ClassMatchingPlan` / `PropertyPlan` / `CatchPlan` | `Rule\Object\ClassMatchingPlan`, `Rule\Object\Property\PropertyPlan`, `Rule\Object\Property\Match\CatchPlan` |
+| memoization | `RestartableIteratorAggregate` composing `ReusableIteratorAggregate` (memoize on success, restart after failure) |
+| lint feature | `Integration\Linter\{MappingLinter, Defect\*, Discovery\ClassMapDiscovery, Command\LintExceptionalMatcherCommand}` |
+| user docs | [docs/config/lint.md](../../config/lint.md) |
 
 ## The Ask
 

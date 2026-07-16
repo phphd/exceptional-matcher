@@ -45,3 +45,7 @@ for the changes not covered by automatic upgrade via Rector (see the "Upgrading"
   `PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService<...>` family) and \
   `PhPhD\ExceptionalMatcher\Rule\LazyMatchingRule` - all were `@internal`; the container ids are \
   dropped without aliases. Use `PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry` instead.
+
+* New: the `lint:exceptional-matcher` console command and the \
+  `PhPhD\ExceptionalMatcher\Integration\Linter\MappingLinter` service check the exception mappings for \
+  every statically detectable error ahead of time. See [docs/config/lint.md](docs/config/lint.md).

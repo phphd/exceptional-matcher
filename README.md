@@ -316,7 +316,9 @@ There are two configuration features:
 
 - [Match Conditions 🖇️](docs/config/match-conditions.md) – determine whether a given exception should match the given
   property;
-- [Violation Formatters 🎨](docs/config/violation-formatters.md) – represent the exception in a desired format.
+- [Violation Formatters 🎨](docs/config/violation-formatters.md) – represent the exception in a desired format;
+- [Linting Mappings 🔍](docs/config/lint.md) – catch every statically detectable mapping error ahead of time
+  with the `lint:exceptional-matcher` command.
 
 That's really all this library does – matches the exception and formats it (i.e. roasts the fish).
 
