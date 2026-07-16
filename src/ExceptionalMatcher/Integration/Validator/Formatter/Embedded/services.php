@@ -7,7 +7,9 @@ namespace PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\ExceptionViolationFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
@@ -19,6 +21,9 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
 
     $services
         ->set(ExceptionViolationFormatter::class.'<'.ViolationsEmbeddedException::class.'>', ViolationsEmbeddedExceptionFormatter::class)
+        ->args([
+            new Reference('phd_exceptional_matcher.translator', ContainerInterface::IGNORE_ON_INVALID_REFERENCE),
+        ])
         ->tag(MatchedExceptionFormatter::class, ['id' => ViolationsEmbeddedExceptionFormatter::class])
     ;
 

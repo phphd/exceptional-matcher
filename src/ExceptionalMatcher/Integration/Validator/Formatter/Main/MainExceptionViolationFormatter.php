@@ -34,7 +34,10 @@ final class MainExceptionViolationFormatter implements ExceptionViolationFormatt
     /** @api */
     public static function translator(TranslatorInterface $translator, string $translationDomain): Closure
     {
-        return static fn (string $messageTemplate): string => $translator->trans($messageTemplate, domain: $translationDomain);
+        return static fn (
+            string $messageTemplate,
+            array $parameters = [],
+        ): string => $translator->trans($messageTemplate, $parameters, domain: $translationDomain);
     }
 
     /** @return array{ConstraintViolation} */
