@@ -12,11 +12,11 @@ All code below is a sketch conveying shape and responsibilities, not final namin
 | **Plan compiler** | Turns a declaration into a plan; the **single validation boundary** for reference/shape checks (catalog A/B) — each runs here or in a condition constructor it invokes, throwing exactly as in production | anti-corruption boundary; "parse, don't validate" |
 | **Plan registry** | `getPlan(class-string): ?ClassMatchingPlan`, compile-on-first-use, per-process cache | **flyweight factory** |
 | **Match scope** | The extrinsic context of one match attempt: subject instance, property value, owner chain, property path | extrinsic state |
-| **Plan executor** | Walks a plan against a scope and an `ExceptionReciprocal` | domain service |
+| **Rule binding** | `plan->bind(…)` — the flyweight operation: weds intrinsic structure to one subject and yields the *existing* rule tree, which executes itself via `MatchingRule::process()` | flyweight operation (no executor service) |
 | **Mapping defect** | One found mapping problem with location (class, property, attribute ordinal) — a **lint-layer** report row built from a caught compile failure or a structural finding; the compiler knows nothing of it | reporting value (`Lint\` namespace) |
 
 The word *plan* is chosen over "metadata"/"blueprint-of-everything" because it names what the object is
-*for*: a precomputed course of action the executor follows. `compile` pairs with it naturally.
+*for*: a precomputed course of action the bound rules follow. `compile` pairs with it naturally.
 
 ## Plan structure (intrinsic state)
 
@@ -168,7 +168,7 @@ Notes:
   the compiler — the guarantee "constants are loaded before any attribute instantiation" holds for both
   runtime and lint by construction.
 
-## The registry (flyweight factory) and executor
+## The registry (flyweight factory) and rule binding
 
 ```php
 final class PlanRegistry
@@ -184,42 +184,47 @@ final class PlanRegistry
 }
 ```
 
-The executor replaces the assembler tree walk. Key simplification: today's graph needs *bidirectional*
-owner↔children links (hence the `LazyMatchingRule` self-reference dance); the executor drives parent→child
-traversal itself as recursion, so materialized scopes only need child→owner links:
+There is **no executor service** — an earlier draft had a procedural `PlanExecutor` recursing over plans;
+rejected (maintainer decision): execution stays object-oriented. **Binding** is the flyweight operation:
+it weds the intrinsic plan to one subject and yields the *existing* rule tree, which executes itself
+through `MatchingRule::process()` exactly as today — the same relationship
+`MatchConditionBlueprint::bind()` has to `MatchCondition`, one level up:
 
 ```
-execute(plan, subject, reciprocal, ownerScope): bool
-  scope = ObjectScope(subject, ownerScope)                       // implements MatchingRule
-  foreach plan.getPropertyPlans() as propertyPlan:              // property list materializes lazily, memoized
-    value = read(propertyPlan.property, subject)                 // uninitialized ⇒ null, as today
-    propertyScope = PropertyScope(scope, name, value)
-    foreach propertyPlan.getCatchPlans() as catchPlan:            // lazy compile — may throw InvalidMatchingPlanException
-      rule = new MatchExceptionRule(propertyScope, catchPlan.condition.bind(propertyScope),
-                                    catchPlan.formatterId, catchPlan.messageTemplate)
-      if rule.process(reciprocal): return true                   // reciprocal semantics unchanged
-    if value is object:                                          // nested: flyweight lookup by VALUE class
-      nestedPlan = registry.getPlan(value::class)
-      if nestedPlan && execute(nestedPlan, value, reciprocal, propertyScope): return true
-    if value is non-empty iterable:                              // per object item, keyed scope (property path `[key]`)
-      ... ItemScope(key) ... execute(itemPlan, item, ...)
-  return false
+ClassMatchingPlan::bind(subject, ?ownerRule): MatchingRule
+  → ObjectMatchingRuleSet + CompositeMatchingRule whose children are produced by iterating
+    getPropertyPlans() and binding each — lazily, so process() short-circuiting still skips
+    unbound (and uncompiled) properties
+
+PropertyPlan::bind(objectRuleSet): MatchingRule
+  → reads the property value (uninitialized ⇒ null, statics as today) → PropertyMatchingRuleSet;
+    children: each CatchPlan bound (below); a nested-object rule — registry.getPlan(value::class)?->bind(…),
+    the flyweight lookup by the VALUE's runtime class; per-item rules for non-empty iterables
+    (ItemOfIterableMatchingRule, keyed property path)
+
+CatchPlan::bind(propertyRuleSet): MatchExceptionRule
+  → new MatchExceptionRule(owner, blueprint->bind(owner), formatterId, messageTemplate)
+    // getCatchPlans() compiles lazily here — may throw InvalidMatchingPlanException
 ```
+
+`MainExceptionMatcher::match()` becomes
+`registry->getPlan($message::class)?->bind($message)->process($reciprocal)` — reciprocal semantics,
+declaration-order priority, and short-circuiting all keep living where they live today: in the rules.
 
 What survives, what dissolves:
 
-- **Survives unchanged (public behavior)**: `MatchExceptionRule` as the artifact inside `MatchedException`;
-  the owner-chain contract (`getPropertyPath()` / `getRootObject()` / `getValue()` / `getEnclosingObject()`)
-  that formatters consume; reciprocal matching semantics including declaration-order priority and
-  early exit once all exceptions are reciprocated; nested participation requiring `#[Try_]` on the nested
-  class (now expressed as a registry lookup by the *runtime class of the value* — same behavior as today's
-  `ObjectMatchingRuleSetAssembler` on the value).
-- **Dissolves**: `LazyMatchingRule`, the property-rules generator, `CompositeMatchingRule` as a structural
-  node, the four assembler/assembler-service layers. The existing scope-like classes
-  (`ObjectMatchingRuleSet`, `PropertyMatchingRuleSet`, `ItemOfIterableMatchingRule`) are replaced by fresh
-  `Rule\Scope\{ObjectScope, PropertyScope, IterableItemScope}` implementations (owner-chain halves
-  preserved; `process()` throws — the executor drives traversal) and deleted with the pipeline — all
-  `@internal`. Static properties keep participating exactly as today (pinned by an existing test).
+- **Survives (the object-oriented execution)**: `CompositeMatchingRule`, `ObjectMatchingRuleSet`,
+  `PropertyMatchingRuleSet`, `ItemOfIterableMatchingRule`, `MatchExceptionRule` — the rule tree and its
+  `process()` polymorphism are untouched, and with them the owner-chain contract (`getPropertyPath()` /
+  `getRootObject()` / `getValue()` / `getEnclosingObject()`) that formatters consume, reciprocal matching
+  semantics including declaration-order priority and early exit once all exceptions are reciprocated, and
+  nested participation requiring `#[Try_]` on the nested class (now expressed as a registry lookup by the
+  *runtime class of the value* — same behavior as today's `ObjectMatchingRuleSetAssembler` on the value).
+  Static properties keep participating exactly as today (pinned by an existing test).
+- **Dissolves**: the four assembler/assembler-service layers (the procedural derivation of structure —
+  plans now hold it, memoized) and `LazyMatchingRule` (the owner↔children construction dance is gone: a
+  rule set materializes its children on demand, passing itself as owner, with the structure supplied by
+  the plan). All `@internal`.
 
 ## Backward compatibility
 
@@ -227,7 +232,7 @@ What survives, what dissolves:
 |---|---|
 | `ExceptionMatcher`, `Try_`, `Catch_`, formatters, `MatchedException(List)` | untouched |
 | `MatchCondition` (@api, custom conditions) | untouched — blueprints *produce* `MatchCondition`s |
-| `MatchingRule` (@api, received by condition blueprints at `bind()`) | scopes implement it; contract preserved |
+| `MatchingRule` (@api, received by condition blueprints at `bind()`) | the existing rule sets keep implementing it; contract preserved |
 | `MatchConditionCompiler` / `MatchConditionBlueprint` (@api, custom `match:` conditions) | untouched — already the extension point; `MatchConditionFactory` no longer exists (removed outright during 2.0 development — 2.0 is unreleased, so no adapter or deprecation window was needed). Custom conditions are lintable by construction: their `compile()` runs inside the plan compiler. Documented in `docs/config/match-conditions.md` |
 | Container service ids | the `@internal` assembler-service ids are dropped without aliases (nothing outside the library can construct meaningful arguments for them); moving the 2.0-only `ConstantsAutoloadingCompilerPass`/`ConstantsClassLoader` needs no rector entry (they never shipped in 1.x) — just keep the *targets* of existing `upgrade/2.0.php` renames pointing at final FQCNs |
 
@@ -253,7 +258,7 @@ ahead of time in CI.
 ## Performance expectations
 
 Per `match()` call today: full reflection walk + attribute instantiation + condition construction (partially
-lazy). After: one plan compile per class per process; per match, only scope objects + value-bound conditions
+lazy). After: one plan compile per class per process; per match, only rule objects + value-bound conditions
 are allocated (intrinsic conditions are shared). Long-running messenger workers benefit most. The phpbench
 setup in the repo should capture before/after on: first match (expect ≈ parity) and repeated match of the
 same class (expect a significant win). No file/opcache-level plan cache is proposed — attributes cannot

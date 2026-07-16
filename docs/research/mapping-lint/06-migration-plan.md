@@ -17,11 +17,12 @@ mis-cataloged as silent.)*
 
 - Introduce `ClassMatchingPlan` / `PropertyPlan` / `CatchPlan`, `MappingPlanCompiler` (throws
   `InvalidMatchingPlanException` — production behavior is its only behavior; no defect-handler parameter),
-  `PlanRegistry`, and the executor ([04-target-model.md](04-target-model.md)).
+  `PlanRegistry`, and plan→rule binding ([04-target-model.md](04-target-model.md)) — **no executor
+  service**: plans `bind()` into the existing rule tree, which keeps executing itself via `process()`.
 - Built-in conditions already implement `MatchConditionCompiler` (+ blueprints) — shipped; what remains is
   invoking `compile()` from the plan compiler once per class instead of from the per-match assembler
   (no value-object extraction — the condition constructors/compilers are the single validation home).
-- Rewire `MainExceptionMatcher` to registry + executor.
+- Rewire `MainExceptionMatcher` to `registry->getPlan(...)?->bind($message)->process($reciprocal)`.
 - Delete the assembler layer, `LazyMatchingRule`, and the generator walk once green.
 
 **Definition of done**: the entire existing test suite passes unchanged (`ServiceTest` / integration /
@@ -74,7 +75,7 @@ pair, need no entries when moved).
 
 | Risk | Mitigation |
 |---|---|
-| Executor rewrite drifts from current matching semantics (ordering, short-circuit, nested traversal) | Phase 1 gate = full existing suite green *before* deleting the assemblers; add order-sensitivity tests first if coverage gaps are found |
+| Plan→rule binding drifts from current matching semantics (ordering, short-circuit, nested traversal) | lower risk than a rewrite — the rule tree that executes is the existing one; Phase 1 gate = full existing suite green *before* deleting the assemblers; add order-sensitivity tests first if coverage gaps are found |
 | Stricter failures surprise users (enum checks no longer hidden by null values; wrapped exception type) | UPGRADE.md `## 2.0` entry (2.0 unreleased — no BC constraint); `InvalidMatchingPlanException` names the exact class/property/attribute and keeps the original message verbatim |
 | Plan cache memory in long-running workers | bounded by the number of mapped classes; plans hold reflection objects only — no instances |
 | `ReflectionProperty::getValue()` on PHP 8.4 virtual/hooked properties executes get-hooks during matching | identical to current behavior (values are read today too); note in docs, no change |
@@ -91,10 +92,13 @@ pair, need no entries when moved).
 4. **`PlanRegistry` exposure** — `@api` (future warmup entry point).
 5. **Naming** — settled with the maintainer: `ClassMatchingPlan` (gradual: `getPropertyPlans()` is an
    iterable materialized on first iteration, mirroring `PropertyPlan::getCatchPlans()`) / `PlanRegistry` /
-   `PlanExecutor` /
    `MatchConditionCompiler` / `MatchConditionBlueprint` (the "Diagnostic"/"Sink" jargon was deliberately
    dropped in favor of the library's plain vocabulary).
-6. **No `DefectHandler`** (maintainer decision): the compiler takes no reporting-policy parameter — it
+6. **No `PlanExecutor`** (maintainer decision — object-oriented DDD over procedural code): plans `bind()`
+   into the existing rule tree (`ObjectMatchingRuleSet` / `PropertyMatchingRuleSet` /
+   `CompositeMatchingRule` / `MatchExceptionRule`), and the rules keep executing themselves through
+   `MatchingRule::process()`; no procedural walker service exists.
+7. **No `DefectHandler`** (maintainer decision): the compiler takes no reporting-policy parameter — it
    compiles exactly as it would in production and throws `InvalidMatchingPlanException` on the first
    defect. The lint command drives it eagerly and reports the exceptions (first error per property);
    `MappingDefect` survives only as the linter's report row, built from caught compile failures and the

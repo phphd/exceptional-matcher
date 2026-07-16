@@ -55,7 +55,7 @@ With this split, **"the mapping compiles" ⇔ "the mapping is valid"**, and:
 | [01-failure-catalog.md](01-failure-catalog.md) | Exhaustive inventory of mapping failure modes: current behavior, static detectability, target home for each check |
 | [02-current-architecture.md](02-current-architecture.md) | As-is walkthrough: assembly pipeline, where validation lives, why lint cannot be bolted on cleanly |
 | [03-design-options.md](03-design-options.md) | Four options evaluated (ghost dry-run, flyweight plan, parallel validator, probe exception) with decision matrix |
-| [04-target-model.md](04-target-model.md) | The proposed domain model in depth: ubiquitous language, plan structure, condition blueprints, compiler, executor, BC strategy |
+| [04-target-model.md](04-target-model.md) | The proposed domain model in depth: ubiquitous language, plan structure, condition blueprints, compiler, rule binding, BC strategy |
 | [05-lint-command.md](05-lint-command.md) | Command UX, class discovery, defect severities and codes, cache-warmup integration, standalone usage |
 | [06-migration-plan.md](06-migration-plan.md) | Staged implementation plan, testing strategy, behavior changes, risks, open questions |
 

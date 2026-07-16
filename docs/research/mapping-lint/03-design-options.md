@@ -38,9 +38,10 @@ Separate intrinsic from extrinsic state (see [02-current-architecture.md](02-cur
 - **`ClassMatchingPlan`** — validated, per-class mapping structure (flyweight), materialized gradually
   (property plans on first iteration, catch plans on first access) and memoized, produced by a
   **`MappingPlanCompiler`** and cached by a **`PlanRegistry`** (flyweight factory).
-- **Execution** — a per-match walk that binds a plan to the subject instance and exception list, materializing
-  the existing owner-chain objects (`ObjectMatchingRuleSet`, `PropertyMatchingRuleSet`, `MatchExceptionRule`)
-  exactly as today, so formatters and the public `MatchedException` contract are untouched.
+- **Execution** — plans `bind()` to the subject instance, materializing the existing owner-chain rule
+  objects (`ObjectMatchingRuleSet`, `PropertyMatchingRuleSet`, `MatchExceptionRule`) exactly as today; the
+  rule tree keeps executing itself via `process()` (no executor service — object-oriented execution is
+  preserved), so formatters and the public `MatchedException` contract are untouched.
 - **All validation happens at compile.** Conditions split into a static half (validated blueprint) and a
   bind-time half (value binding). The compiler has exactly one failure behavior — the production one:
   throw `InvalidMatchingPlanException` on the first defect, location attached. There is deliberately no
