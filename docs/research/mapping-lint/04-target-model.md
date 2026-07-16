@@ -8,7 +8,7 @@ All code below is a sketch conveying shape and responsibilities, not final namin
 | Term | Meaning | DDD / pattern role |
 |---|---|---|
 | **Mapping declaration** | The `#[Try_]` / `#[Catch_]` attributes as authored on a class | source text |
-| **Object matching plan** (`ClassMatchingPlan`) | The compiled, *validated* mapping of one class: which properties catch what, under which conditions, formatted how | gradually materialized, memoized value / **flyweight (intrinsic state)** |
+| **Class matching plan** (`ClassMatchingPlan`) | The compiled, *validated* mapping of one class: which properties catch what, under which conditions, formatted how | gradually materialized, memoized value / **flyweight (intrinsic state)** |
 | **Plan compiler** | Turns a declaration into a plan; the **single validation boundary** for reference/shape checks (catalog A/B) — each runs here or in a condition constructor it invokes, throwing exactly as in production | anti-corruption boundary; "parse, don't validate" |
 | **Plan registry** | `getPlan(class-string): ?ClassMatchingPlan`, compile-on-first-use, per-process cache | **flyweight factory** |
 | **Match scope** | The extrinsic context of one match attempt: subject instance, property value, owner chain, property path | extrinsic state |
@@ -45,10 +45,10 @@ final class PropertyPlan
     /**
      * Compiled on first access, memoized on success (gradual materialization).
      *
-     * @return list<CatchPlan>
+     * @return iterable<CatchPlan>
      * @throws InvalidMatchingPlanException
      */
-    public function getCatchPlans(): array;
+    public function getCatchPlans(): iterable;
 }
 
 final class CatchPlan
