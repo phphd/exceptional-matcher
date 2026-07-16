@@ -61,7 +61,8 @@ Two properties of this pipeline matter for lint:
 
 The key observation: the *rules themselves* are already centralized and well-factored — one condition type,
 one factory, one set of assertions. What is missing is not validation logic but an execution mode that runs
-it (a) eagerly, (b) without an instance, (c) collecting all errors instead of throwing the first.
+it (a) eagerly and exhaustively, (b) without an instance. (The thrown exceptions themselves are fine — the
+lint command reports them as thrown; no collecting mode is needed.)
 
 ## The diagnosis: intrinsic and extrinsic state are fused
 

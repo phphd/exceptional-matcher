@@ -15,9 +15,10 @@ mis-cataloged as silent.)* A behavior-strictening bugfix: changelog + UPGRADE no
 
 ## Phase 1 — plan model behind existing seams (internal rewrite)
 
-- Introduce `MatchingPlan` / `PropertyPlan` / `CatchPlan`, `MappingPlanCompiler` + `DefectHandler`,
+- Introduce `MatchingPlan` / `PropertyPlan` / `CatchPlan`, `MappingPlanCompiler` (throws
+  `InvalidMatchingPlanException` — production behavior is its only behavior; no defect-handler parameter),
   `PlanRegistry`, and the executor ([04-target-model.md](04-target-model.md)).
-- Migrate built-in condition factories to `CatchConditionCompiler`s (no value-object extraction — the
+- Migrate built-in condition factories to `MatchConditionCompiler`s (no value-object extraction — the
   condition constructors, now invoked at compile time, are the single validation home).
 - Rewire `MainExceptionMatcher` to registry + executor. Wrap not-yet-migrated / third-party
   `MatchConditionFactory` services in the legacy adapter blueprint.
@@ -30,7 +31,7 @@ handling, formatter owner-chain data.
 
 ## Phase 2 — public extension API
 
-- Publish `CatchConditionCompiler` (+ blueprint interface) as the documented way to add custom `match:`
+- Publish `MatchConditionCompiler` (+ blueprint interface) as the documented way to add custom `match:`
   conditions; deprecate `MatchConditionFactory` (kept working through the adapter for ≥ one minor line).
 - Update `docs/config/match-conditions.md`. The factory→compiler migration is **not** rector-automatable
   (the compile/bind split is semantic) — UPGRADE.md carries a manual guide; `upgrade/2.1.php` gets
@@ -40,14 +41,15 @@ handling, formatter owner-chain data.
 
 ## Phase 3 — linter and command
 
-- `MappingLinter` core + defect codes (catalog ids), `lint:exceptional-matcher` command, discovery via
+- `MappingLinter` core (eager per-property compile in try/catch + the structural checks C1–C4/B10; compile
+  failures reported as-is, no defect codes), `lint:exceptional-matcher` command, discovery via
   `composer/class-map-generator` ([05-lint-command.md](05-lint-command.md)).
 - composer: `symfony/console` + `composer/class-map-generator` into `require-dev`/`suggest`; extend
   `conflict` envelope for console.
 - Docs: README section, a `docs/config/` page for the command, "lint as a unit test" recipe for standalone
   users.
 - Dogfood: lint the library's own `src/**/Tests/Stub/` classes in CI; intentionally-broken stubs assert
-  their specific defect codes.
+  their specific failure messages.
 
 ## Phase 4 — optional follow-ups
 
@@ -60,10 +62,12 @@ handling, formatter owner-chain data.
 
 - **Behavior parity**: rely on existing feature-local suites; extend existing test classes rather than
   creating parallel ones; stubs live in the feature's `Tests/Stub/` directory (established repo convention).
-- **Compiler defects**: one test per catalog id, driven by a broken stub each; PHP-version-dependent
+- **Compiler defects**: one test per catalog id, each driving a broken stub and asserting the
+  `InvalidMatchingPlanException` message + location; PHP-version-dependent
   cases (property hooks, B4) use `markTestSkipped` on older runtimes.
-- **Legacy adapter**: a stub legacy `MatchConditionFactory` asserting (a) its checks surface in lint via the
-  compile-time dry-run, (b) it still receives a real scope at match time.
+- **Legacy adapter**: a stub legacy `MatchConditionFactory` asserting (a) end-to-end matching still works,
+  with the real scope at bind time, (b) lint passes over it without failing (legacy factories are invisible
+  to lint — the compile-time dry-run was dropped with the defect-handler concept).
 - **Static analysis**: CI runs PHPStan/Psalm on 8.1 + 8.5 × highest/lowest deps — reflection-of-hooks code
   needs the same version guards as `ExceptionOriginMatchCondition::propertyHookExists()`; prefer inline
   suppressions where unavoidable.
@@ -73,8 +77,8 @@ handling, formatter owner-chain data.
 | Risk | Mitigation |
 |---|---|
 | Executor rewrite drifts from current matching semantics (ordering, short-circuit, nested traversal) | Phase 1 gate = full existing suite green *before* deleting the assemblers; add order-sensitivity tests first if coverage gaps are found |
-| Legacy custom factories violate the "static checks before value-dependent early returns" convention and throw on the compile-time dry-run (null value) | adapter reports dry-run failures of *legacy* factories as **warnings**, not errors — uncertainty is explicit; migrated compilers report errors |
-| Stricter failures surprise users (whole-class fail-fast; enum checks no longer hidden by null values; wrapped exception type) | changelog + UPGRADE entry; `InvalidMatchingPlanException` names the exact class/property/attribute and keeps the original message verbatim |
+| Legacy custom factories are invisible to lint (their assertions stay bind-time; no compile-time dry-run) | documented limitation; the deprecation pushes migration to `MatchConditionCompiler`, which is lintable by construction |
+| Stricter failures surprise users (enum checks no longer hidden by null values; wrapped exception type) | changelog + UPGRADE entry; `InvalidMatchingPlanException` names the exact class/property/attribute and keeps the original message verbatim |
 | Plan cache memory in long-running workers | bounded by the number of mapped classes; plans hold reflection objects only — no instances |
 | `ReflectionProperty::getValue()` on PHP 8.4 virtual/hooked properties executes get-hooks during matching | identical to current behavior (values are read today too); note in docs, no change |
 
@@ -89,7 +93,10 @@ handling, formatter owner-chain data.
    `RootObject` test stub is `#[Try_]` with zero catches and must keep matching through iterable items.
 4. **`PlanRegistry` exposure** — `@api` (future warmup entry point).
 5. **Naming** — settled with the maintainer: `MatchingPlan` / `PlanRegistry` / `PlanExecutor` /
-   `CatchConditionCompiler` / `MatchConditionBlueprint`; defects are `MappingDefect` (+ `DefectSeverity`,
-   `DefectLocation`) reported into a `DefectHandler` (`ThrowingDefectHandler` runtime /
-   `CollectingDefectHandler` lint) — the "Diagnostic"/"Sink" jargon was deliberately dropped in favor of
-   the library's plain vocabulary.
+   `MatchConditionCompiler` / `MatchConditionBlueprint` (the "Diagnostic"/"Sink" jargon was deliberately
+   dropped in favor of the library's plain vocabulary).
+6. **No `DefectHandler`** (maintainer decision): the compiler takes no reporting-policy parameter — it
+   compiles exactly as it would in production and throws `InvalidMatchingPlanException` on the first
+   defect. The lint command drives it eagerly and reports the exceptions (first error per property);
+   `MappingDefect` survives only as the linter's report row, built from caught compile failures and the
+   linter's own structural findings.

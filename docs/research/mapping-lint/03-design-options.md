@@ -41,22 +41,24 @@ Separate intrinsic from extrinsic state (see [02-current-architecture.md](02-cur
   the existing owner-chain objects (`ObjectMatchingRuleSet`, `PropertyMatchingRuleSet`, `MatchExceptionRule`)
   exactly as today, so formatters and the public `MatchedException` contract are untouched.
 - **All validation happens at compile.** Conditions split into a static half (validated blueprint) and a
-  bind-time half (value binding). The compiler reports into a `DefectHandler`: a throwing handler for
-  runtime (fail fast on first use of a broken class), a collecting handler for lint (all defects,
-  per-`Catch_` granularity).
+  bind-time half (value binding). The compiler has exactly one failure behavior — the production one:
+  throw `InvalidMatchingPlanException` on the first defect, location attached. There is deliberately no
+  reporting-policy parameter (no `DefectHandler` strategy).
 
-Then the linter is, definitionally, *the compiler run over discovered classes with a collecting defect
-handler* —
-single source of truth holds by construction, not by discipline.
+Then the linter is, definitionally, *the compiler run eagerly over every property of every discovered
+class*, with the thrown exceptions turned into a report — single source of truth holds by construction,
+not by discipline.
 
 Properties:
 
 - ✅ Single source of truth is structural: lint and runtime execute the same compiler code path.
-- ✅ Per-`Catch_` error granularity (each attribute compiles in isolation).
+- ✅ First-error-per-property granularity (the linter catches the compile exception per property and keeps
+  walking) — the `lint:yaml` model: fix, re-run.
 - ✅ Works for abstract classes (no instantiation), and static checks cannot hide behind value branches —
   the API shape makes the B11 class of bug unrepresentable.
-- ✅ Deterministic fail-fast at runtime: a broken mapping throws on *first* match attempt of that class,
-  regardless of short-circuiting.
+- ✅ Deterministic surfacing at runtime: a property a match *reaches* fails at compile of that property —
+  never hidden behind value-dependent branches. Properties a match never reaches stay dormant
+  (short-circuit economics preserved); surfacing those ahead of time is exactly the linter's job.
 - ✅ Performance: reflection + attribute instantiation + static condition construction happen once per class
   per process instead of per `match()` call — relevant for messenger workers; measurable with the existing
   phpbench setup.
@@ -102,11 +104,11 @@ cheap if ever needed for a quick diagnostic.
 | Criterion | A ghost dry-run | B flyweight plans | C parallel validator | D probe hack |
 |---|---|---|---|---|
 | Single source of truth | ✅ by convention | ✅ **by construction** | ❌ | ✅ |
-| Error granularity | per class | **per `Catch_`** | per check | per class |
+| Error granularity | per class | **first error per property** | per check | per class |
 | Catches B11-style ordering-hidden checks | ⚠️ needs convention | ✅ structurally | ✅ | ❌ |
 | Abstract classes / no-instantiation coverage | ❌ | ✅ | ✅ | ❌ |
 | Custom factories linted | ✅ | ✅ (adapter dry-run) | ❌ | ✅ |
-| Runtime failure timing improved | ❌ | ✅ fail-fast at first use | ❌ | ❌ |
+| Runtime failure timing improved | ❌ | ✅ deterministic at first reach | ❌ | ❌ |
 | Runtime performance | unchanged | **improved** (cached plans) | unchanged | unchanged |
 | False positives | none known | none known | drift over time | ❌ TypeError class |
 | BC risk | minimal | moderate (internal-only + adapter) | none | none |

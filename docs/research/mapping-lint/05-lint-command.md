@@ -7,13 +7,20 @@ standalone-usage story).
 
 ```
 MappingLinter (framework-agnostic core service)
-  = class discovery ∘ MappingPlanCompiler(CollectingDefectHandler) ∘ defect report
+  = class discovery ∘ eager per-property compile in try/catch ∘ structural checks ∘ report
 
 LintExceptionalMatcherCommand (thin optional Symfony Console wrapper)
 ```
 
-`MappingLinter` takes an iterable of class names and returns `list<MappingDefect>` — it contains **no
-checks of its own**; every defect originates in the plan compiler ([04-target-model.md](04-target-model.md)).
+`MappingLinter` takes an iterable of class names and returns `list<MappingDefect>`. Every reference/shape
+check fires inside the *unmodified* `MappingPlanCompiler` ([04-target-model.md](04-target-model.md)): the
+compiler behaves exactly as in production and simply **throws** `InvalidMatchingPlanException` — there is
+no collecting mode and no reporting-policy parameter. The linter forces each property eagerly, catches the
+exception, turns it into a report row, and moves on — so granularity is *first error per property* (the
+`lint:yaml` model: fix, re-run). The linter's only own checks are the structural ones the runtime
+deliberately ignores (C1–C4) plus the `format:` registry lookup (B10, against the same tagged locator the
+delegating formatter uses) — nothing is duplicated: no runtime rule exists for the former, and the registry
+stays the single source of contents for the latter.
 
 ## Command UX
 
@@ -36,16 +43,17 @@ bin/console lint:exceptional-matcher src/ [more paths…]
 
 ```
  ✗ App\Command\TransferMoneyCommand
-     $withdrawFromCardId  #[Catch_] #1  [EM-B03] from: method Card::witdraw() does not exist
-     $depositToCardId     #[Catch_] #0  [EM-D01] enum_value on bool property can never match
+     $withdrawFromCardId  #[Catch_] #1  from: method Card::witdraw() does not exist
+     $depositToCardId     #[Catch_] #0  method App\Command\TransferMoneyCommand::isCardError() does not exist
  ✓ App\Command\RegisterUserCommand
 
  2 classes scanned, 1 with errors (2 errors, 0 warnings)
 ```
 
-Defect codes are the catalog ids ([01-failure-catalog.md](01-failure-catalog.md)) — stable identifiers
-that make CI baselines and docs cross-references possible; the human message is the original assertion
-message (webmozart texts are already good).
+Messages are the original assertion texts verbatim (webmozart messages are already good); the compiler
+adds only the location. There are no defect codes — an earlier draft attached catalog ids to defects
+through the defect-handler channel, which was dropped; the ids in
+[01-failure-catalog.md](01-failure-catalog.md) remain documentation cross-references only.
 
 ## Class discovery
 
@@ -94,7 +102,7 @@ teams). This is a follow-up, not part of the initial delivery.
 
 ## Standalone (non-Symfony) usage
 
-`MappingLinter` + `CollectingDefectHandler` are plain services available from
+`MappingLinter` is a plain service available from
 `PhdExceptionalMatcherExtension::getContainer()`, so non-Symfony users can run lint in a test:
 
 ```php
@@ -105,4 +113,4 @@ self::assertSame([], $defects);
 That "lint as a unit test" pattern is worth documenting even for Symfony users — it pins mapping validity to
 the test suite without any console invocation, and gives the library its own dogfooding surface (the shared
 stubs under `tests/Unit/Stub/` are linted for zero defects, while the intentionally-broken
-`Tests/Stub/Invalid/` fixtures assert their specific defect codes).
+`Tests/Stub/Invalid/` fixtures assert their specific failure messages).

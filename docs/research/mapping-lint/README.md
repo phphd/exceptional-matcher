@@ -42,8 +42,9 @@ The recommended direction is a **Flyweight split** of the domain model:
 With this split, **"the mapping compiles" ⇔ "the mapping is valid"**, and:
 
 - **Runtime** = compile (cached) + execute. Same errors, but fail-fast and only once per class.
-- **Lint** = compile every discovered class with a collecting defect handler instead of a throwing one.
-  Zero duplicated rules by construction — lint literally runs the same compiler.
+- **Lint** = eagerly compile every discovered class with the *same, unmodified* compiler — it throws
+  exactly what production would throw, and the command turns those failures into the report (first error
+  per property). Zero duplicated rules by construction; the compiler takes no reporting-policy parameter.
 - **Bonus**: reflection + attribute instantiation stop being re-done on every `match()` call — a measurable
   performance win for long-running workers (messenger middleware).
 
