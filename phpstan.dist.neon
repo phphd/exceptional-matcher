@@ -20,6 +20,8 @@ parameters:
         analyse:
             # Property hook syntax is not supported at the minimum PHP version
             - src/*/*Hooked*.php
+            # References an undefined constant on purpose (broken-mapping lint fixture)
+            - src/*/*UndefinedConstant*.php
     fileExtensions:
         - 'php'
     stubFiles:
