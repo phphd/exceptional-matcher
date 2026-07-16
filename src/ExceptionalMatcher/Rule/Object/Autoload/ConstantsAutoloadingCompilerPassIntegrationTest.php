@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Assembler\Autoload;
+namespace PhPhD\ExceptionalMatcher\Rule\Object\Autoload;
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\ViolationsEmbeddedExceptionFormatter;
@@ -15,8 +15,8 @@ use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use function class_exists;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Assembler\Autoload\ConstantsAutoloadingCompilerPass
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Assembler\Autoload\ConstantsClassLoader
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Autoload\ConstantsAutoloadingCompilerPass
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Autoload\ConstantsClassLoader
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssemblerService
  *
  * @internal

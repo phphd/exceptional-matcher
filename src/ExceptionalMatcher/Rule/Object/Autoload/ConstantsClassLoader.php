@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Assembler\Autoload;
+namespace PhPhD\ExceptionalMatcher\Rule\Object\Autoload;
 
 use function array_map;
 use function glob;

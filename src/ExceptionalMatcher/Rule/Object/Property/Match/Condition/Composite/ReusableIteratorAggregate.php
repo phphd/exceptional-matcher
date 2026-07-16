@@ -7,7 +7,6 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composit
 use CachingIterator;
 use Iterator;
 use IteratorAggregate;
-use Traversable;
 
 /**
  * @internal
