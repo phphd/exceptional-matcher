@@ -23,7 +23,8 @@
         "symfony/validator": "<6.0 || >8.4",
         "symfony/http-kernel": "<6.0 || >8.4",
         "symfony/dependency-injection": "<6.2 || >8.4",
-        "symfony/messenger": "<6.4 || >8.4"
+        "symfony/messenger": "<6.4 || >8.4",
+        "symfony/console": "<6.0 || >8.4"
     },
     "require-dev": {
         "symfony/validator": ">=6.0",
@@ -37,11 +38,13 @@
         "phpunit/phpunit": "^10.5.46",
         "nyholm/symfony-bundle-test": "^3.1",
         "phpbench/phpbench": "^1.2.6",
-        "composer/class-map-generator": "^1.1"
+        "composer/class-map-generator": "^1.1",
+        "symfony/console": ">=6.0"
     },
     "suggest": {
         "symfony/validator": "Install Validator component to format matched exceptions into ConstraintViolationList format",
         "symfony/messenger": "Install Messenger component to match with a middleware",
+        "symfony/console": "Install Console component to lint the exception mappings with the lint:exceptional-matcher command",
         "composer/class-map-generator": "Install class map generator to discover classes for the lint:exceptional-matcher command",
         "amphp/amp": "Install AMP package to match multiple exceptions at once"
     },
