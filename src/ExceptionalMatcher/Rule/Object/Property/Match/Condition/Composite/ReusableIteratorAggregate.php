@@ -30,8 +30,8 @@ final class ReusableIteratorAggregate implements IteratorAggregate
         $this->iterator = new CachingIterator($iterator, CachingIterator::FULL_CACHE);
     }
 
-    /** @return Traversable<TKey,TValue> */
-    public function getIterator(): Traversable
+    /** @return Iterator<TKey,TValue> */
+    public function getIterator(): Iterator
     {
         /** @phpstan-ignore generator.keyType (CachingIterator::getCache() stub loses the TKey type) */
         yield from $this->iterator->getCache();
