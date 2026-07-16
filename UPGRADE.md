@@ -32,3 +32,11 @@ for the changes not covered by automatic upgrade via Rector (see the "Upgrading"
   > `'exception.message'` given.
 
   Fix it by passing it as a named parameter: `message: 'exception.message'`.
+
+* Changed: `match: enum_value` static mapping checks (`from:` must reference a `BackedEnum` \
+  with the `'from'` method) are no longer skipped when the property value happens to be `null`.
+
+* Changed: matching runs through compiled per-class matching plans (`ClassMatchingPlanRegistry`) now. \
+  The `#[Catch_]` attributes of a property are compiled once per process and memoized on success; \
+  error timing and exception types/messages are unchanged (a broken mapping still throws on the \
+  first `match()` call that reaches the property).
