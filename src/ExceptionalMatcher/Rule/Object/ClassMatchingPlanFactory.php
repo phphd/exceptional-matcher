@@ -86,7 +86,13 @@ final class ClassMatchingPlanFactory
         ReflectionProperty $property,
         ClassMatchingPlanRegistry $planRegistry,
     ): bool {
-        if ($catchPlans->getIterator()->valid()) {
+        try {
+            if ($catchPlans->getIterator()->valid()) {
+                return true;
+            }
+        } catch (Throwable) {
+            // a broken catch mapping keeps the property matchable:
+            // the failure resurfaces once the catch plans are accessed
             return true;
         }
 

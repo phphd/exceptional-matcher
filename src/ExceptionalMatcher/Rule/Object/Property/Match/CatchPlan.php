@@ -35,4 +35,10 @@ final class CatchPlan
             $this->messageTemplate,
         );
     }
+
+    /** @return class-string<MatchedExceptionFormatter<TException,mixed>> */
+    public function getFormatterId(): string
+    {
+        return $this->formatterId;
+    }
 }

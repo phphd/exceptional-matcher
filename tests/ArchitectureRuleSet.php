@@ -56,6 +56,12 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
+    public function testLinterDependencies(): BuildStep
+    {
+        return $this->layerRule('linter');
+    }
+
+    #[TestRule]
     public function testValidatorMatcherDependencies(): BuildStep
     {
         return $this->layerRule('validatorMatcher');
@@ -138,6 +144,16 @@ final class ArchitectureRuleSet
                     Selector::classname(InvalidUidException::class),
                 ],
             ],
+            'linter' => [
+                'deps' => [
+                    $this->model(),
+                    $this->exception(),
+                    Selector::classname(Assert::class),
+                    Selector::inNamespace('Psr\Container'),
+                    Selector::inNamespace('Composer\ClassMapGenerator'),
+                    Selector::inNamespace('Symfony\Component\Console'),
+                ],
+            ],
             'validatorMatcher' => [
                 'deps' => [
                     $this->matcher(),
@@ -190,8 +206,14 @@ final class ArchitectureRuleSet
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Exception')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Linter')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Upgrade')),
         );
+    }
+
+    public function linter(): SelectorInterface
+    {
+        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Linter');
     }
 
     public function validatorMatcher(): SelectorInterface

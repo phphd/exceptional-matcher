@@ -36,11 +36,13 @@
         "phphd/coding-standard": "~1.0.0",
         "phpunit/phpunit": "^10.5.46",
         "nyholm/symfony-bundle-test": "^3.1",
-        "phpbench/phpbench": "^1.2.6"
+        "phpbench/phpbench": "^1.2.6",
+        "composer/class-map-generator": "^1.1"
     },
     "suggest": {
         "symfony/validator": "Install Validator component to format matched exceptions into ConstraintViolationList format",
         "symfony/messenger": "Install Messenger component to match with a middleware",
+        "composer/class-map-generator": "Install class map generator to discover classes for the lint:exceptional-matcher command",
         "amphp/amp": "Install AMP package to match multiple exceptions at once"
     },
     "replace": {
@@ -50,7 +52,8 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/phphd/coding-standard"
+            "url": "https://github.com/phphd/coding-standard",
+            "no-api": true
         }
     ],
     "autoload": {

@@ -69,10 +69,13 @@ final class PropertyPlanUnitTest extends TestCase
     {
         $plan = $this->getEnumStubMessagePlan();
 
-        try {
-            $propertyPlans = [...$plan->getPropertyPlans()];
+        // the property with a broken catch mapping is still planned - the failure surfaces on access
+        [$propertyPlan] = [...$plan->getPropertyPlans()];
 
-            self::fail('The broken catch mapping must have failed the compilation, got '.count($propertyPlans).' property plans.');
+        try {
+            $catchPlans = [...$propertyPlan->getCatchPlans()];
+
+            self::fail('The broken catch mapping must have failed the compilation, got '.count($catchPlans).' catch plans.');
         } catch (LogicException $exception) {
             self::assertStringContainsString('EnumValueMatchCondition requires `from:`', $exception->getMessage());
         }
@@ -80,7 +83,7 @@ final class PropertyPlanUnitTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('EnumValueMatchCondition requires `from:`');
 
-        self::assertCount(0, [...$plan->getPropertyPlans()]);
+        self::assertCount(0, [...$propertyPlan->getCatchPlans()]);
     }
 
     private function getEnumStubMessagePlan(): ClassMatchingPlan
