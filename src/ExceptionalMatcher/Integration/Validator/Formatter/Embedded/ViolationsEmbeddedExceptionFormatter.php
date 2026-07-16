@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded;
 
+use Closure;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Exception\MatchedException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\ExceptionViolationFormatter;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
+use Symfony\Component\Validator\Validation;
+use Throwable;
 use Webmozart\Assert\Assert;
 
 use function array_map;
@@ -25,6 +28,13 @@ const embedded_violations = ViolationsEmbeddedExceptionFormatter::class;
  */
 final class ViolationsEmbeddedExceptionFormatter implements ExceptionViolationFormatter
 {
+    /** @api */
+    public function __construct(
+        /** @var ?Closure(string,array<array-key,mixed>):string */
+        private readonly ?Closure $translate = null,
+    ) {
+    }
+
     /**
      * @param MatchedException<ViolationsEmbeddedException|ValidationFailedException> $matchedException
      *
@@ -35,11 +45,6 @@ final class ViolationsEmbeddedExceptionFormatter implements ExceptionViolationFo
         $exception = $matchedException->getException();
         Assert::isInstanceOfAny($exception, [ViolationsEmbeddedException::class, ValidationFailedException::class]);
 
-        $rule = $matchedException->getRule();
-        $root = $rule->getRootObject();
-        $propertyPath = $rule->getPropertyPath()
-            ->join('.')
-        ;
         /** @var list<ConstraintViolationInterface> $violationList */
         $violationList = iterator_to_array($exception->getViolations());
 
@@ -47,9 +52,20 @@ final class ViolationsEmbeddedExceptionFormatter implements ExceptionViolationFo
             throw new LogicException('Violation list must not be empty');
         }
 
+        $rule = $matchedException->getRule();
+
+        $root = $rule->getRootObject();
+        $propertyPath = $rule->getPropertyPath()
+            ->join('.')
+        ;
+        $redoTranslation = $this->shouldRedoTranslation($exception);
+
+        /** @psalm-suppress PossiblyNullFunctionCall */
         return array_map(
-            static fn (ConstraintViolationInterface $violation): ConstraintViolation => new ConstraintViolation(
-                $violation->getMessage(),
+            fn (ConstraintViolationInterface $violation): ConstraintViolation => new ConstraintViolation(
+                $redoTranslation
+                    ? ($this->translate)($violation->getMessageTemplate(), $violation->getParameters())
+                    : $violation->getMessage(),
                 $violation->getMessageTemplate(),
                 $violation->getParameters(),
                 $root,
@@ -62,5 +78,25 @@ final class ViolationsEmbeddedExceptionFormatter implements ExceptionViolationFo
             ),
             $violationList,
         );
+    }
+
+    /**
+     * Validation::createCallable() instantiates a validator afresh,
+     * so the pre-translated message does not reflect an Accept-Language header,
+     * thereby it requires re-translation.
+     *
+     * @phpstan-assert-if-true !null $this->translate
+     */
+    private function shouldRedoTranslation(Throwable $exception): bool
+    {
+        if (null === $this->translate) {
+            return false;
+        }
+
+        if (ValidationFailedException::class !== $exception::class) {
+            return false;
+        }
+
+        return Validation::class === ($exception->getTrace()[0]['class'] ?? null);
     }
 }
