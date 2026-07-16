@@ -39,7 +39,7 @@ final class ObjectMatchingRuleSetAssembler implements MatchingRuleSetAssembler
                 $objectRuleSet = new ObjectMatchingRuleSet(
                     $this->message,
                     $this->ownerRule,
-                    $lazyWrappedRuleSet,
+                    [$lazyWrappedRuleSet],
                 );
 
                 return new CompositeMatchingRule(

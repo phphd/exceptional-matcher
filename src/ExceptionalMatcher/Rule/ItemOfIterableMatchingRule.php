@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Rule;
 
 use LogicException;
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
+use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 
 use function is_object;
@@ -16,13 +17,28 @@ final class ItemOfIterableMatchingRule implements MatchingRule
     public function __construct(
         private readonly int|string $key,
         private readonly MatchingRule $owner,
-        private readonly MatchingRule $objectRuleSet,
+        private ?MatchingRule $objectRuleSet = null,
     ) {
+    }
+
+    /**
+     * The item rule and its object rule set reference each other: the object rule set is created
+     * against the item rule as its owner, hence it is assigned right after construction.
+     */
+    public static function forPlan(int|string $key, MatchingRule $owner, ClassMatchingPlan $itemPlan, object $item): self
+    {
+        $itemRule = new self($key, $owner);
+
+        $itemRule->objectRuleSet = $itemPlan->bind($item, $itemRule);
+
+        return $itemRule;
     }
 
     public function process(ExceptionReciprocal $reciprocal): bool
     {
-        return $this->objectRuleSet->process($reciprocal);
+        return $this->getObjectRuleSet()
+            ->process($reciprocal)
+        ;
     }
 
     public function getOwner(): MatchingRule
@@ -49,12 +65,23 @@ final class ItemOfIterableMatchingRule implements MatchingRule
 
     public function getValue(): object
     {
-        $object = $this->objectRuleSet->getValue();
+        $object = $this->getObjectRuleSet()
+            ->getValue()
+        ;
 
         if (!is_object($object)) {
             throw new LogicException('Object rule set must have returned an object as the value.');
         }
 
         return $object;
+    }
+
+    private function getObjectRuleSet(): MatchingRule
+    {
+        if (null === $this->objectRuleSet) {
+            throw new LogicException('Item of iterable matching rule must have been given an object rule set.');
+        }
+
+        return $this->objectRuleSet;
     }
 }

@@ -10,6 +10,8 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\Matc
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use Throwable;
 
+use function iterator_to_array;
+
 /**
  * @internal
  *
@@ -26,7 +28,9 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
 
     public function compile(Catch_ $catch): CompositeMatchConditionBlueprint
     {
-        return new CompositeMatchConditionBlueprint(new ReusableIteratorAggregate($this->conditionBlueprints($catch)));
+        // materialized eagerly: compiling a catch IS its validation - every statically
+        // detectable mapping error must surface right here, not on the first bind
+        return new CompositeMatchConditionBlueprint(iterator_to_array($this->conditionBlueprints($catch), false));
     }
 
     /**

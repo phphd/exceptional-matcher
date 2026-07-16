@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionalMatcher\Rule\Object;
+
+use Closure;
+use ReflectionClass;
+
+use function array_key_exists;
+
+/** @api */
+final class ClassMatchingPlanRegistry
+{
+    /** @var array<class-string,?ClassMatchingPlan> */
+    private array $plans = [];
+
+    public function __construct(
+        private readonly ClassMatchingPlanFactory $planFactory,
+        private ?Closure $autoloadClassNames,
+    ) {
+    }
+
+    /** @param class-string $className */
+    public function getPlan(string $className): ?ClassMatchingPlan
+    {
+        if (null !== $this->autoloadClassNames) {
+            $this->autoloadClassNames->__invoke();
+            $this->autoloadClassNames = null;
+        }
+
+        if (array_key_exists($className, $this->plans)) {
+            return $this->plans[$className];
+        }
+
+        $reflectionClass = new ReflectionClass($className);
+
+        if ([] === $reflectionClass->getAttributes(Try_::class)) {
+            return $this->plans[$className] = null;
+        }
+
+        return $this->plans[$className] = $this->planFactory->create($reflectionClass, $this);
+    }
+}
