@@ -40,3 +40,8 @@ for the changes not covered by automatic upgrade via Rector (see the "Upgrading"
   The `#[Catch_]` attributes of a property are compiled once per process and memoized on success; \
   error timing and exception types/messages are unchanged (a broken mapping still throws on the \
   first `match()` call that reaches the property).
+
+* Removed: the internal rule-set assembler services (the \
+  `PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService<...>` family) and \
+  `PhPhD\ExceptionalMatcher\Rule\LazyMatchingRule` - all were `@internal`; the container ids are \
+  dropped without aliases. Use `PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry` instead.

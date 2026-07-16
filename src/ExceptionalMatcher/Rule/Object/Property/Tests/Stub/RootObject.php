@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Assembler\Rules\Tests\Stub;
+namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub;
 
 use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 
