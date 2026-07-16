@@ -6,8 +6,7 @@ namespace PhPhD\ExceptionalMatcher;
 
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
-use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService;
-use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
+use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Throwable;
 
@@ -20,23 +19,24 @@ final class MainExceptionMatcher implements ExceptionMatcher
 {
     /** @api */
     public function __construct(
-        /** @var MatchingRuleSetAssemblerService<ObjectMatchingRuleSetAssembler> */
-        private readonly MatchingRuleSetAssemblerService $ruleSetAssemblerService,
+        private readonly ClassMatchingPlanRegistry $planRegistry,
         private readonly ExceptionUnwrapper $exceptionUnwrapper,
     ) {
     }
 
     public function match(Throwable $exception, object $message): ?MatchedExceptionList
     {
-        $ruleSet = $this->ruleSetAssemblerService->assemble(new ObjectMatchingRuleSetAssembler($message));
+        $plan = $this->planRegistry->getPlan($message::class);
 
-        if (null === $ruleSet) {
+        if (null === $plan) {
             return null;
         }
 
         $exceptionList = $this->exceptionUnwrapper->unwrap($exception);
 
         $reciprocal = new ExceptionReciprocal($exceptionList);
+
+        $ruleSet = $plan->bind($message);
 
         if (!$ruleSet->process($reciprocal)) {
             return null;

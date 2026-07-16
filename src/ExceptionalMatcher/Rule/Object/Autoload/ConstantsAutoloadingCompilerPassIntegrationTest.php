@@ -6,9 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Autoload;
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\ViolationsEmbeddedExceptionFormatter;
-use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService;
-use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssemblerService;
+use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 
@@ -17,13 +15,13 @@ use function class_exists;
 /**
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Autoload\ConstantsAutoloadingCompilerPass
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Autoload\ConstantsClassLoader
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssemblerService
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry
  *
  * @internal
  */
 final class ConstantsAutoloadingCompilerPassIntegrationTest extends BundleTestCase
 {
-    private ObjectMatchingRuleSetAssemblerService $assembler;
+    private ClassMatchingPlanRegistry $planRegistry;
 
     protected function setUp(): void
     {
@@ -31,18 +29,16 @@ final class ConstantsAutoloadingCompilerPassIntegrationTest extends BundleTestCa
 
         $container = self::getContainer();
 
-        /** @var ObjectMatchingRuleSetAssemblerService $assembler */
-        $assembler = $container->get(MatchingRuleSetAssemblerService::class.'<'.ObjectMatchingRuleSetAssembler::class.'>');
-        $this->assembler = $assembler;
+        /** @var ClassMatchingPlanRegistry $planRegistry */
+        $planRegistry = $container->get(ClassMatchingPlanRegistry::class);
+        $this->planRegistry = $planRegistry;
     }
 
     public function testClassesThatDefineConstantsAreAutoloaded(): void
     {
-        $message = HandleableMessageStub::create();
+        $plan = $this->planRegistry->getPlan(HandleableMessageStub::class);
 
-        $rule = $this->assembler->assemble(new ObjectMatchingRuleSetAssembler($message));
-
-        self::assertNotNull($rule);
+        self::assertNotNull($plan);
         self::assertTrue(class_exists(ExceptionValueMatchConditionCompiler::class, false));
         self::assertTrue(class_exists(ViolationsEmbeddedExceptionFormatter::class, false));
     }
