@@ -15,18 +15,18 @@ Required changes:
 
 1. Hoist the enum static checks above the null-value early return (catalog B11) — otherwise ghosts skip them.
 2. Expose traversal (e.g. `getRules()` on `CompositeMatchingRule`) plus a small recursive walker that
-   `build()`s `LazyMatchingRule`s and exhausts generators, so factory assertions fire without `process()`.
+   `build()`s `LazyMatchingRule`s and exhausts generators, so compiler assertions fire without `process()`.
 3. The linter itself: discovery → ghost → walk → catch assertion → defect report.
 
 Properties:
 
-- ✅ Zero duplicated rules — the runtime factories *are* the linter. Custom `match:` factories are linted
-  for free (their own assertions fire).
+- ✅ Zero duplicated rules — the runtime condition compilers *are* the linter. Custom `match:` compilers
+  are linted for free (their own assertions fire).
 - ✅ Small, low-risk change set.
 - ❌ **Granularity**: an assertion thrown mid-generator kills the generator — remaining properties of that
   class go unreported. First-error-per-class only.
 - ❌ **Coverage holes**: abstract classes and enums cannot be ghosted; checks hidden behind value-dependent
-  early returns rely on a fragile ordering *convention* in factories rather than a structural guarantee.
+  early returns rely on a fragile ordering *convention* rather than a structural guarantee.
 - ❌ Fixes nothing about the runtime: mapping errors still surface mid-match in production; reflection is
   still re-done per call.
 - ❌ The walker + `getRules()` exposure is throwaway once the model is improved.
@@ -66,8 +66,9 @@ Properties:
   (they amortized re-derivation of intrinsic state).
 - ❌ The largest refactoring of the library core since inception — mitigated by the fact that everything
   touched is `@internal` and by the existing behavioral test suite.
-- ⚠️ Custom `MatchConditionFactory` implementations need a BC adapter (dry-run at compile + delegate at
-  bind); a new compiler-style extension interface becomes the documented path.
+- ✅ The extension surface is already compiler-style: `MatchConditionCompiler` replaced the old
+  `MatchConditionFactory` outright during 2.0 development (2.0 is unreleased — no adapter or deprecation
+  window needed), so custom conditions are lintable by construction.
 
 ## Option C — Parallel static validator (separate visitor over attributes)
 
@@ -76,7 +77,7 @@ the runtime pipeline. This is what several ecosystem tools do (e.g. Doctrine's `
 separate from runtime metadata loading).
 
 - ✅ Cheapest to bolt on; zero runtime risk.
-- ❌ **Violates the core requirement**: every rule exists twice (factory + validator); every new condition
+- ❌ **Violates the core requirement**: every rule exists twice (compiler + validator); every new condition
   must be implemented twice; drift between the two is a matter of time — precisely the failure mode of this
   approach in other ecosystems.
 - ❌ Custom user factories are invisible to it unless users also write a parallel validator.
@@ -107,7 +108,7 @@ cheap if ever needed for a quick diagnostic.
 | Error granularity | per class | **first error per property** | per check | per class |
 | Catches B11-style ordering-hidden checks | ⚠️ needs convention | ✅ structurally | ✅ | ❌ |
 | Abstract classes / no-instantiation coverage | ❌ | ✅ | ✅ | ❌ |
-| Custom factories linted | ✅ | ✅ (adapter dry-run) | ❌ | ✅ |
+| Custom conditions linted | ✅ | ✅ | ❌ | ✅ |
 | Runtime failure timing improved | ❌ | ✅ deterministic at first reach | ❌ | ❌ |
 | Runtime performance | unchanged | **improved** (cached plans) | unchanged | unchanged |
 | False positives | none known | none known | drift over time | ❌ TypeError class |

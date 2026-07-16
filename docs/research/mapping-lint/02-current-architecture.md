@@ -26,7 +26,8 @@ match(Throwable $exception, object $message)
                │     └── PropertyMatchingRulesAssembler
                │           foreach #[Catch_] attribute
                │             ├── $attribute->newInstance()        ← shape asserts fire
-               │             └── MatchConditionFactory::getCondition(…)  ← reference asserts fire
+               │             ├── MatchConditionCompiler::compile(…)  ← reference asserts fire
+               │             └── blueprint->bind($ownerRule)       ← value capture
                ├── PropertyNestedValidObjectRuleAssemblerService   ← recurses into property VALUE
                └── PropertyNestedValidIterableRulesAssemblerService
              short-circuit: return true as soon as a child reports
@@ -36,13 +37,15 @@ match(Throwable $exception, object $message)
 Two properties of this pipeline matter for lint:
 
 1. **Validation timing.** Every assertion — `Catch_` shape checks, `ExceptionOriginMatchCondition`
-   existence checks, `SimpleIfClosureMatchConditionFactory::methodExists`, `DelegatingMatchConditionFactory`
-   registry lookup — fires inside `process()`, i.e. *while a real exception is being handled in production*.
+   existence checks, `SimpleIfClosureMatchConditionCompiler`'s `methodExists`, the
+   `DelegatingMatchConditionCompiler` registry lookup — fires inside `process()`, i.e. *while a real
+   exception is being handled in production*: the condition-level `compile()` exists, but the assembler
+   invokes it per match.
    The `format:` check fires even later (`DelegatingMatchedExceptionFormatter::format()`, after a successful
    match).
 2. **Instance coupling.** `PropertyMatchingRuleSetAssembler` reads property values
    (`ReflectionProperty::getValue`); nested recursion is driven by *actual values*, not declared types;
-   several condition factories consume `$owner->getValue()` / `$owner->getEnclosingObject()`. There is no
+   several condition blueprints consume `$owner->getValue()` / `$owner->getEnclosingObject()` at `bind()`. There is no
    code path that derives the mapping from a *class* alone.
 
 ## Where validation lives today
@@ -51,16 +54,18 @@ Two properties of this pipeline matter for lint:
 |---|---|---|
 | `if:` / `from:` arity | `Catch_::__construct` | attribute `newInstance()` (mid-match) |
 | origin class/method/hook/function existence | `ExceptionOriginMatchCondition::__construct` | condition creation (mid-match) |
-| `if:` method existence | `SimpleIfClosureMatchConditionFactory` | condition creation (mid-match) |
-| `match:` id registered | `DelegatingMatchConditionFactory` | condition creation (mid-match) |
-| enum `from:` is a `BackedEnum` + `'from'` method | `EnumValueMatchConditionFactory` | condition creation, **only when property value ≠ null** (the null early-return precedes the static checks) |
-| exception subtype guards (enum/uid/value/validated) | respective factories | condition creation (mid-match) |
+| `if:` method existence | `SimpleIfClosureMatchConditionCompiler` | condition compile (mid-match) |
+| `match:` id registered | `DelegatingMatchConditionCompiler` | condition compile (mid-match) |
+| enum `from:` is a `BackedEnum` + `'from'` method | `EnumValueMatchConditionCompiler::compile()` | condition compile (mid-match), **unconditionally** — the compile/bind split removed the old factory's null-value early return |
+| exception subtype guards (enum/uid/value/validated) | respective condition compilers | condition compile (mid-match) |
 | `format:` formatter registered | `DelegatingMatchedExceptionFormatter` | formatting (post-match) |
 | `exception:` class exists + is `Throwable` | `ExceptionClassMatchCondition::__construct` | condition creation (mid-match) |
 | structural mistakes (C1–C4 in the catalog) | — | **never** |
 
 The key observation: the *rules themselves* are already centralized and well-factored — one condition type,
-one factory, one set of assertions. What is missing is not validation logic but an execution mode that runs
+one compiler, one set of assertions — and the condition-level compile/bind split (`MatchConditionCompiler`
+→ `MatchConditionBlueprint`) is already implemented, though the assembler still invokes `compile()` on
+every `match()` call. What is missing is not validation logic but an execution mode that runs
 it (a) eagerly and exhaustively, (b) without an instance. (The thrown exceptions themselves are fine — the
 lint command reports them as thrown; no collecting mode is needed.)
 
@@ -82,7 +87,7 @@ holds the value, `MatchExceptionRule` holds a condition that may have captured a
 
 - **The graph cannot exist without an instance** → nothing to lint against.
 - **The graph is rebuilt from reflection on every `match()` call** → `new ReflectionClass`, `getProperties()`,
-  `getAttributes()`, `newInstance()` per attribute, factory calls — per failed message. `LazyMatchingRule`
+  `getAttributes()`, `newInstance()` per attribute, compile+bind calls — per failed message. `LazyMatchingRule`
   and the `getPropertyRules()` generator exist to *amortize* this cost by deferring and short-circuiting;
   they are workarounds for re-deriving intrinsic state, and they are exactly what makes error surfacing
   non-deterministic (a broken `#[Catch_]` on property 5 never throws if property 1 matched everything).
@@ -105,13 +110,14 @@ holds the value, `MatchExceptionRule` holds a condition that may have captured a
 
 ## Change surface
 
-`@api` (must not break): `ExceptionMatcher`, `Try_`, `Catch_`, `MatchCondition`, `MatchConditionFactory`
-(custom conditions are a documented extension point — see `docs/config/match-conditions.md`),
+`@api` (must not break): `ExceptionMatcher`, `Try_`, `Catch_`, `MatchCondition`, `MatchConditionCompiler` /
+`MatchConditionBlueprint` (custom conditions are a documented extension point — see
+`docs/config/match-conditions.md`),
 `MatchedExceptionFormatter` / violation formatters, `MatchingRule` (consumed by custom factories via
 `$owner`), `MatchedException(List)`.
 
 `@internal` (free to restructure): all assemblers and assembler services, `CompositeMatchingRule`,
 `LazyMatchingRule`, `ObjectMatchingRuleSet`, `PropertyMatchingRuleSet`, `ItemOfIterableMatchingRule`,
-`MatchExceptionRule`, `ExceptionReciprocal`, `MainExceptionMatcher`, the delegating factory/formatter.
+`MatchExceptionRule`, `ExceptionReciprocal`, `MainExceptionMatcher`, the delegating compiler/formatter.
 
 This split is what makes the flyweight refactoring feasible: the entire fused graph is internal.

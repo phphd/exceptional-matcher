@@ -58,7 +58,7 @@ final class CatchPlan
 
 ## Invariants at construction: the conditions are their own validators
 
-The reference checks (catalog B1–B7) already live in condition constructors and factory guards. Because
+The reference checks (catalog B1–B7) already live in condition constructors and compiler guards. Because
 intrinsic conditions are now **constructed at plan-compile time**, those constructors become the
 compile-time validation home with no extraction needed:
 
@@ -73,8 +73,10 @@ second call site.)*
 
 ## Conditions: blueprint (compile) vs binding (match)
 
-The heart of the flyweight split. Today `MatchConditionFactory::getCondition(Catch_ $catch, MatchingRule
-$owner)` mixes static validation with value capture. It splits into:
+The heart of the flyweight split — **already implemented at the condition level**. The former
+`MatchConditionFactory::getCondition(Catch_ $catch, MatchingRule $owner)` mixed static validation with
+value capture; it has been split (and the factory removed outright — 2.0 is unreleased, no BC concern)
+into:
 
 ```php
 /** Intrinsic half — compile time. This is where validation lives. */
@@ -93,7 +95,9 @@ interface MatchConditionBlueprint
 
 `compile()` sees only the declaration (the `Catch_` attribute) — everything it can check is checkable
 without an instance. `bind()` receives the existing `@api` `MatchingRule` carrying the extrinsic facts —
-value, enclosing object, root object, property path — which is what makes legacy support cheap (below).
+value, enclosing object, root object, property path. What remains for the plan model is moving *when*
+`compile()` runs: today the per-match assembler invokes it on every `match()` call; the plan compiler will
+invoke it once per class and memoize the blueprint.
 
 Per built-in condition:
 
@@ -105,7 +109,7 @@ Per built-in condition:
 | `match: enum_value` | `ValueError` subtype guard; `from:` is `BackedEnum` + `'from'` (B11 — now *structurally* unconditional) | null value ⇒ `FalseCondition`; coerce value `int\|string\|Stringable` |
 | `match: uid_value` | subtype guard | null ⇒ `FalseCondition`; coerce stringable |
 | `match: exception_value` / `validated_value` | subtype guards | capture scope value |
-| `match:` custom id | registry `has()` (B8) | delegate (see BC below) |
+| `match:` custom id | registry lookup (B8) | delegate to the registered compiler's blueprint |
 | composite | compose child blueprints; `FalseCondition` short-circuit moves to bind | evaluate as today |
 
 `format:` (B10) is checked by the **linter** against the same tagged-locator registry the delegating
@@ -216,13 +220,13 @@ What survives, what dissolves:
 |---|---|
 | `ExceptionMatcher`, `Try_`, `Catch_`, formatters, `MatchedException(List)` | untouched |
 | `MatchCondition` (@api, custom conditions) | untouched — blueprints *produce* `MatchCondition`s |
-| `MatchingRule` (@api, seen by custom factories as `$owner`) | scopes implement it; contract preserved |
-| `MatchConditionFactory` (@api, custom `match:` factories) | **adapter blueprint**: legacy factories stay resolvable via a second tagged locator consulted after the new `MatchConditionCompiler` tag; the adapter defers entirely to bind time — `getCondition($catch, $scope)` runs with the real scope exactly as today. Consequently legacy factories are **invisible to lint**; migrating to the compiler API is what makes a custom condition lintable. Deprecated: `@deprecated` + one-time `E_USER_DEPRECATED` in the legacy path (no new dependency). **Not** rector-automatable — the compile/bind split is semantic; manual guide in `docs/config/match-conditions.md` |
-| Container service ids | the `@internal` assembler-service ids are dropped without aliases (nothing outside the library can construct meaningful arguments for them); the moved `ConstantsAutoloadingCompilerPass`/`ConstantsClassLoader` get `RenameClassRector` entries in `upgrade/2.1.php` |
+| `MatchingRule` (@api, received by condition blueprints at `bind()`) | scopes implement it; contract preserved |
+| `MatchConditionCompiler` / `MatchConditionBlueprint` (@api, custom `match:` conditions) | untouched — already the extension point; `MatchConditionFactory` no longer exists (removed outright during 2.0 development — 2.0 is unreleased, so no adapter or deprecation window was needed). Custom conditions are lintable by construction: their `compile()` runs inside the plan compiler. Documented in `docs/config/match-conditions.md` |
+| Container service ids | the `@internal` assembler-service ids are dropped without aliases (nothing outside the library can construct meaningful arguments for them); moving the 2.0-only `ConstantsAutoloadingCompilerPass`/`ConstantsClassLoader` needs no rector entry (they never shipped in 1.x) — just keep the *targets* of existing `upgrade/2.0.php` renames pointing at final FQCNs |
 
-(An earlier draft dry-ran legacy factories at compile time against a ghost scope, downgrading their
-failures to warnings. That was dropped together with the defect-handler concept: the compiler no longer
-has a warning channel, and a possibly-false-positive dry-run must not throw production-grade exceptions.)
+(Earlier drafts carried a legacy-factory adapter with a compile-time ghost dry-run. Both are gone:
+`MatchConditionFactory` was removed outright while 2.0 is unreleased, so there is no legacy surface left
+to adapt.)
 
 ## Deliberate behavior changes (stricter, to be changelogged)
 

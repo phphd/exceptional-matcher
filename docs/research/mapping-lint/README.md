@@ -68,7 +68,8 @@ Adopt **Option B — the Flyweight plan split** ([03-design-options.md](03-desig
    `ExceptionClassMatchCondition::__construct`.
 2. Plan model introduced *behind* the existing `@api` surface — `ExceptionMatcher`, `Try_` / `Catch_`,
    `MatchCondition`, formatters, and the matched-rule owner chain are untouched; existing tests stay green.
-3. Condition compiler API with a BC adapter for legacy `MatchConditionFactory` implementations.
+3. Condition compiler API (`MatchConditionCompiler` + `MatchConditionBlueprint`) — **already shipped**; it
+   replaced `MatchConditionFactory` outright (2.0 is unreleased, so no adapter or deprecation was needed).
 4. `MappingLinter` core service + `lint:exceptional-matcher` command on top.
 
 Option A (ghost-object dry-run) is documented as a viable low-cost fallback, but it is throwaway work:

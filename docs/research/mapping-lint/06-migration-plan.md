@@ -5,23 +5,23 @@ behavioral test suite.
 
 ## Phase 0 — zero-regret fixes (ship immediately, independent of everything else)
 
-1. **Hoist enum static checks** above the null-value early return in `EnumValueMatchConditionFactory`
-   (catalog B11). Five lines; fixes a real runtime blind spot where an unset property hides a broken
-   mapping.
+1. **Hoist enum static checks** above the null-value early return (catalog B11) — **already shipped**: the
+   compile/bind split runs them unconditionally in `EnumValueMatchConditionCompiler::compile()`, before any
+   value handling.
 
 *(The `exception:` existence check originally planned here turned out to already exist —
 `ExceptionClassMatchCondition::__construct` rejects nonexistent/non-Throwable types; B1/D4 were
-mis-cataloged as silent.)* A behavior-strictening bugfix: changelog + UPGRADE note; no API change.
+mis-cataloged as silent.)*
 
 ## Phase 1 — plan model behind existing seams (internal rewrite)
 
 - Introduce `MatchingPlan` / `PropertyPlan` / `CatchPlan`, `MappingPlanCompiler` (throws
   `InvalidMatchingPlanException` — production behavior is its only behavior; no defect-handler parameter),
   `PlanRegistry`, and the executor ([04-target-model.md](04-target-model.md)).
-- Migrate built-in condition factories to `MatchConditionCompiler`s (no value-object extraction — the
-  condition constructors, now invoked at compile time, are the single validation home).
-- Rewire `MainExceptionMatcher` to registry + executor. Wrap not-yet-migrated / third-party
-  `MatchConditionFactory` services in the legacy adapter blueprint.
+- Built-in conditions already implement `MatchConditionCompiler` (+ blueprints) — shipped; what remains is
+  invoking `compile()` from the plan compiler once per class instead of from the per-match assembler
+  (no value-object extraction — the condition constructors/compilers are the single validation home).
+- Rewire `MainExceptionMatcher` to registry + executor.
 - Delete the assembler layer, `LazyMatchingRule`, and the generator walk once green.
 
 **Definition of done**: the entire existing test suite passes unchanged (`ServiceTest` / integration /
@@ -31,13 +31,12 @@ handling, formatter owner-chain data.
 
 ## Phase 2 — public extension API
 
-- Publish `MatchConditionCompiler` (+ blueprint interface) as the documented way to add custom `match:`
-  conditions; deprecate `MatchConditionFactory` (kept working through the adapter for ≥ one minor line).
-- Update `docs/config/match-conditions.md`. The factory→compiler migration is **not** rector-automatable
-  (the compile/bind split is semantic) — UPGRADE.md carries a manual guide; `upgrade/2.1.php` gets
-  `RenameClassRector` entries only for the moved `ConstantsAutoloadingCompilerPass`/`ConstantsClassLoader`.
-  Deprecation mechanics: `@deprecated` annotation + one-time `E_USER_DEPRECATED` in the legacy resolution
-  path (no symfony/deprecation-contracts dependency).
+**Already shipped**: `MatchConditionCompiler` (+ `MatchConditionBlueprint`) replaced `MatchConditionFactory`
+outright, and `docs/config/match-conditions.md` documents the compiler/blueprint API with the "static
+checks in compile, value capture in bind" convention. No adapter and no deprecation window were needed —
+2.0 is unreleased, so BC breaks are allowed as long as `upgrade/2.0.php` stays current (its rename
+*targets* must always point at final FQCNs; classes introduced during 2.0 development, like the `Autoload`
+pair, need no entries when moved).
 
 ## Phase 3 — linter and command
 
@@ -65,9 +64,8 @@ handling, formatter owner-chain data.
 - **Compiler defects**: one test per catalog id, each driving a broken stub and asserting the
   `InvalidMatchingPlanException` message + location; PHP-version-dependent
   cases (property hooks, B4) use `markTestSkipped` on older runtimes.
-- **Legacy adapter**: a stub legacy `MatchConditionFactory` asserting (a) end-to-end matching still works,
-  with the real scope at bind time, (b) lint passes over it without failing (legacy factories are invisible
-  to lint — the compile-time dry-run was dropped with the defect-handler concept).
+- **Custom compilers**: a stub custom `MatchConditionCompiler` asserting (a) end-to-end matching works with
+  the real rule at bind time, (b) its `compile()` assertions surface in lint.
 - **Static analysis**: CI runs PHPStan/Psalm on 8.1 + 8.5 × highest/lowest deps — reflection-of-hooks code
   needs the same version guards as `ExceptionOriginMatchCondition::propertyHookExists()`; prefer inline
   suppressions where unavoidable.
@@ -77,8 +75,7 @@ handling, formatter owner-chain data.
 | Risk | Mitigation |
 |---|---|
 | Executor rewrite drifts from current matching semantics (ordering, short-circuit, nested traversal) | Phase 1 gate = full existing suite green *before* deleting the assemblers; add order-sensitivity tests first if coverage gaps are found |
-| Legacy custom factories are invisible to lint (their assertions stay bind-time; no compile-time dry-run) | documented limitation; the deprecation pushes migration to `MatchConditionCompiler`, which is lintable by construction |
-| Stricter failures surprise users (enum checks no longer hidden by null values; wrapped exception type) | changelog + UPGRADE entry; `InvalidMatchingPlanException` names the exact class/property/attribute and keeps the original message verbatim |
+| Stricter failures surprise users (enum checks no longer hidden by null values; wrapped exception type) | UPGRADE.md `## 2.0` entry (2.0 unreleased — no BC constraint); `InvalidMatchingPlanException` names the exact class/property/attribute and keeps the original message verbatim |
 | Plan cache memory in long-running workers | bounded by the number of mapped classes; plans hold reflection objects only — no instances |
 | `ReflectionProperty::getValue()` on PHP 8.4 virtual/hooked properties executes get-hooks during matching | identical to current behavior (values are read today too); note in docs, no change |
 
