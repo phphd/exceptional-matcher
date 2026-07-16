@@ -29,7 +29,6 @@ return RectorConfig::configure()
         ],
         ClassPropertyAssignToConstructorPromotionRector::class => [
             __DIR__.'/src/ExceptionalMatcher/Exception/ExceptionReciprocal.php',
-            __DIR__.'/src/ExceptionalMatcher/Rule/LazyMatchingRule.php',
         ],
         IssetOnPropertyObjectToPropertyExistsRector::class => [
             __DIR__.'/src/ExceptionalMatcher/Rule/Object/Property/Match/Condition/Origin/ExceptionOriginMatchCondition.php',

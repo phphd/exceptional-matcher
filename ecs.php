@@ -17,6 +17,5 @@ return ECSConfig::configure()
         ],
         Symplify\CodingStandard\Fixer\Spacing\MethodChainingNewlineFixer::class => [
             __DIR__.'/src/ExceptionalMatcher/Bundle/DependencyInjection/PhdExceptionalMatcherExtension.php',
-            __DIR__.'/src/ExceptionalMatcher/Rule/LazyMatchingRule.php',
         ],
     ]);

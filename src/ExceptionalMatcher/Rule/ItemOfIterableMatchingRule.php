@@ -14,10 +14,11 @@ use function is_object;
 /** @internal */
 final class ItemOfIterableMatchingRule implements MatchingRule
 {
-    public function __construct(
+    private ?MatchingRule $objectRuleSet = null;
+
+    private function __construct(
         private readonly int|string $key,
         private readonly MatchingRule $owner,
-        private ?MatchingRule $objectRuleSet = null,
     ) {
     }
 

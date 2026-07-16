@@ -33,21 +33,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ObjectMatchingRuleSet
  * @covers \PhPhD\ExceptionalMatcher\Rule\ItemOfIterableMatchingRule
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMatchingRuleSet
- * @covers \PhPhD\ExceptionalMatcher\Rule\CompositeMatchingRule
- * @covers \PhPhD\ExceptionalMatcher\Rule\LazyMatchingRule
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath
  * @covers \PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal
  * @covers \PhPhD\ExceptionalMatcher\Exception\MatchedException
  * @covers \PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList
- * @covers \PhPhD\ExceptionalMatcher\Rule\Assembler\CompositeRuleSetAssemblerService
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssemblerService
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Assembler\PropertyMatchingRuleSetAssembler
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Assembler\PropertyMatchingRuleSetAssemblerService
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Assembler\PropertyMatchingRulesAssembler
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Assembler\PropertyMatchingRulesAssemblerService
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Assembler\Rules\PropertyNestedValidObjectRuleAssemblerService
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssemblerService
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanFactory
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyPlan
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchCondition
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler

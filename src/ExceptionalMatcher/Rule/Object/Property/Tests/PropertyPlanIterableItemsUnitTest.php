@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Assembler\Rules\Tests;
+namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests;
 
 use ArrayObject;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Assembler\Rules\Tests\Stub\RootObject;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\RootObject;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedItem;
@@ -18,9 +18,9 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Assembler\Rules\PropertyNestedValidIterableRulesAssemblerService
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyPlan
  */
-final class PropertyNestedValidIterableRulesAssemblerServiceUnitTest extends TestCase
+final class PropertyPlanIterableItemsUnitTest extends TestCase
 {
     /** @var ExceptionMatcher<MatchedExceptionList> */
     private ExceptionMatcher $matcher;

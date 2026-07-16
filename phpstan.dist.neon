@@ -27,7 +27,6 @@ parameters:
     bootstrapFiles:
         - stubs/SymfonyUidInvalidArgumentException.php
     ignoreErrors:
-        - identifier: ternary.shortNotAllowed
         - identifier: property.unused
           message: '/^Property PhPhD\\[\w\\]+\\Stub\\\w+::\$\w+ is unused\.$/'
         - identifier: property.onlyWritten
