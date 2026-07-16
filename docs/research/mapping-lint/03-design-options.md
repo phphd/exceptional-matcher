@@ -35,7 +35,8 @@ Properties:
 
 Separate intrinsic from extrinsic state (see [02-current-architecture.md](02-current-architecture.md)):
 
-- **`MatchingPlan`** — immutable, validated, per-class mapping structure (flyweight), produced by a
+- **`ClassMatchingPlan`** — validated, per-class mapping structure (flyweight), materialized gradually
+  (property plans on first iteration, catch plans on first access) and memoized, produced by a
   **`MappingPlanCompiler`** and cached by a **`PlanRegistry`** (flyweight factory).
 - **Execution** — a per-match walk that binds a plan to the subject instance and exception list, materializing
   the existing owner-chain objects (`ObjectMatchingRuleSet`, `PropertyMatchingRuleSet`, `MatchExceptionRule`)

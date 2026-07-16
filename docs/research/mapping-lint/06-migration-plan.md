@@ -15,7 +15,7 @@ mis-cataloged as silent.)*
 
 ## Phase 1 — plan model behind existing seams (internal rewrite)
 
-- Introduce `MatchingPlan` / `PropertyPlan` / `CatchPlan`, `MappingPlanCompiler` (throws
+- Introduce `ClassMatchingPlan` / `PropertyPlan` / `CatchPlan`, `MappingPlanCompiler` (throws
   `InvalidMatchingPlanException` — production behavior is its only behavior; no defect-handler parameter),
   `PlanRegistry`, and the executor ([04-target-model.md](04-target-model.md)).
 - Built-in conditions already implement `MatchConditionCompiler` (+ blueprints) — shipped; what remains is
@@ -89,7 +89,9 @@ pair, need no entries when moved).
 3. **C3 severity** (`#[Try_]` with no catches) — warning, and it never blocks plan creation: the
    `RootObject` test stub is `#[Try_]` with zero catches and must keep matching through iterable items.
 4. **`PlanRegistry` exposure** — `@api` (future warmup entry point).
-5. **Naming** — settled with the maintainer: `MatchingPlan` / `PlanRegistry` / `PlanExecutor` /
+5. **Naming** — settled with the maintainer: `ClassMatchingPlan` (gradual: `getPropertyPlans()` is an
+   iterable materialized on first iteration, mirroring `PropertyPlan::getCatchPlans()`) / `PlanRegistry` /
+   `PlanExecutor` /
    `MatchConditionCompiler` / `MatchConditionBlueprint` (the "Diagnostic"/"Sink" jargon was deliberately
    dropped in favor of the library's plain vocabulary).
 6. **No `DefectHandler`** (maintainer decision): the compiler takes no reporting-policy parameter — it

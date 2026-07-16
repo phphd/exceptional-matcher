@@ -34,7 +34,7 @@ The recommended direction is a **Flyweight split** of the domain model:
 
 | Concept | Role | Lifetime |
 |---|---|---|
-| `MatchingPlan` | compiled, validated mapping of one class (intrinsic) | cached per class (flyweight) |
+| `ClassMatchingPlan` | compiled, validated mapping of one class (intrinsic), materialized gradually | cached per class (flyweight) |
 | `MappingPlanCompiler` | the *single* validation boundary — all assertions live here or in the condition constructors it invokes | stateless service |
 | `PlanRegistry` | flyweight factory: `getPlan(class-string)` with per-process cache | service |
 | Match execution | binds a plan to a subject instance + exception list (extrinsic) | transient per match |

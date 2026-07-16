@@ -8,9 +8,9 @@ All code below is a sketch conveying shape and responsibilities, not final namin
 | Term | Meaning | DDD / pattern role |
 |---|---|---|
 | **Mapping declaration** | The `#[Try_]` / `#[Catch_]` attributes as authored on a class | source text |
-| **Matching plan** | The compiled, *validated* mapping of one class: which properties catch what, under which conditions, formatted how | immutable value / **flyweight (intrinsic state)** |
+| **Object matching plan** (`ClassMatchingPlan`) | The compiled, *validated* mapping of one class: which properties catch what, under which conditions, formatted how | gradually materialized, memoized value / **flyweight (intrinsic state)** |
 | **Plan compiler** | Turns a declaration into a plan; the **single validation boundary** for reference/shape checks (catalog A/B) — each runs here or in a condition constructor it invokes, throwing exactly as in production | anti-corruption boundary; "parse, don't validate" |
-| **Plan registry** | `getPlan(class-string): ?MatchingPlan`, compile-on-first-use, per-process cache | **flyweight factory** |
+| **Plan registry** | `getPlan(class-string): ?ClassMatchingPlan`, compile-on-first-use, per-process cache | **flyweight factory** |
 | **Match scope** | The extrinsic context of one match attempt: subject instance, property value, owner chain, property path | extrinsic state |
 | **Plan executor** | Walks a plan against a scope and an `ExceptionReciprocal` | domain service |
 | **Mapping defect** | One found mapping problem with location (class, property, attribute ordinal) — a **lint-layer** report row built from a caught compile failure or a structural finding; the compiler knows nothing of it | reporting value (`Lint\` namespace) |
@@ -21,13 +21,19 @@ The word *plan* is chosen over "metadata"/"blueprint-of-everything" because it n
 ## Plan structure (intrinsic state)
 
 ```php
-final class MatchingPlan
+final class ClassMatchingPlan
 {
-    /** @param list<PropertyPlan> $propertyPlans  declaration order preserved — matching order is semantics */
     public function __construct(
         public readonly string $className,
-        public readonly array $propertyPlans,
     ) {}
+
+    /**
+     * Materialized lazily on first iteration, memoized — the same gradual relationship
+     * PropertyPlan has to its CatchPlans. Declaration order preserved — matching order is semantics.
+     *
+     * @return iterable<PropertyPlan>
+     */
+    public function getPropertyPlans(): iterable;
 }
 
 final class PropertyPlan
@@ -167,13 +173,14 @@ Notes:
 ```php
 final class PlanRegistry
 {
-    /** @var array<class-string, ?MatchingPlan> */
+    /** @var array<class-string, ?ClassMatchingPlan> */
     private array $plans = [];
 
-    public function getPlan(string $className): ?MatchingPlan;
+    public function getPlan(string $className): ?ClassMatchingPlan;
     // null ⇔ no #[Try_], checked BEFORE creating a plan (Catch_-without-Try_ stays a silent skip at
-    // runtime; C1 is lint-only). Plans are skeletal at creation; each property compiles on first use,
-    // and a failed property compile is not memoized — it rethrows on the next match.
+    // runtime; C1 is lint-only). Plans are skeletal at creation — even the property list materializes
+    // lazily on first iteration; each property's catches compile on first use, and a failed compile is
+    // not memoized — it rethrows on the next match.
 }
 ```
 
@@ -184,7 +191,7 @@ traversal itself as recursion, so materialized scopes only need child→owner li
 ```
 execute(plan, subject, reciprocal, ownerScope): bool
   scope = ObjectScope(subject, ownerScope)                       // implements MatchingRule
-  foreach plan.propertyPlans as propertyPlan:
+  foreach plan.getPropertyPlans() as propertyPlan:              // property list materializes lazily, memoized
     value = read(propertyPlan.property, subject)                 // uninitialized ⇒ null, as today
     propertyScope = PropertyScope(scope, name, value)
     foreach propertyPlan.getCatchPlans() as catchPlan:            // lazy compile — may throw InvalidMatchingPlanException
