@@ -141,6 +141,8 @@ final class ArchitectureRuleSet
                     $this->exception(),
                     Selector::classname(Assert::class),
                     Selector::classname(ContainerInterface::class),
+                    Selector::classname(MatchConditionCompiler::class),
+                    Selector::classname(MatchConditionBlueprint::class),
                 ],
                 'description' => 'Model classes must not depend on anything else',
             ],

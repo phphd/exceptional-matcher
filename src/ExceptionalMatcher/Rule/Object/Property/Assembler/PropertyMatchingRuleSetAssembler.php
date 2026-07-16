@@ -32,7 +32,7 @@ final class PropertyMatchingRuleSetAssembler implements MatchingRuleSetAssembler
                     $this->ownerRule,
                     $this->getName(),
                     $this->getPropertyValue($object),
-                    $lazyMatchingRuleSet,
+                    [$lazyMatchingRuleSet],
                 );
 
                 return $service->matchingRulesAssemblerService

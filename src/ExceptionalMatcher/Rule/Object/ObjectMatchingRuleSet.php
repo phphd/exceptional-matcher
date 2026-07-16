@@ -14,13 +14,20 @@ final class ObjectMatchingRuleSet implements MatchingRule
     public function __construct(
         private readonly object $object,
         private readonly ?MatchingRule $owner,
-        private readonly MatchingRule $ruleSet,
+        /** @var iterable<MatchingRule> $rules */
+        private readonly iterable $rules,
     ) {
     }
 
     public function process(ExceptionReciprocal $reciprocal): bool
     {
-        return $this->ruleSet->process($reciprocal);
+        foreach ($this->rules as $rule) {
+            if ($rule->process($reciprocal)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getOwner(): ?MatchingRule
