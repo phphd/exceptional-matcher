@@ -27,7 +27,7 @@ use function is_a;
 /** @internal */
 final class ClassMatchingPlanFactory
 {
-    private const MATCHABLE_BUILTIN_TYPES = ['array', 'iterable', 'mixed', 'object', 'callable'];
+    private const MATCHABLE_BUILTIN_TYPES = ['array', 'iterable', 'mixed', 'object'];
 
     public function __construct(
         /** @var MatchConditionCompiler<Throwable> */
@@ -138,21 +138,21 @@ final class ClassMatchingPlanFactory
 
         $reflectionClass = new ReflectionClass($className);
 
+        if ($reflectionClass->isInternal() || $reflectionClass->isEnum()) {
+            // built-in classes / interface implementations cannot declare #[Try_]
+            return false;
+        }
+
         if ($reflectionClass->isInterface()) {
             // any implementor - including one bearing #[Try_] - may be assigned
             return true;
         }
 
-        if ($reflectionClass->isInternal()) {
-            // built-in classes cannot declare #[Try_]
-            return false;
+        if (!$reflectionClass->isFinal()) {
+            // #[Try_] is not inherited, yet a plan-bearing subclass may still be assigned at runtime
+            return true;
         }
 
-        if ($reflectionClass->isFinal() || $reflectionClass->isEnum()) {
-            return null !== $planRegistry->getPlan($className);
-        }
-
-        // #[Try_] is not inherited, yet a plan-bearing subclass may still be assigned at runtime
-        return true;
+        return $planRegistry->hasPlan($className);
     }
 }

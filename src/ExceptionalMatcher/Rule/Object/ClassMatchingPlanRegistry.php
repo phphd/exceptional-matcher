@@ -22,6 +22,12 @@ final class ClassMatchingPlanRegistry
     }
 
     /** @param class-string $className */
+    public function hasPlan(string $className): bool
+    {
+        return null !== $this->getPlan($className);
+    }
+
+    /** @param class-string $className */
     public function getPlan(string $className): ?ClassMatchingPlan
     {
         if (null !== $this->autoloadClassNames) {

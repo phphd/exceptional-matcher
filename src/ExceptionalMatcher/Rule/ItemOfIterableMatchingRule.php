@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule;
 
+use Closure;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlan;
@@ -14,32 +15,20 @@ use function is_object;
 /** @internal */
 final class ItemOfIterableMatchingRule implements MatchingRule
 {
-    private ?MatchingRule $objectRuleSet = null;
+    private readonly MatchingRule $objectRuleSet;
 
-    private function __construct(
+    /** @param Closure(self): MatchingRule $ruleSet */
+    public function __construct(
         private readonly int|string $key,
         private readonly MatchingRule $owner,
+        Closure $ruleSet,
     ) {
-    }
-
-    /**
-     * The item rule and its object rule set reference each other: the object rule set is created
-     * against the item rule as its owner, hence it is assigned right after construction.
-     */
-    public static function forPlan(int|string $key, MatchingRule $owner, ClassMatchingPlan $itemPlan, object $item): self
-    {
-        $itemRule = new self($key, $owner);
-
-        $itemRule->objectRuleSet = $itemPlan->bind($item, $itemRule);
-
-        return $itemRule;
+        $this->objectRuleSet = $ruleSet($this);
     }
 
     public function process(ExceptionReciprocal $reciprocal): bool
     {
-        return $this->getObjectRuleSet()
-            ->process($reciprocal)
-        ;
+        return $this->objectRuleSet->process($reciprocal);
     }
 
     public function getOwner(): MatchingRule
@@ -66,23 +55,12 @@ final class ItemOfIterableMatchingRule implements MatchingRule
 
     public function getValue(): object
     {
-        $object = $this->getObjectRuleSet()
-            ->getValue()
-        ;
+        $object = $this->objectRuleSet->getValue();
 
         if (!is_object($object)) {
             throw new LogicException('Object rule set must have returned an object as the value.');
         }
 
         return $object;
-    }
-
-    private function getObjectRuleSet(): MatchingRule
-    {
-        if (null === $this->objectRuleSet) {
-            throw new LogicException('Item of iterable matching rule must have been given an object rule set.');
-        }
-
-        return $this->objectRuleSet;
     }
 }

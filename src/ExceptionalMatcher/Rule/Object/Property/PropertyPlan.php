@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property;
 
+use AppendIterator;
 use Generator;
+use Iterator;
 use PhPhD\ExceptionalMatcher\Rule\ItemOfIterableMatchingRule;
 use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\ObjectMatchingRuleSet;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
 use ReflectionProperty;
 use Throwable;
 use Webmozart\Assert\Assert;
@@ -28,57 +31,44 @@ final class PropertyPlan
     ) {
     }
 
-    public function getName(): string
-    {
-        return $this->property->getName();
-    }
-
-    /**
-     * @api the seam for the mapping linter: forcing this iterable compiles every `#[Catch_]` of the property
-     *
-     * @return iterable<CatchPlan<Throwable>>
-     */
-    public function getCatchPlans(): iterable
-    {
-        return $this->catchPlans;
-    }
-
     /** @psalm-suppress UnusedVariable the by-reference closure capture is the usage */
     public function bind(ObjectMatchingRuleSet $objectRuleSet): MatchingRule
     {
+        $name = $this->getName();
         $value = $this->getPropertyValue($objectRuleSet->getValue());
 
-        /** @var ?PropertyMatchingRuleSet $propertyRuleSet */
-        $propertyRuleSet = null;
+        $propertyRuleSet = new PropertyMatchingRuleSet($objectRuleSet, $name, $value, new ReusableIteratorAggregate($rules = new AppendIterator()));
 
-        // the rules generator runs only once the rule set processes it,
-        // by which point the by-reference variable is already assigned
-        $rules = (function () use (&$propertyRuleSet, $value): Generator {
-            Assert::isInstanceOf($propertyRuleSet, PropertyMatchingRuleSet::class);
+        $rules->append($this->catchRules($propertyRuleSet));
+        $rules->append($this->getNestedObjectRules($value, $propertyRuleSet));
+        $rules->append($this->getIterableItemRules($value, $propertyRuleSet));
 
-            foreach ($this->catchPlans as $catchPlan) {
-                yield $catchPlan->bind($propertyRuleSet);
-            }
-
-            yield from $this->getNestedObjectRules($value, $propertyRuleSet);
-
-            yield from $this->getIterableItemRules($value, $propertyRuleSet);
-        })();
-
-        return $propertyRuleSet = new PropertyMatchingRuleSet($objectRuleSet, $this->getName(), $value, $rules);
+        return $propertyRuleSet;
     }
 
-    private function getPropertyValue(object $message): mixed
+    private function getPropertyValue(object $object): mixed
     {
-        if (!$this->property->isInitialized($message)) {
+        if (!$this->property->isInitialized($object)) {
             return null;
         }
 
-        return $this->property->getValue($message);
+        return $this->property->getValue($object);
     }
 
-    /** @return Generator<MatchingRule> */
-    private function getNestedObjectRules(mixed $value, PropertyMatchingRuleSet $propertyRuleSet): Generator
+    /**
+     * @param PropertyMatchingRuleSet $propertyRuleSet
+     *
+     * @return Iterator<MatchingRule>
+     */
+    private function catchRules(PropertyMatchingRuleSet $propertyRuleSet): Iterator
+    {
+        foreach ($this->catchPlans as $catchPlan) {
+            yield $catchPlan->bind($propertyRuleSet);
+        }
+    }
+
+    /** @return Iterator<MatchingRule> */
+    private function getNestedObjectRules(mixed $value, PropertyMatchingRuleSet $propertyRuleSet): Iterator
     {
         if (!is_object($value)) {
             return;
@@ -93,8 +83,8 @@ final class PropertyPlan
         yield $nestedPlan->bind($value, $propertyRuleSet);
     }
 
-    /** @return Generator<MatchingRule> */
-    private function getIterableItemRules(mixed $value, PropertyMatchingRuleSet $propertyRuleSet): Generator
+    /** @return Iterator<MatchingRule> */
+    private function getIterableItemRules(mixed $value, PropertyMatchingRuleSet $propertyRuleSet): Iterator
     {
         if (!is_iterable($value) || [] === $value) {
             return;
@@ -112,7 +102,27 @@ final class PropertyPlan
                 continue;
             }
 
-            yield ItemOfIterableMatchingRule::forPlan($key, $propertyRuleSet, $itemPlan, $item);
+            yield new ItemOfIterableMatchingRule(
+                $key,
+                $propertyRuleSet,
+                fn (ItemOfIterableMatchingRule $self) => $itemPlan->bind($item, $self),
+            );
         }
     }
+
+    public function getName(): string
+    {
+        return $this->property->getName();
+    }
+
+    /**
+     * @api the seam for the mapping linter: forcing this iterable compiles every `#[Catch_]` of the property
+     *
+     * @return iterable<CatchPlan<Throwable>>
+     */
+    public function getCatchPlans(): iterable
+    {
+        return $this->catchPlans;
+    }
+
 }
