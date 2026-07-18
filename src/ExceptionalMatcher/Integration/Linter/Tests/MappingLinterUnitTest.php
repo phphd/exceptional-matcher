@@ -117,6 +117,7 @@ final class MappingLinterUnitTest extends TestCase
             'EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: NULL',
             $defect->getMessage(),
         );
+
         self::assertSame('weekDay', $defect->getLocation()->getPropertyName());
     }
 

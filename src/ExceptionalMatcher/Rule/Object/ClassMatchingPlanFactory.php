@@ -51,27 +51,46 @@ final class ClassMatchingPlanFactory
     private function createPropertyPlans(ReflectionClass $reflectionClass, ClassMatchingPlanRegistry $planRegistry): Generator
     {
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            $catchPlans = new RestartableIteratorAggregate(fn (): Generator => $this->createCatchPlans($reflectionProperty));
+            $propertyPlan = $this->getPropertyPlan($reflectionProperty, $planRegistry);
 
-            if (!$this->isMatchableProperty($catchPlans, $reflectionProperty, $planRegistry)) {
+            if (null === $propertyPlan) {
                 continue;
             }
 
-            yield new PropertyPlan($reflectionProperty, $catchPlans, $planRegistry);
+            yield $propertyPlan;
         }
+    }
+
+    private function getPropertyPlan(ReflectionProperty $reflectionProperty, ClassMatchingPlanRegistry $planRegistry): ?PropertyPlan
+    {
+        $catchPlans = new RestartableIteratorAggregate(fn (): Generator => $this->createCatchPlans($reflectionProperty));
+
+        if (!$this->isMatchableProperty($catchPlans, $reflectionProperty, $planRegistry)) {
+            return null;
+        }
+
+        return new PropertyPlan($reflectionProperty, $catchPlans, $planRegistry);
     }
 
     /** @return Generator<int,CatchPlan<Throwable>> */
     private function createCatchPlans(ReflectionProperty $property): Generator
     {
-        foreach ($property->getAttributes(Catch_::class) as $attribute) {
-            $catch = $attribute->newInstance();
-
+        foreach ($this->getCatchAttributes($property) as $catch) {
             $conditionBlueprint = $this->matchConditionCompiler->compile($catch);
 
             Assert::notNull($conditionBlueprint);
 
             yield new CatchPlan($conditionBlueprint, $catch->getFormat(), $catch->getMessage());
+        }
+    }
+
+    /** @return Generator<Catch_<Throwable,Throwable>> */
+    private function getCatchAttributes(ReflectionProperty $property): Generator
+    {
+        $catchAttributes = $property->getAttributes(Catch_::class);
+
+        foreach ($catchAttributes as $catchAttribute) {
+            yield $catchAttribute->newInstance();
         }
     }
 
@@ -86,6 +105,10 @@ final class ClassMatchingPlanFactory
         ReflectionProperty $property,
         ClassMatchingPlanRegistry $planRegistry,
     ): bool {
+//        if ($catchPlans->getIterator()->valid()) {
+//            return true;
+//        }
+//
         try {
             if ($catchPlans->getIterator()->valid()) {
                 return true;
