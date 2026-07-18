@@ -22,7 +22,7 @@ final class PropertyPlan
 {
     public function __construct(
         private readonly ReflectionProperty $property,
-        /** @var iterable<int,CatchPlan<Throwable>> */
+        /** @var iterable<CatchPlan<Throwable>> */
         private readonly iterable $catchPlans,
         private readonly ClassMatchingPlanRegistry $planRegistry,
     ) {
@@ -36,7 +36,7 @@ final class PropertyPlan
     /**
      * @api the seam for the mapping linter: forcing this iterable compiles every `#[Catch_]` of the property
      *
-     * @return iterable<int,CatchPlan<Throwable>>
+     * @return iterable<CatchPlan<Throwable>>
      */
     public function getCatchPlans(): iterable
     {

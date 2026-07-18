@@ -4,42 +4,41 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object;
 
-use Generator;
+use AppendIterator;
+use Iterator;
 use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyPlan;
-use Webmozart\Assert\Assert;
 
 /** @internal */
 final class ClassMatchingPlan
 {
     public function __construct(
-        /** @var iterable<int,PropertyPlan> */
+        /** @var iterable<PropertyPlan> */
         private readonly iterable $propertyPlans,
     ) {
-    }
-
-    /** @return iterable<int,PropertyPlan> */
-    public function getPropertyPlans(): iterable
-    {
-        return $this->propertyPlans;
     }
 
     /** @psalm-suppress UnusedVariable the by-reference closure capture is the usage */
     public function bind(object $object, ?MatchingRule $ownerRule = null): MatchingRule
     {
-        /** @var ?ObjectMatchingRuleSet $objectRuleSet */
-        $objectRuleSet = null;
+        $objectRuleSet = new ObjectMatchingRuleSet($object, $ownerRule, new ReusableIteratorAggregate($propertyRules = new AppendIterator()));
+        $propertyRules->append($this->propertyRules($objectRuleSet));
 
-        // the rules generator runs only once the rule set processes it,
-        // by which point the by-reference variable is already assigned
-        $propertyRules = (function () use (&$objectRuleSet): Generator {
-            Assert::isInstanceOf($objectRuleSet, ObjectMatchingRuleSet::class);
+        return $objectRuleSet;
+    }
 
-            foreach ($this->propertyPlans as $propertyPlan) {
-                yield $propertyPlan->bind($objectRuleSet);
-            }
-        })();
+    /** @return Iterator<MatchingRule> */
+    private function propertyRules(ObjectMatchingRuleSet $objectRuleSet): Iterator
+    {
+        foreach ($this->propertyPlans as $propertyPlan) {
+            yield $propertyPlan->bind($objectRuleSet);
+        }
+    }
 
-        return $objectRuleSet = new ObjectMatchingRuleSet($object, $ownerRule, $propertyRules);
+    /** @return iterable<PropertyPlan> */
+    public function getPropertyPlans(): iterable
+    {
+        return $this->propertyPlans;
     }
 }
