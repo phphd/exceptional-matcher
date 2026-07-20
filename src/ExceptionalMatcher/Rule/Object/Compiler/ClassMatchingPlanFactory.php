@@ -12,7 +12,6 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan;
-use PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate;
 use ReflectionClass;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
@@ -36,7 +35,7 @@ final class ClassMatchingPlanFactory
     public function __construct(
         /** @var MatchConditionCompiler<Throwable> */
         private readonly MatchConditionCompiler $matchConditionCompiler,
-        private readonly bool $failFast = false,
+        private readonly bool $failFast = true,
     ) {
     }
 
@@ -120,17 +119,7 @@ final class ClassMatchingPlanFactory
         ReflectionProperty $property,
         ClassMatchingPlanRegistry $planRegistry,
     ): bool {
-        try {
-            if ($propertyPlan->hasCatchPlans()) {
-                return true;
-            }
-        } catch (\Throwable $e) {
-            if ($this->failFast) {
-                throw new PropertyPlanCompilationFailedException($propertyPlan, $e);
-            }
-
-            // a broken catch mapping keeps the property matchable:
-            // the failure resurfaces once the catch plans are accessed
+        if ($propertyPlan->hasCatchPlans()) {
             return true;
         }
 

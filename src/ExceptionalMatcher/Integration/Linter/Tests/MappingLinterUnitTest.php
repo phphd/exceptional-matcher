@@ -67,7 +67,7 @@ final class MappingLinterUnitTest extends TestCase
     {
         [$defect] = $this->linter->lint([NotHandleableMessageStub::class]);
 
-        self::assertSame(DefectSeverity::Error, $defect->getSeverity());
+        self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
         self::assertStringContainsString('not marked with #[Try_]', $defect->getMessage());
         self::assertSame(NotHandleableMessageStub::class, $defect->getLocation()->getClassName());
         self::assertNull($defect->getLocation()->getPropertyName());
