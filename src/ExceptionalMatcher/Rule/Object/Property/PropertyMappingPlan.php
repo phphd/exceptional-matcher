@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property;
 
 use AppendIterator;
-use ArrayIterator;
 use Iterator;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
@@ -59,12 +58,11 @@ final class PropertyMappingPlan
     /** @param PropertyMatchingRuleSet $propertyRuleSet */
     private function bindCatchRules(PropertyMatchingRuleSet $propertyRuleSet): ?ExceptionMatcherAggregate
     {
-        /** @noinspection PhpLoopNeverIteratesInspection */
-        foreach ($this->catchPlans as $catchPlan) {
-            return new CatchAttributesExceptionMatcherAggregate($propertyRuleSet, $this->catchPlans);
+        if (!$this->hasCatchPlans()) {
+            return null;
         }
 
-        return null;
+        return new CatchAttributesExceptionMatcherAggregate($propertyRuleSet, $this->catchPlans);
     }
 
     /** @return Iterator<MatchingRule> */
@@ -100,6 +98,16 @@ final class PropertyMappingPlan
     public function getName(): string
     {
         return $this->property->getName();
+    }
+
+    public function hasCatchPlans(): bool
+    {
+        /** @noinspection PhpLoopNeverIteratesInspection */
+        foreach ($this->catchPlans as $catchPlan) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

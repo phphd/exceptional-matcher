@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object;
 
 use Closure;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory;
 use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use ReflectionClass;
 

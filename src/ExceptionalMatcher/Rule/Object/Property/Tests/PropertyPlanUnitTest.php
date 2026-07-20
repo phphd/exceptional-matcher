@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests;
 
 use LogicException;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanFactory;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory;
 use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
@@ -26,7 +26,7 @@ use function count;
  * @internal
  *
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanFactory
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate
  */
 final class PropertyPlanUnitTest extends TestCase

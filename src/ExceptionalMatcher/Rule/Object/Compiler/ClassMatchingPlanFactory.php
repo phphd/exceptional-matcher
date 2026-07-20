@@ -2,14 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object;
+namespace PhPhD\ExceptionalMatcher\Rule\Object\Compiler;
 
 use Generator;
+use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan;
+use PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate;
 use ReflectionClass;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
@@ -33,15 +36,16 @@ final class ClassMatchingPlanFactory
     public function __construct(
         /** @var MatchConditionCompiler<Throwable> */
         private readonly MatchConditionCompiler $matchConditionCompiler,
+        private readonly bool $failFast = false,
     ) {
     }
 
     /** @param ReflectionClass<object> $reflectionClass */
     public function create(ReflectionClass $reflectionClass, ClassMatchingPlanRegistry $planRegistry): ClassMappingPlan
     {
-        return new ClassMappingPlan(
-            new RestartableIteratorAggregate(fn (): Generator => $this->createPropertyPlans($reflectionClass, $planRegistry)),
-        );
+        return new ClassMappingPlan(new ReusableIteratorAggregate(
+            $this->compilePropertyPlans($reflectionClass, $planRegistry)
+        ));
     }
 
     /**
@@ -49,10 +53,19 @@ final class ClassMatchingPlanFactory
      *
      * @return Generator<int,PropertyMappingPlan>
      */
-    private function createPropertyPlans(ReflectionClass $reflectionClass, ClassMatchingPlanRegistry $planRegistry): Generator
+    private function compilePropertyPlans(ReflectionClass $reflectionClass, ClassMatchingPlanRegistry $planRegistry): Generator
     {
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            $propertyPlan = $this->getPropertyPlan($reflectionProperty, $planRegistry);
+            try {
+                $propertyPlan = $this->getPropertyPlan($reflectionProperty, $planRegistry);
+            } catch (\Throwable $e) {
+                if (!$this->failFast) {
+                    // One broken #[Catch] won't spoil the whole match tree.
+                    continue;
+                }
+
+                throw new PropertyPlanCompilationFailedException($reflectionProperty, $e);
+            }
 
             if (null === $propertyPlan) {
                 continue;
@@ -64,7 +77,7 @@ final class ClassMatchingPlanFactory
 
     private function getPropertyPlan(ReflectionProperty $reflectionProperty, ClassMatchingPlanRegistry $planRegistry): ?PropertyMappingPlan
     {
-        $catchPlans = new RestartableIteratorAggregate(fn (): Generator => $this->createCatchPlans($reflectionProperty));
+        $catchPlans = new ReusableIteratorAggregate($this->getCatchPlans($reflectionProperty));
 
         $propertyMappingPlan = new PropertyMappingPlan($reflectionProperty, $catchPlans, $planRegistry);
 
@@ -76,7 +89,7 @@ final class ClassMatchingPlanFactory
     }
 
     /** @return Generator<int,CatchPlan<Throwable>> */
-    private function createCatchPlans(ReflectionProperty $property): Generator
+    private function getCatchPlans(ReflectionProperty $property): Generator
     {
         foreach ($this->getCatchAttributes($property) as $catch) {
             $conditionBlueprint = $this->matchConditionCompiler->compile($catch);
@@ -107,13 +120,15 @@ final class ClassMatchingPlanFactory
         ReflectionProperty $property,
         ClassMatchingPlanRegistry $planRegistry,
     ): bool {
-        $catchPlans = $propertyPlan->getCatchPlans();
-
         try {
-            if ($catchPlans->getIterator()->valid()) {
+            if ($propertyPlan->hasCatchPlans()) {
                 return true;
             }
-        } catch (Throwable) {
+        } catch (\Throwable $e) {
+            if ($this->failFast) {
+                throw new PropertyPlanCompilationFailedException($propertyPlan, $e);
+            }
+
             // a broken catch mapping keeps the property matchable:
             // the failure resurfaces once the catch plans are accessed
             return true;
