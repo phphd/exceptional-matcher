@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object;
 
 use Generator;
+use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyPlan;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan;
 use ReflectionClass;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
@@ -36,9 +37,9 @@ final class ClassMatchingPlanFactory
     }
 
     /** @param ReflectionClass<object> $reflectionClass */
-    public function create(ReflectionClass $reflectionClass, ClassMatchingPlanRegistry $planRegistry): ClassMatchingPlan
+    public function create(ReflectionClass $reflectionClass, ClassMatchingPlanRegistry $planRegistry): ClassMappingPlan
     {
-        return new ClassMatchingPlan(
+        return new ClassMappingPlan(
             new RestartableIteratorAggregate(fn (): Generator => $this->createPropertyPlans($reflectionClass, $planRegistry)),
         );
     }
@@ -46,7 +47,7 @@ final class ClassMatchingPlanFactory
     /**
      * @param ReflectionClass<object> $reflectionClass
      *
-     * @return Generator<int,PropertyPlan>
+     * @return Generator<int,PropertyMappingPlan>
      */
     private function createPropertyPlans(ReflectionClass $reflectionClass, ClassMatchingPlanRegistry $planRegistry): Generator
     {
@@ -61,15 +62,17 @@ final class ClassMatchingPlanFactory
         }
     }
 
-    private function getPropertyPlan(ReflectionProperty $reflectionProperty, ClassMatchingPlanRegistry $planRegistry): ?PropertyPlan
+    private function getPropertyPlan(ReflectionProperty $reflectionProperty, ClassMatchingPlanRegistry $planRegistry): ?PropertyMappingPlan
     {
         $catchPlans = new RestartableIteratorAggregate(fn (): Generator => $this->createCatchPlans($reflectionProperty));
 
-        if (!$this->isMatchableProperty($catchPlans, $reflectionProperty, $planRegistry)) {
+        $propertyMappingPlan = new PropertyMappingPlan($reflectionProperty, $catchPlans, $planRegistry);
+
+        if (!$this->isMatchableProperty($propertyMappingPlan, $reflectionProperty, $planRegistry)) {
             return null;
         }
 
-        return new PropertyPlan($reflectionProperty, $catchPlans, $planRegistry);
+        return $propertyMappingPlan;
     }
 
     /** @return Generator<int,CatchPlan<Throwable>> */
@@ -98,17 +101,14 @@ final class ClassMatchingPlanFactory
      * A property participates in matching when it declares any `#[Catch_]`, or when its value may
      * turn out to be a nested `#[Try_]` object or an iterable holding such objects.
      *
-     * @param RestartableIteratorAggregate<int,CatchPlan<Throwable>> $catchPlans
      */
     private function isMatchableProperty(
-        RestartableIteratorAggregate $catchPlans,
+        PropertyMappingPlan $propertyPlan,
         ReflectionProperty $property,
         ClassMatchingPlanRegistry $planRegistry,
     ): bool {
-//        if ($catchPlans->getIterator()->valid()) {
-//            return true;
-//        }
-//
+        $catchPlans = $propertyPlan->getCatchPlans();
+
         try {
             if ($catchPlans->getIterator()->valid()) {
                 return true;

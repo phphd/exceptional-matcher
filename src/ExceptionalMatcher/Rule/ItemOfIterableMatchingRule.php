@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule;
 
-use Closure;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlan;
+use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 
 use function is_object;
@@ -15,20 +15,20 @@ use function is_object;
 /** @internal */
 final class ItemOfIterableMatchingRule implements MatchingRule
 {
-    private readonly MatchingRule $objectRuleSet;
+    private readonly MatchingRule $ruleSet;
 
-    /** @param Closure(self): MatchingRule $ruleSet */
     public function __construct(
-        private readonly int|string $key,
         private readonly MatchingRule $owner,
-        Closure $ruleSet,
+        private readonly int|string $key,
+        private readonly mixed $item,
+        ClassMappingPlan $matchingPlan,
     ) {
-        $this->objectRuleSet = $ruleSet($this);
+        $this->ruleSet = $matchingPlan->bind($this->item, $this);
     }
 
     public function process(ExceptionReciprocal $reciprocal): bool
     {
-        return $this->objectRuleSet->process($reciprocal);
+        return $this->ruleSet->process($reciprocal);
     }
 
     public function getOwner(): MatchingRule
@@ -39,8 +39,7 @@ final class ItemOfIterableMatchingRule implements MatchingRule
     public function getPropertyPath(): PropertyPath
     {
         return $this->owner->getPropertyPath()
-            ->at($this->key)
-        ;
+            ->at($this->key);
     }
 
     public function getEnclosingObject(): object
@@ -53,14 +52,8 @@ final class ItemOfIterableMatchingRule implements MatchingRule
         return $this->owner->getRootObject();
     }
 
-    public function getValue(): object
+    public function getValue(): mixed
     {
-        $object = $this->objectRuleSet->getValue();
-
-        if (!is_object($object)) {
-            throw new LogicException('Object rule set must have returned an object as the value.');
-        }
-
-        return $object;
+        return $this->item;
     }
 }

@@ -32,13 +32,11 @@ final class MainExceptionMatcher implements ExceptionMatcher
             return null;
         }
 
-        $ruleSet = $plan->bind($message);
-
         $exceptionList = $this->exceptionUnwrapper->unwrap($exception);
 
         $reciprocal = new ExceptionReciprocal($exceptionList);
 
-        if (!$ruleSet->process($reciprocal)) {
+        if (!$plan->bind($message)->process($reciprocal)) {
             return null;
         }
 

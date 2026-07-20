@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests;
 
 use LogicException;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanFactory;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Delegating\DelegatingMatchConditionCompiler;
@@ -25,7 +25,7 @@ use function count;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyPlan
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanFactory
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate
  */
@@ -86,7 +86,7 @@ final class PropertyPlanUnitTest extends TestCase
         self::assertCount(0, [...$propertyPlan->getCatchPlans()]);
     }
 
-    private function getEnumStubMessagePlan(): ClassMatchingPlan
+    private function getEnumStubMessagePlan(): ClassMappingPlan
     {
         /** @psalm-suppress InvalidArgument the compiler registry template is inferred from both key and value positions */
         $compiler = new CompositeMatchConditionCompiler([

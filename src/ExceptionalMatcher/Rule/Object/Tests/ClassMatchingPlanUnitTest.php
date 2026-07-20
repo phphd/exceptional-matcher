@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Tests;
 
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanFactory;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyPlan;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\BindableMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\NestedStubException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\PlannedItem;
@@ -24,10 +24,10 @@ use function array_map;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanFactory
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyPlan
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan
  */
 final class ClassMatchingPlanUnitTest extends TestCase
@@ -52,7 +52,7 @@ final class ClassMatchingPlanUnitTest extends TestCase
         Assert::notNull($plan);
 
         $propertyNames = array_map(
-            static fn (PropertyPlan $propertyPlan): string => $propertyPlan->getName(),
+            static fn (PropertyMappingPlan $propertyPlan): string => $propertyPlan->getName(),
             [...$plan->getPropertyPlans()],
         );
 
@@ -120,7 +120,7 @@ final class ClassMatchingPlanUnitTest extends TestCase
         self::assertFalse($this->getPlanFor($message)->bind($message)->process($reciprocal));
     }
 
-    private function getPlanFor(BindableMessage $message): ClassMatchingPlan
+    private function getPlanFor(BindableMessage $message): ClassMappingPlan
     {
         $plan = $this->registry->getPlan($message::class);
 

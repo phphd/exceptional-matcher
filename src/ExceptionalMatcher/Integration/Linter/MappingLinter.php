@@ -8,10 +8,10 @@ use Generator;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\DefectLocation;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\MappingDefect;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyPlan;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionProperty;
@@ -84,7 +84,7 @@ final class MappingLinter
      *
      * @return Generator<MappingDefect>
      */
-    private function lintStructure(ReflectionClass $reflectionClass, ?ClassMatchingPlan $plan): Generator
+    private function lintStructure(ReflectionClass $reflectionClass, ?ClassMappingPlan $plan): Generator
     {
         $classLocation = new DefectLocation($reflectionClass->getName());
         $hasCatchProperties = $this->hasCatchProperties($reflectionClass);
@@ -148,7 +148,7 @@ final class MappingLinter
      *
      * @return Generator<MappingDefect>
      */
-    private function lintPlan(string $className, ClassMatchingPlan $plan): Generator
+    private function lintPlan(string $className, ClassMappingPlan $plan): Generator
     {
         try {
             foreach ($plan->getPropertyPlans() as $propertyPlan) {
@@ -165,7 +165,7 @@ final class MappingLinter
      *
      * @return Generator<MappingDefect>
      */
-    private function lintPropertyPlan(string $className, PropertyPlan $propertyPlan): Generator
+    private function lintPropertyPlan(string $className, PropertyMappingPlan $propertyPlan): Generator
     {
         $propertyLocation = new DefectLocation($className, $propertyPlan->getName());
 

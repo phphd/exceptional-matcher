@@ -37,11 +37,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal
  * @covers \PhPhD\ExceptionalMatcher\Exception\MatchedException
  * @covers \PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanFactory
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyPlan
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchCondition

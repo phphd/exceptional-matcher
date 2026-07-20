@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object;
 
 use Closure;
+use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use ReflectionClass;
 
 use function array_key_exists;
@@ -12,7 +13,7 @@ use function array_key_exists;
 /** @api */
 final class ClassMatchingPlanRegistry
 {
-    /** @var array<class-string,?ClassMatchingPlan> */
+    /** @var array<class-string,?ClassMappingPlan> */
     private array $plans = [];
 
     public function __construct(
@@ -28,7 +29,7 @@ final class ClassMatchingPlanRegistry
     }
 
     /** @param class-string $className */
-    public function getPlan(string $className): ?ClassMatchingPlan
+    public function getPlan(string $className): ?ClassMappingPlan
     {
         if (null !== $this->autoloadClassNames) {
             $this->autoloadClassNames->__invoke();
