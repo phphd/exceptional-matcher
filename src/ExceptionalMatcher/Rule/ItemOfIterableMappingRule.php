@@ -6,19 +6,19 @@ namespace PhPhD\ExceptionalMatcher\Rule;
 
 use LogicException;
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 
 use function is_object;
 
 /** @internal */
-final class ItemOfIterableMatchingRule implements MatchingRule
+final class ItemOfIterableMappingRule implements MappingRule
 {
-    private readonly MatchingRule $ruleSet;
+    private readonly MappingRule $ruleSet;
 
     public function __construct(
-        private readonly MatchingRule $owner,
+        private readonly MappingRule $owner,
         private readonly int|string $key,
         private readonly mixed $item,
         ClassMappingPlan $matchingPlan,
@@ -31,7 +31,7 @@ final class ItemOfIterableMatchingRule implements MatchingRule
         return $this->ruleSet->process($reciprocal);
     }
 
-    public function getOwner(): MatchingRule
+    public function getOwner(): MappingRule
     {
         return $this->owner;
     }

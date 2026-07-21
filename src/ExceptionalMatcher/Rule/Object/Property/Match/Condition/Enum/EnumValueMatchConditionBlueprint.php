@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum;
 
 use BackedEnum;
-use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
+use PhPhD\ExceptionalMatcher\Rule\MappingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Bool\FalseCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
@@ -29,7 +29,7 @@ final class EnumValueMatchConditionBlueprint implements MatchConditionBlueprint
     }
 
     /** @return MatchCondition<ValueError> */
-    public function bind(MatchingRule $rule): MatchCondition
+    public function bind(MappingRule $rule): MatchCondition
     {
         $value = $rule->getValue();
 

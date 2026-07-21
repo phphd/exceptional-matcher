@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Matcher;
 
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
+use PhPhD\ExceptionalMatcher\Rule\MappingRule;
 
 final class CatchAttributesExceptionMatcher
 {
     public function __construct(
-        /** @var iterable<MatchingRule> $rules */
+        /** @var iterable<MappingRule> $rules */
         private readonly iterable $rules,
     ) {
     }

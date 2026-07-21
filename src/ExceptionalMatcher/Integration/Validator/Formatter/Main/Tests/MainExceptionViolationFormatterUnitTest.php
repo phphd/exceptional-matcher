@@ -23,8 +23,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * @covers \PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\MainExceptionViolationFormatter
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMatchingRuleSet
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ObjectMatchingRuleSet
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingRuleSet
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ObjectMappingRuleSet
  *
  * @internal
  */

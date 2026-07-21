@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Validator;
 
 use LogicException;
-use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
+use PhPhD\ExceptionalMatcher\Rule\MappingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
@@ -34,7 +34,7 @@ final class ValidationFailedExceptionMatchConditionCompiler implements MatchCond
         return $this;
     }
 
-    public function bind(MatchingRule $rule): ValidationFailedExceptionMatchCondition
+    public function bind(MappingRule $rule): ValidationFailedExceptionMatchCondition
     {
         return new ValidationFailedExceptionMatchCondition($rule->getValue());
     }

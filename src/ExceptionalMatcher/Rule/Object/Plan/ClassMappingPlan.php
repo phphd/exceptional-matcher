@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Plan;
 
 use AppendIterator;
 use Iterator;
-use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
-use PhPhD\ExceptionalMatcher\Rule\Object\ObjectMatchingRuleSet;
+use PhPhD\ExceptionalMatcher\Rule\MappingRule;
+use PhPhD\ExceptionalMatcher\Rule\Object\ObjectMappingRuleSet;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan;
 
@@ -20,17 +20,17 @@ final class ClassMappingPlan
     ) {
     }
 
-    public function bind(object $object, ?MatchingRule $ownerRule = null): ObjectMatchingRuleSet
+    public function bind(object $object, ?MappingRule $ownerRule = null): ObjectMappingRuleSet
     {
-        $objectRuleSet = new ObjectMatchingRuleSet($object, $ownerRule, new ReusableIteratorAggregate($propertyRules = new AppendIterator()));
+        $objectRuleSet = new ObjectMappingRuleSet($object, $ownerRule, new ReusableIteratorAggregate($propertyRules = new AppendIterator()));
 
         $propertyRules->append($this->bindPropertyRules($objectRuleSet));
 
         return $objectRuleSet;
     }
 
-    /** @return Iterator<MatchingRule> */
-    private function bindPropertyRules(ObjectMatchingRuleSet $objectRuleSet): Iterator
+    /** @return Iterator<MappingRule> */
+    private function bindPropertyRules(ObjectMappingRuleSet $objectRuleSet): Iterator
     {
         foreach ($this->propertyPlans as $propertyPlan) {
             yield $propertyPlan->bind($objectRuleSet);

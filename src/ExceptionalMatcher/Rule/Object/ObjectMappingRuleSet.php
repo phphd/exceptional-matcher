@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object;
 
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
+use PhPhD\ExceptionalMatcher\Rule\MappingRule;
+use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 
 /** @internal */
-final class ObjectMatchingRuleSet implements MatchingRule
+final class ObjectMappingRuleSet implements MappingRule
 {
     public function __construct(
         private readonly object $object,
-        private readonly ?MatchingRule $owner,
-        /** @var iterable<MatchingRule> */
+        private readonly ?MappingRule $owner,
+        /** @var iterable<ExceptionMatchingRule> */
         private readonly iterable $propertyRules,
     ) {
     }
@@ -30,7 +31,7 @@ final class ObjectMatchingRuleSet implements MatchingRule
         return false;
     }
 
-    public function getOwner(): ?MatchingRule
+    public function getOwner(): ?MappingRule
     {
         return $this->owner;
     }

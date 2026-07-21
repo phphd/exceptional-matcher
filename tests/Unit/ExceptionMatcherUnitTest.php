@@ -30,9 +30,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
  * @covers \PhPhD\ExceptionalMatcher\MainExceptionMatcher
  * @covers \PhPhD\ExceptionalMatcher\Integration\Validator\ExceptionToViolationListMatcher
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ObjectMatchingRuleSet
- * @covers \PhPhD\ExceptionalMatcher\Rule\ItemOfIterableMatchingRule
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMatchingRuleSet
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ObjectMappingRuleSet
+ * @covers \PhPhD\ExceptionalMatcher\Rule\ItemOfIterableMappingRule
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingRuleSet
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath
  * @covers \PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal
  * @covers \PhPhD\ExceptionalMatcher\Exception\MatchedException

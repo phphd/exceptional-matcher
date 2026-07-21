@@ -5,21 +5,21 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Matcher;
 
 use Iterator;
-use PhPhD\ExceptionalMatcher\Rule\ItemOfIterableMatchingRule;
-use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatcherAggregate;
+use PhPhD\ExceptionalMatcher\Rule\ItemOfIterableMappingRule;
+use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRuleAggregate;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMatchingRuleSet;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingRuleSet;
 
 /** @internal */
-final class IterablePropertyExceptionMatcher implements ExceptionMatcherAggregate
+final class IterablePropertyExceptionMatcher implements ExceptionMatchingRuleAggregate
 {
     public function __construct(
-        private readonly PropertyMatchingRuleSet $propertyRuleSet,
+        private readonly PropertyMappingRuleSet $propertyRuleSet,
         private readonly ClassMatchingPlanRegistry $planRegistry,
     ) {
     }
 
-    public function getExceptionMatchers(): Iterator
+    public function getExceptionMatchingRules(): Iterator
     {
         /** @var iterable<array-key,mixed> $value */
         $value = $this->propertyRuleSet->getValue();
@@ -35,7 +35,7 @@ final class IterablePropertyExceptionMatcher implements ExceptionMatcherAggregat
                 continue;
             }
 
-            yield new ItemOfIterableMatchingRule($this->propertyRuleSet, $key, $item, $itemPlan);
+            yield new ItemOfIterableMappingRule($this->propertyRuleSet, $key, $item, $itemPlan);
         }
     }
 }

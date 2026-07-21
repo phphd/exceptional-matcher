@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Uid;
 
 use LogicException;
-use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
+use PhPhD\ExceptionalMatcher\Rule\MappingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
@@ -39,7 +39,7 @@ final class InvalidUidExceptionMatchConditionCompiler implements MatchConditionC
     }
 
     /** @return MatchCondition<InvalidUidException> */
-    public function bind(MatchingRule $rule): MatchCondition
+    public function bind(MappingRule $rule): MatchCondition
     {
         $value = $rule->getValue();
 

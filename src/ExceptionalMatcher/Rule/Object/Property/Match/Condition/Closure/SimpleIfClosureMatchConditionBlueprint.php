@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure;
 
-use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
+use PhPhD\ExceptionalMatcher\Rule\MappingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
 use Throwable;
 use Webmozart\Assert\Assert;
@@ -23,7 +23,7 @@ final class SimpleIfClosureMatchConditionBlueprint implements MatchConditionBlue
         Assert::methodExists(...$if);
     }
 
-    public function bind(MatchingRule $rule): ClosureMatchCondition
+    public function bind(MappingRule $rule): ClosureMatchCondition
     {
         $object = $rule->getEnclosingObject();
 
