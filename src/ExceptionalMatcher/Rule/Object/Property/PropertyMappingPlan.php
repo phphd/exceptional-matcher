@@ -104,16 +104,6 @@ final class PropertyMappingPlan
         return $this->property->getName();
     }
 
-    public function hasCatchPlans(): bool
-    {
-        /** @noinspection PhpLoopNeverIteratesInspection */
-        foreach ($this->catchPlans as $catchPlan) {
-            return true;
-        }
-
-        return false;
-    }
-
     /**
      * @api the seam for the mapping linter: forcing this iterable compiles every `#[Catch_]` of the property
      *
@@ -122,5 +112,15 @@ final class PropertyMappingPlan
     public function getCatchPlans(): iterable
     {
         return $this->catchPlans;
+    }
+
+    public function hasCatchPlans(): bool
+    {
+        /** @noinspection PhpLoopNeverIteratesInspection */
+        foreach ($this->catchPlans as $catchPlan) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -8,13 +8,13 @@ use ReflectionProperty;
 use RuntimeException;
 use Throwable;
 
-final class PropertyPlanCompilationFailedException extends RuntimeException
+final class CatchPlanCompilationFailedException extends RuntimeException
 {
     public function __construct(
         private readonly ReflectionProperty $property,
         Throwable $previous,
     ) {
-        parent::__construct('Property plan compilation has failed', previous: $previous);
+        parent::__construct('Catch plan compilation has failed', previous: $previous);
     }
 
     public function getProperty(): ReflectionProperty

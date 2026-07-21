@@ -9,7 +9,7 @@ use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\DefectLocation;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\PropertyPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\CatchPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan;
@@ -155,7 +155,7 @@ final class MappingLinter
             foreach ($plan->getPropertyPlans() as $propertyPlan) {
                 yield from $this->lintPropertyPlan($className, $propertyPlan);
             }
-        } catch (PropertyPlanCompilationFailedException $exception) {
+        } catch (CatchPlanCompilationFailedException $exception) {
             yield MappingDefect::error(new DefectLocation($className, $exception->getProperty()->getName()), $exception->getPrevious());
         } catch (Throwable $exception) {
             // materializing the next property plan failed - the exact property is unknown here

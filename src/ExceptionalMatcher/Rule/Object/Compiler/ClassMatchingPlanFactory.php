@@ -55,16 +55,7 @@ final class ClassMatchingPlanFactory
     private function compilePropertyPlans(ReflectionClass $reflectionClass, ClassMatchingPlanRegistry $planRegistry): Generator
     {
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            try {
-                $propertyPlan = $this->getPropertyPlan($reflectionProperty, $planRegistry);
-            } catch (\Throwable $e) {
-                if (!$this->failFast) {
-                    // One broken #[Catch] won't spoil the whole match tree.
-                    continue;
-                }
-
-                throw new PropertyPlanCompilationFailedException($reflectionProperty, $e);
-            }
+            $propertyPlan = $this->getPropertyPlan($reflectionProperty, $planRegistry);
 
             if (null === $propertyPlan) {
                 continue;
@@ -91,9 +82,18 @@ final class ClassMatchingPlanFactory
     private function getCatchPlans(ReflectionProperty $property): Generator
     {
         foreach ($this->getCatchAttributes($property) as $catch) {
-            $conditionBlueprint = $this->matchConditionCompiler->compile($catch);
+            try {
+                $conditionBlueprint = $this->matchConditionCompiler->compile($catch);
 
-            Assert::notNull($conditionBlueprint);
+                Assert::notNull($conditionBlueprint);
+            } catch (\Throwable $e) {
+                if (!$this->failFast) {
+                    // One broken #[Catch] won't spoil the whole match tree.
+                    continue;
+                }
+
+                throw new CatchPlanCompilationFailedException($property, $e);
+            }
 
             yield new CatchPlan($conditionBlueprint, $catch->getFormat(), $catch->getMessage());
         }
