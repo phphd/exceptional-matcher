@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Tests;
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\PropertyMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
@@ -42,7 +43,7 @@ final class ClassMatchingPlanUnitTest extends TestCase
             new ExceptionClassMatchConditionCompiler(),
         ]);
 
-        $this->registry = new ClassMatchingPlanRegistry(new ClassMatchingPlanFactory($compiler), null);
+        $this->registry = new ClassMatchingPlanRegistry(new ClassMatchingPlanFactory(new PropertyMappingPlanCompiler($compiler)), null);
     }
 
     public function testDiscardsPropertiesThatCanNeverMatch(): void

@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\PropertyMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
@@ -36,7 +37,7 @@ final class PropertyPlanUnitTest extends TestCase
         $compiler = new CountingMatchConditionCompiler(
             new CompositeMatchConditionCompiler([new ExceptionClassMatchConditionCompiler()]),
         );
-        $registry = new ClassMatchingPlanRegistry(new ClassMatchingPlanFactory($compiler), null);
+        $registry = new ClassMatchingPlanRegistry(new ClassMatchingPlanFactory(new PropertyMappingPlanCompiler($compiler)), null);
 
         $plan = $registry->getPlan(MultiCatchMessage::class);
 
@@ -96,7 +97,7 @@ final class PropertyPlanUnitTest extends TestCase
             ])),
         ]);
 
-        $registry = new ClassMatchingPlanRegistry(new ClassMatchingPlanFactory($compiler), null);
+        $registry = new ClassMatchingPlanRegistry(new ClassMatchingPlanFactory(new PropertyMappingPlanCompiler($compiler)), null);
 
         $plan = $registry->getPlan(MissingEnumFromConditionMessage::class);
 
