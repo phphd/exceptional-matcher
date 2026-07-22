@@ -10,11 +10,13 @@ use PhPhD\ExceptionalMatcher\Rule\MappingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\ObjectMappingRuleSet;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan;
+use ReflectionClass;
 
 /** @internal */
 final class ClassMappingPlan
 {
     public function __construct(
+        private readonly ReflectionClass $reflectionClass,
         /** @var iterable<PropertyMappingPlan> */
         private readonly iterable $propertyPlans,
     ) {
@@ -35,6 +37,11 @@ final class ClassMappingPlan
         foreach ($this->propertyPlans as $propertyPlan) {
             yield $propertyPlan->bind($objectRuleSet);
         }
+    }
+
+    public function getReflectionClass(): ReflectionClass
+    {
+        return $this->reflectionClass;
     }
 
     /** @return iterable<PropertyMappingPlan> */

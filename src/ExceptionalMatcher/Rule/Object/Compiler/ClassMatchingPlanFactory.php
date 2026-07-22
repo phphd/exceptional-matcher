@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Compiler;
 
+use AppendIterator;
 use Exception;
 use Generator;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
@@ -13,6 +14,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use ReflectionClass;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
@@ -40,19 +42,22 @@ final class ClassMatchingPlanFactory
     ) {
     }
 
-    /** @param ReflectionClass<object> $reflectionClass */
-    public function create(ReflectionClass $reflectionClass, ClassMatchingPlanRegistry $planRegistry): ClassMappingPlan
+    /** @param class-string $className */
+    public function create(string $className, ClassMatchingPlanRegistry $planRegistry): ?ClassMappingPlan
     {
-        return new ClassMappingPlan(new ReusableIteratorAggregate(
-            $this->compilePropertyPlans($reflectionClass, $planRegistry)
-        ));
+        $reflectionClass = new ReflectionClass($className);
+
+        if ([] === $reflectionClass->getAttributes(Try_::class)) {
+            return null;
+        }
+
+        return new ClassMappingPlan(
+            $reflectionClass,
+            new ReusableIteratorAggregate($this->compilePropertyPlans($reflectionClass, $planRegistry)),
+        );
     }
 
-    /**
-     * @param ReflectionClass<object> $reflectionClass
-     *
-     * @return Generator<int,PropertyMappingPlan>
-     */
+    /** @return Generator<int,PropertyMappingPlan> */
     private function compilePropertyPlans(ReflectionClass $reflectionClass, ClassMatchingPlanRegistry $planRegistry): Generator
     {
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
@@ -68,7 +73,7 @@ final class ClassMatchingPlanFactory
 
     private function getPropertyPlan(ReflectionProperty $reflectionProperty, ClassMatchingPlanRegistry $planRegistry): ?PropertyMappingPlan
     {
-        $catchPlans = new ReusableIteratorAggregate($this->getCatchPlans($reflectionProperty));
+        $catchPlans = new ReusableIteratorAggregate($this->compileCatchPlans($reflectionProperty));
 
         $propertyMappingPlan = new PropertyMappingPlan($reflectionProperty, $catchPlans, $planRegistry);
 
@@ -80,7 +85,7 @@ final class ClassMatchingPlanFactory
     }
 
     /** @return Generator<int,CatchPlan<Throwable>> */
-    private function getCatchPlans(ReflectionProperty $property): Generator
+    private function compileCatchPlans(ReflectionProperty $property): Generator
     {
         foreach ($this->getCatchAttributes($property) as $catch) {
             try {

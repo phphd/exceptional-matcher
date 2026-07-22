@@ -41,12 +41,6 @@ final class ClassMatchingPlanRegistry
             return $this->plans[$className];
         }
 
-        $reflectionClass = new ReflectionClass($className);
-
-        if ([] === $reflectionClass->getAttributes(Try_::class)) {
-            return $this->plans[$className] = null;
-        }
-
-        return $this->plans[$className] = $this->planFactory->create($reflectionClass, $this);
+        return $this->plans[$className] = $this->planFactory->create($className, $this);
     }
 }
