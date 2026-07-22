@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Compiler;
 
+use Exception;
 use Generator;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
@@ -105,7 +106,16 @@ final class ClassMatchingPlanFactory
         $catchAttributes = $property->getAttributes(Catch_::class);
 
         foreach ($catchAttributes as $catchAttribute) {
-            yield $catchAttribute->newInstance();
+            try {
+                yield $catchAttribute->newInstance();
+            } catch (Throwable $e) {
+                if (!$this->failFast) {
+                    // One broken #[Catch] won't spoil the whole match tree.
+                    continue;
+                }
+
+                throw new CatchAttributeInstantiationFailedException($property, $e);
+            }
         }
     }
 

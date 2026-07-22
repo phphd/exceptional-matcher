@@ -8,13 +8,13 @@ use ReflectionProperty;
 use RuntimeException;
 use Throwable;
 
-final class CatchPlanCompilationFailedException extends RuntimeException
+final class CatchAttributeInstantiationFailedException extends RuntimeException
 {
     public function __construct(
         private readonly ReflectionProperty $property,
         Throwable $previous,
     ) {
-        parent::__construct('#[Catch_] attribute compilation has failed.', previous: $previous);
+        parent::__construct('#[Catch_] attribute instantiation has failed.', previous: $previous);
     }
 
     public function getProperty(): ReflectionProperty
