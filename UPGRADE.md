@@ -32,3 +32,20 @@ for the changes not covered by automatic upgrade via Rector (see the "Upgrading"
   > `'exception.message'` given.
 
   Fix it by passing it as a named parameter: `message: 'exception.message'`.
+
+* Changed: `match: enum_value` static mapping checks (`from:` must reference a `BackedEnum` \
+  with the `'from'` method) are no longer skipped when the property value happens to be `null`.
+
+* Changed: matching runs through compiled per-class matching plans (`ClassMatchingPlanRegistry`) now. \
+  The `#[Catch_]` attributes of a property are compiled once per process and memoized on success; \
+  error timing and exception types/messages are unchanged (a broken mapping still throws on the \
+  first `match()` call that reaches the property).
+
+* Removed: the internal rule-set assembler services (the \
+  `PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService<...>` family) and \
+  `PhPhD\ExceptionalMatcher\Rule\LazyMatchingRule` - all were `@internal`; the container ids are \
+  dropped without aliases. Use `PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry` instead.
+
+* New: the `lint:exceptional-matcher` console command and the \
+  `PhPhD\ExceptionalMatcher\Integration\Linter\MappingLinter` service check the exception mappings for \
+  every statically detectable error ahead of time. See [docs/config/lint.md](docs/config/lint.md).

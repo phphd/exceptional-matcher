@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composit
 use CachingIterator;
 use Iterator;
 use IteratorAggregate;
-use Traversable;
+use Throwable;
 
 /**
  * @internal
@@ -24,18 +24,33 @@ final class ReusableIteratorAggregate implements IteratorAggregate
     /** @var CachingIterator<TKey,TValue,Iterator<TKey,TValue>> */
     private readonly CachingIterator $iterator;
 
+    private ?Throwable $exception = null;
+
     /** @param Iterator<TKey,TValue> $iterator */
     public function __construct(Iterator $iterator)
     {
         $this->iterator = new CachingIterator($iterator, CachingIterator::FULL_CACHE);
     }
 
-    /** @return Traversable<TKey,TValue> */
-    public function getIterator(): Traversable
+    /** @return Iterator<TKey,TValue> */
+    public function getIterator(): Iterator
     {
         /** @phpstan-ignore generator.keyType (CachingIterator::getCache() stub loses the TKey type) */
         yield from $this->iterator->getCache();
 
+        if (null !== $this->exception) {
+            throw $this->exception;
+        }
+
+        try {
+            yield from $this->iterate();
+        } catch (Throwable $e) {
+            throw $this->exception = $e;
+        }
+    }
+
+    private function iterate(): Iterator
+    {
         while ($this->iterator->hasNext()) {
             $this->iterator->next();
 

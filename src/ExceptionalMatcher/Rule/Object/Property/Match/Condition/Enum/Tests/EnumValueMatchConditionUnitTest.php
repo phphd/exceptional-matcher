@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests;
 
+use Exception;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\CatchPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\Invalid\InvalidEnumFromMethodConditionMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\Invalid\NonEnumExceptionClassConditionMessage;
@@ -62,7 +64,15 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('EnumValueMatchCondition can only be used for ValueError');
 
-        $this->matcher->match($exception, $message);
+        try {
+            $this->matcher->match($exception, $message);
+
+            self::fail('PropertyPlanCompilationFailedException should be thrown');
+        } catch (CatchPlanCompilationFailedException $e) {
+            self::assertSame('weekDay', $e->getProperty()->getName());
+
+            throw $e->getPrevious();
+        }
     }
 
     public function testThrowsWhenFromClauseIsMissing(): void
@@ -73,7 +83,13 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: NULL');
 
-        $this->matcher->match($exception, $message);
+        try {
+            $this->matcher->match($exception, $message);
+
+            self::fail('PropertyPlanCompilationFailedException should be thrown');
+        } catch (CatchPlanCompilationFailedException $e) {
+            throw $e->getPrevious();
+        }
     }
 
     public function testThrowsWhenFromClassIsNotBackedEnum(): void
@@ -84,7 +100,13 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(sprintf('EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: %s', var_export(NonBackedStatus::class, true)));
 
-        $this->matcher->match($exception, $message);
+        try {
+            $this->matcher->match($exception, $message);
+
+            self::fail('PropertyPlanCompilationFailedException should be thrown');
+        } catch (CatchPlanCompilationFailedException $e) {
+            throw $e->getPrevious();
+        }
     }
 
     public function testThrowsWhenFromMethodIsNotEnumFrom(): void
@@ -95,7 +117,13 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage("EnumValueMatchCondition must specify `from: [WeekDay::class, 'from']`, got: `from: [WeekDay::class, 'tryFrom']`.");
 
-        $this->matcher->match($exception, $message);
+        try {
+            $this->matcher->match($exception, $message);
+
+            self::fail('PropertyPlanCompilationFailedException should be thrown');
+        } catch (CatchPlanCompilationFailedException $e) {
+            throw $e->getPrevious();
+        }
     }
 
     public function testDoesNotCaptureStringEnumErrorWhenRuleValueIsNull(): void

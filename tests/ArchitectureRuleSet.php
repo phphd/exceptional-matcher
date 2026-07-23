@@ -10,9 +10,6 @@ use PHPat\Selector\SelectorInterface;
 use PHPat\Test\Attributes\TestRule;
 use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\PHPat;
-use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssembler;
-use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService;
-use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
@@ -47,12 +44,6 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
-    public function testMatchingRuleSetAssemblerDependencies(): BuildStep
-    {
-        return $this->layerRule('matchingRuleSetAssembler');
-    }
-
-    #[TestRule]
     public function testModelDependencies(): BuildStep
     {
         return $this->layerRule('model');
@@ -62,6 +53,12 @@ final class ArchitectureRuleSet
     public function testMatchConditionDependencies(): BuildStep
     {
         return $this->layerRule('matchCondition');
+    }
+
+    #[TestRule]
+    public function testLinterDependencies(): BuildStep
+    {
+        return $this->layerRule('linter');
     }
 
     #[TestRule]
@@ -114,8 +111,6 @@ final class ArchitectureRuleSet
         return [
             'matcher' => [
                 'deps' => [
-                    Selector::classname(MatchingRuleSetAssemblerService::class),
-                    Selector::classname(ObjectMatchingRuleSetAssembler::class),
                     $this->exception(),
                     $this->model(),
                     Selector::classname(ExceptionUnwrapper::class),
@@ -129,18 +124,13 @@ final class ArchitectureRuleSet
                 ],
                 'description' => 'Exception Models must not depend on anything else',
             ],
-            'matchingRuleSetAssembler' => [
-                'deps' => [
-                    $this->model(),
-                    $this->matchCondition(),
-                    Selector::classname(Assert::class),
-                ],
-            ],
             'model' => [
                 'deps' => [
                     $this->exception(),
                     Selector::classname(Assert::class),
                     Selector::classname(ContainerInterface::class),
+                    Selector::classname(MatchConditionCompiler::class),
+                    Selector::classname(MatchConditionBlueprint::class),
                 ],
                 'description' => 'Model classes must not depend on anything else',
             ],
@@ -152,6 +142,16 @@ final class ArchitectureRuleSet
                     // Third-party
                     Selector::classname(ValidationFailedException::class),
                     Selector::classname(InvalidUidException::class),
+                ],
+            ],
+            'linter' => [
+                'deps' => [
+                    $this->model(),
+                    $this->exception(),
+                    Selector::classname(Assert::class),
+                    Selector::inNamespace('Psr\Container'),
+                    Selector::inNamespace('Composer\ClassMapGenerator'),
+                    Selector::inNamespace('Symfony\Component\Console'),
                 ],
             ],
             'validatorMatcher' => [
@@ -206,8 +206,14 @@ final class ArchitectureRuleSet
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Exception')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Linter')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Upgrade')),
         );
+    }
+
+    public function linter(): SelectorInterface
+    {
+        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Linter');
     }
 
     public function validatorMatcher(): SelectorInterface
@@ -232,16 +238,6 @@ final class ArchitectureRuleSet
         return Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger');
     }
 
-    public function matchingRuleSetAssembler(): SelectorInterface
-    {
-        return Selector::AnyOf(
-            Selector::classname(MatchingRuleSetAssembler::class),
-            Selector::implements(MatchingRuleSetAssembler::class),
-            Selector::classname(MatchingRuleSetAssemblerService::class),
-            Selector::implements(MatchingRuleSetAssemblerService::class),
-        );
-    }
-
     public function matchCondition(): SelectorInterface
     {
         return Selector::AnyOf(
@@ -263,7 +259,6 @@ final class ArchitectureRuleSet
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule'),
             Selector::Not($this->matchCondition()),
-            Selector::Not($this->matchingRuleSetAssembler()),
             Selector::Not(Selector::implements(CompilerPassInterface::class)),
         );
     }
