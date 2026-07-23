@@ -19,7 +19,12 @@ final class MappingDefect
 
     public static function error(DefectLocation $location, Throwable $cause): self
     {
-        return new self(DefectSeverity::Error, $cause->getMessage(), $location, $cause);
+        $message = $cause->getMessage();
+        for ($previous = $cause->getPrevious(); null !== $previous; $previous = $previous->getPrevious()) {
+            $message = sprintf("%s:\n%s", rtrim($message, '.'), $previous->getMessage());
+        }
+
+        return new self(DefectSeverity::Error, $message, $location, $cause);
     }
 
     public static function warning(string $message, DefectLocation $location): self

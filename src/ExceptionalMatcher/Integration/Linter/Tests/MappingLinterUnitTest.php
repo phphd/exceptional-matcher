@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Integration\Linter\Tests;
 
 use Error;
+use LogicException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\DefectSeverity;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\MappingDefect;
@@ -14,6 +15,7 @@ use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\ChildOfPrivateCatchMe
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnregisteredFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnregisteredFormatterMessage;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\CatchAttributeInstantiationFailedException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\RootObject;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
@@ -83,6 +85,9 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsTryClassWithoutCatchProperties(): void
     {
+        // Can you please write a test that will make sure that if class defines #[Try_] attribute, but there is no ClassMappingPlan, - it must report?
+        throw new LogicException('This test is incorrect: notTypedArray is the array, and thus RootObject is a valid mapping');
+
         [$defect] = $this->linter->lint([RootObject::class]);
 
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
@@ -126,9 +131,10 @@ final class MappingLinterUnitTest extends TestCase
         [$defect] = $this->linter->lint([UndefinedConstantConditionMessage::class]);
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
+        self::assertStringContainsString('Undefined constant', $defect->getMessage());
         self::assertStringContainsString('undefined_condition', $defect->getMessage());
         self::assertSame('caughtValue', $defect->getLocation()->getPropertyName());
-        self::assertInstanceOf(Error::class, $defect->getCause());
+        self::assertInstanceOf(CatchAttributeInstantiationFailedException::class, $defect->getCause());
     }
 
     /**
@@ -140,7 +146,7 @@ final class MappingLinterUnitTest extends TestCase
     {
         return array_values(array_filter(
             $defects,
-            static fn (MappingDefect $defect): bool => DefectSeverity::Error === $defect->getSeverity(),
+            static fn (MappingDefect $defect): bool => $defect->getSeverity()->is(DefectSeverity::Error),
         ));
     }
 }

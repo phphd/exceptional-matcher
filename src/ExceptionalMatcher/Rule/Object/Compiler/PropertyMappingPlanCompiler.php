@@ -38,7 +38,7 @@ final class PropertyMappingPlanCompiler
 
         $propertyMappingPlan = new PropertyMappingPlan($reflectionProperty, $catchPlans, $planRegistry);
 
-        if (!$this->isMatchableProperty($propertyMappingPlan, $reflectionProperty, $planRegistry)) {
+        if (!$this->isMatchableProperty($propertyMappingPlan, $planRegistry)) {
             return null;
         }
 
@@ -53,16 +53,16 @@ final class PropertyMappingPlanCompiler
                 $conditionBlueprint = $this->matchConditionCompiler->compile($catch);
 
                 Assert::notNull($conditionBlueprint);
+
+                yield new CatchPlan($conditionBlueprint, $catch->getFormat(), $catch->getMessage());
             } catch (\Throwable $e) {
                 if (!$this->failFast) {
-                    // One broken #[Catch] won't spoil the whole match tree.
+                    // One broken #[Catch_] won't spoil the whole match tree.
                     continue;
                 }
 
                 throw new CatchPlanCompilationFailedException($property, $e);
             }
-
-            yield new CatchPlan($conditionBlueprint, $catch->getFormat(), $catch->getMessage());
         }
     }
 
@@ -76,7 +76,7 @@ final class PropertyMappingPlanCompiler
                 yield $catchAttribute->newInstance();
             } catch (Throwable $e) {
                 if (!$this->failFast) {
-                    // One broken #[Catch] won't spoil the whole match tree.
+                    // One broken #[Catch_] won't spoil the whole match tree.
                     continue;
                 }
 
@@ -92,14 +92,13 @@ final class PropertyMappingPlanCompiler
      */
     private function isMatchableProperty(
         PropertyMappingPlan $propertyPlan,
-        ReflectionProperty $property,
         ClassMatchingPlanRegistry $planRegistry,
     ): bool {
         if ($propertyPlan->hasCatchPlans()) {
             return true;
         }
 
-        return $this->canValueMatch($property->getType(), $planRegistry);
+        return $this->canValueMatch($propertyPlan->getProperty()->getType(), $planRegistry);
     }
 
     private function canValueMatch(?ReflectionType $type, ClassMatchingPlanRegistry $planRegistry): bool

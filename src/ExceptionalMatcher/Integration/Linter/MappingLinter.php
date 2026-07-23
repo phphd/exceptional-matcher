@@ -156,9 +156,11 @@ final class MappingLinter
             foreach ($plan->getPropertyPlans() as $propertyPlan) {
                 yield from $this->lintPropertyPlan($className, $propertyPlan);
             }
-        } catch (CatchAttributeInstantiationFailedException|CatchPlanCompilationFailedException $exception) {
-            yield MappingDefect::error(new DefectLocation($className, $exception->getProperty()->getName()), $exception->getPrevious());
-        } catch (Throwable $exception) {
+        }
+//        catch (CatchAttributeInstantiationFailedException|CatchPlanCompilationFailedException $exception) {
+//            yield MappingDefect::error(new DefectLocation($className, $exception->getProperty()->getName()), $exception->getPrevious());
+//        }
+        catch (Throwable $exception) {
             // materializing the next property plan failed - the exact property is unknown here
             yield MappingDefect::error(new DefectLocation($className), $exception);
         }

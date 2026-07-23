@@ -58,8 +58,9 @@ final class PropertyPlanUnitTest extends TestCase
 
         self::assertCount(3, $catchPlans);
         self::assertSame([
-            'skeletal plan' => 0,
-            // the emptiness check reads one catch plan ahead of the caching iterator
+            // The emptiness check reads the first property plan,
+            // which in turn, checks first catch plan, and one plan ahead of the caching iterator
+            'skeletal plan' => 2,
             'property plans traversed' => 2,
             'catch plans traversed' => 3,
             'everything re-traversed' => 3,

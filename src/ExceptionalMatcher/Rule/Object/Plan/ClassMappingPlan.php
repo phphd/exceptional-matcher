@@ -49,4 +49,14 @@ final class ClassMappingPlan
     {
         return $this->propertyPlans;
     }
+
+    /** @noinspection PhpLoopNeverIteratesInspection */
+    public function hasPropertyPlans(): bool
+    {
+        foreach ($this->propertyPlans as $propertyPlan) {
+            return true;
+        }
+
+        return false;
+    }
 }

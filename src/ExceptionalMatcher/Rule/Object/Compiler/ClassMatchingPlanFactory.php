@@ -47,10 +47,16 @@ final class ClassMatchingPlanFactory
             return null;
         }
 
-        return new ClassMappingPlan(
+        $classMappingPlan = new ClassMappingPlan(
             $reflectionClass,
             new ReusableIteratorAggregate($this->compilePropertyPlans($reflectionClass, $planRegistry)),
         );
+
+        if (!$classMappingPlan->hasPropertyPlans()) {
+            return null;
+        }
+
+        return $classMappingPlan;
     }
 
     /** @return Generator<int,PropertyMappingPlan> */
