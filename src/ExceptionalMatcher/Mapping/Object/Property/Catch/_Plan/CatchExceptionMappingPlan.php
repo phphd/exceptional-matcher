@@ -15,11 +15,11 @@ use Throwable;
  *
  * @template TException of Throwable
  */
-final class CatchPlan
+final class CatchExceptionMappingPlan
 {
     public function __construct(
         /** @var MatchConditionPlan<TException> */
-        private readonly MatchConditionPlan $conditionBlueprint,
+        private readonly MatchConditionPlan $conditionPlan,
         /** @var class-string<MatchedExceptionFormatter<TException,mixed>> */
         private readonly string $formatterId,
         private readonly ?string $messageTemplate,
@@ -31,7 +31,7 @@ final class CatchPlan
     {
         return new CatchExceptionMappingNode(
             $ownerRule,
-            $this->conditionBlueprint->bind($ownerRule),
+            $this->conditionPlan->bind($ownerRule),
             $this->formatterId,
             $this->messageTemplate,
         );

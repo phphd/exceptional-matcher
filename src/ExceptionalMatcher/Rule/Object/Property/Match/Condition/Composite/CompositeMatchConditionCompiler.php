@@ -30,7 +30,7 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
     {
         // materialized eagerly: compiling a catch IS its validation - every statically
         // detectable mapping error must surface right here, not on the first bind
-        return new CompositeMatchConditionPlan(iterator_to_array($this->conditionBlueprints($catch), false));
+        return new CompositeMatchConditionPlan(iterator_to_array($this->conditionPlans($catch), false));
     }
 
     /**
@@ -38,7 +38,7 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
      *
      * @return Iterator<MatchConditionPlan<Throwable>>
      */
-    private function conditionBlueprints(Catch_ $catch): Iterator
+    private function conditionPlans(Catch_ $catch): Iterator
     {
         foreach ($this->compilers as $compiler) {
             $plan = $compiler->compile($catch);

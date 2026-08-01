@@ -347,7 +347,7 @@ A custom condition requires three pieces:
 | Piece     | Interface                 | Responsibility                                                                                         |
 |-----------|---------------------------|--------------------------------------------------------------------------------------------------------|
 | Condition | `MatchCondition`          | decides whether the exception matches:<br> `matches($exception): bool`                                 |
-| Blueprint | `MatchConditionBlueprint` | a compiled blueprint of the condition;<br> applying it to the property produces the Condition          |
+| Plan | `MatchConditionPlan` | a compiled blueprint of the condition;<br> applying it to the property produces the Condition          |
 | Compiler  | `MatchConditionCompiler`  | compiles the `#[Catch_]` declaration into a blueprint,<br> validating the declaration at the same time |
 
 So, in our example, the condition itself:
@@ -425,7 +425,7 @@ It has two parts:
 
 - `bind()` — read the **runtime context** via `MatchingRule` (`getValue()`, `getEnclosingObject()`, etc.).
   > If you need no property value for the condition, you can return the condition \
-  > right from the `compile()` method by wrapping it into `new PreCompiledMatchConditionBlueprint()`.
+  > right from the `compile()` method by wrapping it into `new PreCompiledMatchConditionPlan()`.
 
 Register the compiler service, so it's available for `match:` to resolve:
 

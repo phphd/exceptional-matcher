@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan;
 use ArrayIterator;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\CatchPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\CatchExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRule;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRuleAggregate;
@@ -24,7 +24,7 @@ final class PropertyExceptionMappingPlan
 {
     public function __construct(
         private readonly ReflectionProperty $property,
-        /** @var CatchPlan */
+        /** @var CatchExceptionMappingPlan */
         private readonly iterable $catchPlans,
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
     ) {
@@ -109,7 +109,7 @@ final class PropertyExceptionMappingPlan
     /**
      * @api the seam for the mapping linter: forcing this iterable compiles every `#[Catch_]` of the property
      *
-     * @return CatchPlan
+     * @return CatchExceptionMappingPlan
      */
     public function getCatchPlans(): iterable
     {
