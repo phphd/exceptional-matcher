@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests;
 
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\Exception\CatchPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\CatchPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Delegating\DelegatingMatchConditionCompiler;
@@ -27,7 +27,7 @@ use function count;
  * @internal
  *
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ObjectExceptionMappingPlanCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate
  */
 final class PropertyPlanUnitTest extends TestCase

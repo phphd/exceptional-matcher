@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match;
 
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionPlan;
 use Throwable;
 
 /**
@@ -17,8 +17,8 @@ use Throwable;
 final class CatchPlan
 {
     public function __construct(
-        /** @var MatchConditionBlueprint<TException> */
-        private readonly MatchConditionBlueprint $conditionBlueprint,
+        /** @var MatchConditionPlan<TException> */
+        private readonly MatchConditionPlan $conditionBlueprint,
         /** @var class-string<MatchedExceptionFormatter<TException,mixed>> */
         private readonly string $formatterId,
         private readonly ?string $messageTemplate,

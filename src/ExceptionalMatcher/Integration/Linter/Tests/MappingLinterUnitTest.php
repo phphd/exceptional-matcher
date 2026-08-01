@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Integration\Linter\Tests;
 
-use Error;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\DefectSeverity;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\MappingDefect;
@@ -16,7 +15,7 @@ use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\TryWithNonMatchableOb
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnmatchableTryMessage;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnregisteredFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnregisteredFormatterMessage;
-use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\CatchAttributeInstantiationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\Exception\CatchAttributeInstantiationFailedException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\RootObject;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;

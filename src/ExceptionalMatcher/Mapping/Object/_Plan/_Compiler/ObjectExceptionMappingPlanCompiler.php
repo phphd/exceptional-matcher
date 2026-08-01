@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Compiler;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler;
 
 use Generator;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
@@ -22,7 +22,7 @@ final class ObjectExceptionMappingPlanCompiler
     }
 
     /** @param class-string $className */
-    public function create(string $className, ObjectExceptionMappingPlanRegistry $planRegistry): ?ObjectExceptionMappingPlan
+    public function compile(string $className, ObjectExceptionMappingPlanRegistry $planRegistry): ?ObjectExceptionMappingPlan
     {
         $reflectionClass = new ReflectionClass($className);
 

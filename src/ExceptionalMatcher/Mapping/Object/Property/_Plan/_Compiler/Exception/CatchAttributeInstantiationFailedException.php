@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Compiler;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\Exception;
 
 use ReflectionProperty;
 use RuntimeException;

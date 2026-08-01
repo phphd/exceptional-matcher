@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composit
 
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use Throwable;
 
@@ -26,28 +26,28 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
     ) {
     }
 
-    public function compile(Catch_ $catch): CompositeMatchConditionBlueprint
+    public function compile(Catch_ $catch): CompositeMatchConditionPlan
     {
         // materialized eagerly: compiling a catch IS its validation - every statically
         // detectable mapping error must surface right here, not on the first bind
-        return new CompositeMatchConditionBlueprint(iterator_to_array($this->conditionBlueprints($catch), false));
+        return new CompositeMatchConditionPlan(iterator_to_array($this->conditionBlueprints($catch), false));
     }
 
     /**
      * @param Catch_<Throwable,Throwable> $catch
      *
-     * @return Iterator<MatchConditionBlueprint<Throwable>>
+     * @return Iterator<MatchConditionPlan<Throwable>>
      */
     private function conditionBlueprints(Catch_ $catch): Iterator
     {
         foreach ($this->compilers as $compiler) {
-            $blueprint = $compiler->compile($catch);
+            $plan = $compiler->compile($catch);
 
-            if (null === $blueprint) {
+            if (null === $plan) {
                 continue;
             }
 
-            yield $blueprint;
+            yield $plan;
         }
     }
 }

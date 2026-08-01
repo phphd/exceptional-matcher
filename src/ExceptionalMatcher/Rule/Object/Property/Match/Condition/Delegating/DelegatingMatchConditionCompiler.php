@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Delegati
 
 use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
 use Psr\Container\ContainerInterface;
@@ -31,7 +31,7 @@ final class DelegatingMatchConditionCompiler implements MatchConditionCompiler
     ) {
     }
 
-    public function compile(Catch_ $catch): ?MatchConditionBlueprint
+    public function compile(Catch_ $catch): ?MatchConditionPlan
     {
         $compilerId = $catch->getMatch();
 

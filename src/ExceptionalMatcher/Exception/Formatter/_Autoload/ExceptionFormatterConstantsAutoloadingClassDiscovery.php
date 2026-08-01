@@ -2,18 +2,20 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Autoload;
+namespace PhPhD\ExceptionalMatcher\Exception\Formatter\_Autoload;
 
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsAutoloadingClassDiscovery;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-final class MatchConditionConstantsClassDiscovery implements ConstantsClassDiscovery
+/** @internal */
+final class ExceptionFormatterConstantsAutoloadingClassDiscovery implements ConstantsAutoloadingClassDiscovery
 {
     /** @return array<class-string,true> */
     public function getClassNames(ContainerBuilder $container): array
     {
         $classNames = [];
-        $taggedServiceIds = array_keys($container->findTaggedServiceIds(MatchConditionCompiler::class));
+        $taggedServiceIds = array_keys($container->findTaggedServiceIds(MatchedExceptionFormatter::class));
 
         foreach ($taggedServiceIds as $taggedServiceId) {
             $def = $container->getDefinition($taggedServiceId);

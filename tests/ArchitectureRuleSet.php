@@ -10,7 +10,7 @@ use PHPat\Selector\SelectorInterface;
 use PHPat\Test\Attributes\TestRule;
 use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\PHPat;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchExceptionMappingNode;
@@ -130,7 +130,7 @@ final class ArchitectureRuleSet
                     Selector::classname(Assert::class),
                     Selector::classname(ContainerInterface::class),
                     Selector::classname(MatchConditionCompiler::class),
-                    Selector::classname(MatchConditionBlueprint::class),
+                    Selector::classname(MatchConditionPlan::class),
                 ],
                 'description' => 'Model classes must not depend on anything else',
             ],
@@ -244,8 +244,8 @@ final class ArchitectureRuleSet
             Selector::implements(MatchCondition::class),
             Selector::classname(MatchConditionCompiler::class),
             Selector::implements(MatchConditionCompiler::class),
-            Selector::classname(MatchConditionBlueprint::class),
-            Selector::implements(MatchConditionBlueprint::class),
+            Selector::classname(MatchConditionPlan::class),
+            Selector::implements(MatchConditionPlan::class),
         );
     }
 

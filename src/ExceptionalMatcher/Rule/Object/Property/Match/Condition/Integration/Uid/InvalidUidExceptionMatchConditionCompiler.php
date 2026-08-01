@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integrat
 use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Bool\FalseCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
@@ -24,12 +24,12 @@ const uid_value = InvalidUidExceptionMatchCondition::class;
  * @internal
  *
  * @implements MatchConditionCompiler<InvalidUidException>
- * @implements MatchConditionBlueprint<InvalidUidException>
+ * @implements MatchConditionPlan<InvalidUidException>
  */
-final class InvalidUidExceptionMatchConditionCompiler implements MatchConditionCompiler, MatchConditionBlueprint
+final class InvalidUidExceptionMatchConditionCompiler implements MatchConditionCompiler, MatchConditionPlan
 {
-    /** @return MatchConditionBlueprint<InvalidUidException> */
-    public function compile(Catch_ $catch): MatchConditionBlueprint
+    /** @return MatchConditionPlan<InvalidUidException> */
+    public function compile(Catch_ $catch): MatchConditionPlan
     {
         if (!is_a($catch->getExceptionClass(), InvalidUidException::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('InvalidUidExceptionMatchCondition can only be used for '.InvalidUidException::class);

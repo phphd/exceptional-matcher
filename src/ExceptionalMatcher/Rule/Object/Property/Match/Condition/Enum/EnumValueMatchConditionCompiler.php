@@ -8,6 +8,7 @@ use BackedEnum;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\EnumValueMatchConditionPlan;
 use ReflectionEnum;
 use ValueError;
 
@@ -25,7 +26,7 @@ const enum_value = EnumValueMatchCondition::class;
  */
 final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
 {
-    public function compile(Catch_ $catch): EnumValueMatchConditionBlueprint
+    public function compile(Catch_ $catch): EnumValueMatchConditionPlan
     {
         if (!is_a($catch->getExceptionClass(), ValueError::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('EnumValueMatchCondition can only be used for '.ValueError::class);
@@ -36,7 +37,7 @@ final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
         self::assertEnumClass($enumClassName);
         self::assertEnumFromMethod($enumClassName, $fromMethod);
 
-        return new EnumValueMatchConditionBlueprint($enumClassName);
+        return new EnumValueMatchConditionPlan($enumClassName);
     }
 
     /** @phpstan-assert class-string<BackedEnum> $className */

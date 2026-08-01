@@ -13,7 +13,7 @@ use Throwable;
  *
  * @template T of Throwable
  */
-interface MatchConditionBlueprint
+interface MatchConditionPlan
 {
     /** @return MatchCondition<T> */
     public function bind(ExceptionMappingNode $rule): MatchCondition;

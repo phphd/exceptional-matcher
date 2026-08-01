@@ -16,7 +16,7 @@ use Webmozart\Assert\Assert;
  */
 final class SimpleIfClosureMatchConditionCompiler implements MatchConditionCompiler
 {
-    public function compile(Catch_ $catch): ?SimpleIfClosureMatchConditionBlueprint
+    public function compile(Catch_ $catch): ?SimpleIfClosureMatchConditionPlan
     {
         $if = $catch->getIf();
 
@@ -26,6 +26,6 @@ final class SimpleIfClosureMatchConditionCompiler implements MatchConditionCompi
 
         Assert::count($if, 2);
 
-        return new SimpleIfClosureMatchConditionBlueprint($if);
+        return new SimpleIfClosureMatchConditionPlan($if);
     }
 }

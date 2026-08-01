@@ -1,10 +1,11 @@
 <?php
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Autoload;
+namespace PhPhD\ExceptionalMatcher\Mapping\Autoload;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-interface ConstantsClassDiscovery
+/** @internal */
+interface ConstantsAutoloadingClassDiscovery
 {
     /** @return array<class-string,true> */
     public function getClassNames(ContainerBuilder $container): array;

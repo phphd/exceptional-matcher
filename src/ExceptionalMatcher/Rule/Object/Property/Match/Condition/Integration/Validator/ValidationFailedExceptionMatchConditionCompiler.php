@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integrat
 use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
@@ -20,12 +20,12 @@ const validated_value = ValidationFailedExceptionMatchCondition::class;
  * @internal
  *
  * @implements MatchConditionCompiler<ValidationFailedException>
- * @implements MatchConditionBlueprint<ValidationFailedException>
+ * @implements MatchConditionPlan<ValidationFailedException>
  */
-final class ValidationFailedExceptionMatchConditionCompiler implements MatchConditionCompiler, MatchConditionBlueprint
+final class ValidationFailedExceptionMatchConditionCompiler implements MatchConditionCompiler, MatchConditionPlan
 {
-    /** @return MatchConditionBlueprint<ValidationFailedException> */
-    public function compile(Catch_ $catch): MatchConditionBlueprint
+    /** @return MatchConditionPlan<ValidationFailedException> */
+    public function compile(Catch_ $catch): MatchConditionPlan
     {
         if (!is_a($catch->getExceptionClass(), ValidationFailedException::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('ValidationFailedExceptionMatchCondition can only be used for ValidationFailedException');

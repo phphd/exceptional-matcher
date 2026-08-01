@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure;
 
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionPlan;
 use Throwable;
 use Webmozart\Assert\Assert;
 
 /**
  * @internal
  *
- * @implements MatchConditionBlueprint<Throwable>
+ * @implements MatchConditionPlan<Throwable>
  */
-final class SimpleIfClosureMatchConditionBlueprint implements MatchConditionBlueprint
+final class SimpleIfClosureMatchConditionPlan implements MatchConditionPlan
 {
     public function __construct(
         /** @var array{object|class-string,string} */

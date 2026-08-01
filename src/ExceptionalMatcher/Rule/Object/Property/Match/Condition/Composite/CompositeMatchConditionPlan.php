@@ -6,20 +6,20 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composit
 
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
 use Throwable;
 
 /**
  * @internal
  *
- * @implements MatchConditionBlueprint<Throwable>
+ * @implements MatchConditionPlan<Throwable>
  */
-final class CompositeMatchConditionBlueprint implements MatchConditionBlueprint
+final class CompositeMatchConditionPlan implements MatchConditionPlan
 {
     public function __construct(
-        /** @var iterable<MatchConditionBlueprint<Throwable>> */
-        private readonly iterable $blueprints,
+        /** @var iterable<MatchConditionPlan<Throwable>> */
+        private readonly iterable $plans,
     ) {
     }
 
@@ -31,8 +31,8 @@ final class CompositeMatchConditionBlueprint implements MatchConditionBlueprint
     /** @return Iterator<MatchCondition<Throwable>> */
     private function conditions(ExceptionMappingNode $rule): Iterator
     {
-        foreach ($this->blueprints as $blueprint) {
-            yield $blueprint->bind($rule);
+        foreach ($this->plans as $plan) {
+            yield $plan->bind($rule);
         }
     }
 }

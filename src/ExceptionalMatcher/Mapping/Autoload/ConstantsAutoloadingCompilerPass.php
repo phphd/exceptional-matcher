@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Autoload;
+namespace PhPhD\ExceptionalMatcher\Mapping\Autoload;
 
+use PhPhD\ExceptionalMatcher\Exception\Formatter\_Autoload\ExceptionFormatterConstantsAutoloadingClassDiscovery;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\_Autoload\MatchConditionConstantsAutoloadingClassDiscovery;
 use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -17,14 +19,14 @@ final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
 {
     public const PRIORITY = 20;
 
-    /** @var list<ConstantsClassDiscovery> */
+    /** @var list<ConstantsAutoloadingClassDiscovery> */
     private readonly array $discovery;
 
     public function __construct()
     {
         $this->discovery = [
-            new MatchConditionConstantsClassDiscovery(),
-            new ExceptionFormatterConstantsClassDiscovery(),
+            new MatchConditionConstantsAutoloadingClassDiscovery(),
+            new ExceptionFormatterConstantsAutoloadingClassDiscovery(),
         ];
     }
 
@@ -37,16 +39,16 @@ final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
             new ServiceClosureArgument(
                 (new Definition())
                     ->setFactory([ConstantsClassLoader::class, 'loadClassNames'])
-                    ->setArguments([$this->discoverAutoloadingNames($container)]),
+                    ->setArguments([$this->discoverLoadendClassNames($container)]),
             ),
         );
     }
 
     /** @return list<class-string> */
-    private function discoverAutoloadingNames(ContainerBuilder $container): array
+    private function discoverLoadendClassNames(ContainerBuilder $container): array
     {
         return array_keys(array_merge(...array_map(
-            static fn (ConstantsClassDiscovery $discovery): array => $discovery->getClassNames($container),
+            static fn (ConstantsAutoloadingClassDiscovery $discovery): array => $discovery->getClassNames($container),
             $this->discovery,
         )));
     }

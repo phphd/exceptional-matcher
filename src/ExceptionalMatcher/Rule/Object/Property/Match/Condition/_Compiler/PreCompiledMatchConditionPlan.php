@@ -13,9 +13,9 @@ use Throwable;
  *
  * @template T of Throwable
  *
- * @implements MatchConditionBlueprint<T>
+ * @implements MatchConditionPlan<T>
  */
-final class PreCompiledMatchConditionBlueprint implements MatchConditionBlueprint
+final class PreCompiledMatchConditionPlan implements MatchConditionPlan
 {
     public function __construct(
         /** @var MatchCondition<T> */

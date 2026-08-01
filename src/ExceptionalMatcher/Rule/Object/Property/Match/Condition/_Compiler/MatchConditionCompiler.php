@@ -17,7 +17,7 @@ interface MatchConditionCompiler
     /**
      * @param Catch_<T,T> $catch
      *
-     * @return ?MatchConditionBlueprint<T>
+     * @return ?MatchConditionPlan<T>
      */
-    public function compile(Catch_ $catch): ?MatchConditionBlueprint;
+    public function compile(Catch_ $catch): ?MatchConditionPlan;
 }

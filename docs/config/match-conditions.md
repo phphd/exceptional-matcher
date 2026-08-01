@@ -378,20 +378,20 @@ final class DisqualifiedRolesMatchCondition implements MatchCondition
 Then the compiler and the blueprint to create the condition (both implemented in one class, as the blueprint is stateless):
 
 ```php
-use App\Identity\Role\Exception\ConflictingRolesException;use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Bool\FalseCondition;use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use App\Identity\Role\Exception\ConflictingRolesException;use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionPlan;use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Bool\FalseCondition;use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /** Configuration to use in `match: disqualified_roles` */
 const disqualified_roles = DisqualifiedRolesMatchCondition::class;
 
 /**
  * @implements MatchConditionCompiler<ConflictingRolesException>
- * @implements MatchConditionBlueprint<ConflictingRolesException>
+ * @implements MatchConditionPlan<ConflictingRolesException>
  */
 #[AutoconfigureTag(MatchConditionCompiler::class, ['id' => disqualified_roles])]
-final class DisqualifiedRolesMatchConditionCompiler implements MatchConditionCompiler, MatchConditionBlueprint
+final class DisqualifiedRolesMatchConditionCompiler implements MatchConditionCompiler, MatchConditionPlan
 {
-    /** @return MatchConditionBlueprint<ConflictingRolesException> */
-    public function compile(Catch_ $catch): MatchConditionBlueprint
+    /** @return MatchConditionPlan<ConflictingRolesException> */
+    public function compile(Catch_ $catch): MatchConditionPlan
     {
         if (!is_a($catch->getExceptionClass(), ConflictingRolesException::class, true)) {
             throw new LogicException('DisqualifiedRolesMatchCondition can only be used for '.ConflictingRolesException::class);

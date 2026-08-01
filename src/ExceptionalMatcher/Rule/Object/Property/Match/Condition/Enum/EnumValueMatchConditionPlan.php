@@ -6,8 +6,9 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum;
 
 use BackedEnum;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Bool\FalseCondition;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\EnumValueMatchCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
 use Stringable;
 use ValueError;
@@ -18,9 +19,9 @@ use function is_int;
 /**
  * @internal
  *
- * @implements MatchConditionBlueprint<ValueError>
+ * @implements MatchConditionPlan<ValueError>
  */
-final class EnumValueMatchConditionBlueprint implements MatchConditionBlueprint
+final class EnumValueMatchConditionPlan implements MatchConditionPlan
 {
     public function __construct(
         /** @var class-string<BackedEnum> */
