@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler;
 
 use Generator;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\_Exception\ObjectExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
@@ -12,19 +13,30 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMapp
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
 use ReflectionClass;
+use Throwable;
 
 /** @internal */
 final class ObjectExceptionMappingPlanCompiler
 {
     public function __construct(
         private readonly PropertyExceptionMappingPlanCompiler $propertyMappingPlanCompiler,
+        private readonly bool $failFast = true,
     ) {
     }
 
     /** @param class-string $className */
     public function compilePlan(string $className, ObjectExceptionMappingPlanRegistry $planRegistry): ?ObjectExceptionMappingPlan
     {
-        return $this->compile($className, $planRegistry);
+        try {
+            return $this->compile($className, $planRegistry);
+        } catch (Throwable $e) {
+            if (!$this->failFast) {
+                // One broken class mapping won't spoil the whole situation.
+                return null;
+            }
+
+            throw new ObjectExceptionMappingPlanCompilationFailedException($className, $e);
+        }
     }
 
     private function compile(string $className, ObjectExceptionMappingPlanRegistry $planRegistry): ?ObjectExceptionMappingPlan
