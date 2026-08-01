@@ -42,8 +42,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchExceptionMappingNode
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\CatchPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\CatchExceptionMappingNode
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchCondition
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\PreCompiledMatchConditionPlan

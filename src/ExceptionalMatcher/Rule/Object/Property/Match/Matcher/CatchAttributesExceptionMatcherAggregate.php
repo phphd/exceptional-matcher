@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Matcher;
 
 use Iterator;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\CatchPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRuleAggregate;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan;
 use Throwable;
 
 final class CatchAttributesExceptionMatcherAggregate implements ExceptionMatchingRuleAggregate

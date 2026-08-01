@@ -29,7 +29,7 @@ use function array_map;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\CatchPlan
  */
 final class ClassMatchingPlanUnitTest extends TestCase
 {

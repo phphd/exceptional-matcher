@@ -9,8 +9,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappi
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\Exception\CatchAttributeInstantiationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\Exception\CatchPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\CatchPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
 use ReflectionProperty;

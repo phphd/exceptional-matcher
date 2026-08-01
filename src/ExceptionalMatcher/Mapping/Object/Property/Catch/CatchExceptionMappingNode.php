@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch;
 
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
@@ -60,7 +60,7 @@ final class CatchExceptionMappingNode implements ExceptionMappingNode
         return $this->owner->getValue();
     }
 
-    /** @param TException $exception */
+    /** @param Throwable $exception */
     public function matchesException(Throwable $exception): bool
     {
         return $this->condition->matches($exception);
