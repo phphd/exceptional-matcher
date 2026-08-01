@@ -12,7 +12,6 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\S
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\Hook\HookOriginConditionMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\Hook\ProductHookedEntity;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\OriginConditionMessage;
-
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
@@ -20,7 +19,7 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 use function PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\Tests\Stub\validate_email_string;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\ExceptionOriginMatchCondition
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Origin\ExceptionOriginMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\PreCompiledMatchConditionBlueprint

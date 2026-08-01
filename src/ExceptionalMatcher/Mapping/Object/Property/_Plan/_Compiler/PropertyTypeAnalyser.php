@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Compiler;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler;
 
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use ReflectionClass;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
@@ -21,14 +21,14 @@ final class PropertyTypeAnalyser
     ) {
     }
 
-    public function allowsMatchableObjects(ClassMatchingPlanRegistry $planRegistry): bool
+    public function allowsMatchableObjects(ObjectExceptionMappingPlanRegistry $planRegistry): bool
     {
         return $this->canCompositeTypeMatch($planRegistry)
             ?? $this->canNamedTypeValueMatch($planRegistry)
             ?? true; // untyped property - the value may be anything
     }
 
-    private function canCompositeTypeMatch(ClassMatchingPlanRegistry $planRegistry): ?bool
+    private function canCompositeTypeMatch(ObjectExceptionMappingPlanRegistry $planRegistry): ?bool
     {
         if (!$this->type instanceof ReflectionUnionType && !$this->type instanceof ReflectionIntersectionType) {
             return null;
@@ -43,7 +43,7 @@ final class PropertyTypeAnalyser
         return false;
     }
 
-    private function canNamedTypeValueMatch(ClassMatchingPlanRegistry $planRegistry): ?bool
+    private function canNamedTypeValueMatch(ObjectExceptionMappingPlanRegistry $planRegistry): ?bool
     {
         if (!$this->type instanceof ReflectionNamedType) {
             return null;

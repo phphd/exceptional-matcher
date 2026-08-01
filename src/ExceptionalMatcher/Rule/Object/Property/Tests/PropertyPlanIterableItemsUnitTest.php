@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan
  */
 final class PropertyPlanIterableItemsUnitTest extends TestCase
 {

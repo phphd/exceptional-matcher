@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub;
 
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 
 /**
  * Declares #[Try_] yet has neither #[Catch_] mappings nor any property whose type could hold a

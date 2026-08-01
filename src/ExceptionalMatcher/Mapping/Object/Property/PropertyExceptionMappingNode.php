@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property;
 
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionalMatcher\Rule\ExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 
 /** @internal */
-final class PropertyExceptionMappingNodeSet implements ExceptionMappingNode
+final class PropertyExceptionMappingNode implements ExceptionMappingNode
 {
     public function __construct(
         private readonly ExceptionMappingNode $objectRule,

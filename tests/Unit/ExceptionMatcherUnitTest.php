@@ -25,23 +25,23 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Try_
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Try_
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_
  * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
  * @covers \PhPhD\ExceptionalMatcher\MainExceptionMatcher
  * @covers \PhPhD\ExceptionalMatcher\Integration\Validator\ExceptionToViolationListMatcher
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ObjectExceptionMappingNode
- * @covers \PhPhD\ExceptionalMatcher\Rule\ItemOfIterableExceptionMappingNode
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyExceptionMappingNodeSet
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\ItemOfIterableExceptionMappingNode
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath
  * @covers \PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal
  * @covers \PhPhD\ExceptionalMatcher\Exception\MatchedException
  * @covers \PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchExceptionMappingNode
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchCondition

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object;
 
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Autoload\ConstantsAutoloadingCompilerPass;
 use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory;
-use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\PropertyMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Throwable;
@@ -19,11 +20,11 @@ return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
 
     $services
-        ->set(ClassMatchingPlanRegistry::class, ClassMatchingPlanRegistry::class)
+        ->set(ObjectExceptionMappingPlanRegistry::class, ObjectExceptionMappingPlanRegistry::class)
         ->args([
             inline_service(ClassMatchingPlanFactory::class)
                 ->args([
-                    inline_service(PropertyMappingPlanCompiler::class)
+                    inline_service(PropertyExceptionMappingPlanCompiler::class)
                         ->args([
                             service(MatchConditionCompiler::class.'<'.Throwable::class.'>'),
                         ]),

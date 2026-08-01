@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Tests;
 
 use ArrayObject;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory;
-use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\PropertyMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\TypedPropertiesMessage;
@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry
  */
 final class ClassMatchingPlanRegistryUnitTest extends TestCase
 {
@@ -55,14 +55,14 @@ final class ClassMatchingPlanRegistryUnitTest extends TestCase
         self::assertCount(1, $autoloadCalls);
     }
 
-    private function createRegistry(?callable $autoloadClassNames = null): ClassMatchingPlanRegistry
+    private function createRegistry(?callable $autoloadClassNames = null): ObjectExceptionMappingPlanRegistry
     {
         $compiler = new CompositeMatchConditionCompiler([
             new ExceptionClassMatchConditionCompiler(),
         ]);
 
-        return new ClassMatchingPlanRegistry(
-            new ClassMatchingPlanFactory(new PropertyMappingPlanCompiler($compiler)),
+        return new ObjectExceptionMappingPlanRegistry(
+            new ClassMatchingPlanFactory(new PropertyExceptionMappingPlanCompiler($compiler)),
             null !== $autoloadClassNames ? $autoloadClassNames(...) : null,
         );
     }

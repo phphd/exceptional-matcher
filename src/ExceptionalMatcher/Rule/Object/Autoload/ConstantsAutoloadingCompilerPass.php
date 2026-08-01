@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Autoload;
 
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -24,7 +24,7 @@ final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
         $classNamesSet = $this->getMatchConditionCompilerIds($container);
         $classNamesSet += $this->getExceptionFormatterIds($container);
 
-        $definition = $container->getDefinition(ClassMatchingPlanRegistry::class);
+        $definition = $container->getDefinition(ObjectExceptionMappingPlanRegistry::class);
 
         $definition->replaceArgument(
             1,

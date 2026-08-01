@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher;
 
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Throwable;
 
@@ -19,7 +19,7 @@ final class MainExceptionMatcher implements ExceptionMatcher
 {
     /** @api */
     public function __construct(
-        private readonly ClassMatchingPlanRegistry $planRegistry,
+        private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
         private readonly ExceptionUnwrapper $exceptionUnwrapper,
     ) {
     }

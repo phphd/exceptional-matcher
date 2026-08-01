@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule;
+namespace PhPhD\ExceptionalMatcher\Mapping;
 
-use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 

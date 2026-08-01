@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Integration\Linter;
 
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -18,7 +18,7 @@ return static function (ContainerConfigurator $configurator): void {
         ->set(MappingLinter::class, MappingLinter::class)
         ->public()
         ->args([
-            service(ClassMatchingPlanRegistry::class),
+            service(ObjectExceptionMappingPlanRegistry::class),
             tagged_locator(MatchedExceptionFormatter::class, 'id'),
         ])
     ;

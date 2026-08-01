@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object;
 
 use Attribute;
 

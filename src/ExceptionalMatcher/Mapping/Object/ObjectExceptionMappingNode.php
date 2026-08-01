@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object;
 
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionalMatcher\Rule\ExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 

@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan;
 
 use ArrayIterator;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRule;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRuleAggregate;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRuleAggregateAdapter;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Rule\Object\ObjectExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Matcher\CatchAttributesExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Matcher\IterablePropertyExceptionMatcher;
@@ -19,22 +20,22 @@ use Throwable;
 use function is_object;
 
 /** @internal */
-final class PropertyMappingPlan
+final class PropertyExceptionMappingPlan
 {
     public function __construct(
         private readonly ReflectionProperty $property,
-        /** @var iterable<CatchPlan<Throwable>> */
+        /** @var CatchPlan */
         private readonly iterable $catchPlans,
-        private readonly ClassMatchingPlanRegistry $planRegistry,
+        private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
     ) {
     }
 
-    public function bind(ObjectExceptionMappingNode $ownerRule): PropertyExceptionMappingNodeSet
+    public function bind(ObjectExceptionMappingNode $ownerRule): PropertyExceptionMappingNode
     {
         $name = $this->getName();
         $value = $this->getPropertyValue($ownerRule->getEnclosingObject());
 
-        $propertyRuleSet = new PropertyExceptionMappingNodeSet($ownerRule, $name, $value, ($rules = new ArrayIterator()));
+        $propertyRuleSet = new PropertyExceptionMappingNode($ownerRule, $name, $value, ($rules = new ArrayIterator()));
 
         if (null !== $catchRules = $this->catchAttributesMatcher($propertyRuleSet)) {
             $rules->append(new ExceptionMatchingRuleAggregateAdapter($catchRules));
@@ -57,7 +58,7 @@ final class PropertyMappingPlan
         return $this->property->getValue($object);
     }
 
-    private function catchAttributesMatcher(PropertyExceptionMappingNodeSet $propertyRuleSet): ?ExceptionMatchingRuleAggregate
+    private function catchAttributesMatcher(PropertyExceptionMappingNode $propertyRuleSet): ?ExceptionMatchingRuleAggregate
     {
         if (!$this->hasCatchPlans()) {
             return null;
@@ -66,7 +67,7 @@ final class PropertyMappingPlan
         return new CatchAttributesExceptionMatcherAggregate($propertyRuleSet, $this->catchPlans);
     }
 
-    private function nestedObjectMatcher(PropertyExceptionMappingNodeSet $propertyRuleSet): ?ExceptionMatchingRule
+    private function nestedObjectMatcher(PropertyExceptionMappingNode $propertyRuleSet): ?ExceptionMatchingRule
     {
         $value = $propertyRuleSet->getValue();
 
@@ -84,7 +85,7 @@ final class PropertyMappingPlan
         return $nestedPlan->bind($value, $propertyRuleSet);
     }
 
-    private function nestedObjectsOfIterableMatcher(PropertyExceptionMappingNodeSet $propertyRuleSet): ?ExceptionMatchingRuleAggregate
+    private function nestedObjectsOfIterableMatcher(PropertyExceptionMappingNode $propertyRuleSet): ?ExceptionMatchingRuleAggregate
     {
         $value = $propertyRuleSet->getValue();
 
@@ -108,7 +109,7 @@ final class PropertyMappingPlan
     /**
      * @api the seam for the mapping linter: forcing this iterable compiles every `#[Catch_]` of the property
      *
-     * @return iterable<CatchPlan<Throwable>>
+     * @return CatchPlan
      */
     public function getCatchPlans(): iterable
     {

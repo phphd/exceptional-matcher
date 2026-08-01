@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Autoload;
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\ViolationsEmbeddedExceptionFormatter;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 
@@ -15,13 +15,13 @@ use function class_exists;
 /**
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Autoload\ConstantsAutoloadingCompilerPass
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Autoload\ConstantsClassLoader
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry
  *
  * @internal
  */
 final class ConstantsAutoloadingCompilerPassIntegrationTest extends BundleTestCase
 {
-    private ClassMatchingPlanRegistry $planRegistry;
+    private ObjectExceptionMappingPlanRegistry $planRegistry;
 
     protected function setUp(): void
     {
@@ -29,8 +29,8 @@ final class ConstantsAutoloadingCompilerPassIntegrationTest extends BundleTestCa
 
         $container = self::getContainer();
 
-        /** @var ClassMatchingPlanRegistry $planRegistry */
-        $planRegistry = $container->get(ClassMatchingPlanRegistry::class);
+        /** @var ObjectExceptionMappingPlanRegistry $planRegistry */
+        $planRegistry = $container->get(ObjectExceptionMappingPlanRegistry::class);
         $this->planRegistry = $planRegistry;
     }
 

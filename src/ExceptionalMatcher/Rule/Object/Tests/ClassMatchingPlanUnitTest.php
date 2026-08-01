@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Tests;
 
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory;
-use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\PropertyMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\BindableMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\NestedStubException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\PlannedItem;
@@ -25,15 +25,15 @@ use function array_map;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan
  */
 final class ClassMatchingPlanUnitTest extends TestCase
 {
-    private ClassMatchingPlanRegistry $registry;
+    private ObjectExceptionMappingPlanRegistry $registry;
 
     protected function setUp(): void
     {
@@ -43,7 +43,7 @@ final class ClassMatchingPlanUnitTest extends TestCase
             new ExceptionClassMatchConditionCompiler(),
         ]);
 
-        $this->registry = new ClassMatchingPlanRegistry(new ClassMatchingPlanFactory(new PropertyMappingPlanCompiler($compiler)), null);
+        $this->registry = new ObjectExceptionMappingPlanRegistry(new ClassMatchingPlanFactory(new PropertyExceptionMappingPlanCompiler($compiler)), null);
     }
 
     public function testDiscardsPropertiesThatCanNeverMatch(): void
@@ -53,7 +53,7 @@ final class ClassMatchingPlanUnitTest extends TestCase
         Assert::notNull($plan);
 
         $propertyNames = array_map(
-            static fn (PropertyMappingPlan $propertyPlan): string => $propertyPlan->getName(),
+            static fn (PropertyExceptionMappingPlan $propertyPlan): string => $propertyPlan->getName(),
             [...$plan->getPropertyPlans()],
         );
 
@@ -121,7 +121,7 @@ final class ClassMatchingPlanUnitTest extends TestCase
         self::assertFalse($this->getPlanFor($message)->bind($message)->match($reciprocal));
     }
 
-    private function getPlanFor(BindableMessage $message): ClassMappingPlan
+    private function getPlanFor(BindableMessage $message): ObjectExceptionMappingPlan
     {
         $plan = $this->registry->getPlan($message::class);
 

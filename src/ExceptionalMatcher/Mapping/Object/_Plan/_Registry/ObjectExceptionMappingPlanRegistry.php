@@ -2,19 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry;
 
 use Closure;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory;
-use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
-use ReflectionClass;
 
 use function array_key_exists;
 
 /** @api */
-final class ClassMatchingPlanRegistry
+final class ObjectExceptionMappingPlanRegistry
 {
-    /** @var array<class-string,?ClassMappingPlan> */
+    /** @var array<class-string,?ObjectExceptionMappingPlan> */
     private array $plans = [];
 
     public function __construct(
@@ -30,7 +29,7 @@ final class ClassMatchingPlanRegistry
     }
 
     /** @param class-string $className */
-    public function getPlan(string $className): ?ClassMappingPlan
+    public function getPlan(string $className): ?ObjectExceptionMappingPlan
     {
         if (null !== $this->autoloadClassNames) {
             $this->autoloadClassNames->__invoke();

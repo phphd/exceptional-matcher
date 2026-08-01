@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Matcher;
 
 use Iterator;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRuleAggregate;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyExceptionMappingNodeSet;
 use Throwable;
 
 final class CatchAttributesExceptionMatcherAggregate implements ExceptionMatchingRuleAggregate
 {
     public function __construct(
-        private readonly PropertyExceptionMappingNodeSet $propertyRuleSet,
+        private readonly PropertyExceptionMappingNode $propertyRuleSet,
         /** @var iterable<CatchPlan<Throwable>> */
         private readonly iterable $catchPlans,
     ) {

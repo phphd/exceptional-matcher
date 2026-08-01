@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests;
 
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\CatchPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory;
-use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\PropertyMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Delegating\DelegatingMatchConditionCompiler;
@@ -26,7 +26,7 @@ use function count;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate
  */
@@ -37,7 +37,7 @@ final class PropertyPlanUnitTest extends TestCase
         $compiler = new CountingMatchConditionCompiler(
             new CompositeMatchConditionCompiler([new ExceptionClassMatchConditionCompiler()]),
         );
-        $registry = new ClassMatchingPlanRegistry(new ClassMatchingPlanFactory(new PropertyMappingPlanCompiler($compiler)), null);
+        $registry = new ObjectExceptionMappingPlanRegistry(new ClassMatchingPlanFactory(new PropertyExceptionMappingPlanCompiler($compiler)), null);
 
         $plan = $registry->getPlan(MultiCatchMessage::class);
 
@@ -91,7 +91,7 @@ final class PropertyPlanUnitTest extends TestCase
         self::assertCount(0, [...$propertyPlan->getCatchPlans()]);
     }
 
-    private function getEnumStubMessagePlan(): ClassMappingPlan
+    private function getEnumStubMessagePlan(): ObjectExceptionMappingPlan
     {
         /** @psalm-suppress InvalidArgument the compiler registry template is inferred from both key and value positions */
         $compiler = new CompositeMatchConditionCompiler([
@@ -101,7 +101,7 @@ final class PropertyPlanUnitTest extends TestCase
             ])),
         ]);
 
-        $registry = new ClassMatchingPlanRegistry(new ClassMatchingPlanFactory(new PropertyMappingPlanCompiler($compiler)), null);
+        $registry = new ObjectExceptionMappingPlanRegistry(new ClassMatchingPlanFactory(new PropertyExceptionMappingPlanCompiler($compiler)), null);
 
         $plan = $registry->getPlan(MissingEnumFromConditionMessage::class);
 

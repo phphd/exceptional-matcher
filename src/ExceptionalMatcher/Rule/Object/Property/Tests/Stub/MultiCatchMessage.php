@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub;
 
 use DomainException;
 use LogicException;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use RuntimeException;
 
 /** @psalm-suppress InvalidAttribute ("Attribute Catch_ is not repeatable") */

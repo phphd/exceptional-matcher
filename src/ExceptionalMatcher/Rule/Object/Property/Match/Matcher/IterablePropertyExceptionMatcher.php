@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Matcher;
 
 use Iterator;
-use PhPhD\ExceptionalMatcher\Rule\ItemOfIterableExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\ItemOfIterableExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRuleAggregate;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyExceptionMappingNodeSet;
 
 /** @internal */
 final class IterablePropertyExceptionMatcher implements ExceptionMatchingRuleAggregate
 {
     public function __construct(
-        private readonly PropertyExceptionMappingNodeSet $propertyRuleSet,
-        private readonly ClassMatchingPlanRegistry $planRegistry,
+        private readonly PropertyExceptionMappingNode $propertyRuleSet,
+        private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
     ) {
     }
 

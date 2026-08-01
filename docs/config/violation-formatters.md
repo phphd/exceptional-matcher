@@ -49,10 +49,7 @@ final class CardNumberValidationFailedException extends \RuntimeException implem
 Finally, the DTO must specify `format: embedded_violations` for the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-
-use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
 class IssueCreditCardCommand
@@ -78,12 +75,7 @@ picking up the embedded `ConstraintViolationList`.
 Specify `format: embedded_violations` for the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use Symfony\Component\Validator\Exception\ValidationFailedException;
-
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Validator\validated_value;
-use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Validator\validated_value;
 
 #[Try_]
 class RegisterUserCommand
@@ -156,8 +148,7 @@ services:
 Finally, specify formatter in the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 
 #[Try_]
 final class RegisterUserCommand

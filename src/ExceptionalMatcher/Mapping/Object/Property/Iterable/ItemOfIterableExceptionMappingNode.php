@@ -2,15 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable;
 
-use LogicException;
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRule;
-use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
-
-use function is_object;
 
 /** @internal */
 final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode
@@ -21,7 +18,7 @@ final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode
         private readonly ExceptionMappingNode $owner,
         private readonly int|string $key,
         private readonly mixed $item,
-        ClassMappingPlan $matchingPlan,
+        ObjectExceptionMappingPlan $matchingPlan,
     ) {
         $this->ruleSet = $matchingPlan->bind($this->item, $this);
     }

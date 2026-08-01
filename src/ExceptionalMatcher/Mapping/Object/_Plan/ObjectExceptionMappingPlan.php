@@ -2,27 +2,26 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Plan;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\_Plan;
 
 use AppendIterator;
 use Iterator;
-use PhPhD\ExceptionalMatcher\Rule\ExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Rule\Object\ObjectExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan;
-use ReflectionClass;
 
 /**
  * @internal
  *
  * @template T of object
  */
-final class ClassMappingPlan
+final class ObjectExceptionMappingPlan
 {
     public function __construct(
         /** @var class-string<T> */
         private readonly string $className,
-        /** @var iterable<PropertyMappingPlan> */
+        /** @var iterable<PropertyExceptionMappingPlan> */
         private readonly iterable $propertyPlans,
     ) {
     }
@@ -49,7 +48,7 @@ final class ClassMappingPlan
         }
     }
 
-    /** @return iterable<PropertyMappingPlan> */
+    /** @return iterable<PropertyExceptionMappingPlan> */
     public function getPropertyPlans(): iterable
     {
         return $this->propertyPlans;

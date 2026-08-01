@@ -4,42 +4,25 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Compiler;
 
-use AppendIterator;
-use Exception;
 use Generator;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan;
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use ReflectionClass;
-use ReflectionIntersectionType;
-use ReflectionNamedType;
-use ReflectionProperty;
-use ReflectionType;
-use ReflectionUnionType;
-use Throwable;
-use Traversable;
-use Webmozart\Assert\Assert;
-
-use function class_exists;
-use function in_array;
-use function interface_exists;
-use function is_a;
 
 /** @internal */
 final class ClassMatchingPlanFactory
 {
     public function __construct(
-        private readonly PropertyMappingPlanCompiler $propertyMappingPlanCompiler,
+        private readonly PropertyExceptionMappingPlanCompiler $propertyMappingPlanCompiler,
     ) {
     }
 
     /** @param class-string $className */
-    public function create(string $className, ClassMatchingPlanRegistry $planRegistry): ?ClassMappingPlan
+    public function create(string $className, ObjectExceptionMappingPlanRegistry $planRegistry): ?ObjectExceptionMappingPlan
     {
         $reflectionClass = new ReflectionClass($className);
 
@@ -47,7 +30,7 @@ final class ClassMatchingPlanFactory
             return null;
         }
 
-        $classMappingPlan = new ClassMappingPlan(
+        $classMappingPlan = new ObjectExceptionMappingPlan(
             $className,
             new ReusableIteratorAggregate($this->compilePropertyPlans($reflectionClass, $planRegistry)),
         );
@@ -59,8 +42,8 @@ final class ClassMatchingPlanFactory
         return $classMappingPlan;
     }
 
-    /** @return Generator<int,PropertyMappingPlan> */
-    private function compilePropertyPlans(ReflectionClass $reflectionClass, ClassMatchingPlanRegistry $planRegistry): Generator
+    /** @return Generator<int,PropertyExceptionMappingPlan> */
+    private function compilePropertyPlans(ReflectionClass $reflectionClass, ObjectExceptionMappingPlanRegistry $planRegistry): Generator
     {
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             $propertyPlan = $this->propertyMappingPlanCompiler->getPropertyPlan($reflectionProperty, $planRegistry);

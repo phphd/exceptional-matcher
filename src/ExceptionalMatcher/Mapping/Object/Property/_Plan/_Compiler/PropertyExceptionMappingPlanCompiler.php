@@ -2,26 +2,23 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Compiler;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler;
 
 use Generator;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\CatchAttributeInstantiationFailedException;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\CatchPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan;
-use ReflectionClass;
-use ReflectionIntersectionType;
-use ReflectionNamedType;
 use ReflectionProperty;
-use ReflectionType;
-use ReflectionUnionType;
 use Throwable;
-use Traversable;
 use Webmozart\Assert\Assert;
 
-final class PropertyMappingPlanCompiler
+/** @internal */
+final class PropertyExceptionMappingPlanCompiler
 {
     public function __construct(
         /** @var MatchConditionCompiler<Throwable> */
@@ -30,11 +27,11 @@ final class PropertyMappingPlanCompiler
     ) {
     }
 
-    public function getPropertyPlan(ReflectionProperty $reflectionProperty, ClassMatchingPlanRegistry $planRegistry): ?PropertyMappingPlan
+    public function getPropertyPlan(ReflectionProperty $reflectionProperty, ObjectExceptionMappingPlanRegistry $planRegistry): ?PropertyExceptionMappingPlan
     {
         $catchPlans = new ReusableIteratorAggregate($this->compileCatchPlans($reflectionProperty));
 
-        $propertyMappingPlan = new PropertyMappingPlan($reflectionProperty, $catchPlans, $planRegistry);
+        $propertyMappingPlan = new PropertyExceptionMappingPlan($reflectionProperty, $catchPlans, $planRegistry);
 
         if (!$propertyMappingPlan->hasCatchPlans()) {
             $type = new PropertyTypeAnalyser($reflectionProperty->getType());

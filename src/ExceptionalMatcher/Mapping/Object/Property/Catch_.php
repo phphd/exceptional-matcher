@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property;
 
 use Attribute;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
