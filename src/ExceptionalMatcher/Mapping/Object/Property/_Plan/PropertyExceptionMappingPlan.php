@@ -123,12 +123,11 @@ final class PropertyExceptionMappingPlan
             foreach ($this->catchPlans as $catchPlan) {
                 return true;
             }
+            return false;
         } catch (Throwable) {
             // Since plans are instantiated lazily, we don't want to propagate those exceptions right now.
             // They will eventually propagate on the first traversal attempt due to ReusableIteratorAggregate implementation.
             return true;
         }
-
-        return false;
     }
 }

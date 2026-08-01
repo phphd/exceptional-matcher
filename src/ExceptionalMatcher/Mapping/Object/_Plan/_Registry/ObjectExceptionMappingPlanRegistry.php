@@ -46,6 +46,6 @@ final class ObjectExceptionMappingPlanRegistry
             return $this->plans[$className];
         }
 
-        return $this->plans[$className] = $this->planCompiler->compile($className, $this);
+        return $this->plans[$className] = $this->planCompiler->compilePlan($className, $this);
     }
 }

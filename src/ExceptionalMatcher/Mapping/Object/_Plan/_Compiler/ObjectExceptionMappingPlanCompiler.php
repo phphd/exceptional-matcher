@@ -22,7 +22,12 @@ final class ObjectExceptionMappingPlanCompiler
     }
 
     /** @param class-string $className */
-    public function compile(string $className, ObjectExceptionMappingPlanRegistry $planRegistry): ?ObjectExceptionMappingPlan
+    public function compilePlan(string $className, ObjectExceptionMappingPlanRegistry $planRegistry): ?ObjectExceptionMappingPlan
+    {
+        return $this->compile($className, $planRegistry);
+    }
+
+    private function compile(string $className, ObjectExceptionMappingPlanRegistry $planRegistry): ?ObjectExceptionMappingPlan
     {
         $reflectionClass = new ReflectionClass($className);
 
@@ -30,16 +35,16 @@ final class ObjectExceptionMappingPlanCompiler
             return null;
         }
 
-        $classMappingPlan = new ObjectExceptionMappingPlan(
+        $mappingPlan = new ObjectExceptionMappingPlan(
             $className,
             new ReusableIteratorAggregate($this->compilePropertyPlans($reflectionClass, $planRegistry)),
         );
 
-        if (!$classMappingPlan->hasPropertyPlans()) {
+        if (!$mappingPlan->hasPropertyPlans()) {
             return null;
         }
 
-        return $classMappingPlan;
+        return $mappingPlan;
     }
 
     /** @return Generator<int,PropertyExceptionMappingPlan> */

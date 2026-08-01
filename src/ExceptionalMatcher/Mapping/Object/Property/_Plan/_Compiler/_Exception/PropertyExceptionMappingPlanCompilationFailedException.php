@@ -8,13 +8,20 @@ use ReflectionProperty;
 use RuntimeException;
 use Throwable;
 
-final class PropertyExceptionMappingPlanCompilationFailedException  extends RuntimeException
+final class PropertyExceptionMappingPlanCompilationFailedException extends RuntimeException
 {
     public function __construct(
         private readonly ReflectionProperty $reflectionProperty,
         Throwable $previous,
     ) {
-        parent::__construct(sprintf(), previous: $previous);
+        parent::__construct(
+            sprintf(
+                'Property %s::$%s exception mapping compilation has failed.',
+                $reflectionProperty->getDeclaringClass()->getName(),
+                $reflectionProperty->getName(),
+            ),
+            previous: $previous,
+        );
     }
 
     public function getReflectionProperty(): ReflectionProperty
