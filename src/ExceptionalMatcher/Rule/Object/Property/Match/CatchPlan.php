@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match;
 
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
-use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
+use PhPhD\ExceptionalMatcher\Rule\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
 use Throwable;
 
@@ -25,10 +25,10 @@ final class CatchPlan
     ) {
     }
 
-    /** @return MatchExceptionRule<TException> */
-    public function bind(MatchingRule $ownerRule): MatchExceptionRule
+    /** @return CatchExceptionMappingNode<TException> */
+    public function bind(ExceptionMappingNode $ownerRule): CatchExceptionMappingNode
     {
-        return new MatchExceptionRule(
+        return new CatchExceptionMappingNode(
             $ownerRule,
             $this->conditionBlueprint->bind($ownerRule),
             $this->formatterId,

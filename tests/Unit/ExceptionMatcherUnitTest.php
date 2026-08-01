@@ -30,20 +30,20 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
  * @covers \PhPhD\ExceptionalMatcher\MainExceptionMatcher
  * @covers \PhPhD\ExceptionalMatcher\Integration\Validator\ExceptionToViolationListMatcher
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ObjectMatchingRuleSet
- * @covers \PhPhD\ExceptionalMatcher\Rule\ItemOfIterableMatchingRule
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMatchingRuleSet
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ObjectExceptionMappingNode
+ * @covers \PhPhD\ExceptionalMatcher\Rule\ItemOfIterableExceptionMappingNode
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyExceptionMappingNodeSet
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath
  * @covers \PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal
  * @covers \PhPhD\ExceptionalMatcher\Exception\MatchedException
  * @covers \PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlan
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanFactory
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyPlan
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchPlan
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchExceptionMappingNode
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchCondition
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\PreCompiledMatchConditionBlueprint

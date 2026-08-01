@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Integration\Linter\Defect;
 
 use Throwable;
 
-/** @api */
+/** @internal */
 final class MappingDefect
 {
     private function __construct(
@@ -17,8 +17,13 @@ final class MappingDefect
     ) {
     }
 
-    public static function error(string $message, DefectLocation $location, ?Throwable $cause = null): self
+    public static function error(DefectLocation $location, Throwable $cause): self
     {
+        $message = $cause->getMessage();
+        for ($previous = $cause->getPrevious(); null !== $previous; $previous = $previous->getPrevious()) {
+            $message = sprintf("%s:\n%s", rtrim($message, '.'), $previous->getMessage());
+        }
+
         return new self(DefectSeverity::Error, $message, $location, $cause);
     }
 

@@ -12,8 +12,11 @@ use PhPhD\ExceptionalMatcher\Integration\Linter\MappingLinter;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\AbstractTryMessage;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\ChildOfPrivateCatchMessage;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage;
+use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\TryWithNonMatchableObjectMessage;
+use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnmatchableTryMessage;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnregisteredFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnregisteredFormatterMessage;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\CatchAttributeInstantiationFailedException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\RootObject;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
@@ -67,7 +70,7 @@ final class MappingLinterUnitTest extends TestCase
     {
         [$defect] = $this->linter->lint([NotHandleableMessageStub::class]);
 
-        self::assertSame(DefectSeverity::Error, $defect->getSeverity());
+        self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
         self::assertStringContainsString('not marked with #[Try_]', $defect->getMessage());
         self::assertSame(NotHandleableMessageStub::class, $defect->getLocation()->getClassName());
         self::assertNull($defect->getLocation()->getPropertyName());
@@ -81,12 +84,33 @@ final class MappingLinterUnitTest extends TestCase
         self::assertStringContainsString('abstract', $defect->getMessage());
     }
 
-    public function testReportsTryClassWithoutCatchProperties(): void
+    public function testValidNestedOnlyMappingProducesNoWarning(): void
     {
-        [$defect] = $this->linter->lint([RootObject::class]);
+        $defects = $this->linter->lint([RootObject::class]);
+
+        self::assertSame([], $defects);
+    }
+
+    public function testReportsTryClassWithoutMappingPlan(): void
+    {
+        [$defect] = $this->linter->lint([UnmatchableTryMessage::class]);
 
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
-        self::assertStringContainsString('no #[Catch_] properties', $defect->getMessage());
+        self::assertStringContainsString('#[Try_]', $defect->getMessage());
+        self::assertStringContainsString('never matches anything', $defect->getMessage());
+        self::assertSame(UnmatchableTryMessage::class, $defect->getLocation()->getClassName());
+        self::assertNull($defect->getLocation()->getPropertyName());
+    }
+
+    public function testReportsTryClassWhoseNestedObjectCannotCarryAPlan(): void
+    {
+        [$defect] = $this->linter->lint([TryWithNonMatchableObjectMessage::class]);
+
+        self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
+        self::assertStringContainsString('#[Try_]', $defect->getMessage());
+        self::assertStringContainsString('never matches anything', $defect->getMessage());
+        self::assertSame(TryWithNonMatchableObjectMessage::class, $defect->getLocation()->getClassName());
+        self::assertNull($defect->getLocation()->getPropertyName());
     }
 
     public function testReportsParentPrivateCatchProperties(): void
@@ -117,6 +141,7 @@ final class MappingLinterUnitTest extends TestCase
             'EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: NULL',
             $defect->getMessage(),
         );
+
         self::assertSame('weekDay', $defect->getLocation()->getPropertyName());
     }
 
@@ -125,9 +150,10 @@ final class MappingLinterUnitTest extends TestCase
         [$defect] = $this->linter->lint([UndefinedConstantConditionMessage::class]);
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
+        self::assertStringContainsString('Undefined constant', $defect->getMessage());
         self::assertStringContainsString('undefined_condition', $defect->getMessage());
         self::assertSame('caughtValue', $defect->getLocation()->getPropertyName());
-        self::assertInstanceOf(Error::class, $defect->getCause());
+        self::assertInstanceOf(CatchAttributeInstantiationFailedException::class, $defect->getCause());
     }
 
     /**
@@ -139,7 +165,7 @@ final class MappingLinterUnitTest extends TestCase
     {
         return array_values(array_filter(
             $defects,
-            static fn (MappingDefect $defect): bool => DefectSeverity::Error === $defect->getSeverity(),
+            static fn (MappingDefect $defect): bool => $defect->getSeverity()->is(DefectSeverity::Error),
         ));
     }
 }

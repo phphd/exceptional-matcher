@@ -21,7 +21,7 @@ final class ClassMatchingPlanRegistryServiceTest extends BundleTestCase
 
         self::assertInstanceOf(ClassMatchingPlanRegistry::class, $planRegistry);
 
-        self::assertNull($planRegistry->getPlan(NotHandleableMessageStub::class));
-        self::assertNotNull($planRegistry->getPlan(HandleableMessageStub::class));
+        self::assertFalse($planRegistry->hasPlan(NotHandleableMessageStub::class));
+        self::assertTrue($planRegistry->hasPlan(HandleableMessageStub::class));
     }
 }

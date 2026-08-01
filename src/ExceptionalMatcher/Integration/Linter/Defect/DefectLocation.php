@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Integration\Linter\Defect;
 
-/** @api */
+/** @internal */
 final class DefectLocation
 {
     public function __construct(

@@ -13,19 +13,15 @@ use function array_keys;
 use function class_exists;
 use function enum_exists;
 
-/**
- * Discovers the classes to lint within the given files or directories.
- *
- * @api
- */
-final class ClassMapDiscovery
+/** @internal */
+final class ClassNameDiscovery
 {
     /**
      * @param list<string> $paths
      *
-     * @return Generator<int,class-string>
+     * @return array<int,class-string>
      */
-    public function discover(array $paths): Generator
+    public function discover(array $paths): array
     {
         if (!class_exists(ClassMapGenerator::class)) {
             throw new RuntimeException(
@@ -40,22 +36,17 @@ final class ClassMapDiscovery
             $classMapGenerator->scanPaths($path);
         }
 
-        $classMap = $classMapGenerator->getClassMap();
+        $classNames = array_keys($classMapGenerator->getClassMap()->getMap());
 
-        foreach (array_keys($classMap->getMap()) as $className) {
-            if (!$this->isLintableClass($className)) {
-                continue;
-            }
-
-            yield $className;
-        }
+        return array_filter($classNames, $this->isLintableClass(...));
     }
 
     /** Interfaces, traits, enums, and files that fail to load have no `#[Catch_]` properties to lint. */
     private function isLintableClass(string $className): bool
     {
         try {
-            return class_exists($className) && !enum_exists($className);
+            return class_exists($className)
+                && !is_subclass_of($className, \UnitEnum::class);
         } catch (Throwable) {
             return false;
         }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Exception;
 
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchExceptionMappingNode;
 use Throwable;
 use Webmozart\Assert\Assert;
 
@@ -24,11 +24,11 @@ final class ExceptionReciprocal
     }
 
     /**
-     * @param MatchExceptionRule<Throwable> $rule
+     * @param CatchExceptionMappingNode<Throwable> $rule
      *
      * @internal
      */
-    public function process(MatchExceptionRule $rule): void
+    public function process(CatchExceptionMappingNode $rule): void
     {
         foreach ($this->remainingExceptions as $index => $exception) {
             if ($rule->matchesException($exception)) {
@@ -51,8 +51,8 @@ final class ExceptionReciprocal
         return new MatchedExceptionList($this->matchedExceptions);
     }
 
-    /** @param MatchExceptionRule<Throwable> $rule */
-    private function reciprocateException(int $index, Throwable $exception, MatchExceptionRule $rule): void
+    /** @param CatchExceptionMappingNode<Throwable> $rule */
+    private function reciprocateException(int $index, Throwable $exception, CatchExceptionMappingNode $rule): void
     {
         unset($this->remainingExceptions[$index]);
 

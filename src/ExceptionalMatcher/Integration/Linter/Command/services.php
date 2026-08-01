@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Integration\Linter\Command;
 
-use PhPhD\ExceptionalMatcher\Integration\Linter\Discovery\ClassMapDiscovery;
+use PhPhD\ExceptionalMatcher\Integration\Linter\Discovery\ClassNameDiscovery;
 use PhPhD\ExceptionalMatcher\Integration\Linter\MappingLinter;
+use PhPhD\ExceptionalMatcher\Integration\Linter\Report\Formatter\LintReportFormatter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function class_exists;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\inline_service;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_locator;
 
 return static function (ContainerConfigurator $configurator): void {
     if (!class_exists(Command::class)) {
@@ -25,7 +27,8 @@ return static function (ContainerConfigurator $configurator): void {
         ->public()
         ->args([
             service(MappingLinter::class),
-            inline_service(ClassMapDiscovery::class),
+            inline_service(ClassNameDiscovery::class),
+            tagged_locator(LintReportFormatter::class, 'id'),
         ])
         ->tag('console.command')
     ;

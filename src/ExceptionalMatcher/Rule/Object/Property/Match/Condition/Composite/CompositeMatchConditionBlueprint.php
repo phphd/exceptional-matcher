@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite;
 
 use Iterator;
-use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
+use PhPhD\ExceptionalMatcher\Rule\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
 use Throwable;
@@ -23,13 +23,13 @@ final class CompositeMatchConditionBlueprint implements MatchConditionBlueprint
     ) {
     }
 
-    public function bind(MatchingRule $rule): CompositeMatchCondition
+    public function bind(ExceptionMappingNode $rule): CompositeMatchCondition
     {
         return new CompositeMatchCondition(new ReusableIteratorAggregate($this->conditions($rule)));
     }
 
     /** @return Iterator<MatchCondition<Throwable>> */
-    private function conditions(MatchingRule $rule): Iterator
+    private function conditions(ExceptionMappingNode $rule): Iterator
     {
         foreach ($this->blueprints as $blueprint) {
             yield $blueprint->bind($rule);

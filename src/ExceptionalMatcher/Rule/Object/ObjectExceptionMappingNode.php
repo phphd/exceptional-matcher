@@ -5,24 +5,25 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object;
 
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
+use PhPhD\ExceptionalMatcher\Rule\ExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 
 /** @internal */
-final class ObjectMatchingRuleSet implements MatchingRule
+final class ObjectExceptionMappingNode implements ExceptionMappingNode
 {
     public function __construct(
         private readonly object $object,
-        private readonly ?MatchingRule $owner,
-        /** @var iterable<MatchingRule> $rules */
-        private readonly iterable $rules,
+        private readonly ?ExceptionMappingNode $owner,
+        /** @var iterable<ExceptionMatchingRule> */
+        private readonly iterable $propertyRules,
     ) {
     }
 
-    public function process(ExceptionReciprocal $reciprocal): bool
+    public function match(ExceptionReciprocal $reciprocal): bool
     {
-        foreach ($this->rules as $rule) {
-            if ($rule->process($reciprocal)) {
+        foreach ($this->propertyRules as $rule) {
+            if ($rule->match($reciprocal)) {
                 return true;
             }
         }
@@ -30,7 +31,7 @@ final class ObjectMatchingRuleSet implements MatchingRule
         return false;
     }
 
-    public function getOwner(): ?MatchingRule
+    public function getOwner(): ?ExceptionMappingNode
     {
         return $this->owner;
     }

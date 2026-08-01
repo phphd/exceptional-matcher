@@ -36,9 +36,7 @@ final class MainExceptionMatcher implements ExceptionMatcher
 
         $reciprocal = new ExceptionReciprocal($exceptionList);
 
-        $ruleSet = $plan->bind($message);
-
-        if (!$ruleSet->process($reciprocal)) {
+        if (!$plan->bind($message)->match($reciprocal)) {
             return null;
         }
 

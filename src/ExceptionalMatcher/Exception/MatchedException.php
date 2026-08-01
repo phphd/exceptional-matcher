@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Exception;
 
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchExceptionMappingNode;
 use Throwable;
 
 /**
@@ -17,8 +17,8 @@ final class MatchedException
     public function __construct(
         /** @var T */
         private readonly Throwable $exception,
-        /** @var MatchExceptionRule<Throwable> */
-        private readonly MatchExceptionRule $rule,
+        /** @var CatchExceptionMappingNode<Throwable> */
+        private readonly CatchExceptionMappingNode $rule,
     ) {
     }
 
@@ -29,11 +29,11 @@ final class MatchedException
     }
 
     /**
-     * @return MatchExceptionRule<Throwable>
+     * @return CatchExceptionMappingNode<Throwable>
      *
      * @internal
      */
-    public function getRule(): MatchExceptionRule
+    public function getRule(): CatchExceptionMappingNode
     {
         return $this->rule;
     }

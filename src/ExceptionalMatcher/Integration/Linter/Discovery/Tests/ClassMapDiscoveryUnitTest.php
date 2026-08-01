@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Integration\Linter\Discovery\Tests;
 
-use PhPhD\ExceptionalMatcher\Integration\Linter\Discovery\ClassMapDiscovery;
+use PhPhD\ExceptionalMatcher\Integration\Linter\Discovery\ClassNameDiscovery;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\ItemInterface;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\PlannedItem;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\TypedPropertiesMessage;
@@ -15,17 +15,17 @@ use function dirname;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Integration\Linter\Discovery\ClassMapDiscovery
+ * @covers \PhPhD\ExceptionalMatcher\Integration\Linter\Discovery\ClassNameDiscovery
  */
 final class ClassMapDiscoveryUnitTest extends TestCase
 {
     public function testDiscoversInstantiableClasses(): void
     {
-        $discovery = new ClassMapDiscovery();
+        $discovery = new ClassNameDiscovery();
 
         $stubDirectory = dirname(__DIR__, 4).'/Rule/Object/Tests/Stub';
 
-        $classNames = [...$discovery->discover([$stubDirectory])];
+        $classNames = $discovery->discover([$stubDirectory]);
 
         self::assertContains(TypedPropertiesMessage::class, $classNames);
         self::assertContains(PlannedItem::class, $classNames);

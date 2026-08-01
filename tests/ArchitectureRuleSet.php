@@ -13,7 +13,7 @@ use PHPat\Test\PHPat;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\CatchExceptionMappingNode;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -118,7 +118,7 @@ final class ArchitectureRuleSet
             ],
             'exception' => [
                 'deps' => [
-                    Selector::classname(MatchExceptionRule::class),
+                    Selector::classname(CatchExceptionMappingNode::class),
                     Selector::classname(Assert::class),
                     Selector::classname(ContainerInterface::class), // formatter
                 ],

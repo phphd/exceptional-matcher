@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match;
 
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
-use PhPhD\ExceptionalMatcher\Rule\MatchingRule;
+use PhPhD\ExceptionalMatcher\Rule\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 use Throwable;
@@ -16,10 +16,10 @@ use Throwable;
  *
  * @template TException of Throwable
  */
-final class MatchExceptionRule implements MatchingRule
+final class CatchExceptionMappingNode implements ExceptionMappingNode
 {
     public function __construct(
-        private readonly MatchingRule $owner,
+        private readonly ExceptionMappingNode $owner,
         /** @var MatchCondition<TException> */
         private readonly MatchCondition $condition,
         /** @var class-string<MatchedExceptionFormatter<TException,mixed>> */
@@ -28,14 +28,14 @@ final class MatchExceptionRule implements MatchingRule
     ) {
     }
 
-    public function process(ExceptionReciprocal $reciprocal): bool
+    public function match(ExceptionReciprocal $reciprocal): bool
     {
         $reciprocal->process($this);
 
         return $reciprocal->isReciprocated();
     }
 
-    public function getOwner(): MatchingRule
+    public function getOwner(): ExceptionMappingNode
     {
         return $this->owner;
     }

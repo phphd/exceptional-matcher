@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object;
 
 use Closure;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory;
+use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use ReflectionClass;
 
 use function array_key_exists;
@@ -12,7 +14,7 @@ use function array_key_exists;
 /** @api */
 final class ClassMatchingPlanRegistry
 {
-    /** @var array<class-string,?ClassMatchingPlan> */
+    /** @var array<class-string,?ClassMappingPlan> */
     private array $plans = [];
 
     public function __construct(
@@ -22,7 +24,13 @@ final class ClassMatchingPlanRegistry
     }
 
     /** @param class-string $className */
-    public function getPlan(string $className): ?ClassMatchingPlan
+    public function hasPlan(string $className): bool
+    {
+        return null !== $this->getPlan($className);
+    }
+
+    /** @param class-string $className */
+    public function getPlan(string $className): ?ClassMappingPlan
     {
         if (null !== $this->autoloadClassNames) {
             $this->autoloadClassNames->__invoke();
@@ -33,12 +41,6 @@ final class ClassMatchingPlanRegistry
             return $this->plans[$className];
         }
 
-        $reflectionClass = new ReflectionClass($className);
-
-        if ([] === $reflectionClass->getAttributes(Try_::class)) {
-            return $this->plans[$className] = null;
-        }
-
-        return $this->plans[$className] = $this->planFactory->create($reflectionClass, $this);
+        return $this->plans[$className] = $this->planFactory->create($className, $this);
     }
 }

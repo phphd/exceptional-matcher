@@ -8,10 +8,13 @@ use Generator;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\DefectLocation;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\MappingDefect;
-use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\CatchAttributeInstantiationFailedException;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\CatchPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Rule\Object\Plan\ClassMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyPlan;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\PropertyMappingPlan;
+use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionProperty;
@@ -84,14 +87,13 @@ final class MappingLinter
      *
      * @return Generator<MappingDefect>
      */
-    private function lintStructure(ReflectionClass $reflectionClass, ?ClassMatchingPlan $plan): Generator
+    private function lintStructure(ReflectionClass $reflectionClass, ?ClassMappingPlan $plan): Generator
     {
         $classLocation = new DefectLocation($reflectionClass->getName());
-        $hasCatchProperties = $this->hasCatchProperties($reflectionClass);
 
-        if (null === $plan) {
-            if ($hasCatchProperties) {
-                yield MappingDefect::error(
+        if (!$this->hasTryAttribute($reflectionClass)) {
+            if ($this->hasCatchProperties($reflectionClass)) {
+                yield MappingDefect::warning(
                     'Properties declare #[Catch_] mappings, but the class is not marked with #[Try_], so it never matches anything.',
                     $classLocation,
                 );
@@ -105,11 +107,9 @@ final class MappingLinter
                 '#[Try_] on an abstract class never matches: attributes are not inherited by its subclasses.',
                 $classLocation,
             );
-        }
-
-        if (!$hasCatchProperties) {
+        } elseif (null === $plan) {
             yield MappingDefect::warning(
-                '#[Try_] class declares no #[Catch_] properties; it only matches through nested objects or iterable items.',
+                '#[Try_] class declares no #[Catch_] mappings and no nested matchable properties, so it never matches anything.',
                 $classLocation,
             );
         }
@@ -126,7 +126,7 @@ final class MappingLinter
     {
         for ($parent = $reflectionClass->getParentClass(); false !== $parent; $parent = $parent->getParentClass()) {
             foreach ($parent->getProperties(ReflectionProperty::IS_PRIVATE) as $parentProperty) {
-                if ([] === $parentProperty->getAttributes(Catch_::class)) {
+                if (!$this->hasCatchAttributes($parentProperty)) {
                     continue;
                 }
 
@@ -148,7 +148,7 @@ final class MappingLinter
      *
      * @return Generator<MappingDefect>
      */
-    private function lintPlan(string $className, ClassMatchingPlan $plan): Generator
+    private function lintPlan(string $className, ClassMappingPlan $plan): Generator
     {
         try {
             foreach ($plan->getPropertyPlans() as $propertyPlan) {
@@ -156,7 +156,7 @@ final class MappingLinter
             }
         } catch (Throwable $exception) {
             // materializing the next property plan failed - the exact property is unknown here
-            yield MappingDefect::error($exception->getMessage(), new DefectLocation($className), $exception);
+            yield MappingDefect::error(new DefectLocation($className), $exception);
         }
     }
 
@@ -165,7 +165,7 @@ final class MappingLinter
      *
      * @return Generator<MappingDefect>
      */
-    private function lintPropertyPlan(string $className, PropertyPlan $propertyPlan): Generator
+    private function lintPropertyPlan(string $className, PropertyMappingPlan $propertyPlan): Generator
     {
         $propertyLocation = new DefectLocation($className, $propertyPlan->getName());
 
@@ -181,19 +181,30 @@ final class MappingLinter
                 }
             }
         } catch (Throwable $exception) {
-            yield MappingDefect::error($exception->getMessage(), $propertyLocation, $exception);
+            yield MappingDefect::error($propertyLocation, $exception);
         }
+    }
+
+    /** @param ReflectionClass<object> $reflectionClass */
+    private function hasTryAttribute(ReflectionClass $reflectionClass): bool
+    {
+        return [] !== $reflectionClass->getAttributes(Try_::class);
     }
 
     /** @param ReflectionClass<object> $reflectionClass */
     private function hasCatchProperties(ReflectionClass $reflectionClass): bool
     {
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            if ([] !== $reflectionProperty->getAttributes(Catch_::class)) {
+            if ($this->hasCatchAttributes($reflectionProperty)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    private function hasCatchAttributes(ReflectionProperty $reflectionProperty): bool
+    {
+        return [] !== $reflectionProperty->getAttributes(Catch_::class);
     }
 }

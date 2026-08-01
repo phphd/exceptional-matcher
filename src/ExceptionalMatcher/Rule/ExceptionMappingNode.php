@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule;
 
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
+use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRule;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 
 /** @api */
-interface MatchingRule
+interface ExceptionMappingNode extends ExceptionMatchingRule
 {
-    /** Returns TRUE if all exceptions were matched; FALSE otherwise */
-    public function process(ExceptionReciprocal $reciprocal): bool;
-
     public function getOwner(): ?self;
 
     public function getPropertyPath(): PropertyPath;
