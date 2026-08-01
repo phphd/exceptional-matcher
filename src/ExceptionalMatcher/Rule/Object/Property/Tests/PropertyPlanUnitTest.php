@@ -8,7 +8,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappi
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\CatchPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Delegating\DelegatingMatchConditionCompiler;
@@ -27,7 +27,7 @@ use function count;
  * @internal
  *
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory
+ * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ObjectExceptionMappingPlanCompiler
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate
  */
 final class PropertyPlanUnitTest extends TestCase
@@ -37,7 +37,7 @@ final class PropertyPlanUnitTest extends TestCase
         $compiler = new CountingMatchConditionCompiler(
             new CompositeMatchConditionCompiler([new ExceptionClassMatchConditionCompiler()]),
         );
-        $registry = new ObjectExceptionMappingPlanRegistry(new ClassMatchingPlanFactory(new PropertyExceptionMappingPlanCompiler($compiler)), null);
+        $registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler($compiler)), null);
 
         $plan = $registry->getPlan(MultiCatchMessage::class);
 
@@ -101,7 +101,7 @@ final class PropertyPlanUnitTest extends TestCase
             ])),
         ]);
 
-        $registry = new ObjectExceptionMappingPlanRegistry(new ClassMatchingPlanFactory(new PropertyExceptionMappingPlanCompiler($compiler)), null);
+        $registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler($compiler)), null);
 
         $plan = $registry->getPlan(MissingEnumFromConditionMessage::class);
 

@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry;
 
 use Closure;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ObjectExceptionMappingPlanCompiler;
 
 use function array_key_exists;
 
@@ -17,7 +17,7 @@ final class ObjectExceptionMappingPlanRegistry
     private array $plans = [];
 
     public function __construct(
-        private readonly ClassMatchingPlanFactory $planFactory,
+        private readonly ObjectExceptionMappingPlanCompiler $planFactory,
         private ?Closure $autoloadClassNames,
     ) {
     }

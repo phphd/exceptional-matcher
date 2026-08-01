@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Autoload\ConstantsAutoloadingCompilerPass;
-use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Throwable;
@@ -22,7 +22,7 @@ return static function (ContainerConfigurator $configurator): void {
     $services
         ->set(ObjectExceptionMappingPlanRegistry::class, ObjectExceptionMappingPlanRegistry::class)
         ->args([
-            inline_service(ClassMatchingPlanFactory::class)
+            inline_service(ObjectExceptionMappingPlanCompiler::class)
                 ->args([
                     inline_service(PropertyExceptionMappingPlanCompiler::class)
                         ->args([

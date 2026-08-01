@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Tests;
 use ArrayObject;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ClassMatchingPlanFactory;
+use PhPhD\ExceptionalMatcher\Rule\Object\Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\TypedPropertiesMessage;
@@ -62,7 +62,7 @@ final class ClassMatchingPlanRegistryUnitTest extends TestCase
         ]);
 
         return new ObjectExceptionMappingPlanRegistry(
-            new ClassMatchingPlanFactory(new PropertyExceptionMappingPlanCompiler($compiler)),
+            new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler($compiler)),
             null !== $autoloadClassNames ? $autoloadClassNames(...) : null,
         );
     }

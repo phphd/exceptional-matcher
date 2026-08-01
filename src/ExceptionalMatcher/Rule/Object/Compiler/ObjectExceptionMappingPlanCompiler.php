@@ -14,7 +14,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\Reus
 use ReflectionClass;
 
 /** @internal */
-final class ClassMatchingPlanFactory
+final class ObjectExceptionMappingPlanCompiler
 {
     public function __construct(
         private readonly PropertyExceptionMappingPlanCompiler $propertyMappingPlanCompiler,

@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable;
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Path\PropertyPath;
 
 /** @internal */
 final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode

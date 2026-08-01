@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping;
 
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Path\PropertyPath;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRule;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 
 /** @api */
 interface ExceptionMappingNode extends ExceptionMatchingRule

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Path;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Path;
 
 use LogicException;
 

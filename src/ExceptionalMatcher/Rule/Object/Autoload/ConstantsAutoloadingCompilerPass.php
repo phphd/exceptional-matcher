@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Autoload;
 
-use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -14,16 +12,24 @@ use Symfony\Component\DependencyInjection\Definition;
 
 use function array_keys;
 
-/** @api */
+/** @internal */
 final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
 {
     public const PRIORITY = 20;
 
+    /** @var list<ConstantsClassDiscovery> */
+    private readonly array $discovery;
+
+    public function __construct()
+    {
+        $this->discovery = [
+            new MatchConditionConstantsClassDiscovery(),
+            new ExceptionFormatterConstantsClassDiscovery(),
+        ];
+    }
+
     public function process(ContainerBuilder $container): void
     {
-        $classNamesSet = $this->getMatchConditionCompilerIds($container);
-        $classNamesSet += $this->getExceptionFormatterIds($container);
-
         $definition = $container->getDefinition(ObjectExceptionMappingPlanRegistry::class);
 
         $definition->replaceArgument(
@@ -31,44 +37,17 @@ final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
             new ServiceClosureArgument(
                 (new Definition())
                     ->setFactory([ConstantsClassLoader::class, 'loadClassNames'])
-                    ->setArguments([array_keys($classNamesSet)]),
+                    ->setArguments([$this->discoverAutoloadingNames($container)]),
             ),
         );
     }
 
-    /** @return array<class-string,true> */
-    private function getMatchConditionCompilerIds(ContainerBuilder $container): array
+    /** @return list<class-string> */
+    private function discoverAutoloadingNames(ContainerBuilder $container): array
     {
-        $classNames = [];
-        $taggedServiceIds = array_keys($container->findTaggedServiceIds(MatchConditionCompiler::class));
-
-        foreach ($taggedServiceIds as $taggedServiceId) {
-            $def = $container->getDefinition($taggedServiceId);
-
-            /** @var class-string $className */
-            $className = $def->getClass();
-
-            $classNames[$className] = true;
-        }
-
-        return $classNames;
-    }
-
-    /** @return array<class-string,true> */
-    private function getExceptionFormatterIds(ContainerBuilder $container): array
-    {
-        $classNames = [];
-        $taggedServiceIds = array_keys($container->findTaggedServiceIds(MatchedExceptionFormatter::class));
-
-        foreach ($taggedServiceIds as $taggedServiceId) {
-            $def = $container->getDefinition($taggedServiceId);
-
-            /** @var class-string $className */
-            $className = $def->getClass();
-
-            $classNames[$className] = true;
-        }
-
-        return $classNames;
+        return array_keys(array_merge(...array_map(
+            static fn (ConstantsClassDiscovery $discovery): array => $discovery->getClassNames($container),
+            $this->discovery,
+        )));
     }
 }

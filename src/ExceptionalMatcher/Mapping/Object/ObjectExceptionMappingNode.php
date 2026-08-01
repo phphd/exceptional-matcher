@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object;
 
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Path\PropertyPath;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRule;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 
 /** @internal */
 final class ObjectExceptionMappingNode implements ExceptionMappingNode

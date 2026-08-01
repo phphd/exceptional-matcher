@@ -7,8 +7,8 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match;
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Path\PropertyPath;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Path\PropertyPath;
 use Throwable;
 
 /**
