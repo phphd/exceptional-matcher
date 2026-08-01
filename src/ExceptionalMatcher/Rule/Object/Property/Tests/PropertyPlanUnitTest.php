@@ -8,7 +8,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappi
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\Exception\CatchPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Delegating\DelegatingMatchConditionCompiler;
@@ -78,14 +78,14 @@ final class PropertyPlanUnitTest extends TestCase
             $catchPlans = [...$propertyPlan->getCatchPlans()];
 
             self::fail('The broken catch mapping must have failed the compilation, got '.count($catchPlans).' catch plans.');
-        } catch (CatchPlanCompilationFailedException $exception) {
+        } catch (CatchExceptionMappingPlanCompilationFailedException $exception) {
             $previous = $exception->getPrevious();
 
             self::assertNotNull($previous);
             self::assertStringContainsString('EnumValueMatchCondition requires `from:`', $previous->getMessage());
         }
 
-        $this->expectException(CatchPlanCompilationFailedException::class);
+        $this->expectException(CatchExceptionMappingPlanCompilationFailedException::class);
         $this->expectExceptionMessage('#[Catch_] attribute compilation has failed.');
 
         self::assertCount(0, [...$propertyPlan->getCatchPlans()]);

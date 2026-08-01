@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler;
 
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\Exception\CatchAttributeInstantiationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\Exception\CatchPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchAttributeInstantiationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\CatchExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use ReflectionAttribute;
-use ReflectionProperty;
 use Throwable;
 use Webmozart\Assert\Assert;
 
@@ -35,7 +34,7 @@ final class CatchExceptionMappingPlanCompiler
                 return null;
             }
 
-            throw new CatchPlanCompilationFailedException($e);
+            throw new CatchExceptionMappingPlanCompilationFailedException($e);
         }
     }
 

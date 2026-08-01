@@ -8,7 +8,7 @@ use LogicException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\Exception\CatchPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\Invalid\InvalidEnumFromMethodConditionMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\Invalid\NonEnumExceptionClassConditionMessage;
@@ -67,7 +67,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             $this->matcher->match($exception, $message);
 
             self::fail('PropertyPlanCompilationFailedException should be thrown');
-        } catch (CatchPlanCompilationFailedException $e) {
+        } catch (CatchExceptionMappingPlanCompilationFailedException $e) {
             self::assertSame('weekDay', $e->getProperty()->getName());
 
             throw $e->getPrevious();
@@ -86,7 +86,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             $this->matcher->match($exception, $message);
 
             self::fail('PropertyPlanCompilationFailedException should be thrown');
-        } catch (CatchPlanCompilationFailedException $e) {
+        } catch (CatchExceptionMappingPlanCompilationFailedException $e) {
             throw $e->getPrevious();
         }
     }
@@ -103,7 +103,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             $this->matcher->match($exception, $message);
 
             self::fail('PropertyPlanCompilationFailedException should be thrown');
-        } catch (CatchPlanCompilationFailedException $e) {
+        } catch (CatchExceptionMappingPlanCompilationFailedException $e) {
             throw $e->getPrevious();
         }
     }
@@ -120,7 +120,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             $this->matcher->match($exception, $message);
 
             self::fail('PropertyPlanCompilationFailedException should be thrown');
-        } catch (CatchPlanCompilationFailedException $e) {
+        } catch (CatchExceptionMappingPlanCompilationFailedException $e) {
             throw $e->getPrevious();
         }
     }

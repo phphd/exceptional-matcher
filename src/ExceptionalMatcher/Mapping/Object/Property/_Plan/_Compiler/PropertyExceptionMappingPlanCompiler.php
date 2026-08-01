@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler;
 
 use Generator;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\_Exception\PropertyExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\CatchExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\CatchExceptionMappingPlan;
@@ -19,6 +20,7 @@ final class PropertyExceptionMappingPlanCompiler
 {
     public function __construct(
         private readonly CatchExceptionMappingPlanCompiler $catchPlanCompiler,
+        private readonly bool $failFast = true,
     ) {
     }
 
@@ -26,7 +28,16 @@ final class PropertyExceptionMappingPlanCompiler
         ReflectionProperty $reflectionProperty,
         ObjectExceptionMappingPlanRegistry $planRegistry
     ): ?PropertyExceptionMappingPlan {
-        return $this->compile($reflectionProperty, $planRegistry);
+        try {
+            return $this->compile($reflectionProperty, $planRegistry);
+        } catch (\Throwable $e) {
+            if (!$this->failFast) {
+                // One broken property won't spoil the whole match tree.
+                return null;
+            }
+
+            throw new PropertyExceptionMappingPlanCompilationFailedException($reflectionProperty, $e);
+        }
     }
 
     private function compile(ReflectionProperty $reflectionProperty, ObjectExceptionMappingPlanRegistry $planRegistry): ?PropertyExceptionMappingPlan
