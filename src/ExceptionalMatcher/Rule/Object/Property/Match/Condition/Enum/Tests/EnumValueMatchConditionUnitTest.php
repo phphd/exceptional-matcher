@@ -68,8 +68,6 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
             self::fail('PropertyPlanCompilationFailedException should be thrown');
         } catch (CatchExceptionMappingPlanCompilationFailedException $e) {
-            self::assertSame('weekDay', $e->getProperty()->getName());
-
             throw $e->getPrevious();
         }
     }

@@ -16,6 +16,7 @@ use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnmatchableTryMessage
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnregisteredFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnregisteredFormatterMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchAttributeInstantiationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\RootObject;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
@@ -152,7 +153,10 @@ final class MappingLinterUnitTest extends TestCase
         self::assertStringContainsString('Undefined constant', $defect->getMessage());
         self::assertStringContainsString('undefined_condition', $defect->getMessage());
         self::assertSame('caughtValue', $defect->getLocation()->getPropertyName());
-        self::assertInstanceOf(CatchAttributeInstantiationFailedException::class, $defect->getCause());
+
+        $cause = $defect->getCause();
+        self::assertInstanceOf(CatchExceptionMappingPlanCompilationFailedException::class, $cause);
+        self::assertInstanceOf(CatchAttributeInstantiationFailedException::class, $cause->getPrevious());
     }
 
     /**

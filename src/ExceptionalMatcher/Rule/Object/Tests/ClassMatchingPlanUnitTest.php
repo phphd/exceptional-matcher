@@ -10,6 +10,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappi
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\CatchExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\BindableMessage;
@@ -43,7 +44,7 @@ final class ClassMatchingPlanUnitTest extends TestCase
             new ExceptionClassMatchConditionCompiler(),
         ]);
 
-        $this->registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler($compiler)), null);
+        $this->registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler))), null);
     }
 
     public function testDiscardsPropertiesThatCanNeverMatch(): void

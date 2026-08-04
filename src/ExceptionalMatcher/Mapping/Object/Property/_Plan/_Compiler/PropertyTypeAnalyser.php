@@ -23,8 +23,8 @@ final class PropertyTypeAnalyser
 
     public function allowsMatchableObjects(ObjectExceptionMappingPlanRegistry $planRegistry): bool
     {
-        return $this->canCompositeTypeMatch($planRegistry)
-            ?? $this->canNamedTypeValueMatch($planRegistry)
+        return $this->canNamedTypeValueMatch($planRegistry)
+            ?? $this->canCompositeTypeMatch($planRegistry)
             ?? true; // untyped property - the value may be anything
     }
 

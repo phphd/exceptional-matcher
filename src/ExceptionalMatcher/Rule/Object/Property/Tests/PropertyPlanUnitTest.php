@@ -9,6 +9,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappi
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\CatchExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Delegating\DelegatingMatchConditionCompiler;
@@ -37,7 +38,7 @@ final class PropertyPlanUnitTest extends TestCase
         $compiler = new CountingMatchConditionCompiler(
             new CompositeMatchConditionCompiler([new ExceptionClassMatchConditionCompiler()]),
         );
-        $registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler($compiler)), null);
+        $registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler))), null);
 
         $plan = $registry->getPlan(MultiCatchMessage::class);
 
@@ -101,7 +102,7 @@ final class PropertyPlanUnitTest extends TestCase
             ])),
         ]);
 
-        $registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler($compiler)), null);
+        $registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler))), null);
 
         $plan = $registry->getPlan(MissingEnumFromConditionMessage::class);
 
