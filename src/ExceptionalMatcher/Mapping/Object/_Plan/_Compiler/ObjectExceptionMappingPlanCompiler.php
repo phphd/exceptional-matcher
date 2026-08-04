@@ -12,6 +12,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExc
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use Throwable;
 
@@ -21,6 +22,7 @@ final class ObjectExceptionMappingPlanCompiler
     public function __construct(
         private readonly PropertyExceptionMappingPlanCompiler $propertyMappingPlanCompiler,
         private readonly bool $failFast = true,
+        private readonly ?LoggerInterface $logger = null,
     ) {
     }
 
@@ -29,13 +31,17 @@ final class ObjectExceptionMappingPlanCompiler
     {
         try {
             return $this->compile($className, $planRegistry);
-        } catch (Throwable $e) {
+        } catch (Throwable $exception) {
+            $e = new ObjectExceptionMappingPlanCompilationFailedException($className, $exception);
+
             if (!$this->failFast) {
                 // One broken class mapping won't spoil the whole situation.
+                $this->logger?->error($e->getMessage(), ['exception' => $e]);
+
                 return null;
             }
 
-            throw new ObjectExceptionMappingPlanCompilationFailedException($className, $e);
+            throw $e;
         }
     }
 

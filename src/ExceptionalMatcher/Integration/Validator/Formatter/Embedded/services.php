@@ -12,6 +12,8 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+
 return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
     if (false === $container->getParameter('phd_exceptional_matcher.validator_available')) {
         return;
@@ -22,7 +24,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
     $services
         ->set(ExceptionViolationFormatter::class.'<'.ViolationsEmbeddedException::class.'>', ViolationsEmbeddedExceptionFormatter::class)
         ->args([
-            new Reference('phd_exceptional_matcher.translator', ContainerInterface::IGNORE_ON_INVALID_REFERENCE),
+            service('phd_exceptional_matcher.translator')->ignoreOnInvalid(),
         ])
         ->tag(MatchedExceptionFormatter::class, ['id' => ViolationsEmbeddedExceptionFormatter::class])
     ;

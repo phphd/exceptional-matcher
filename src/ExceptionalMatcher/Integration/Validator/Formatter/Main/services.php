@@ -26,7 +26,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
     $services
         ->set(ExceptionViolationFormatter::class.'<Throwable>', MainExceptionViolationFormatter::class)
         ->args([
-            new Reference('phd_exceptional_matcher.translator', ContainerInterface::IGNORE_ON_INVALID_REFERENCE),
+            service('phd_exceptional_matcher.translator')->ignoreOnInvalid(),
         ])
         ->tag(MatchedExceptionFormatter::class, ['id' => MainExceptionViolationFormatter::class])
     ;

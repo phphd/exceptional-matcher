@@ -114,6 +114,7 @@ final class ArchitectureRuleSet
                     $this->exception(),
                     $this->model(),
                     Selector::classname(ExceptionUnwrapper::class),
+                    Selector::inNamespace('Psr\Log'),
                 ],
             ],
             'exception' => [

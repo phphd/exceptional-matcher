@@ -31,6 +31,8 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
 {
     public const ALIAS = 'phd_exceptional_matcher';
 
+    public const LOGGER_CHANNEL = 'phd_exceptional_matcher';
+
     private readonly bool $nativeProxiesSupported;
 
     public function __construct(
@@ -102,7 +104,7 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
 
     public function process(ContainerBuilder $container): void
     {
-        $this->checkTranslatorDependency($container);
+        $this->wireTranslatorDependency($container);
         $this->failOnUnresolvedBackwardCompatibilityBreaks($container);
     }
 
@@ -132,7 +134,7 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
             );
     }
 
-    private function checkTranslatorDependency(ContainerBuilder $container): void
+    private function wireTranslatorDependency(ContainerBuilder $container): void
     {
         if ($container->has('translator')) {
             return;

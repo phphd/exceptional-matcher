@@ -9,6 +9,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exce
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\CatchExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
+use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
 use Throwable;
 use Webmozart\Assert\Assert;
@@ -20,6 +21,7 @@ final class CatchExceptionMappingPlanCompiler
         /** @var MatchConditionCompiler<Throwable> */
         private readonly MatchConditionCompiler $matchConditionCompiler,
         private readonly bool $failFast = true,
+        private readonly ?LoggerInterface $logger = null,
     ) {
     }
 
@@ -28,13 +30,17 @@ final class CatchExceptionMappingPlanCompiler
     {
         try {
             return $this->compile($catchAttribute);
-        } catch (\Throwable $e) {
+        } catch (Throwable $exception) {
+            $e = new CatchExceptionMappingPlanCompilationFailedException($exception);
+
             if (!$this->failFast) {
                 // One broken #[Catch_] won't spoil the whole match tree.
+                $this->logger?->error($e->getMessage(), ['exception' => $e]);
+
                 return null;
             }
 
-            throw new CatchExceptionMappingPlanCompilationFailedException($e);
+            throw $e;
         }
     }
 
