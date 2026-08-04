@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsAutoloadingCompilerPass;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
@@ -16,6 +17,7 @@ use Throwable;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service_closure;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_locator;
 
 return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
@@ -52,6 +54,7 @@ return static function (ContainerConfigurator $configurator): void {
         ->set(CatchExceptionMappingPlanCompiler::class, CatchExceptionMappingPlanCompiler::class)
         ->args([
             service(MatchConditionCompiler::class.'<'.Throwable::class.'>'),
+            tagged_locator(MatchedExceptionFormatter::class, 'id'),
             true, // $throwOnFailure
             service('logger')->nullOnInvalid(),
         ])

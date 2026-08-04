@@ -17,6 +17,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\EnumValue
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\EnumValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\CountingMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\InMemoryCompilerRegistry;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\InMemoryFormatterRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\LazilyBrokenCatchMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\MultiCatchMessage;
 use PHPUnit\Framework\TestCase;
@@ -37,7 +38,7 @@ final class PropertyPlanUnitTest extends TestCase
         $compiler = new CountingMatchConditionCompiler(
             new CompositeMatchConditionCompiler([new ExceptionClassMatchConditionCompiler()]),
         );
-        $registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler))), null);
+        $registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler, new InMemoryFormatterRegistry()))), null);
 
         $plan = $registry->getPlan(MultiCatchMessage::class);
 
@@ -101,7 +102,7 @@ final class PropertyPlanUnitTest extends TestCase
             ])),
         ]);
 
-        $registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler))), null);
+        $registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler, new InMemoryFormatterRegistry()))), null);
 
         $plan = $registry->getPlan(LazilyBrokenCatchMessage::class);
 

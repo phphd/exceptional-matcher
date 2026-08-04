@@ -36,6 +36,7 @@ return static function (ContainerConfigurator $configurator): void {
                             inline_service(CatchExceptionMappingPlanCompiler::class)
                                 ->args([
                                     service(MatchConditionCompiler::class.'<'.Throwable::class.'>'),
+                                    tagged_locator(MatchedExceptionFormatter::class, 'id'),
                                     true, // $throwOnFailure: the property level enriches the failure with the property it belongs to
                                     null,
                                 ]),
@@ -54,7 +55,6 @@ return static function (ContainerConfigurator $configurator): void {
         ->public()
         ->args([
             service('phd_exceptional_matcher.linter.plan_registry'),
-            tagged_locator(MatchedExceptionFormatter::class, 'id'),
             service(MappingDefectCollector::class),
         ])
     ;

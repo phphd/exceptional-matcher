@@ -128,7 +128,7 @@ final class MappingLinterUnitTest extends TestCase
     {
         [$defect] = $this->linter->lint([UnregisteredFormatterMessage::class]);
 
-        self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
+        self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertStringContainsString(UnregisteredFormatter::class, $defect->getMessage());
         self::assertSame('caughtValue', $defect->getLocation()->getPropertyName());
     }

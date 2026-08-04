@@ -11,6 +11,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExc
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\CatchExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\InMemoryFormatterRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\TypedPropertiesMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\UnmarkedMessage;
 use PHPUnit\Framework\TestCase;
@@ -63,7 +64,7 @@ final class ClassMatchingPlanRegistryUnitTest extends TestCase
         ]);
 
         return new ObjectExceptionMappingPlanRegistry(
-            new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler))),
+            new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler, new InMemoryFormatterRegistry()))),
             null !== $autoloadClassNames ? $autoloadClassNames(...) : null,
         );
     }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Integration\Linter;
 
 use Generator;
-use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\DefectLocation;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\MappingDefectCollector;
@@ -14,7 +13,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
-use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionProperty;
 use Throwable;
@@ -33,16 +31,8 @@ use function sprintf;
  */
 final class MappingLinter
 {
-    /**
-     * @template T of MatchedExceptionFormatter
-     *
-     * @phpstan-param ContainerInterface<class-string<T>,T> $formatterRegistry
-     *
-     * @psalm-param ContainerInterface<class-string<MatchedExceptionFormatter>,MatchedExceptionFormatter> $formatterRegistry
-     */
     public function __construct(
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
-        private readonly ContainerInterface $formatterRegistry,
         private readonly MappingDefectCollector $defectCollector,
     ) {
     }
@@ -161,7 +151,9 @@ final class MappingLinter
 
         // a property whose mappings failed to compile is dropped and reported to the collector, never thrown
         foreach ($plan->getPropertyPlans() as $propertyPlan) {
-            foreach ($this->lintPropertyPlan($className, $propertyPlan) as $defect) {
+            $defect = $this->compileCatchPlans($className, $propertyPlan);
+
+            if (null !== $defect) {
                 $defects[] = $defect;
             }
         }
@@ -170,29 +162,22 @@ final class MappingLinter
     }
 
     /**
-     * @param class-string $className
+     * Forces the catch plans of a property, which is what compiles every one of its `#[Catch_]` attributes.
      *
-     * @return Generator<MappingDefect>
+     * @param class-string $className
      */
-    private function lintPropertyPlan(string $className, PropertyExceptionMappingPlan $propertyPlan): Generator
+    private function compileCatchPlans(string $className, PropertyExceptionMappingPlan $propertyPlan): ?MappingDefect
     {
-        $propertyLocation = new DefectLocation($className, $propertyPlan->getName());
-
         try {
             foreach ($propertyPlan->getCatchPlans() as $catchPlan) {
-                $formatterId = $catchPlan->getFormatterId();
-
-                if (!$this->formatterRegistry->has($formatterId)) {
-                    yield MappingDefect::warning(
-                        sprintf('Formatter "%s" is not registered in the formatter registry.', $formatterId),
-                        $propertyLocation,
-                    );
-                }
+                unset($catchPlan);
             }
         } catch (Throwable $exception) {
             // a catch plan compiled this late is past the compiler's own guard, so it still throws
-            yield MappingDefect::error($propertyLocation, $exception);
+            return MappingDefect::error(new DefectLocation($className, $propertyPlan->getName()), $exception);
         }
+
+        return null;
     }
 
     /** @param ReflectionClass<object> $reflectionClass */
