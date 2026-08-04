@@ -8,6 +8,7 @@ use Generator;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\DefectLocation;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\MappingDefect;
+use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\MappingDefectCollector;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
@@ -23,9 +24,10 @@ use function sprintf;
 /**
  * Checks the `#[Try_]` / `#[Catch_]` mappings of the given classes for every statically detectable error.
  *
- * The reference checks are not re-implemented here: forcing the catch plans of a property runs the very
- * same compilation the matcher runs in production, and its failures become the defect report. The linter
- * only adds the structural observations that the runtime deliberately ignores.
+ * The reference checks are not re-implemented here: forcing the plan of a class runs the very same
+ * compilation the matcher runs in production, only with `throwOnFailure` off, so the compilers report every
+ * mapping they had to drop instead of aborting at the first one. Those reports are the defect collector's
+ * records. The linter only adds the structural observations that the runtime deliberately ignores.
  *
  * @api
  */
@@ -41,6 +43,7 @@ final class MappingLinter
     public function __construct(
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
         private readonly ContainerInterface $formatterRegistry,
+        private readonly MappingDefectCollector $defectCollector,
     ) {
     }
 
@@ -69,15 +72,20 @@ final class MappingLinter
      */
     private function lintClass(ReflectionClass $reflectionClass): Generator
     {
-        $plan = $this->planRegistry->getPlan($reflectionClass->getName());
+        $className = $reflectionClass->getName();
 
-        yield from $this->lintStructure($reflectionClass, $plan);
+        $plan = $this->planRegistry->getPlan($className);
 
-        if (null === $plan) {
-            return;
-        }
+        // materializing the whole plan makes the compilers report every mapping they had to drop
+        $planDefects = null === $plan ? [] : $this->lintPlan($className, $plan);
 
-        yield from $this->lintPlan($reflectionClass->getName(), $plan);
+        $compilationDefects = $this->defectCollector->flush();
+
+        yield from $compilationDefects;
+
+        yield from $this->lintStructure($reflectionClass, $plan, [] !== $compilationDefects);
+
+        yield from $planDefects;
     }
 
     /**
@@ -85,7 +93,7 @@ final class MappingLinter
      *
      * @return Generator<MappingDefect>
      */
-    private function lintStructure(ReflectionClass $reflectionClass, ?ObjectExceptionMappingPlan $plan): Generator
+    private function lintStructure(ReflectionClass $reflectionClass, ?ObjectExceptionMappingPlan $plan, bool $compilationFailed): Generator
     {
         $classLocation = new DefectLocation($reflectionClass->getName());
 
@@ -105,7 +113,8 @@ final class MappingLinter
                 '#[Try_] on an abstract class never matches: attributes are not inherited by its subclasses.',
                 $classLocation,
             );
-        } elseif (null === $plan) {
+        } elseif (null === $plan && !$compilationFailed) {
+            // a plan missing because its mappings failed to compile is already reported as an error
             yield MappingDefect::warning(
                 '#[Try_] class declares no #[Catch_] mappings and no nested matchable properties, so it never matches anything.',
                 $classLocation,
@@ -144,18 +153,20 @@ final class MappingLinter
     /**
      * @param class-string $className
      *
-     * @return Generator<MappingDefect>
+     * @return list<MappingDefect>
      */
-    private function lintPlan(string $className, ObjectExceptionMappingPlan $plan): Generator
+    private function lintPlan(string $className, ObjectExceptionMappingPlan $plan): array
     {
-        try {
-            foreach ($plan->getPropertyPlans() as $propertyPlan) {
-                yield from $this->lintPropertyPlan($className, $propertyPlan);
+        $defects = [];
+
+        // a property whose mappings failed to compile is dropped and reported to the collector, never thrown
+        foreach ($plan->getPropertyPlans() as $propertyPlan) {
+            foreach ($this->lintPropertyPlan($className, $propertyPlan) as $defect) {
+                $defects[] = $defect;
             }
-        } catch (Throwable $exception) {
-            // materializing the next property plan failed - the exact property is unknown here
-            yield MappingDefect::error(new DefectLocation($className), $exception);
         }
+
+        return $defects;
     }
 
     /**
@@ -179,6 +190,7 @@ final class MappingLinter
                 }
             }
         } catch (Throwable $exception) {
+            // a catch plan compiled this late is past the compiler's own guard, so it still throws
             yield MappingDefect::error($propertyLocation, $exception);
         }
     }

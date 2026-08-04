@@ -14,8 +14,8 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\Matc
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Throwable;
 
-use function Symfony\Component\DependencyInjection\Loader\Configurator\abstract_arg;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service_closure;
 
 return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
@@ -24,7 +24,7 @@ return static function (ContainerConfigurator $configurator): void {
         ->set(ObjectExceptionMappingPlanRegistry::class, ObjectExceptionMappingPlanRegistry::class)
         ->args([
             service(ObjectExceptionMappingPlanCompiler::class),
-            abstract_arg('Injected by '.ConstantsAutoloadingCompilerPass::class),
+            service_closure(ConstantsAutoloadingCompilerPass::AUTOLOADER_ID),
         ])
     ;
 
@@ -32,7 +32,7 @@ return static function (ContainerConfigurator $configurator): void {
         ->set(ObjectExceptionMappingPlanCompiler::class, ObjectExceptionMappingPlanCompiler::class)
         ->args([
             service(PropertyExceptionMappingPlanCompiler::class),
-            true,
+            true, // $throwOnFailure
             service('logger')->nullOnInvalid(),
         ])
         ->tag('monolog.logger', ['channel' => PhdExceptionalMatcherExtension::LOGGER_CHANNEL])
@@ -42,7 +42,7 @@ return static function (ContainerConfigurator $configurator): void {
         ->set(PropertyExceptionMappingPlanCompiler::class, PropertyExceptionMappingPlanCompiler::class)
         ->args([
             service(CatchExceptionMappingPlanCompiler::class),
-            true,
+            true, // $throwOnFailure
             service('logger')->nullOnInvalid(),
         ])
         ->tag('monolog.logger', ['channel' => PhdExceptionalMatcherExtension::LOGGER_CHANNEL])
@@ -52,7 +52,7 @@ return static function (ContainerConfigurator $configurator): void {
         ->set(CatchExceptionMappingPlanCompiler::class, CatchExceptionMappingPlanCompiler::class)
         ->args([
             service(MatchConditionCompiler::class.'<'.Throwable::class.'>'),
-            true,
+            true, // $throwOnFailure
             service('logger')->nullOnInvalid(),
         ])
         ->tag('monolog.logger', ['channel' => PhdExceptionalMatcherExtension::LOGGER_CHANNEL])

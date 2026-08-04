@@ -21,7 +21,7 @@ final class PropertyExceptionMappingPlanCompiler
 {
     public function __construct(
         private readonly CatchExceptionMappingPlanCompiler $catchPlanCompiler,
-        private readonly bool $failFast = true,
+        private readonly bool $throwOnFailure = true,
         private readonly ?LoggerInterface $logger = null,
     ) {
     }
@@ -35,7 +35,7 @@ final class PropertyExceptionMappingPlanCompiler
         } catch (Throwable $exception) {
             $e = new PropertyExceptionMappingPlanCompilationFailedException($reflectionProperty, $exception);
 
-            if (!$this->failFast) {
+            if (!$this->throwOnFailure) {
                 // One broken property won't spoil the whole match tree.
                 $this->logger?->error($e->getMessage(), ['exception' => $e]);
 

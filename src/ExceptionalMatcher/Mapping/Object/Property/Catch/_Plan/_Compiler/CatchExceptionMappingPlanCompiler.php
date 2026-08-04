@@ -20,7 +20,7 @@ final class CatchExceptionMappingPlanCompiler
     public function __construct(
         /** @var MatchConditionCompiler<Throwable> */
         private readonly MatchConditionCompiler $matchConditionCompiler,
-        private readonly bool $failFast = true,
+        private readonly bool $throwOnFailure = true,
         private readonly ?LoggerInterface $logger = null,
     ) {
     }
@@ -33,7 +33,7 @@ final class CatchExceptionMappingPlanCompiler
         } catch (Throwable $exception) {
             $e = new CatchExceptionMappingPlanCompilationFailedException($exception);
 
-            if (!$this->failFast) {
+            if (!$this->throwOnFailure) {
                 // One broken #[Catch_] won't spoil the whole match tree.
                 $this->logger?->error($e->getMessage(), ['exception' => $e]);
 

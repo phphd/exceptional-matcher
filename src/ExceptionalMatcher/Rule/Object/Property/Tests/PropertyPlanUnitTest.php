@@ -15,9 +15,9 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\Comp
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Delegating\DelegatingMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\EnumValueMatchCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\EnumValueMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\CountingMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\InMemoryCompilerRegistry;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\LazilyBrokenCatchMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\MultiCatchMessage;
 use PHPUnit\Framework\TestCase;
 use Webmozart\Assert\Assert;
@@ -69,7 +69,7 @@ final class PropertyPlanUnitTest extends TestCase
 
     public function testFailedCompilationIsRetriedOnNextIteration(): void
     {
-        $plan = $this->getEnumStubMessagePlan();
+        $plan = $this->getLazilyBrokenCatchPlan();
 
         // the property with a broken catch mapping is still planned - the failure surfaces on access
         [$propertyPlan] = [...$plan->getPropertyPlans()];
@@ -91,7 +91,7 @@ final class PropertyPlanUnitTest extends TestCase
         self::assertCount(0, [...$propertyPlan->getCatchPlans()]);
     }
 
-    private function getEnumStubMessagePlan(): ObjectExceptionMappingPlan
+    private function getLazilyBrokenCatchPlan(): ObjectExceptionMappingPlan
     {
         /** @psalm-suppress InvalidArgument the compiler registry template is inferred from both key and value positions */
         $compiler = new CompositeMatchConditionCompiler([
@@ -103,7 +103,7 @@ final class PropertyPlanUnitTest extends TestCase
 
         $registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler))), null);
 
-        $plan = $registry->getPlan(MissingEnumFromConditionMessage::class);
+        $plan = $registry->getPlan(LazilyBrokenCatchMessage::class);
 
         Assert::notNull($plan);
 

@@ -21,7 +21,7 @@ final class ObjectExceptionMappingPlanCompiler
 {
     public function __construct(
         private readonly PropertyExceptionMappingPlanCompiler $propertyMappingPlanCompiler,
-        private readonly bool $failFast = true,
+        private readonly bool $throwOnFailure = true,
         private readonly ?LoggerInterface $logger = null,
     ) {
     }
@@ -34,7 +34,7 @@ final class ObjectExceptionMappingPlanCompiler
         } catch (Throwable $exception) {
             $e = new ObjectExceptionMappingPlanCompilationFailedException($className, $exception);
 
-            if (!$this->failFast) {
+            if (!$this->throwOnFailure) {
                 // One broken class mapping won't spoil the whole situation.
                 $this->logger?->error($e->getMessage(), ['exception' => $e]);
 
