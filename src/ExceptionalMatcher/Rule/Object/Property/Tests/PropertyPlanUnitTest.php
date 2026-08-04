@@ -29,7 +29,6 @@ use function count;
  *
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler
- * @covers \PhPhD\ExceptionalMatcher\Rule\Object\RestartableIteratorAggregate
  */
 final class PropertyPlanUnitTest extends TestCase
 {

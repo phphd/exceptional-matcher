@@ -44,7 +44,7 @@ final class CatchExceptionMappingPlanCompiler
 
         $conditionPlan = $this->matchConditionCompiler->compile($catch);
 
-        Assert::notNull($conditionPlan, 'Condition compiler must produce some plan.');
+        Assert::notNull($conditionPlan, 'Condition compiler must produce a plan.');
 
         return new CatchExceptionMappingPlan($conditionPlan, $catch->getFormat(), $catch->getMessage());
     }

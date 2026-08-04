@@ -58,15 +58,10 @@ final class ObjectExceptionMappingPlan
     /** @noinspection PhpLoopNeverIteratesInspection */
     public function hasPropertyPlans(): bool
     {
-        try {
-            foreach ($this->propertyPlans as $catchPlan) {
-                return true;
-            }
-            return false;
-        } catch (Throwable) {
-            // Since plans are instantiated lazily, we don't want to propagate those exceptions right now.
-            // They will eventually propagate on the first traversal attempt due to ReusableIteratorAggregate implementation.
+        foreach ($this->propertyPlans as $catchPlan) {
             return true;
         }
+
+        return false;
     }
 }

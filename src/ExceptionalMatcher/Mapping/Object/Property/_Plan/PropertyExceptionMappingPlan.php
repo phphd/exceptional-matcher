@@ -24,7 +24,7 @@ final class PropertyExceptionMappingPlan
 {
     public function __construct(
         private readonly ReflectionProperty $property,
-        /** @var CatchExceptionMappingPlan */
+        /** @var iterable<CatchExceptionMappingPlan> */
         private readonly iterable $catchPlans,
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
     ) {
@@ -109,7 +109,7 @@ final class PropertyExceptionMappingPlan
     /**
      * @api the seam for the mapping linter: forcing this iterable compiles every `#[Catch_]` of the property
      *
-     * @return CatchExceptionMappingPlan
+     * @return iterable<CatchExceptionMappingPlan>
      */
     public function getCatchPlans(): iterable
     {
@@ -119,15 +119,10 @@ final class PropertyExceptionMappingPlan
     /** @noinspection PhpLoopNeverIteratesInspection */
     public function hasCatchPlans(): bool
     {
-        try {
-            foreach ($this->catchPlans as $catchPlan) {
-                return true;
-            }
-            return false;
-        } catch (Throwable) {
-            // Since plans are instantiated lazily, we don't want to propagate those exceptions right now.
-            // They will eventually propagate on the first traversal attempt due to ReusableIteratorAggregate implementation.
+        foreach ($this->catchPlans as $catchPlan) {
             return true;
         }
+
+        return false;
     }
 }

@@ -8,6 +8,8 @@ use LogicException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\_Exception\ObjectExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\_Exception\PropertyExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\Invalid\InvalidEnumFromMethodConditionMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
@@ -20,6 +22,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stu
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\WeekDayNumber\WeekDayNumberConditionMessage;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use Throwable;
 use ValueError;
 
 use function sprintf;
@@ -66,9 +69,9 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         try {
             $this->matcher->match($exception, $message);
 
-            self::fail('PropertyPlanCompilationFailedException should be thrown');
-        } catch (CatchExceptionMappingPlanCompilationFailedException $e) {
-            throw $e->getPrevious();
+            self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
+        } catch (ObjectExceptionMappingPlanCompilationFailedException $e) {
+            throw $this->rootCauseOf($e, NonEnumExceptionClassConditionMessage::class, 'weekDay');
         }
     }
 
@@ -83,9 +86,9 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         try {
             $this->matcher->match($exception, $message);
 
-            self::fail('PropertyPlanCompilationFailedException should be thrown');
-        } catch (CatchExceptionMappingPlanCompilationFailedException $e) {
-            throw $e->getPrevious();
+            self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
+        } catch (ObjectExceptionMappingPlanCompilationFailedException $e) {
+            throw $this->rootCauseOf($e, MissingEnumFromConditionMessage::class, 'weekDay');
         }
     }
 
@@ -100,9 +103,9 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         try {
             $this->matcher->match($exception, $message);
 
-            self::fail('PropertyPlanCompilationFailedException should be thrown');
-        } catch (CatchExceptionMappingPlanCompilationFailedException $e) {
-            throw $e->getPrevious();
+            self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
+        } catch (ObjectExceptionMappingPlanCompilationFailedException $e) {
+            throw $this->rootCauseOf($e, NonBackedEnumConditionMessage::class, 'status');
         }
     }
 
@@ -117,9 +120,9 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         try {
             $this->matcher->match($exception, $message);
 
-            self::fail('PropertyPlanCompilationFailedException should be thrown');
-        } catch (CatchExceptionMappingPlanCompilationFailedException $e) {
-            throw $e->getPrevious();
+            self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
+        } catch (ObjectExceptionMappingPlanCompilationFailedException $e) {
+            throw $this->rootCauseOf($e, InvalidEnumFromMethodConditionMessage::class, 'weekDay');
         }
     }
 
@@ -181,6 +184,31 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
         self::assertNotNull($matchedExceptionList);
+    }
+
+    /**
+     * Asserts the whole compilation failure chain and returns the condition error that started it.
+     *
+     * @param class-string $className
+     */
+    private function rootCauseOf(
+        ObjectExceptionMappingPlanCompilationFailedException $exception,
+        string $className,
+        string $propertyName,
+    ): Throwable {
+        self::assertSame($className, $exception->getClassName());
+
+        $propertyFailure = $exception->getPrevious();
+        self::assertInstanceOf(PropertyExceptionMappingPlanCompilationFailedException::class, $propertyFailure);
+        self::assertSame($propertyName, $propertyFailure->getReflectionProperty()->getName());
+
+        $catchFailure = $propertyFailure->getPrevious();
+        self::assertInstanceOf(CatchExceptionMappingPlanCompilationFailedException::class, $catchFailure);
+
+        $rootCause = $catchFailure->getPrevious();
+        self::assertNotNull($rootCause);
+
+        return $rootCause;
     }
 
     private function weekDayEnumError(string $value): ValueError
