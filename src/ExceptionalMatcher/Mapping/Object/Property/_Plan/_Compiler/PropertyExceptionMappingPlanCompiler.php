@@ -33,7 +33,11 @@ final class PropertyExceptionMappingPlanCompiler
         try {
             return $this->compile($reflectionProperty, $planRegistry);
         } catch (Throwable $exception) {
-            $e = new PropertyExceptionMappingPlanCompilationFailedException($reflectionProperty, $exception);
+            $e = new PropertyExceptionMappingPlanCompilationFailedException(
+                $reflectionProperty->getDeclaringClass()->getName(),
+                $reflectionProperty->getName(),
+                $exception,
+            );
 
             if (!$this->throwOnFailure) {
                 // One broken property won't spoil the whole match tree.

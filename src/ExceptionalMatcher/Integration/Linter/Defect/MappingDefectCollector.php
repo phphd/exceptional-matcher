@@ -57,13 +57,7 @@ final class MappingDefectCollector extends AbstractLogger
     private static function defectLocationOf(Throwable $exception): ?DefectLocation
     {
         if ($exception instanceof PropertyExceptionMappingPlanCompilationFailedException) {
-            $reflectionProperty = $exception->getReflectionProperty();
-
-            return new DefectLocation(
-                $reflectionProperty->getDeclaringClass()
-                    ->getName(),
-                $reflectionProperty->getName(),
-            );
+            return new DefectLocation($exception->getClassName(), $exception->getPropertyName());
         }
 
         if ($exception instanceof ObjectExceptionMappingPlanCompilationFailedException) {

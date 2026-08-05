@@ -11,21 +11,29 @@ use Throwable;
 final class PropertyExceptionMappingPlanCompilationFailedException extends RuntimeException
 {
     public function __construct(
-        private readonly ReflectionProperty $reflectionProperty,
+        /** @var class-string */
+        private readonly string $className,
+        private readonly string $propertyName,
         Throwable $previous,
     ) {
         parent::__construct(
             sprintf(
                 'Property %s::$%s exception mapping compilation has failed.',
-                $reflectionProperty->getDeclaringClass()->getName(),
-                $reflectionProperty->getName(),
+                $this->className,
+                $this->propertyName,
             ),
             previous: $previous,
         );
     }
 
-    public function getReflectionProperty(): ReflectionProperty
+    /** @return class-string */
+    public function getClassName(): string
     {
-        return $this->reflectionProperty;
+        return $this->className;
+    }
+
+    public function getPropertyName(): string
+    {
+        return $this->propertyName;
     }
 }

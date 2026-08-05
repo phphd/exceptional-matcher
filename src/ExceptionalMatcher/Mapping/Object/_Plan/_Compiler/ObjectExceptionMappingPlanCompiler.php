@@ -26,13 +26,12 @@ final class ObjectExceptionMappingPlanCompiler
     ) {
     }
 
-    /** @param class-string $className */
-    public function compilePlan(string $className, ObjectExceptionMappingPlanRegistry $planRegistry): ?ObjectExceptionMappingPlan
+    public function compilePlan(ReflectionClass $reflectionClass, ObjectExceptionMappingPlanRegistry $planRegistry): ?ObjectExceptionMappingPlan
     {
         try {
-            return $this->compile($className, $planRegistry);
+            return $this->compile($reflectionClass, $planRegistry);
         } catch (Throwable $exception) {
-            $e = new ObjectExceptionMappingPlanCompilationFailedException($className, $exception);
+            $e = new ObjectExceptionMappingPlanCompilationFailedException($reflectionClass->getName(), $exception);
 
             if (!$this->throwOnFailure) {
                 // One broken class mapping won't spoil the whole situation.
@@ -45,16 +44,14 @@ final class ObjectExceptionMappingPlanCompiler
         }
     }
 
-    private function compile(string $className, ObjectExceptionMappingPlanRegistry $planRegistry): ?ObjectExceptionMappingPlan
+    private function compile(ReflectionClass $reflectionClass, ObjectExceptionMappingPlanRegistry $planRegistry): ?ObjectExceptionMappingPlan
     {
-        $reflectionClass = new ReflectionClass($className);
-
         if ([] === $reflectionClass->getAttributes(Try_::class)) {
             return null;
         }
 
         $mappingPlan = new ObjectExceptionMappingPlan(
-            $className,
+            $reflectionClass->getName(),
             new ReusableIteratorAggregate($this->compilePropertyPlans($reflectionClass, $planRegistry)),
         );
 

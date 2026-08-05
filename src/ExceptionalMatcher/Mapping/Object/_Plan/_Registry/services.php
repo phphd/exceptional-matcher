@@ -29,35 +29,4 @@ return static function (ContainerConfigurator $configurator): void {
             service_closure(ConstantsAutoloadingCompilerPass::AUTOLOADER_ID),
         ])
     ;
-
-    $services
-        ->set(ObjectExceptionMappingPlanCompiler::class, ObjectExceptionMappingPlanCompiler::class)
-        ->args([
-            service(PropertyExceptionMappingPlanCompiler::class),
-            true, // $throwOnFailure
-            service('logger')->nullOnInvalid(),
-        ])
-        ->tag('monolog.logger', ['channel' => PhdExceptionalMatcherExtension::LOGGER_CHANNEL])
-    ;
-
-    $services
-        ->set(PropertyExceptionMappingPlanCompiler::class, PropertyExceptionMappingPlanCompiler::class)
-        ->args([
-            service(CatchExceptionMappingPlanCompiler::class),
-            true, // $throwOnFailure
-            service('logger')->nullOnInvalid(),
-        ])
-        ->tag('monolog.logger', ['channel' => PhdExceptionalMatcherExtension::LOGGER_CHANNEL])
-    ;
-
-    $services
-        ->set(CatchExceptionMappingPlanCompiler::class, CatchExceptionMappingPlanCompiler::class)
-        ->args([
-            service(MatchConditionCompiler::class.'<'.Throwable::class.'>'),
-            tagged_locator(MatchedExceptionFormatter::class, 'id'),
-            true, // $throwOnFailure
-            service('logger')->nullOnInvalid(),
-        ])
-        ->tag('monolog.logger', ['channel' => PhdExceptionalMatcherExtension::LOGGER_CHANNEL])
-    ;
 };

@@ -200,7 +200,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
         $propertyFailure = $exception->getPrevious();
         self::assertInstanceOf(PropertyExceptionMappingPlanCompilationFailedException::class, $propertyFailure);
-        self::assertSame($propertyName, $propertyFailure->getReflectionProperty()->getName());
+        self::assertSame($propertyName, $propertyFailure->getPropertyName());
 
         $catchFailure = $propertyFailure->getPrevious();
         self::assertInstanceOf(CatchExceptionMappingPlanCompilationFailedException::class, $catchFailure);

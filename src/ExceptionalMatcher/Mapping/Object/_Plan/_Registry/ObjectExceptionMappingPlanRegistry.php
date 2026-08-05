@@ -8,6 +8,8 @@ use Closure;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 
+use ReflectionClass;
+
 use function array_key_exists;
 
 /** @api */
@@ -46,6 +48,6 @@ final class ObjectExceptionMappingPlanRegistry
             return $this->plans[$className];
         }
 
-        return $this->plans[$className] = $this->planCompiler->compilePlan($className, $this);
+        return $this->plans[$className] = $this->planCompiler->compilePlan(new ReflectionClass($className), $this);
     }
 }
