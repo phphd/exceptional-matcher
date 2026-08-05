@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\Tests\Stub\ViolationsEmbeddedExampleException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedHandleableMessage;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -41,6 +43,8 @@ final class EmbeddedViolationListFormatterUnitTest extends TestCase
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);
+
+        $container->addCompilerPass(new TestServicesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, TestServicesCompilerPass::PRIORITY);
 
         $translator = $this->createMock(TranslatorInterface::class);
         $translator->method('trans')

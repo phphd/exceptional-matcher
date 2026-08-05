@@ -10,16 +10,9 @@ use function sprintf;
 
 final class UnregisteredFormatterException extends RuntimeException
 {
-    public function __construct(
-        /** @var class-string */
-        private readonly string $formatterId,
-    ) {
-        parent::__construct(sprintf('Formatter "%s" is not registered in the formatter registry.', $formatterId));
-    }
-
-    /** @return class-string */
-    public function getFormatterId(): string
+    /** @param class-string $formatterId */
+    public function __construct(string $formatterId)
     {
-        return $this->formatterId;
+        parent::__construct(sprintf('Formatter "%s" is not registered in the formatter registry.', $formatterId));
     }
 }

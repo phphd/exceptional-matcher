@@ -37,8 +37,7 @@ abstract class BundleTestCase extends KernelTestCase
 
         $kernel->addTestBundle(PhdExceptionalMatcherBundle::class);
         $kernel->addTestBundle(PhdExceptionToolkitBundle::class);
-        // Priority 105 is necessary for interface autoconfiguration (ResolveInstanceofConditionalsPass) to work properly
-        $kernel->addTestCompilerPass(new TestServicesCompilerPass(), priority: 105);
+        $kernel->addTestCompilerPass(new TestServicesCompilerPass(), priority: TestServicesCompilerPass::PRIORITY);
 
         /** @see https://github.com/SymfonyTest/symfony-bundle-test/issues/94 */
         $kernel->setClearCacheAfterShutdown(false);

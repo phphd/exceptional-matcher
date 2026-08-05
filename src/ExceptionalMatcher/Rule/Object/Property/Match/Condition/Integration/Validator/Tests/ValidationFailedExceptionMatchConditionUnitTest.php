@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Validator\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -35,6 +37,8 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);
+
+        $container->addCompilerPass(new TestServicesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, TestServicesCompilerPass::PRIORITY);
 
         $container->compile();
 

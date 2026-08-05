@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests;
 
 use ArrayObject;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
 use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\RootObject;
@@ -14,6 +15,7 @@ use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedItem;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NotHandleableMessageStub;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 /**
  * @internal
@@ -33,6 +35,8 @@ final class PropertyPlanIterableItemsUnitTest extends TestCase
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);
+
+        $container->addCompilerPass(new TestServicesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, TestServicesCompilerPass::PRIORITY);
 
         $container->compile();
 

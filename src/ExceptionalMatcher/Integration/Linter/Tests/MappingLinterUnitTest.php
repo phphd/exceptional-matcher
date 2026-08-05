@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Integration\Linter\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\DefectSeverity;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Integration\Linter\MappingLinter;
@@ -25,6 +26,7 @@ use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedHandleableMessage;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedItem;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NotHandleableMessageStub;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 use function array_filter;
 use function array_values;
@@ -48,6 +50,8 @@ final class MappingLinterUnitTest extends TestCase
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);
+
+        $container->addCompilerPass(new TestServicesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, TestServicesCompilerPass::PRIORITY);
 
         $container->compile();
 

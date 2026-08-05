@@ -41,7 +41,9 @@ final class CatchExceptionMappingPlanCompiler
     public function compilePlan(ReflectionAttribute $catchAttribute): ?CatchExceptionMappingPlan
     {
         try {
-            return $this->compile($catchAttribute);
+            $catch = $this->instantiateCatch($catchAttribute);
+
+            return $this->compile($catch);
         } catch (Throwable $exception) {
             $e = new CatchExceptionMappingPlanCompilationFailedException($exception);
 
@@ -56,17 +58,6 @@ final class CatchExceptionMappingPlanCompiler
         }
     }
 
-    private function compile(ReflectionAttribute $catchAttribute): CatchExceptionMappingPlan
-    {
-        $catch = $this->instantiateCatch($catchAttribute);
-
-        return new CatchExceptionMappingPlan(
-            $this->compileConditionPlan($catch),
-            $this->compileFormatter($catch),
-            $catch->getMessage(),
-        );
-    }
-
     /**
      * @param ReflectionAttribute<Catch_<Throwable,Throwable>> $catchAttribute
      *
@@ -79,6 +70,26 @@ final class CatchExceptionMappingPlanCompiler
         } catch (Throwable $e) {
             throw new CatchAttributeInstantiationFailedException($e);
         }
+    }
+
+    /** @param Catch_<Throwable,Throwable> $catch */
+    private function compile(Catch_ $catch): CatchExceptionMappingPlan
+    {
+        return new CatchExceptionMappingPlan(
+            $this->compileConditionPlan($catch),
+            $this->compileFormatter($catch),
+            $catch->getMessage(),
+        );
+    }
+
+    /** @param Catch_<Throwable,Throwable> $catch */
+    private function compileConditionPlan(Catch_ $catch): MatchConditionPlan
+    {
+        $conditionPlan = $this->matchConditionCompiler->compile($catch);
+
+        Assert::notNull($conditionPlan, 'Condition compiler must produce a plan.');
+
+        return $conditionPlan;
     }
 
     /**
@@ -97,15 +108,5 @@ final class CatchExceptionMappingPlanCompiler
         }
 
         return $formatterId;
-    }
-
-    /** @param Catch_<Throwable,Throwable> $catch */
-    private function compileConditionPlan(Catch_ $catch): MatchConditionPlan
-    {
-        $conditionPlan = $this->matchConditionCompiler->compile($catch);
-
-        Assert::notNull($conditionPlan, 'Condition compiler must produce a plan.');
-
-        return $conditionPlan;
     }
 }

@@ -14,7 +14,9 @@ use function in_array;
 /**
  * Answers the only question the mapping compiler asks of the formatter registry: is this id registered?
  *
- * @implements ContainerInterface<class-string<MatchedExceptionFormatter>,MatchedExceptionFormatter>
+ * @template T of MatchedExceptionFormatter
+ *
+ * @implements ContainerInterface<class-string<T>,T>
  */
 final class InMemoryFormatterRegistry implements ContainerInterface
 {
@@ -24,7 +26,7 @@ final class InMemoryFormatterRegistry implements ContainerInterface
     ) {
     }
 
-    public function get(string $id): MatchedExceptionFormatter
+    public function get(string $id): never
     {
         throw new LogicException('Compiling a mapping plan never resolves the formatter itself.');
     }
