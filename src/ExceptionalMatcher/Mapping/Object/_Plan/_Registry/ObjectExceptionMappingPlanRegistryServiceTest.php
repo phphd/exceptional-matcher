@@ -19,9 +19,9 @@ final class ObjectExceptionMappingPlanRegistryServiceTest extends BundleTestCase
     {
         $planRegistry = self::getContainer()->get(ObjectExceptionMappingPlanRegistry::class);
 
-        self::assertInstanceOf(ObjectExceptionMappingPlanRegistry::class, $planRegistry);
+        self::assertInstanceOf(CompilingObjectExceptionMappingPlanRegistry::class, $planRegistry);
 
-        self::assertFalse($planRegistry->hasPlan(NotHandleableMessageStub::class));
-        self::assertTrue($planRegistry->hasPlan(HandleableMessageStub::class));
+        self::assertNull($planRegistry->getPlan(NotHandleableMessageStub::class));
+        self::assertNotNull($planRegistry->getPlan(HandleableMessageStub::class));
     }
 }

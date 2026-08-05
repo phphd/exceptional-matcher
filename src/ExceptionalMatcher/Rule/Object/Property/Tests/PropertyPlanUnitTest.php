@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
@@ -38,7 +38,7 @@ final class PropertyPlanUnitTest extends TestCase
         $compiler = new CountingMatchConditionCompiler(
             new CompositeMatchConditionCompiler([new ExceptionClassMatchConditionCompiler()]),
         );
-        $registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler, new InMemoryFormatterRegistry()))), null);
+        $registry = new CompilingObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler, new InMemoryFormatterRegistry()))), null);
 
         $plan = $registry->getPlan(MultiCatchMessage::class);
 
@@ -102,7 +102,7 @@ final class PropertyPlanUnitTest extends TestCase
             ])),
         ]);
 
-        $registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler, new InMemoryFormatterRegistry()))), null);
+        $registry = new CompilingObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler, new InMemoryFormatterRegistry()))), null);
 
         $plan = $registry->getPlan(LazilyBrokenCatchMessage::class);
 

@@ -176,7 +176,8 @@ final class MappingLinterUnitTest extends TestCase
     {
         return array_values(array_filter(
             $defects,
-            static fn (MappingDefect $defect): bool => $defect->getSeverity()->is(DefectSeverity::Error),
+            static fn (MappingDefect $defect): bool => $defect->getSeverity()
+                ->is(DefectSeverity::Error),
         ));
     }
 }

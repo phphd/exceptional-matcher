@@ -8,6 +8,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsAutoloadingClassDiscovery
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+use function array_keys;
+
 /** @internal */
 final class MatchConditionConstantsAutoloadingClassDiscovery implements ConstantsAutoloadingClassDiscovery
 {

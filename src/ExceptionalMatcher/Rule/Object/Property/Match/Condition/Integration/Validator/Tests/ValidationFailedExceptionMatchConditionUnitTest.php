@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Validator\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Validator\Tests\Stub\MessageWithValidatedValueCondition;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -38,8 +36,6 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->addCompilerPass(new TestServicesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, TestServicesCompilerPass::PRIORITY);
-
         $container->compile();
 
         /** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
@@ -50,7 +46,7 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
     public function testValidationFailedExceptionCanBeCaptured(): void
     {
         $validation = Validation::createCallable($constraint = new Length(min: 11));
-        $message = HandleableMessageStub::create();
+        $message = new MessageWithValidatedValueCondition();
 
         try {
             $validation('matched!');

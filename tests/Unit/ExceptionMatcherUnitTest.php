@@ -41,7 +41,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\CatchExceptionMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\CatchExceptionMappingNode

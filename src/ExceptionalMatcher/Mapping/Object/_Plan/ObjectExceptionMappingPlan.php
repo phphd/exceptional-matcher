@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\_Plan;
 
 use AppendIterator;
+use InvalidArgumentException;
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
-use Throwable;
+
+use function sprintf;
 
 /**
  * @internal
@@ -31,7 +33,7 @@ final class ObjectExceptionMappingPlan
     public function bind(object $object, ?ExceptionMappingNode $ownerRule = null): ObjectExceptionMappingNode
     {
         if (!$object instanceof $this->className) {
-            throw new \InvalidArgumentException(sprintf('Expected object of type "%s", got "%s".', $this->className, $object::class));
+            throw new InvalidArgumentException(sprintf('Expected object of type "%s", got "%s".', $this->className, $object::class));
         }
 
         $objectRuleSet = new ObjectExceptionMappingNode($object, $ownerRule, new ReusableIteratorAggregate($propertyRules = new AppendIterator()));
@@ -39,14 +41,6 @@ final class ObjectExceptionMappingPlan
         $propertyRules->append($this->bindPropertyRules($objectRuleSet));
 
         return $objectRuleSet;
-    }
-
-    /** @return Iterator<ExceptionMappingNode> */
-    private function bindPropertyRules(ObjectExceptionMappingNode $objectRuleSet): Iterator
-    {
-        foreach ($this->propertyPlans as $propertyPlan) {
-            yield $propertyPlan->bind($objectRuleSet);
-        }
     }
 
     /** @return iterable<PropertyExceptionMappingPlan> */
@@ -63,5 +57,13 @@ final class ObjectExceptionMappingPlan
         }
 
         return false;
+    }
+
+    /** @return Iterator<ExceptionMappingNode> */
+    private function bindPropertyRules(ObjectExceptionMappingNode $objectRuleSet): Iterator
+    {
+        foreach ($this->propertyPlans as $propertyPlan) {
+            yield $propertyPlan->bind($objectRuleSet);
+        }
     }
 }

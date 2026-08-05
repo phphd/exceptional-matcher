@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
 use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\Tests\Stub\MessageWithExceptionValueCondition;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\Tests\Stub\SomeValueException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -37,8 +35,6 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->addCompilerPass(new TestServicesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, TestServicesCompilerPass::PRIORITY);
-
         $container
             ->register(CompositeExceptionUnwrapper::class, CompositeExceptionUnwrapper::class)
             ->setArguments([new Reference('.inner')])
@@ -54,7 +50,7 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
 
     public function testValueExceptionCondition(): void
     {
-        $message = HandleableMessageStub::create();
+        $message = new MessageWithExceptionValueCondition();
 
         $exceptionAdapter = new CompositeException([
             new SomeValueException('matched!'),

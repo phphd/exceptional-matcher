@@ -15,7 +15,7 @@ use function class_exists;
 /**
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsAutoloadingCompilerPass
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsClassLoader
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry
  *
  * @internal
  */

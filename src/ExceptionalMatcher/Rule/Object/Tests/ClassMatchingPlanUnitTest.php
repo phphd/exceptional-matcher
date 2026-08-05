@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Tests;
 
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
@@ -34,7 +34,7 @@ use function array_map;
  */
 final class ClassMatchingPlanUnitTest extends TestCase
 {
-    private ObjectExceptionMappingPlanRegistry $registry;
+    private CompilingObjectExceptionMappingPlanRegistry $registry;
 
     protected function setUp(): void
     {
@@ -44,7 +44,7 @@ final class ClassMatchingPlanUnitTest extends TestCase
             new ExceptionClassMatchConditionCompiler(),
         ]);
 
-        $this->registry = new ObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler, new InMemoryFormatterRegistry()))), null);
+        $this->registry = new CompilingObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler, new InMemoryFormatterRegistry()))), null);
     }
 
     public function testDiscardsPropertiesThatCanNeverMatch(): void

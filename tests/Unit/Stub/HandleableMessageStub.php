@@ -12,7 +12,6 @@ use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests\Stub\Mes
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure\Tests\Stub\ConditionalMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\Tests\Stub\SomeValueException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
@@ -50,16 +49,10 @@ final class HandleableMessageStub
     #[Catch_(LogicException::class, message: 'oops')]
     private string $messageText;
 
-    #[Catch_(SomeValueException::class, match: exception_value, message: 'oops')]
-    #[Catch_(ValidationFailedException::class, match: validated_value, format: embedded_violations)]
-    private string $notMatchedProperty = 'not matched';
-
+    // exception_value catch also keeps ConstantsAutoloadingCompilerPassIntegrationTest's constant class in the plan
     #[Catch_(SomeValueException::class, match: exception_value, message: 'oops')]
     #[Catch_(ValidationFailedException::class, match: validated_value, format: embedded_violations)]
     private string $matchedProperty = 'matched!';
-
-    #[Catch_(SomeValueException::class, message: 'oops')]
-    private string $anotherMatchedAsNoCondition;
 
     #[Catch_(MessageContainingException::class)]
     private int $fallBackToExceptionMessage;
@@ -98,13 +91,6 @@ final class HandleableMessageStub
         $message->nestedObject = $nestedObject;
 
         return $message;
-    }
-
-    public function withConditionalMessage(int $firstConditionalProperty, int $secondConditionalProperty): self
-    {
-        return $this->withNestedObject(NestedHandleableMessage::createWithConditionalMessage(
-            ConditionalMessage::createWithConditionalProperties($firstConditionalProperty, $secondConditionalProperty),
-        ));
     }
 
     /** @param array<array-key,NestedItem> $items */

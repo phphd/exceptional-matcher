@@ -12,6 +12,11 @@ use ReflectionType;
 use ReflectionUnionType;
 use Traversable;
 
+use function class_exists;
+use function in_array;
+use function interface_exists;
+use function is_a;
+
 final class PropertyTypeAnalyser
 {
     private const MATCHABLE_BUILTIN_TYPES = ['array', 'iterable', 'mixed', 'object'];
@@ -81,6 +86,6 @@ final class PropertyTypeAnalyser
             return true;
         }
 
-        return $planRegistry->hasPlan($className);
+        return null !== $planRegistry->getPlan($className);
     }
 }

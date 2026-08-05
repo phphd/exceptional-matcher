@@ -60,7 +60,6 @@ final class CatchExceptionMappingNode implements ExceptionMappingNode
         return $this->owner->getValue();
     }
 
-    /** @param Throwable $exception */
     public function matchesException(Throwable $exception): bool
     {
         return $this->condition->matches($exception);

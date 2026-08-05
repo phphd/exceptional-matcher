@@ -8,7 +8,7 @@ use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\MappingDefectCollector;
 use PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsAutoloadingCompilerPass;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\CatchExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
@@ -23,11 +23,18 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_lo
 return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
 
-    $services->set(MappingDefectCollector::class, MappingDefectCollector::class);
+    $services
+        ->set(MappingLinter::class, MappingLinter::class)
+        ->public()
+        ->args([
+            service('phd_exceptional_matcher.linter.plan_registry'),
+            service(MappingDefectCollector::class),
+        ])
+    ;
 
     // Lint-mode plan registry: it keeps compiling past a broken mapping and reports every one it drops.
-    $services
-        ->set('phd_exceptional_matcher.linter.plan_registry', ObjectExceptionMappingPlanRegistry::class)
+    $services // fixme: use normal registry
+        ->set('phd_exceptional_matcher.linter.plan_registry', CompilingObjectExceptionMappingPlanRegistry::class)
         ->args([
             inline_service(ObjectExceptionMappingPlanCompiler::class)
                 ->args([
@@ -50,12 +57,5 @@ return static function (ContainerConfigurator $configurator): void {
         ])
     ;
 
-    $services
-        ->set(MappingLinter::class, MappingLinter::class)
-        ->public()
-        ->args([
-            service('phd_exceptional_matcher.linter.plan_registry'),
-            service(MappingDefectCollector::class),
-        ])
-    ;
+    $services->set(MappingDefectCollector::class, MappingDefectCollector::class);
 };

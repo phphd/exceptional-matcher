@@ -6,6 +6,9 @@ namespace PhPhD\ExceptionalMatcher\Integration\Linter\Defect;
 
 use Throwable;
 
+use function rtrim;
+use function sprintf;
+
 /** @internal */
 final class MappingDefect
 {
@@ -20,6 +23,7 @@ final class MappingDefect
     public static function error(DefectLocation $location, Throwable $cause): self
     {
         $message = $cause->getMessage();
+
         for ($previous = $cause->getPrevious(); null !== $previous; $previous = $previous->getPrevious()) {
             $message = sprintf("%s:\n%s", rtrim($message, '.'), $previous->getMessage());
         }

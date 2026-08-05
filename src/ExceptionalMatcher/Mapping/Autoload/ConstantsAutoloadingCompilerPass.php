@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Autoload;
 
 use PhPhD\ExceptionalMatcher\Exception\Formatter\_Autoload\ExceptionFormatterConstantsAutoloadingClassDiscovery;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\_Autoload\MatchConditionConstantsAutoloadingClassDiscovery;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,7 +19,7 @@ final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
 {
     public const PRIORITY = 20;
 
-    /** @internal the closure every {@see ObjectExceptionMappingPlanRegistry} invokes before its first compilation */
+    /** @internal the closure every {@see CompilingObjectExceptionMappingPlanRegistry} invokes before its first compilation */
     public const AUTOLOADER_ID = 'phd_exceptional_matcher.constants_autoloader';
 
     /** @var list<ConstantsAutoloadingClassDiscovery> */

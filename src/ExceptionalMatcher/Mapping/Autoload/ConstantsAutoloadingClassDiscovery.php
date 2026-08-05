@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhPhD\ExceptionalMatcher\Mapping\Autoload;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;

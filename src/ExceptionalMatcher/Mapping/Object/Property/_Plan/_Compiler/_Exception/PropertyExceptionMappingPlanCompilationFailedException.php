@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\_Exception;
 
-use ReflectionProperty;
 use RuntimeException;
 use Throwable;
+
+use function sprintf;
 
 final class PropertyExceptionMappingPlanCompilationFailedException extends RuntimeException
 {

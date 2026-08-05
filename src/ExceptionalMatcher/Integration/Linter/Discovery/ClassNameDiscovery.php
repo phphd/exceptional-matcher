@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Integration\Linter\Discovery;
 
 use Composer\ClassMapGenerator\ClassMapGenerator;
-use Generator;
 use RuntimeException;
 use Throwable;
 
+use UnitEnum;
+
+use function array_filter;
 use function array_keys;
 use function class_exists;
-use function enum_exists;
+use function is_subclass_of;
 
 /** @internal */
 final class ClassNameDiscovery
@@ -46,7 +48,7 @@ final class ClassNameDiscovery
     {
         try {
             return class_exists($className)
-                && !is_subclass_of($className, \UnitEnum::class);
+                && !is_subclass_of($className, UnitEnum::class);
         } catch (Throwable) {
             return false;
         }

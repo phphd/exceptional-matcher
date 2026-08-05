@@ -8,6 +8,8 @@ use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsAutoloadingClassDiscovery;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+use function array_keys;
+
 /** @internal */
 final class ExceptionFormatterConstantsAutoloadingClassDiscovery implements ConstantsAutoloadingClassDiscovery
 {

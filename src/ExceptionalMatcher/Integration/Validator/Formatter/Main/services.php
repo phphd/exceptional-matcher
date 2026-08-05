@@ -8,9 +8,7 @@ use Closure;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\ExceptionViolationFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\DependencyInjection\Reference;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -26,7 +24,8 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
     $services
         ->set(ExceptionViolationFormatter::class.'<Throwable>', MainExceptionViolationFormatter::class)
         ->args([
-            service('phd_exceptional_matcher.translator')->ignoreOnInvalid(),
+            service('phd_exceptional_matcher.translator')
+                ->ignoreOnInvalid(),
         ])
         ->tag(MatchedExceptionFormatter::class, ['id' => MainExceptionViolationFormatter::class])
     ;

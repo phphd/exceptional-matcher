@@ -6,6 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Tests;
 
 use ArrayObject;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\MemoizingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\CatchExceptionMappingPlanCompiler;
@@ -19,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry
  */
 final class ClassMatchingPlanRegistryUnitTest extends TestCase
 {
@@ -63,9 +65,9 @@ final class ClassMatchingPlanRegistryUnitTest extends TestCase
             new ExceptionClassMatchConditionCompiler(),
         ]);
 
-        return new ObjectExceptionMappingPlanRegistry(
+        return new MemoizingObjectExceptionMappingPlanRegistry(new CompilingObjectExceptionMappingPlanRegistry(
             new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler, new InMemoryFormatterRegistry()))),
             null !== $autoloadClassNames ? $autoloadClassNames(...) : null,
-        );
+        ));
     }
 }

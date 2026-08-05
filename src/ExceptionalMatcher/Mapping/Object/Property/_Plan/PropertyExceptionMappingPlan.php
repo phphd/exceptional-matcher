@@ -15,8 +15,8 @@ use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRuleAggregateAdapter;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Matcher\CatchAttributesExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Matcher\IterablePropertyExceptionMatcher;
 use ReflectionProperty;
-use Throwable;
 
+use function is_iterable;
 use function is_object;
 
 /** @internal */
@@ -40,6 +40,7 @@ final class PropertyExceptionMappingPlan
         if (null !== $catchRules = $this->catchAttributesMatcher($propertyRuleSet)) {
             $rules->append(new ExceptionMatchingRuleAggregateAdapter($catchRules));
         }
+
         if (null !== $nestedObjectRule = $this->nestedObjectMatcher($propertyRuleSet)) {
             $rules->append($nestedObjectRule);
         } elseif (null !== $nestedIterableRule = $this->nestedObjectsOfIterableMatcher($propertyRuleSet)) {
@@ -47,6 +48,36 @@ final class PropertyExceptionMappingPlan
         }
 
         return $propertyRuleSet;
+    }
+
+    public function getName(): string
+    {
+        return $this->property->getName();
+    }
+
+    public function getProperty(): ReflectionProperty
+    {
+        return $this->property;
+    }
+
+    /**
+     * @api the seam for the mapping linter: forcing this iterable compiles every `#[Catch_]` of the property
+     *
+     * @return iterable<CatchExceptionMappingPlan>
+     */
+    public function getCatchPlans(): iterable
+    {
+        return $this->catchPlans;
+    }
+
+    /** @noinspection PhpLoopNeverIteratesInspection */
+    public function hasCatchPlans(): bool
+    {
+        foreach ($this->catchPlans as $catchPlan) {
+            return true;
+        }
+
+        return false;
     }
 
     private function getPropertyValue(object $object): mixed
@@ -94,35 +125,5 @@ final class PropertyExceptionMappingPlan
         }
 
         return new IterablePropertyExceptionMatcher($propertyRuleSet, $this->planRegistry);
-    }
-
-    public function getName(): string
-    {
-        return $this->property->getName();
-    }
-
-    public function getProperty(): ReflectionProperty
-    {
-        return $this->property;
-    }
-
-    /**
-     * @api the seam for the mapping linter: forcing this iterable compiles every `#[Catch_]` of the property
-     *
-     * @return iterable<CatchExceptionMappingPlan>
-     */
-    public function getCatchPlans(): iterable
-    {
-        return $this->catchPlans;
-    }
-
-    /** @noinspection PhpLoopNeverIteratesInspection */
-    public function hasCatchPlans(): bool
-    {
-        foreach ($this->catchPlans as $catchPlan) {
-            return true;
-        }
-
-        return false;
     }
 }

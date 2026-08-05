@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composit
 
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionPlan;
 use Throwable;
 
 use function iterator_to_array;

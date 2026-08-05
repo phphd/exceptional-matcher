@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
 use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure\Tests\Stub\ConditionallyCaughtException;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure\Tests\Stub\ConditionalMessage;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure\Tests\Stub\ConditionalMessageHolder;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 /**
  * @covers \PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure\ClosureMatchCondition
@@ -35,8 +34,6 @@ final class ClosureMatchConditionUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->addCompilerPass(new TestServicesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, TestServicesCompilerPass::PRIORITY);
-
         $container->compile();
 
         /** @var ExceptionMatcher<MatchedExceptionList> $matcher */
@@ -46,7 +43,7 @@ final class ClosureMatchConditionUnitTest extends TestCase
 
     public function testDoesntCaptureConditionalExceptionWhenConditionIsNotMet(): void
     {
-        $message = HandleableMessageStub::create()->withConditionalMessage(11, 41);
+        $message = new ConditionalMessageHolder(ConditionalMessage::createWithConditionalProperties(11, 41));
         $originalException = new ConditionallyCaughtException(12);
 
         $violationList = $this->matcher->match($originalException, $message);
@@ -56,7 +53,7 @@ final class ClosureMatchConditionUnitTest extends TestCase
 
     public function testCaptureConditionalException(): void
     {
-        $message = HandleableMessageStub::create()->withConditionalMessage(11, 41);
+        $message = new ConditionalMessageHolder(ConditionalMessage::createWithConditionalProperties(11, 41));
         $originalException = new ConditionallyCaughtException(41);
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
@@ -66,7 +63,7 @@ final class ClosureMatchConditionUnitTest extends TestCase
 
         [$matchedException] = $matchedExceptionList->toArray();
 
-        self::assertSame('nestedObject.conditionalMessage.secondProperty', $matchedException->getRule()->getPropertyPath()->join('.'));
+        self::assertSame('conditionalMessage.secondProperty', $matchedException->getRule()->getPropertyPath()->join('.'));
         self::assertSame(41, $matchedException->getRule()->getValue());
     }
 }

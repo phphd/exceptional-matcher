@@ -34,7 +34,8 @@ final class PropertyExceptionMappingPlanCompiler
             return $this->compile($reflectionProperty, $planRegistry);
         } catch (Throwable $exception) {
             $e = new PropertyExceptionMappingPlanCompilationFailedException(
-                $reflectionProperty->getDeclaringClass()->getName(),
+                $reflectionProperty->getDeclaringClass()
+                    ->getName(),
                 $reflectionProperty->getName(),
                 $exception,
             );

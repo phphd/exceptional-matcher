@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\Tests\Stub\MessageWithEmbeddedViolations;
+use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\Tests\Stub\NestedMessageWithEmbeddedViolations;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\Tests\Stub\ViolationsEmbeddedExampleException;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedHandleableMessage;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -30,7 +28,7 @@ use function strtr;
  *
  * @internal
  */
-final class EmbeddedViolationListFormatterUnitTest extends TestCase
+final class ViolationsEmbeddedExceptionFormatterUnitTest extends TestCase
 {
     /** @var ExceptionMatcher<ConstraintViolationListInterface> */
     private ExceptionMatcher $matcher;
@@ -43,8 +41,6 @@ final class EmbeddedViolationListFormatterUnitTest extends TestCase
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);
-
-        $container->addCompilerPass(new TestServicesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, TestServicesCompilerPass::PRIORITY);
 
         $translator = $this->createMock(TranslatorInterface::class);
         $translator->method('trans')
@@ -66,7 +62,7 @@ final class EmbeddedViolationListFormatterUnitTest extends TestCase
 
     public function testViolationsEmbeddedExceptionProvidesViolationsList(): void
     {
-        $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());
+        $message = MessageWithEmbeddedViolations::create()->withNestedObject(new NestedMessageWithEmbeddedViolations());
 
         $violationList = Validation::createValidator()->validate('123', [$constraint = new Length(max: 2)]);
         $originalException = new ViolationsEmbeddedExampleException($violationList);
@@ -104,7 +100,7 @@ final class EmbeddedViolationListFormatterUnitTest extends TestCase
      */
     public function testValidationFailedExceptionMessageIsRetranslated(): void
     {
-        $message = HandleableMessageStub::create();
+        $message = MessageWithEmbeddedViolations::create();
 
         try {
             Validation::createCallable(new Length(max: 3))('matched!');
@@ -125,7 +121,7 @@ final class EmbeddedViolationListFormatterUnitTest extends TestCase
 
     public function testManuallyThrownValidationFailedExceptionIsNotRetranslated(): void
     {
-        $message = HandleableMessageStub::create();
+        $message = MessageWithEmbeddedViolations::create();
 
         $violations = Validation::createValidator()->validate('matched!', [new Length(max: 3)]);
         // Not thrown from Validation::createCallable(), so it's not re-translated
@@ -141,7 +137,7 @@ final class EmbeddedViolationListFormatterUnitTest extends TestCase
         self::assertSame('matchedProperty', $violation->getPropertyPath());
     }
 
-    private function matchOne(Throwable $originalException, HandleableMessageStub $message): ConstraintViolation
+    private function matchOne(Throwable $originalException, MessageWithEmbeddedViolations $message): ConstraintViolation
     {
         $violationList = $this->matcher->match($originalException, $message);
 
