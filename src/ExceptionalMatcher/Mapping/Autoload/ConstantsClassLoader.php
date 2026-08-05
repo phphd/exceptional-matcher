@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Autoload;
 
+use Closure;
+
 use function array_map;
 use function glob;
 use function implode;
@@ -14,10 +16,19 @@ use function str_repeat;
 /** @api */
 final class ConstantsClassLoader
 {
-    /** @param list<class-string> $classNames */
-    public static function loadClassNames(array $classNames): void
+    public function __construct(
+        /** @var list<class-string> */
+        private array $classNames,
+    ) {
+    }
+
+    public function __invoke(): void
     {
-        array_map(class_exists(...), $classNames);
+        array_map(
+            class_exists(...),
+            $this->classNames,
+        );
+        $this->classNames = [];
     }
 
     /** @codeCoverageIgnore */

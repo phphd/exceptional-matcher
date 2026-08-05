@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object;
 
 use PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsAutoloadingCompilerPass;
+use PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsClassLoader;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\MemoizingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -18,9 +20,14 @@ return static function (ContainerConfigurator $configurator): void {
 
     $services
         ->set(ObjectExceptionMappingPlanRegistry::class, CompilingObjectExceptionMappingPlanRegistry::class)
+        ->args([service(ObjectExceptionMappingPlanCompiler::class)])
+        ->configurator(service(ConstantsClassLoader::class));
+
+    $services
+        ->set(MemoizingObjectExceptionMappingPlanRegistry::class, MemoizingObjectExceptionMappingPlanRegistry::class)
+        ->decorate(ObjectExceptionMappingPlanRegistry::class)
         ->args([
-            service(ObjectExceptionMappingPlanCompiler::class),
-            service_closure(ConstantsAutoloadingCompilerPass::AUTOLOADER_ID),
+            service('.inner'),
         ])
     ;
 };

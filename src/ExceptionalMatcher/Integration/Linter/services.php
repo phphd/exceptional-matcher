@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Integration\Linter;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\MappingDefectCollector;
 use PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsAutoloadingCompilerPass;
+use PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsClassLoader;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
@@ -53,8 +54,7 @@ return static function (ContainerConfigurator $configurator): void {
                     false, // $throwOnFailure
                     service(MappingDefectCollector::class),
                 ]),
-            service_closure(ConstantsAutoloadingCompilerPass::AUTOLOADER_ID),
-        ])
+        ])->configurator(service(ConstantsClassLoader::class))
     ;
 
     $services->set(MappingDefectCollector::class, MappingDefectCollector::class);

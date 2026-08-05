@@ -6,9 +6,13 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Autoload;
 
 use PhPhD\ExceptionalMatcher\Exception\Formatter\_Autoload\ExceptionFormatterConstantsAutoloadingClassDiscovery;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\_Autoload\MatchConditionConstantsAutoloadingClassDiscovery;
+use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+
+use Symfony\Component\DependencyInjection\Definition;
 
 use function array_keys;
 use function array_map;
@@ -19,7 +23,6 @@ final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
 {
     public const PRIORITY = 20;
 
-    /** @internal the closure every {@see CompilingObjectExceptionMappingPlanRegistry} invokes before its first compilation */
     public const AUTOLOADER_ID = 'phd_exceptional_matcher.constants_autoloader';
 
     /** @var list<ConstantsAutoloadingClassDiscovery> */
@@ -36,7 +39,7 @@ final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         $container
-            ->getDefinition(self::AUTOLOADER_ID)
+            ->getDefinition(ConstantsClassLoader::class)
             ->replaceArgument(0, $this->discoverLoadendClassNames($container))
         ;
     }
