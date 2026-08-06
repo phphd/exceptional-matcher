@@ -23,9 +23,9 @@ use function sprintf;
  * Checks the `#[Try_]` / `#[Catch_]` mappings of the given classes for every statically detectable error.
  *
  * The reference checks are not re-implemented here: forcing the plan of a class runs the very same
- * compilation the matcher runs in production, only with `throwOnFailure` off, so the compilers report every
- * mapping they had to drop instead of aborting at the first one. Those reports are the defect collector's
- * records. The linter only adds the structural observations that the runtime deliberately ignores.
+ * compilation the matcher runs in production, only reporting to the defect collector, so the compilers
+ * record every mapping they had to drop instead of aborting at the first one. Those records are the
+ * defects. The linter only adds the structural observations that the runtime deliberately ignores.
  *
  * @api
  */
@@ -43,7 +43,7 @@ final class MappingLinter
      *
      * @return list<MappingDefect>
      */
-    public function lint(iterable $classNames): array
+    public function lint(iterable $classNames): array // fixme: generic lint interface
     {
         $defects = [];
 

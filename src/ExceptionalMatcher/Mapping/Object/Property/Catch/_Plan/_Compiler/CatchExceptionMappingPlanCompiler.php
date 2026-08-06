@@ -39,23 +39,13 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
         /** @var MatchConditionCompiler<Throwable> */
         private readonly MatchConditionCompiler $matchConditionCompiler,
         private readonly ContainerInterface $formatterRegistry,
-        private readonly bool $throwOnFailure = true,
-        private readonly ?LoggerInterface $logger = null,
+        private readonly ?LoggerInterface $errorReporter = null,
     ) {
-        Assert::true(
-            $this->throwOnFailure || null !== $this->logger,
-            'A compiler which does not throw must report its failures somewhere.',
-        );
     }
 
     public function reportingTo(LoggerInterface $reporter): self
     {
-        return new self(
-            $this->matchConditionCompiler,
-            $this->formatterRegistry,
-            throwOnFailure: false,
-            logger: $reporter,
-        );
+        return new self($this->matchConditionCompiler, $this->formatterRegistry, $reporter);
     }
 
     /** @param ReflectionAttribute<Catch_<Throwable,Throwable>> $reflector */
@@ -73,9 +63,9 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
                 $exception,
             );
 
-            if (!$this->throwOnFailure) {
+            if (null !== $this->errorReporter) {
                 // One broken #[Catch_] won't spoil the whole match tree.
-                $this->logger?->error($e->getMessage(), ['exception' => $e]);
+                $this->errorReporter->error($e->getMessage(), ['exception' => $e]);
 
                 return null;
             }

@@ -16,7 +16,6 @@ use ReflectionClass;
 use ReflectionProperty;
 use Reflector;
 use Throwable;
-use Webmozart\Assert\Assert;
 
 /**
  * @internal
@@ -28,22 +27,13 @@ final class ObjectExceptionMappingPlanCompiler implements ExceptionMappingPlanCo
     public function __construct(
         /** @var ExceptionMappingPlanCompiler<ReflectionProperty,PropertyExceptionMappingPlan> */
         private readonly ExceptionMappingPlanCompiler $propertyMappingPlanCompiler,
-        private readonly bool $throwOnFailure = true,
-        private readonly ?LoggerInterface $logger = null,
+        private readonly ?LoggerInterface $errorReporter = null,
     ) {
-        Assert::true(
-            $this->throwOnFailure || null !== $this->logger,
-            'A compiler which does not throw must report its failures somewhere.',
-        );
     }
 
     public function reportingTo(LoggerInterface $reporter): self
     {
-        return new self(
-            $this->propertyMappingPlanCompiler->reportingTo($reporter),
-            throwOnFailure: false,
-            logger: $reporter,
-        );
+        return new self($this->propertyMappingPlanCompiler->reportingTo($reporter), $reporter);
     }
 
     /** @param ReflectionClass<object> $reflector */
@@ -54,9 +44,9 @@ final class ObjectExceptionMappingPlanCompiler implements ExceptionMappingPlanCo
         } catch (Throwable $exception) {
             $e = new ObjectExceptionMappingPlanCompilationFailedException($reflector->getName(), $exception);
 
-            if (!$this->throwOnFailure) {
+            if (null !== $this->errorReporter) {
                 // One broken class mapping won't spoil the whole situation.
-                $this->logger?->error($e->getMessage(), ['exception' => $e]);
+                $this->errorReporter->error($e->getMessage(), ['exception' => $e]);
 
                 return null;
             }
