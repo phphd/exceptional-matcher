@@ -16,6 +16,7 @@ use ReflectionClass;
 use ReflectionProperty;
 use Reflector;
 use Throwable;
+use Webmozart\Assert\Assert;
 
 /**
  * @internal
@@ -30,6 +31,19 @@ final class ObjectExceptionMappingPlanCompiler implements ExceptionMappingPlanCo
         private readonly bool $throwOnFailure = true,
         private readonly ?LoggerInterface $logger = null,
     ) {
+        Assert::true(
+            $this->throwOnFailure || null !== $this->logger,
+            'A compiler which does not throw must report its failures somewhere.',
+        );
+    }
+
+    public function reportingTo(LoggerInterface $reporter): self
+    {
+        return new self(
+            $this->propertyMappingPlanCompiler->reportingTo($reporter),
+            throwOnFailure: false,
+            logger: $reporter,
+        );
     }
 
     /** @param ReflectionClass<object> $reflector */

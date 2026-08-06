@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\_Plan\_Compiler;
 
+use Psr\Log\LoggerInterface;
 use Reflector;
 
 /**
@@ -17,6 +18,9 @@ use Reflector;
  */
 interface ExceptionMappingPlanCompiler
 {
+    /** @return static */
+    public function reportingTo(LoggerInterface $reporter): self;
+
     /**
      * @param TReflector $reflector
      *

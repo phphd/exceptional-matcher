@@ -41,6 +41,20 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
         private readonly bool $throwOnFailure = true,
         private readonly ?LoggerInterface $logger = null,
     ) {
+        Assert::true(
+            $this->throwOnFailure || null !== $this->logger,
+            'A compiler which does not throw must report its failures somewhere.',
+        );
+    }
+
+    public function reportingTo(LoggerInterface $reporter): self
+    {
+        return new self(
+            $this->matchConditionCompiler,
+            $this->formatterRegistry,
+            throwOnFailure: false,
+            logger: $reporter,
+        );
     }
 
     /** @param ReflectionAttribute<Catch_<Throwable,Throwable>> $reflector */
