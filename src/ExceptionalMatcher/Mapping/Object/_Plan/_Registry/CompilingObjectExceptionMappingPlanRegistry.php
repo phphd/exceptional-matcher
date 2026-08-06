@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry;
 
-use Closure;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use ReflectionClass;
 
 final class CompilingObjectExceptionMappingPlanRegistry implements ObjectExceptionMappingPlanRegistry
 {
     public function __construct(
-        private readonly ObjectExceptionMappingPlanCompiler $planCompiler,
+        /** @var ExceptionMappingPlanCompiler<ReflectionClass<object>,ObjectExceptionMappingPlan<object>> */
+        private readonly ExceptionMappingPlanCompiler $planCompiler,
     ) {
     }
 
@@ -23,6 +23,6 @@ final class CompilingObjectExceptionMappingPlanRegistry implements ObjectExcepti
 
     public function getPlan(string $className): ?ObjectExceptionMappingPlan
     {
-        return $this->planCompiler->compilePlan(new ReflectionClass($className), $this);
+        return $this->planCompiler->compilePlan(new ReflectionClass($className));
     }
 }

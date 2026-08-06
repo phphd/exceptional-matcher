@@ -108,7 +108,12 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
         $this->failOnUnresolvedBackwardCompatibilityBreaks($container);
     }
 
-    public function lazyProxy(string $interface): bool|string
+    /**
+     * @param bool $required whether the service cannot be built eagerly at all, as opposed to being lazy for
+     *                       the sake of the boot time only - a required proxy is generated even where
+     *                       generated proxies are opted out of
+     */
+    public function lazyProxy(string $interface, bool $required = false): bool|string
     {
         if ($this->nativeProxiesSupported) {
             // this will make sure that sf uses native proxy if available
@@ -116,7 +121,7 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
             return true;
         }
 
-        if (!$this->allowGeneratedProxies) {
+        if (!$this->allowGeneratedProxies && !$required) {
             return false;
         }
 

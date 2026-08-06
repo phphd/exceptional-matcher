@@ -4,70 +4,58 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Tests;
 
-use ArrayObject;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\MemoizingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\CatchExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\InMemoryFormatterRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\TypedPropertiesMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\UnmarkedMessage;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Compiler\DecoratorServicePass;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 /**
  * @internal
  *
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\MemoizingObjectExceptionMappingPlanRegistry
  */
 final class ClassMatchingPlanRegistryUnitTest extends TestCase
 {
+    private ObjectExceptionMappingPlanRegistry $registry;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $container = (new PhdExceptionalMatcherExtension(true))->getContainer([
+            'kernel.environment' => 'test',
+            'kernel.build_dir' => __DIR__.'/var',
+        ]);
+
+        $container->addCompilerPass(new TestServicesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, TestServicesCompilerPass::PRIORITY);
+        $container->addCompilerPass(new DecoratorServicePass(), PassConfig::TYPE_OPTIMIZE);
+
+        $container->compile();
+
+        /** @var ObjectExceptionMappingPlanRegistry $registry */
+        $registry = $container->get(ObjectExceptionMappingPlanRegistry::class);
+        $this->registry = $registry;
+    }
+
     public function testReturnsNullForClassWithoutTryAttribute(): void
     {
-        $registry = $this->createRegistry();
-
-        self::assertNull($registry->getPlan(UnmarkedMessage::class));
-        self::assertNull($registry->getPlan(UnmarkedMessage::class));
+        self::assertNull($this->registry->getPlan(UnmarkedMessage::class));
+        self::assertNull($this->registry->getPlan(UnmarkedMessage::class));
     }
 
     public function testMemoizesPlanPerClass(): void
     {
-        $registry = $this->createRegistry();
+        self::assertInstanceOf(MemoizingObjectExceptionMappingPlanRegistry::class, $this->registry);
 
-        $plan = $registry->getPlan(TypedPropertiesMessage::class);
+        $plan = $this->registry->getPlan(TypedPropertiesMessage::class);
 
         self::assertNotNull($plan);
-        self::assertSame($plan, $registry->getPlan(TypedPropertiesMessage::class));
-    }
-
-    public function testAutoloadsClassNamesOnceBeforeFirstPlan(): void
-    {
-        $autoloadCalls = new ArrayObject();
-
-        $registry = $this->createRegistry(static function () use ($autoloadCalls): void {
-            $autoloadCalls->append(true);
-        });
-
-        self::assertCount(0, $autoloadCalls);
-
-        $registry->getPlan(UnmarkedMessage::class);
-        $registry->getPlan(TypedPropertiesMessage::class);
-
-        self::assertCount(1, $autoloadCalls);
-    }
-
-    private function createRegistry(?callable $autoloadClassNames = null): ObjectExceptionMappingPlanRegistry
-    {
-        $compiler = new CompositeMatchConditionCompiler([
-            new ExceptionClassMatchConditionCompiler(),
-        ]);
-
-        return new MemoizingObjectExceptionMappingPlanRegistry(new CompilingObjectExceptionMappingPlanRegistry(
-            new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler, new InMemoryFormatterRegistry()))),
-            null !== $autoloadClassNames ? $autoloadClassNames(...) : null,
-        ));
+        self::assertSame($plan, $this->registry->getPlan(TypedPropertiesMessage::class));
     }
 }

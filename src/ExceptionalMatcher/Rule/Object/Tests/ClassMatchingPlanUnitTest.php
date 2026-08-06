@@ -4,22 +4,19 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Tests;
 
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
 use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\CatchExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\InMemoryFormatterRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\BindableMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\NestedStubException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\PlannedItem;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\PlanStubException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\TypedPropertiesMessage;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Webmozart\Assert\Assert;
 
 use function array_map;
@@ -34,17 +31,24 @@ use function array_map;
  */
 final class ClassMatchingPlanUnitTest extends TestCase
 {
-    private CompilingObjectExceptionMappingPlanRegistry $registry;
+    private ObjectExceptionMappingPlanRegistry $registry;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $compiler = new CompositeMatchConditionCompiler([
-            new ExceptionClassMatchConditionCompiler(),
+        $container = (new PhdExceptionalMatcherExtension(true))->getContainer([
+            'kernel.environment' => 'test',
+            'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $this->registry = new CompilingObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler, new InMemoryFormatterRegistry()))), null);
+        $container->addCompilerPass(new TestServicesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, TestServicesCompilerPass::PRIORITY);
+
+        $container->compile();
+
+        /** @var ObjectExceptionMappingPlanRegistry $registry */
+        $registry = $container->get(ObjectExceptionMappingPlanRegistry::class);
+        $this->registry = $registry;
     }
 
     public function testDiscardsPropertiesThatCanNeverMatch(): void

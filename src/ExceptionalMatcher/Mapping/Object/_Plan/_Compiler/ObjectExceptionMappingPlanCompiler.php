@@ -5,33 +5,39 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler;
 
 use Generator;
+use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\_Exception\ObjectExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\ReusableIteratorAggregate;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
+use ReflectionProperty;
 use Throwable;
 
-/** @internal */
-final class ObjectExceptionMappingPlanCompiler
+/**
+ * @internal
+ *
+ * @implements ExceptionMappingPlanCompiler<ReflectionClass<object>,ObjectExceptionMappingPlan<object>>
+ */
+final class ObjectExceptionMappingPlanCompiler implements ExceptionMappingPlanCompiler
 {
     public function __construct(
-        private readonly PropertyExceptionMappingPlanCompiler $propertyMappingPlanCompiler,
+        /** @var ExceptionMappingPlanCompiler<ReflectionProperty,PropertyExceptionMappingPlan> */
+        private readonly ExceptionMappingPlanCompiler $propertyMappingPlanCompiler,
         private readonly bool $throwOnFailure = true,
         private readonly ?LoggerInterface $logger = null,
     ) {
     }
 
-    public function compilePlan(ReflectionClass $reflectionClass, ObjectExceptionMappingPlanRegistry $planRegistry): ?ObjectExceptionMappingPlan
+    /** @param ReflectionClass<object> $mappingSource */
+    public function compilePlan(object $mappingSource): ?ObjectExceptionMappingPlan
     {
         try {
-            return $this->compile($reflectionClass, $planRegistry);
+            return $this->compile($mappingSource);
         } catch (Throwable $exception) {
-            $e = new ObjectExceptionMappingPlanCompilationFailedException($reflectionClass->getName(), $exception);
+            $e = new ObjectExceptionMappingPlanCompilationFailedException($mappingSource->getName(), $exception);
 
             if (!$this->throwOnFailure) {
                 // One broken class mapping won't spoil the whole situation.
@@ -44,7 +50,7 @@ final class ObjectExceptionMappingPlanCompiler
         }
     }
 
-    private function compile(ReflectionClass $reflectionClass, ObjectExceptionMappingPlanRegistry $planRegistry): ?ObjectExceptionMappingPlan
+    private function compile(ReflectionClass $reflectionClass): ?ObjectExceptionMappingPlan
     {
         if ([] === $reflectionClass->getAttributes(Try_::class)) {
             return null;
@@ -52,7 +58,7 @@ final class ObjectExceptionMappingPlanCompiler
 
         $mappingPlan = new ObjectExceptionMappingPlan(
             $reflectionClass->getName(),
-            new ReusableIteratorAggregate($this->compilePropertyPlans($reflectionClass, $planRegistry)),
+            new ReusableIteratorAggregate($this->compilePropertyPlans($reflectionClass)),
         );
 
         if (!$mappingPlan->hasPropertyPlans()) {
@@ -63,10 +69,10 @@ final class ObjectExceptionMappingPlanCompiler
     }
 
     /** @return Generator<int,PropertyExceptionMappingPlan> */
-    private function compilePropertyPlans(ReflectionClass $reflectionClass, ObjectExceptionMappingPlanRegistry $planRegistry): Generator
+    private function compilePropertyPlans(ReflectionClass $reflectionClass): Generator
     {
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            $propertyPlan = $this->propertyMappingPlanCompiler->compilePlan($reflectionProperty, $planRegistry);
+            $propertyPlan = $this->propertyMappingPlanCompiler->compilePlan($reflectionProperty);
 
             if (null === $propertyPlan) {
                 continue;

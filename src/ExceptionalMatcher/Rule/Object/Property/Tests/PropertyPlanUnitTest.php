@@ -4,23 +4,20 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests;
 
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\CatchExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Class\ExceptionClassMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\CompositeMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Delegating\DelegatingMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\EnumValueMatchCondition;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\EnumValueMatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\CountingMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\InMemoryCompilerRegistry;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\InMemoryFormatterRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\LazilyBrokenCatchMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\MultiCatchMessage;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Compiler\DecoratorServicePass;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+use Symfony\Component\DependencyInjection\Reference;
+use Throwable;
 use Webmozart\Assert\Assert;
 
 use function count;
@@ -33,14 +30,46 @@ use function count;
  */
 final class PropertyPlanUnitTest extends TestCase
 {
+    private ObjectExceptionMappingPlanRegistry $registry;
+
+    private CountingMatchConditionCompiler $conditionCompiler;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $container = (new PhdExceptionalMatcherExtension(true))->getContainer([
+            'kernel.environment' => 'test',
+            'kernel.build_dir' => __DIR__.'/var',
+        ]);
+
+        $container->addCompilerPass(new TestServicesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, TestServicesCompilerPass::PRIORITY);
+        $container->addCompilerPass(new DecoratorServicePass(), PassConfig::TYPE_OPTIMIZE);
+
+        // counting every condition it compiles is what makes the laziness of the plans observable
+        $container
+            ->register(CountingMatchConditionCompiler::class, CountingMatchConditionCompiler::class)
+            ->setArguments([new Reference('.inner')])
+            ->setDecoratedService(MatchConditionCompiler::class.'<'.Throwable::class.'>')
+            ->setPublic(true)
+        ;
+
+        $container->compile();
+
+        /** @var ObjectExceptionMappingPlanRegistry $registry */
+        $registry = $container->get(ObjectExceptionMappingPlanRegistry::class);
+        $this->registry = $registry;
+
+        /** @var CountingMatchConditionCompiler $conditionCompiler */
+        $conditionCompiler = $container->get(CountingMatchConditionCompiler::class);
+        $this->conditionCompiler = $conditionCompiler;
+    }
+
     public function testCompilesCatchPlansLazilyAndMemoizesThem(): void
     {
-        $compiler = new CountingMatchConditionCompiler(
-            new CompositeMatchConditionCompiler([new ExceptionClassMatchConditionCompiler()]),
-        );
-        $registry = new CompilingObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler, new InMemoryFormatterRegistry()))), null);
+        $compiler = $this->conditionCompiler;
 
-        $plan = $registry->getPlan(MultiCatchMessage::class);
+        $plan = $this->registry->getPlan(MultiCatchMessage::class);
 
         Assert::notNull($plan);
 
@@ -94,17 +123,7 @@ final class PropertyPlanUnitTest extends TestCase
 
     private function getLazilyBrokenCatchPlan(): ObjectExceptionMappingPlan
     {
-        /** @psalm-suppress InvalidArgument the compiler registry template is inferred from both key and value positions */
-        $compiler = new CompositeMatchConditionCompiler([
-            new ExceptionClassMatchConditionCompiler(),
-            new DelegatingMatchConditionCompiler(new InMemoryCompilerRegistry([
-                EnumValueMatchCondition::class => new EnumValueMatchConditionCompiler(),
-            ])),
-        ]);
-
-        $registry = new CompilingObjectExceptionMappingPlanRegistry(new ObjectExceptionMappingPlanCompiler(new PropertyExceptionMappingPlanCompiler(new CatchExceptionMappingPlanCompiler($compiler, new InMemoryFormatterRegistry()))), null);
-
-        $plan = $registry->getPlan(LazilyBrokenCatchMessage::class);
+        $plan = $this->registry->getPlan(LazilyBrokenCatchMessage::class);
 
         Assert::notNull($plan);
 

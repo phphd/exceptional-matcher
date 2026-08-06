@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Bundle\Tests;
 
 use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\ExceptionViolationFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\ResolveInstanceofConditionalsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -21,6 +22,15 @@ final class TestServicesCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         $this->registerCustomViolationFormatter($container);
+        $this->exposePlanRegistry($container);
+    }
+
+    /** The registry is what most of the mapping is asserted through, yet nothing public leads to it. */
+    private function exposePlanRegistry(ContainerBuilder $container): void
+    {
+        $container->getDefinition(ObjectExceptionMappingPlanRegistry::class)
+            ->setPublic(true)
+        ;
     }
 
     private function registerCustomViolationFormatter(ContainerBuilder $container): void

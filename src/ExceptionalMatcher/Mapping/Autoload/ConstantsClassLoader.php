@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Autoload;
 
-use Closure;
-
 use function array_map;
 use function glob;
 use function implode;

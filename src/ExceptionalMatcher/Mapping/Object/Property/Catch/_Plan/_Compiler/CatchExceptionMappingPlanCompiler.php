@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler;
 
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchAttributeInstantiationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\UnregisteredFormatterException;
@@ -18,8 +19,12 @@ use ReflectionAttribute;
 use Throwable;
 use Webmozart\Assert\Assert;
 
-/** @internal */
-final class CatchExceptionMappingPlanCompiler
+/**
+ * @internal
+ *
+ * @implements ExceptionMappingPlanCompiler<ReflectionAttribute<Catch_<Throwable,Throwable>>,CatchExceptionMappingPlan<Throwable>>
+ */
+final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCompiler
 {
     /**
      * @template T of MatchedExceptionFormatter
@@ -37,11 +42,10 @@ final class CatchExceptionMappingPlanCompiler
     ) {
     }
 
-    /** @param ReflectionAttribute<Catch_<Throwable,Throwable>> $catchAttribute */
-    public function compilePlan(ReflectionAttribute $catchAttribute): ?CatchExceptionMappingPlan
+    public function compilePlan(object $mappingSource): ?CatchExceptionMappingPlan
     {
         try {
-            $catch = $this->instantiateCatch($catchAttribute);
+            $catch = $this->instantiateCatch($mappingSource);
 
             return $this->compile($catch);
         } catch (Throwable $exception) {
