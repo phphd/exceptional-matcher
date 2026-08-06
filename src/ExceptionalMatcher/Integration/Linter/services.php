@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Integration\Linter;
 
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\MappingDefectCollector;
+use PhPhD\ExceptionalMatcher\Mapping\_Plan\_Compiler\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
+use ReflectionClass;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\inline_service;
@@ -24,7 +27,7 @@ return static function (ContainerConfigurator $configurator): void {
                 ->args([
                     // Lint-mode compiler - it collects and reports mapping problems
                     inline_service(ObjectExceptionMappingPlanCompiler::class)
-                        ->factory([service(ObjectExceptionMappingPlanCompiler::class), 'reportingTo'])
+                        ->factory([service(ExceptionMappingPlanCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>'), 'reportingTo'])
                         ->args([service(MappingDefectCollector::class)]),
                 ]),
             service(MappingDefectCollector::class),

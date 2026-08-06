@@ -7,9 +7,11 @@ namespace PhPhD\ExceptionalMatcher\Bundle\DependencyInjection;
 use Composer\InstalledVersions;
 use Exception;
 use LogicException;
+use PhPhD\ExceptionalMatcher\Mapping\_Plan\_Compiler\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsAutoloadingCompilerPass;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionToolkit\Bundle\DependencyInjection\PhdExceptionToolkitExtension;
+use ReflectionClass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\Compiler\ResolveChildDefinitionsPass;
@@ -165,7 +167,7 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
             return;
         }
 
-        $container->getDefinition(ObjectExceptionMappingPlanCompiler::class)
+        $container->getDefinition(ExceptionMappingPlanCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>')
             ->removeMethodCall('reportingTo')
         ;
     }
