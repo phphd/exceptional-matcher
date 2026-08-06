@@ -6,12 +6,20 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 
-/** @api */
+/**
+ * @api
+ *
+ * @template T of object
+ */
 interface ObjectExceptionMappingPlanRegistry
 {
-    /** @param class-string $className */
+    /** @param class-string<T> $className */
     public function hasPlan(string $className): bool;
 
-    /** @param class-string $className */
+    /**
+     * @param class-string<T> $className
+     *
+     * @return null|ObjectExceptionMappingPlan<T>
+     */
     public function getPlan(string $className): ?ObjectExceptionMappingPlan;
 }

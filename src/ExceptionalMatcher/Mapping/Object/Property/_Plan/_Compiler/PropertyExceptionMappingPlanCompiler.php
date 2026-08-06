@@ -28,6 +28,7 @@ final class PropertyExceptionMappingPlanCompiler implements ExceptionMappingPlan
     public function __construct(
         /** @var ExceptionMappingPlanCompiler<ReflectionAttribute<Catch_<Throwable,Throwable>>,CatchExceptionMappingPlan<Throwable>> */
         private readonly ExceptionMappingPlanCompiler $catchPlanCompiler,
+        /** @var ObjectExceptionMappingPlanRegistry<object> */
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
         private readonly bool $throwOnFailure = true,
         private readonly ?LoggerInterface $logger = null,

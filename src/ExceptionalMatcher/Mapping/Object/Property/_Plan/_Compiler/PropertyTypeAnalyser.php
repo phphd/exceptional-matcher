@@ -26,6 +26,7 @@ final class PropertyTypeAnalyser
     ) {
     }
 
+    /** @param ObjectExceptionMappingPlanRegistry<object> $planRegistry */
     public function allowsMatchableObjects(ObjectExceptionMappingPlanRegistry $planRegistry): bool
     {
         return $this->canNamedTypeValueMatch($planRegistry)
@@ -33,6 +34,7 @@ final class PropertyTypeAnalyser
             ?? true; // untyped property - the value may be anything
     }
 
+    /** @param ObjectExceptionMappingPlanRegistry<object> $planRegistry */
     private function canCompositeTypeMatch(ObjectExceptionMappingPlanRegistry $planRegistry): ?bool
     {
         if (!$this->type instanceof ReflectionUnionType && !$this->type instanceof ReflectionIntersectionType) {
@@ -48,6 +50,7 @@ final class PropertyTypeAnalyser
         return false;
     }
 
+    /** @param ObjectExceptionMappingPlanRegistry<object> $planRegistry */
     private function canNamedTypeValueMatch(ObjectExceptionMappingPlanRegistry $planRegistry): ?bool
     {
         if (!$this->type instanceof ReflectionNamedType) {

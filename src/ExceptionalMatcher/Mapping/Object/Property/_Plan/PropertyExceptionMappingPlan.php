@@ -26,6 +26,7 @@ final class PropertyExceptionMappingPlan
         private readonly ReflectionProperty $property,
         /** @var iterable<CatchExceptionMappingPlan> */
         private readonly iterable $catchPlans,
+        /** @var ObjectExceptionMappingPlanRegistry<object> */
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
     ) {
     }

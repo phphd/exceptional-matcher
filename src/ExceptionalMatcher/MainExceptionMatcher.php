@@ -19,6 +19,7 @@ final class MainExceptionMatcher implements ExceptionMatcher
 {
     /** @api */
     public function __construct(
+        /** @var ObjectExceptionMappingPlanRegistry<object> */
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
         private readonly ExceptionUnwrapper $exceptionUnwrapper,
     ) {

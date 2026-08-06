@@ -30,6 +30,7 @@ use function count;
  */
 final class PropertyPlanUnitTest extends TestCase
 {
+    /** @var ObjectExceptionMappingPlanRegistry<object> */
     private ObjectExceptionMappingPlanRegistry $registry;
 
     private CountingMatchConditionCompiler $conditionCompiler;
@@ -56,7 +57,7 @@ final class PropertyPlanUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ObjectExceptionMappingPlanRegistry $registry */
+        /** @var ObjectExceptionMappingPlanRegistry<object> $registry */
         $registry = $container->get(ObjectExceptionMappingPlanRegistry::class);
         $this->registry = $registry;
 

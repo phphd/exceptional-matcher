@@ -30,7 +30,7 @@ final class ObjectExceptionMappingPlanRegistryServiceTest extends BundleTestCase
     {
         $container = self::getContainer();
 
-        /** @var ObjectExceptionMappingPlanRegistry $planRegistry */
+        /** @var ObjectExceptionMappingPlanRegistry<object> $planRegistry */
         $planRegistry = $container->get(ObjectExceptionMappingPlanRegistry::class);
 
         $plan = $planRegistry->getPlan(HandleableMessageStub::class);

@@ -17,6 +17,7 @@ final class IterablePropertyExceptionMatcher implements ExceptionMatchingRuleAgg
 {
     public function __construct(
         private readonly PropertyExceptionMappingNode $propertyRuleSet,
+        /** @var ObjectExceptionMappingPlanRegistry<object> */
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
     ) {
     }

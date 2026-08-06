@@ -7,10 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\_Plan\_Compiler;
 use Reflector;
 
 /**
- * Compiles the mapping declared on a single reflection element into the plan that matches it.
- *
- * The mapping source is left untyped on purpose: each level of the mapping tree compiles its own kind of
- * reflection element, and only the interface makes them all proxyable behind one lazy service.
+ * Compiles the mapping declared on a single reflection element into an exception-matching plan.
  *
  * @internal
  *
@@ -21,7 +18,7 @@ use Reflector;
 interface ExceptionMappingPlanCompiler
 {
     /**
-     * @param Reflector $reflector
+     * @param TReflector $reflector
      *
      * @return null|TPlan the mapping declares nothing to match, if null
      */

@@ -31,6 +31,7 @@ use function array_map;
  */
 final class ClassMatchingPlanUnitTest extends TestCase
 {
+    /** @var ObjectExceptionMappingPlanRegistry<object> */
     private ObjectExceptionMappingPlanRegistry $registry;
 
     protected function setUp(): void
@@ -46,7 +47,7 @@ final class ClassMatchingPlanUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ObjectExceptionMappingPlanRegistry $registry */
+        /** @var ObjectExceptionMappingPlanRegistry<object> $registry */
         $registry = $container->get(ObjectExceptionMappingPlanRegistry::class);
         $this->registry = $registry;
     }

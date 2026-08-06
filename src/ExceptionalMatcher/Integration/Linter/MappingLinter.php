@@ -32,6 +32,7 @@ use function sprintf;
 final class MappingLinter
 {
     public function __construct(
+        /** @var ObjectExceptionMappingPlanRegistry<object> */
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
         private readonly MappingDefectCollector $defectCollector,
     ) {

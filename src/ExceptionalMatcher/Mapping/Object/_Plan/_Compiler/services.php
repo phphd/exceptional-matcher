@@ -9,6 +9,8 @@ use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExt
 use PhPhD\ExceptionalMatcher\Mapping\_Plan\_Compiler\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
+use ReflectionProperty;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -23,14 +25,12 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
     $services
         ->set(ObjectExceptionMappingPlanCompiler::class, ObjectExceptionMappingPlanCompiler::class)
         ->args([
-            service(PropertyExceptionMappingPlanCompiler::class),
+            service(ExceptionMappingPlanCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingPlan::class.'>'),
             true, // $throwOnFailure
             service('logger')
                 ->nullOnInvalid(),
         ])
         ->tag('monolog.logger', ['channel' => PhdExceptionalMatcherExtension::LOGGER_CHANNEL])
-        // the property compiler it is built with needs the registry this compiler serves: being lazy is what
-        // lets the registry be built first
-        ->lazy($lazy(ExceptionMappingPlanCompiler::class, true /* $required */))
+        ->lazy($lazy(ExceptionMappingPlanCompiler::class))
     ;
 };

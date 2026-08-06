@@ -21,6 +21,7 @@ use function class_exists;
  */
 final class ConstantsAutoloadingCompilerPassIntegrationTest extends BundleTestCase
 {
+    /** @var ObjectExceptionMappingPlanRegistry<object> */
     private ObjectExceptionMappingPlanRegistry $planRegistry;
 
     protected function setUp(): void
@@ -29,7 +30,7 @@ final class ConstantsAutoloadingCompilerPassIntegrationTest extends BundleTestCa
 
         $container = self::getContainer();
 
-        /** @var ObjectExceptionMappingPlanRegistry $planRegistry */
+        /** @var ObjectExceptionMappingPlanRegistry<object> $planRegistry */
         $planRegistry = $container->get(ObjectExceptionMappingPlanRegistry::class);
         $this->planRegistry = $planRegistry;
     }

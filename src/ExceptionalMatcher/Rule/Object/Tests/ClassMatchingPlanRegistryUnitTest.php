@@ -22,6 +22,7 @@ use Symfony\Component\DependencyInjection\Compiler\PassConfig;
  */
 final class ClassMatchingPlanRegistryUnitTest extends TestCase
 {
+    /** @var ObjectExceptionMappingPlanRegistry<object> */
     private ObjectExceptionMappingPlanRegistry $registry;
 
     protected function setUp(): void
@@ -38,7 +39,7 @@ final class ClassMatchingPlanRegistryUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ObjectExceptionMappingPlanRegistry $registry */
+        /** @var ObjectExceptionMappingPlanRegistry<object> $registry */
         $registry = $container->get(ObjectExceptionMappingPlanRegistry::class);
         $this->registry = $registry;
     }
