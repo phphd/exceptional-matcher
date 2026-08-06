@@ -6,6 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Integration\Linter\Defect;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\_Exception\ObjectExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\_Exception\PropertyExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use Psr\Log\AbstractLogger;
 use Throwable;
 
@@ -56,6 +58,13 @@ final class MappingDefectCollector extends AbstractLogger
 
     private static function defectLocationOf(Throwable $exception): ?DefectLocation
     {
+        if ($exception instanceof CatchExceptionMappingPlanCompilationFailedException) {
+            // #[Catch_] that was compiled apart from the property is reported on the attribute itself
+            $className = $exception->getClassName() ?? Catch_::class;
+
+            return new DefectLocation($className, $exception->getPropertyName());
+        }
+
         if ($exception instanceof PropertyExceptionMappingPlanCompilationFailedException) {
             return new DefectLocation($exception->getClassName(), $exception->getPropertyName());
         }

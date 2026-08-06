@@ -16,6 +16,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\Matc
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
+use ReflectionProperty;
 use Reflector;
 use Throwable;
 use Webmozart\Assert\Assert;
@@ -58,14 +59,19 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
     }
 
     /** @param ReflectionAttribute<Catch_<Throwable,Throwable>> $reflector */
-    public function compilePlan(Reflector $reflector): ?CatchExceptionMappingPlan
+    public function compilePlan(Reflector $reflector, ?ReflectionProperty $property = null): ?CatchExceptionMappingPlan
     {
         try {
             $catch = $this->instantiateCatch($reflector);
 
             return $this->compile($catch);
         } catch (Throwable $exception) {
-            $e = new CatchExceptionMappingPlanCompilationFailedException($exception);
+            $e = new CatchExceptionMappingPlanCompilationFailedException(
+                $property?->getDeclaringClass()
+                    ->getName(),
+                $property?->getName(),
+                $exception,
+            );
 
             if (!$this->throwOnFailure) {
                 // One broken #[Catch_] won't spoil the whole match tree.

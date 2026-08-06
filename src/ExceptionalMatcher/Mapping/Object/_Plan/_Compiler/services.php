@@ -21,7 +21,8 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
         ->set(ObjectExceptionMappingPlanCompiler::class, ObjectExceptionMappingPlanCompiler::class)
         ->args([
             service(ExceptionMappingPlanCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingPlan::class.'>'),
-        ]);
+        ])
+    ;
 
     if ($container->hasParameter('kernel.debug') && false === $container->getParameter('kernel.debug')) {
         $planCompiler

@@ -95,7 +95,7 @@ final class PropertyExceptionMappingPlanCompiler implements ExceptionMappingPlan
     private function compileCatchPlans(ReflectionProperty $property): Generator
     {
         foreach ($property->getAttributes(Catch_::class) as $catchAttribute) {
-            $catchPlan = $this->catchPlanCompiler->compilePlan($catchAttribute);
+            $catchPlan = $this->catchPlanCompiler->compilePlan($catchAttribute, $property);
 
             if (null === $catchPlan) {
                 continue;
