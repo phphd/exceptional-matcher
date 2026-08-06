@@ -8,12 +8,11 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappi
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\MemoizingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
+return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
 
     $services

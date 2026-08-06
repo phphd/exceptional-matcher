@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object;
 
 use Closure;
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Mapping\_Plan\_Compiler\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
@@ -30,11 +29,8 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
         )->args([
             service(CatchExceptionMappingPlanCompiler::class),
             service(ObjectExceptionMappingPlanRegistry::class),
-            true, // $throwOnFailure
-            service('logger')
-                ->nullOnInvalid(),
         ])
-        ->tag('monolog.logger', ['channel' => PhdExceptionalMatcherExtension::LOGGER_CHANNEL])
+        // Must be lazy, because it injects plan registry
         ->lazy($lazy(ExceptionMappingPlanCompiler::class))
     ;
 };

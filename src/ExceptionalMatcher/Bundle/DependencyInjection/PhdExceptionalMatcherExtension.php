@@ -8,6 +8,7 @@ use Composer\InstalledVersions;
 use Exception;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsAutoloadingCompilerPass;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionToolkit\Bundle\DependencyInjection\PhdExceptionToolkitExtension;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
@@ -46,6 +47,7 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
      * @param array<string,mixed> $parameters required by {@see \Symfony\Component\DependencyInjection\Extension\ExtensionTrait::executeConfiguratorCallback()}:
      *                                        - kernel.environment
      *                                        - kernel.build_dir
+     *                                        - kernel.debug: false makes broken mappings to be reported to the `logger` service instead of thrown
      */
     public function getContainer(array $parameters): ContainerBuilder
     {
@@ -108,6 +110,7 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
     public function process(ContainerBuilder $container): void
     {
         $this->wireTranslatorDependency($container);
+        $this->wireLoggerDependency($container);
         $this->failOnUnresolvedBackwardCompatibilityBreaks($container);
     }
 
@@ -152,6 +155,18 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
         $container->removeDefinition('phd_exceptional_matcher.translator');
         $container->getParameterBag()
             ->remove('phd_exceptional_matcher.translation_domain')
+        ;
+    }
+
+    /** With nowhere to report a broken mapping to, the compiler keeps throwing it, as it does by default. */
+    private function wireLoggerDependency(ContainerBuilder $container): void
+    {
+        if ($container->has('logger')) {
+            return;
+        }
+
+        $container->getDefinition(ObjectExceptionMappingPlanCompiler::class)
+            ->removeMethodCall('reportingTo')
         ;
     }
 

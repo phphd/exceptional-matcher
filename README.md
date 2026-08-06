@@ -457,7 +457,9 @@ use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 
 $container = (new PhdExceptionalMatcherExtension())->getContainer([
-    // These are not used but still required by Symfony DI
+    // In a non-debug mode broken mappings are logged instead of thrown
+    'kernel.debug' => false,
+    // These are not required by the library but are required by Symfony DI
     'kernel.environment' => 'prod',
     'kernel.build_dir' => __DIR__.'/var/cache',
 ]);

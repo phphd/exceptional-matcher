@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object;
 
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsClassLoader;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\CatchExceptionMappingPlanCompiler;
@@ -23,11 +22,8 @@ return static function (ContainerConfigurator $configurator): void {
         ->args([
             service(MatchConditionCompiler::class.'<'.Throwable::class.'>'),
             tagged_locator(MatchedExceptionFormatter::class, 'id'),
-            true, // $throwOnFailure
-            service('logger')
-                ->nullOnInvalid(),
         ])
-        ->tag('monolog.logger', ['channel' => PhdExceptionalMatcherExtension::LOGGER_CHANNEL])
+        // #[Catch_] compilation requires mapping constants to be loaded
         ->configurator(service(ConstantsClassLoader::class))
     ;
 };
