@@ -20,12 +20,12 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
     $services = $configurator->services();
 
-    /** @var Closure(class-string,bool=):((bool|class-string)) $lazy */
+    /** @var Closure(class-string):((bool|class-string)) $lazy */
     $lazy = $container->get('phd_exceptional_matcher.lazy_proxy');
 
     $services
         ->set(
-            ExceptionMappingPlanCompiler::class.'<'.\ReflectionProperty::class.','.PropertyExceptionMappingPlan::class.'>',
+            ExceptionMappingPlanCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingPlan::class.'>',
             PropertyExceptionMappingPlanCompiler::class,
         )->args([
             service(CatchExceptionMappingPlanCompiler::class),
@@ -35,7 +35,6 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
                 ->nullOnInvalid(),
         ])
         ->tag('monolog.logger', ['channel' => PhdExceptionalMatcherExtension::LOGGER_CHANNEL])
-        ->lazy($lazy(ExceptionMappingPlanCompiler::class, true))
+        ->lazy($lazy(ExceptionMappingPlanCompiler::class))
     ;
-
 };

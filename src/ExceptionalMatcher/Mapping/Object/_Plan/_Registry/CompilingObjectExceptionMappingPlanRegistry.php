@@ -37,9 +37,9 @@ final class CompilingObjectExceptionMappingPlanRegistry implements ObjectExcepti
     /**
      * @param class-string<T> $className
      *
-     * @throws ReflectionException
-     *
      * @return null|ObjectExceptionMappingPlan<T>
+     *
+     * @throws ReflectionException
      */
     public function getPlan(string $className): ?ObjectExceptionMappingPlan
     {

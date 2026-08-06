@@ -8,7 +8,6 @@ use Closure;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Mapping\_Plan\_Compiler\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
 use ReflectionProperty;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,7 +18,7 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
     $services = $configurator->services();
 
-    /** @var Closure(class-string,bool=):((bool|class-string)) $lazy */
+    /** @var Closure(class-string):((bool|class-string)) $lazy */
     $lazy = $container->get('phd_exceptional_matcher.lazy_proxy');
 
     $services

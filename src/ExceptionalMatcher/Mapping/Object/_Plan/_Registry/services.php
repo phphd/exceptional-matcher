@@ -25,5 +25,6 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
 
     $services
         ->set(ObjectExceptionMappingPlanRegistry::class, CompilingObjectExceptionMappingPlanRegistry::class)
-        ->args([service(ObjectExceptionMappingPlanCompiler::class)]);
+        ->args([service(ObjectExceptionMappingPlanCompiler::class)])
+    ;
 };

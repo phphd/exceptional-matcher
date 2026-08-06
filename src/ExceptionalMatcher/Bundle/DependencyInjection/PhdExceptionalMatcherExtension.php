@@ -36,6 +36,7 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
     private readonly bool $nativeProxiesSupported;
 
     public function __construct(
+        /** Pass true if proxies are dumped. */
         private readonly bool $allowGeneratedProxies = false,
     ) {
         $this->nativeProxiesSupported = self::nativeProxiesAreSupported();
@@ -86,12 +87,14 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
     public function loadExtension(array $config, ContainerConfigurator $configurator, ContainerBuilder $container): void
     {
         $container->set('phd_exceptional_matcher.lazy_proxy', $this->lazyProxy(...));
+        $container->set('phd_exceptional_matcher.hint_lazy', $this->hintLazy(...));
         $container->setParameter('phd_exceptional_matcher.validator_available', interface_exists(ValidatorInterface::class));
         $container->setParameter('phd_exceptional_matcher.messenger_available', interface_exists(MessengerMiddlewareInterface::class));
 
         $configurator->import(__DIR__.'/../../**/services.php');
 
         $container->set('phd_exceptional_matcher.lazy_proxy', null);
+        $container->set('phd_exceptional_matcher.hint_lazy', null);
         $container->setParameter('phd_exceptional_matcher.validator_available', null);
         $container->setParameter('phd_exceptional_matcher.messenger_available', null);
     }
@@ -108,24 +111,25 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
         $this->failOnUnresolvedBackwardCompatibilityBreaks($container);
     }
 
-    /**
-     * @param bool $required whether the service cannot be built eagerly at all, as opposed to being lazy for
-     *                       the sake of the boot time only - a required proxy is generated even where
-     *                       generated proxies are opted out of
-     */
-    public function lazyProxy(string $interface, bool $required = false): bool|string
+    /** For those services, which are better to be lazy. */
+    public function hintLazy(string $interface): bool|string
     {
-        if ($this->nativeProxiesSupported) {
-            // this will make sure that sf uses native proxy if available
-
-            return true;
-        }
-
-        if (!$this->allowGeneratedProxies && !$required) {
+        if (!$this->allowGeneratedProxies && !$this->nativeProxiesSupported) {
             return false;
         }
 
-        return $interface;
+        return $this->lazyProxy($interface);
+    }
+
+    /** For those services, which cannot be built eagerly at all */
+    public function lazyProxy(string $interface): bool|string
+    {
+        if (!$this->nativeProxiesSupported) {
+            return $interface;
+        }
+
+        // Not returning interface so that Symfony uses native proxy
+        return true;
     }
 
     /** @internal */
