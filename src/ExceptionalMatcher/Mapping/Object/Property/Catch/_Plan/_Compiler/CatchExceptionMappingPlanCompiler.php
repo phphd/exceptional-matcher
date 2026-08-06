@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler;
 
 use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
-use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\_Plan\_Compiler\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchAttributeInstantiationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\UnregisteredFormatterException;
@@ -16,6 +16,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\Matc
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
+use Reflector;
 use Throwable;
 use Webmozart\Assert\Assert;
 
@@ -42,10 +43,11 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
     ) {
     }
 
-    public function compilePlan(object $mappingSource): ?CatchExceptionMappingPlan
+    /** @param ReflectionAttribute<Catch_<Throwable,Throwable>> $reflector */
+    public function compilePlan(Reflector $reflector): ?CatchExceptionMappingPlan
     {
         try {
-            $catch = $this->instantiateCatch($mappingSource);
+            $catch = $this->instantiateCatch($reflector);
 
             return $this->compile($catch);
         } catch (Throwable $exception) {
@@ -63,14 +65,14 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
     }
 
     /**
-     * @param ReflectionAttribute<Catch_<Throwable,Throwable>> $catchAttribute
+     * @param ReflectionAttribute<Catch_<Throwable,Throwable>> $reflector
      *
      * @return Catch_<Throwable,Throwable>
      */
-    private function instantiateCatch(ReflectionAttribute $catchAttribute): Catch_
+    private function instantiateCatch(ReflectionAttribute $reflector): Catch_
     {
         try {
-            return $catchAttribute->newInstance();
+            return $reflector->newInstance();
         } catch (Throwable $e) {
             throw new CatchAttributeInstantiationFailedException($e);
         }

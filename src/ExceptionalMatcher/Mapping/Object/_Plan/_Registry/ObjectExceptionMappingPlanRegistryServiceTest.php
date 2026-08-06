@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NotHandleableMessageStub;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * @coversNothing
@@ -23,5 +24,23 @@ final class ObjectExceptionMappingPlanRegistryServiceTest extends BundleTestCase
 
         self::assertNull($planRegistry->getPlan(NotHandleableMessageStub::class));
         self::assertNotNull($planRegistry->getPlan(HandleableMessageStub::class));
+    }
+
+    public function testMemoizedPlansAreDroppedOnServicesReset(): void
+    {
+        $container = self::getContainer();
+
+        /** @var ObjectExceptionMappingPlanRegistry $planRegistry */
+        $planRegistry = $container->get(ObjectExceptionMappingPlanRegistry::class);
+
+        $plan = $planRegistry->getPlan(HandleableMessageStub::class);
+
+        self::assertSame($plan, $planRegistry->getPlan(HandleableMessageStub::class));
+
+        /** @var ResetInterface $servicesResetter */
+        $servicesResetter = $container->get('services_resetter');
+        $servicesResetter->reset();
+
+        self::assertNotSame($plan, $planRegistry->getPlan(HandleableMessageStub::class));
     }
 }

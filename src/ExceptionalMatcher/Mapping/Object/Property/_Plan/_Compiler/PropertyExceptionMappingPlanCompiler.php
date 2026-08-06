@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler;
 
 use Generator;
-use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\_Plan\_Compiler\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\_Exception\PropertyExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
@@ -15,6 +15,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\Reus
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
 use ReflectionProperty;
+use Reflector;
 use Throwable;
 
 /**
@@ -33,15 +34,16 @@ final class PropertyExceptionMappingPlanCompiler implements ExceptionMappingPlan
     ) {
     }
 
-    public function compilePlan(object $mappingSource): ?PropertyExceptionMappingPlan
+    /** @param ReflectionProperty $reflector */
+    public function compilePlan(Reflector $reflector): ?PropertyExceptionMappingPlan
     {
         try {
-            return $this->compile($mappingSource);
+            return $this->compile($reflector);
         } catch (Throwable $exception) {
             $e = new PropertyExceptionMappingPlanCompilationFailedException(
-                $mappingSource->getDeclaringClass()
+                $reflector->getDeclaringClass()
                     ->getName(),
-                $mappingSource->getName(),
+                $reflector->getName(),
                 $exception,
             );
 

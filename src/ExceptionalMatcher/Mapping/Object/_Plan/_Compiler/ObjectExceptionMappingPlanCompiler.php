@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler;
 
 use Generator;
-use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\_Plan\_Compiler\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\_Exception\ObjectExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan;
@@ -14,6 +14,7 @@ use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Composite\Reus
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionProperty;
+use Reflector;
 use Throwable;
 
 /**
@@ -31,13 +32,13 @@ final class ObjectExceptionMappingPlanCompiler implements ExceptionMappingPlanCo
     ) {
     }
 
-    /** @param ReflectionClass<object> $mappingSource */
-    public function compilePlan(object $mappingSource): ?ObjectExceptionMappingPlan
+    /** @param ReflectionClass<object> $reflector */
+    public function compilePlan(Reflector $reflector): ?ObjectExceptionMappingPlan
     {
         try {
-            return $this->compile($mappingSource);
+            return $this->compile($reflector);
         } catch (Throwable $exception) {
-            $e = new ObjectExceptionMappingPlanCompilationFailedException($mappingSource->getName(), $exception);
+            $e = new ObjectExceptionMappingPlanCompilationFailedException($reflector->getName(), $exception);
 
             if (!$this->throwOnFailure) {
                 // One broken class mapping won't spoil the whole situation.

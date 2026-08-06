@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry;
 
-use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\_Plan\_Compiler\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 use ReflectionClass;
 
+/** @internal */
 final class CompilingObjectExceptionMappingPlanRegistry implements ObjectExceptionMappingPlanRegistry
 {
     public function __construct(

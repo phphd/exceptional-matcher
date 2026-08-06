@@ -8,6 +8,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
 
 use function array_key_exists;
 
+/** @internal */
 final class MemoizingObjectExceptionMappingPlanRegistry implements ObjectExceptionMappingPlanRegistry
 {
     /** @var array<class-string,?ObjectExceptionMappingPlan> */

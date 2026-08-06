@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping;
+namespace PhPhD\ExceptionalMatcher\Mapping\_Plan\_Compiler;
+
+use Reflector;
 
 /**
  * Compiles the mapping declared on a single reflection element into the plan that matches it.
@@ -12,16 +14,16 @@ namespace PhPhD\ExceptionalMatcher\Mapping;
  *
  * @internal
  *
- * @template TSource of object
+ * @template TReflector of Reflector
  *
  * @template-covariant TPlan of object
  */
 interface ExceptionMappingPlanCompiler
 {
     /**
-     * @param TSource $mappingSource
+     * @param Reflector $reflector
      *
      * @return null|TPlan the mapping declares nothing to match, if null
      */
-    public function compilePlan(object $mappingSource): ?object;
+    public function compilePlan(Reflector $reflector): ?object;
 }

@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object;
 
 use Closure;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\_Plan\_Compiler\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\PropertyExceptionMappingPlanCompiler;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
