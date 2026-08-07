@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub;
 
 use LogicException;
-use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\MainExceptionViolationFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\entos\Formatter\MatchedExceptionFormatter;
 use Psr\Container\ContainerInterface;
 
 use function in_array;

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Integration\Linter;
 
 use PhPhD\ExceptionalMatcher\Integration\Linter\Defect\MappingDefectCollector;
-use PhPhD\ExceptionalMatcher\Mapping\_Plan\_Compiler\ExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler\ObjectExceptionMappingPlanCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\CompilingObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\entos\Plan\Compiler\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\entos\Plan\Compiler\ObjectExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\entos\Plan\ObjectExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\entos\Plan\Registry\CompilingObjectExceptionMappingPlanRegistry;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 

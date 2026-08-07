@@ -1,0 +1,64 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid;
+
+use LogicException;
+use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\entos\Compiler\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\entos\Compiler\MatchConditionPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
+use Stringable;
+use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
+use Webmozart\Assert\Assert;
+
+use function is_a;
+
+/** @api */
+const uid_value = InvalidUidExceptionMatchCondition::class;
+
+/**
+ * @internal
+ *
+ * @implements MatchConditionCompiler<InvalidUidException>
+ * @implements MatchConditionPlan<InvalidUidException>
+ */
+final class InvalidUidExceptionMatchConditionCompiler implements MatchConditionCompiler, MatchConditionPlan
+{
+    /** @return MatchConditionPlan<InvalidUidException> */
+    public function compile(Catch_ $catch): MatchConditionPlan
+    {
+        if (!is_a($catch->getExceptionClass(), InvalidUidException::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
+            throw new LogicException('InvalidUidExceptionMatchCondition can only be used for '.InvalidUidException::class);
+        }
+
+        return $this;
+    }
+
+    /** @return MatchCondition<InvalidUidException> */
+    public function bind(ExceptionMappingNode $rule): MatchCondition
+    {
+        $value = $rule->getValue();
+
+        if (null === $value) {
+            /** @psalm-var FalseCondition<InvalidUidException> */
+            return new FalseCondition();
+        }
+
+        return new InvalidUidExceptionMatchCondition($this->string($value));
+    }
+
+    private function string(mixed $value): string
+    {
+        if ($value instanceof Stringable) {
+            return (string)$value;
+        }
+
+        Assert::string($value, 'InvalidUidExceptionMatchCondition requires a stringable value, got: %s.');
+
+        return $value;
+    }
+}

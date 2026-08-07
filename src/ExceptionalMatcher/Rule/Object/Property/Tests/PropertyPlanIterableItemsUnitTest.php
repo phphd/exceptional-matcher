@@ -7,8 +7,8 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests;
 use ArrayObject;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
-use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\RootObject;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Plan\PropertyExceptionMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\entos\Plan\PropertyExceptionMappingPlan
  */
 final class PropertyPlanIterableItemsUnitTest extends TestCase
 {

@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded;
 
 use Closure;
 use LogicException;
-use PhPhD\ExceptionalMatcher\Exception\MatchedException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\ExceptionViolationFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;

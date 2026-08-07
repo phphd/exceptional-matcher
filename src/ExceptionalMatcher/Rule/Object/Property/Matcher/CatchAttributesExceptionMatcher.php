@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Matcher;
 
-use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal;
 
 final class CatchAttributesExceptionMatcher
 {

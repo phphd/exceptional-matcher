@@ -24,8 +24,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @covers \PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\MainExceptionViolationFormatter
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\CatchExceptionMappingNode
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Property\PropertyExceptionMappingNode
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\CatchExceptionMappingNode
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode
  *
  * @internal

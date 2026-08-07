@@ -10,10 +10,10 @@ use PHPat\Selector\SelectorInterface;
 use PHPat\Test\Attributes\TestRule;
 use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\PHPat;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\CatchExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\_Compiler\MatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\_Compiler\MatchConditionPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\MatchCondition;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\CatchExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\entos\Compiler\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\entos\Compiler\MatchConditionPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -207,7 +207,7 @@ final class ArchitectureRuleSet
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher'),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Bundle')),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Exception')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Linter')),
@@ -255,7 +255,7 @@ final class ArchitectureRuleSet
 
     public function exception(): SelectorInterface
     {
-        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Exception');
+        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception');
     }
 
     public function model(): SelectorInterface

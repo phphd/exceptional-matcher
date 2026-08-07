@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Tests\Unit\Stub;
 
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedException;
 

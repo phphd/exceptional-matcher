@@ -8,7 +8,7 @@ Matches the exception by its class name with `instanceof` check, \
 acting similarly to `catch` operation.
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 
 #[Try_]
 class SubmitOrderCommand
@@ -44,7 +44,7 @@ whether instance of the exception is related to a given property or not.
 For example, `CardDeactivatedException` could be related to `$depositToCardId` or `$withdrawFromCardId`:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 
 #[Try_]
 class TransferMoneyCommand
@@ -84,7 +84,7 @@ For example, `\InvalidArgumentException` is a generic one and could possibly ori
 If you want to catch it only if it belongs to `Uuid` class, specify `from:` clause:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use Symfony\Component\Uid\Uuid;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use Symfony\Component\Uid\Uuid;
 
 #[Try_]
 class ConfirmParcelDeliveryCommand
@@ -101,7 +101,7 @@ The origin may as well be a [property hook](https://www.php.net/manual/en/langua
 It is referenced the same way it appears in the exception trace: `$property::set` or `$property::get`:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
 class UpdateDriverLicenceCommand
@@ -193,7 +193,7 @@ Matches Symfony's `Uid\Exception\InvalidArgumentException` by value comparison.
 For example, `InvalidUidException` could be related to `$withdrawFromCardId` or `$depositToCardId`:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;use const PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\Integration\Uid\uid_value;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\uid_value;
 
 #[Try_]
 class TransferMoneyCommand
@@ -224,7 +224,7 @@ instead of implementing `if:` closure every time.
 Thus, it's possible to avoid much of the boilerplate code, keeping it clean:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use const PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\Value\exception_value;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\exception_value;
 
 #[Try_]
 class TransferMoneyCommand
@@ -243,7 +243,7 @@ depending on the value of `cardId` from the exception.
 And `CardDeactivatedException` must implement `ValueException` interface:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\Value\ValueException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\ValueException;
 
 class CardDeactivatedException extends RuntimeException implements ValueException
 {
@@ -268,7 +268,7 @@ comparing a property's value against the value of the exception.
 Specify `validated_value` match condition to compare property's value against exception's validated value:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;use const PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\Integration\Validator\validated_value;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\validated_value;
 
 #[Try_]
 class RegisterUserCommand
@@ -287,7 +287,7 @@ Matches native `ValueError` thrown by `BackendEnum::from()` method.
 Specify `enum_value` match condition to compare property's value against the invalid value of thrown exception:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use const PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\Enum\enum_value;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\enum_value;
 
 #[Try_]
 class ImportScheduleCommand
@@ -327,7 +327,7 @@ When the relation between an exception and a property cannot be reasonably expre
 you can create a custom condition, and reference it with `match:`.
 
 ```php
-use App\Identity\Role\Exception\ConflictingRolesException;use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use const App\Identity\Role\Validation\disqualified_roles;
+use App\Identity\Role\Exception\ConflictingRolesException;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use const App\Identity\Role\Validation\disqualified_roles;
 
 #[Try_]
 class GrantRolesCommand
@@ -354,7 +354,7 @@ So, in our example, the condition itself:
 
 ```php
 use App\Identity\Role\Exception\ConflictingRolesException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\MatchCondition;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
 use Throwable;
 
 /** @implements MatchCondition<ConflictingRolesException> */
@@ -378,7 +378,7 @@ final class DisqualifiedRolesMatchCondition implements MatchCondition
 Then the compiler and the blueprint to create the condition (both implemented in one class, as the blueprint is stateless):
 
 ```php
-use App\Identity\Role\Exception\ConflictingRolesException;use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\_Compiler\MatchConditionPlan;use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\_Compiler\MatchConditionCompiler;use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\Bool\FalseCondition;use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use App\Identity\Role\Exception\ConflictingRolesException;use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\entos\Compiler\MatchConditionCompiler;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\entos\Compiler\MatchConditionPlan;use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /** Configuration to use in `match: disqualified_roles` */
 const disqualified_roles = DisqualifiedRolesMatchCondition::class;

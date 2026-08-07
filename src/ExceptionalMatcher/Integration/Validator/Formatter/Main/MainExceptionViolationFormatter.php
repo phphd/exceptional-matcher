@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main;
 
 use Closure;
-use PhPhD\ExceptionalMatcher\Exception\MatchedException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\ExceptionViolationFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;

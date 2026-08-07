@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Matcher;
 
 use Iterator;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Iterable\ItemOfIterableExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\PropertyExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\entos\Plan\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\ItemOfIterableExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRuleAggregate;
 
 use function is_object;

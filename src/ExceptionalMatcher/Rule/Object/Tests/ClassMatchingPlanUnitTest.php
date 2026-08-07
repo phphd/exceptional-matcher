@@ -6,10 +6,10 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
-use PhPhD\ExceptionalMatcher\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Plan\PropertyExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\entos\Plan\ObjectExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\entos\Plan\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\entos\Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\BindableMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\NestedStubException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\PlannedItem;
@@ -24,10 +24,10 @@ use function array_map;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler\ObjectExceptionMappingPlanCompiler
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Plan\PropertyExceptionMappingPlan
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Plan\CatchExceptionMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\entos\Plan\ObjectExceptionMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\entos\Plan\Compiler\ObjectExceptionMappingPlanCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\entos\Plan\PropertyExceptionMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\entos\Plan\CatchExceptionMappingPlan
  */
 final class ClassMatchingPlanUnitTest extends TestCase
 {
