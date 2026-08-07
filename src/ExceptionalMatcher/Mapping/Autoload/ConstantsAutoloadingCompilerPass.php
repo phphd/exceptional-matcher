@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Autoload;
 
 use PhPhD\ExceptionalMatcher\Exception\Formatter\_Autoload\ExceptionFormatterConstantsAutoloadingClassDiscovery;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\_Autoload\MatchConditionConstantsAutoloadingClassDiscovery;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\_Compiler\_Autoload\MatchConditionConstantsAutoloadingClassDiscovery;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 

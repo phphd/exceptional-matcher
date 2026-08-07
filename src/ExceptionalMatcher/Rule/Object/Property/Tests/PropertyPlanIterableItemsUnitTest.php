@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Plan\PropertyExceptionMappingPlan
  */
 final class PropertyPlanIterableItemsUnitTest extends TestCase
 {

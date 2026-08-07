@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Integration\Linter\Defect;
 
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\_Exception\ObjectExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\_Exception\PropertyExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Plan\Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Plan\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler\_Exception\ObjectExceptionMappingPlanCompilationFailedException;
 use Psr\Log\AbstractLogger;
 use Throwable;
 

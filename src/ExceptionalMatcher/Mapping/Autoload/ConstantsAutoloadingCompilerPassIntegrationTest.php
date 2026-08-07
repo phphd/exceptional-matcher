@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Autoload;
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\ViolationsEmbeddedExceptionFormatter;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\ExceptionValueMatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\Value\ExceptionValueMatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 
 use function class_exists;
@@ -15,7 +15,7 @@ use function class_exists;
 /**
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsAutoloadingCompilerPass
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Autoload\ConstantsClassLoader
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\CompilingObjectExceptionMappingPlanRegistry
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\CompilingObjectExceptionMappingPlanRegistry
  *
  * @internal
  */

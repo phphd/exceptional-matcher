@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub;
 
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\_Compiler\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\MatchCondition;
 use Psr\Container\ContainerInterface;
 use Throwable;
 use Webmozart\Assert\Assert;

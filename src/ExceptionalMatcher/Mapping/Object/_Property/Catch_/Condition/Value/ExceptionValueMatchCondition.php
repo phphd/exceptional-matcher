@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\Value;
+
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\MatchCondition;
+use Throwable;
+
+/**
+ * @internal - use {@see exception_value} constant for a class reference instead
+ *
+ * @implements MatchCondition<ValueException>
+ */
+final class ExceptionValueMatchCondition implements MatchCondition
+{
+    public function __construct(
+        private readonly mixed $propertyValue,
+    ) {
+    }
+
+    /** @param ValueException $exception */
+    public function matches(Throwable $exception): bool
+    {
+        return $exception->getValue() === $this->propertyValue;
+    }
+}

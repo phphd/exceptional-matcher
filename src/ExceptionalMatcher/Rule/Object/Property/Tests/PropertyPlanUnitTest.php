@@ -6,10 +6,10 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Registry\ObjectExceptionMappingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\ObjectExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\_Compiler\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Plan\Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\CountingMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\LazilyBrokenCatchMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\MultiCatchMessage;
@@ -25,8 +25,8 @@ use function count;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\PropertyExceptionMappingPlan
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Plan\_Compiler\ObjectExceptionMappingPlanCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Plan\PropertyExceptionMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler\ObjectExceptionMappingPlanCompiler
  */
 final class PropertyPlanUnitTest extends TestCase
 {

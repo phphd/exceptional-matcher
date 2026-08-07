@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Exception;
 
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\CatchExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\CatchExceptionMappingNode;
 use Throwable;
 
 /**

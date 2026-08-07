@@ -16,10 +16,10 @@ use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\TryWithNonMatchableOb
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnmatchableTryMessage;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnregisteredFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnregisteredFormatterMessage;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\_Plan\_Compiler\_Exception\PropertyExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchAttributeInstantiationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch\_Plan\_Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Plan\Compiler\_Exception\CatchAttributeInstantiationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_\Plan\Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Plan\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\RootObject;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedHandleableMessage;

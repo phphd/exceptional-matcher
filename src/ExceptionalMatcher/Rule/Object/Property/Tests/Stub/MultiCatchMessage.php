@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub;
 
 use DomainException;
 use LogicException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\_Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use RuntimeException;
 
