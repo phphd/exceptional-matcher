@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Rule\Object\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
-use PhPhD\ExceptionalMatcher\Mapping\Object\ento\Plan\Registry\MemoizingObjectExceptionMappingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Mapping\Object\ento\Plan\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\MemoizingObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\TypedPropertiesMessage;
 use PhPhD\ExceptionalMatcher\Rule\Object\Tests\Stub\UnmarkedMessage;
 use PHPUnit\Framework\TestCase;
@@ -17,8 +17,8 @@ use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\ento\Plan\Registry\CompilingObjectExceptionMappingPlanRegistry
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\ento\Plan\Registry\MemoizingObjectExceptionMappingPlanRegistry
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\CompilingObjectExceptionMappingPlanRegistry
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\MemoizingObjectExceptionMappingPlanRegistry
  */
 final class ClassMatchingPlanRegistryUnitTest extends TestCase
 {

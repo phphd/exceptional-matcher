@@ -1,0 +1,54 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload;
+
+use function array_map;
+use function glob;
+use function implode;
+use function range;
+use function sprintf;
+use function str_repeat;
+
+/** @api */
+final class ConstantsClassLoader
+{
+    public function __construct(
+        /** @var list<class-string> */
+        private array $classNames,
+    ) {
+    }
+
+    public function __invoke(): void
+    {
+        array_map(
+            class_exists(...),
+            $this->classNames,
+        );
+        $this->classNames = [];
+    }
+
+    /** @codeCoverageIgnore */
+    public static function loadFiles(string $basePath, int $depth = 8): void
+    {
+        $prefixes = array_map(
+            static fn (int $level): string => str_repeat('*/', $level),
+            range(1, $depth),
+        );
+
+        $nestingPattern = '{'.implode(',', $prefixes).'}';
+
+        /** @var list<string> $glob */
+        $glob = glob(
+            $basePath.sprintf('/%s*{MatchConditionCompiler,ExceptionFormatter}.php', $nestingPattern),
+            GLOB_BRACE | GLOB_NOSORT,
+        );
+
+        foreach ($glob as $file) {
+            /** @psalm-suppress UnresolvableInclude */
+
+            require_once $file;
+        }
+    }
+}
