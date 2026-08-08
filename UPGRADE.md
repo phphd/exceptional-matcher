@@ -47,5 +47,5 @@ for the changes not covered by automatic upgrade via Rector (see the "Upgrading"
   dropped without aliases. Use `PhPhD\ExceptionalMatcher\Rule\Object\ClassMatchingPlanRegistry` instead.
 
 * New: the `lint:exceptional-matcher` console command and the \
-  `PhPhD\ExceptionalMatcher\Integration\Linter\MappingLinter` service check the exception mappings for \
+  `PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter` service check the exception mappings for \
   every statically detectable error ahead of time. See [docs/config/lint.md](docs/config/lint.md).

@@ -69,8 +69,7 @@ Without Symfony framework (or without the console at all), `MappingLinter` is a 
 mappings' validity right in the test suite:
 
 ```php
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Integration\Linter\MappingLinter;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
 
 $container = (new PhdExceptionalMatcherExtension())->getContainer([
     'kernel.environment' => 'test',

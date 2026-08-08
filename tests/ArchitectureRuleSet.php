@@ -210,14 +210,14 @@ final class ArchitectureRuleSet
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator')),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Linter')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Linter')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Upgrade')),
         );
     }
 
     public function linter(): SelectorInterface
     {
-        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Linter');
+        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Linter');
     }
 
     public function validatorMatcher(): SelectorInterface

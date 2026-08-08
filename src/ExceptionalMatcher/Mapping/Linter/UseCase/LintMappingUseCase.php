@@ -1,0 +1,48 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\UseCase;
+
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\LintReport;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Format\LintReportFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+
+/**
+ * @template TSymbol
+ * @template TFormat
+ */
+final class LintMappingUseCase
+{
+    public function __construct(
+        /** @var ContainerInterface<string,MappingLinter<TSymbol,LintReport>> */
+        private readonly ContainerInterface $mappingLinterRegistry,
+        /** @var ContainerInterface<string,LintReportFormatter<TFormat>> */
+        private readonly ContainerInterface $reportFormatterRegistry,
+    ) {
+    }
+
+    /**
+     * @param iterable<TSymbol> $symbols
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     *
+     * @return TFormat
+     */
+    public function lint(iterable $symbols, string $inputFormat, string $outputFormat): mixed
+    {
+        /** @var MappingLinter<LintReport> $linter */
+        $linter = $this->mappingLinterRegistry->get($inputFormat);
+
+        $report = $linter->lint($symbols);
+
+        /** @var LintReportFormatter $formatter */
+        $formatter = $this->reportFormatterRegistry->get($outputFormat);
+
+        return $formatter->format($report);
+    }
+}
