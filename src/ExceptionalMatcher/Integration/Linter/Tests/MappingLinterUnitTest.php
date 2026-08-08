@@ -17,9 +17,9 @@ use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnmatchableTryMessage
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnregisteredFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Linter\Tests\Stub\UnregisteredFormatterMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\entos\Plan\Compiler\_Exception\CatchAttributeInstantiationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\entos\Plan\Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\entos\Plan\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\ento\Plan\Compiler\_Exception\CatchAttributeInstantiationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\ento\Plan\Compiler\_Exception\CatchExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\ento\Plan\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub\RootObject;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedHandleableMessage;

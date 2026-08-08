@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\ento\Formatter;
+
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException;
+use Throwable;
+
+/**
+ * @api
+ *
+ * @phpstan-template-contravariant TException of Throwable
+ *
+ * @psalm-template TException of mixed (psalm doesn't support contravariant templates)
+ *
+ * @template-covariant TResult of mixed
+ */
+interface MatchedExceptionFormatter
+{
+    /**
+     * @param MatchedException<TException&Throwable> $matchedException
+     *
+     * @return non-empty-list<TResult>
+     */
+    public function format(MatchedException $matchedException): array;
+}

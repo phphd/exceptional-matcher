@@ -378,7 +378,7 @@ final class DisqualifiedRolesMatchCondition implements MatchCondition
 Then the compiler and the blueprint to create the condition (both implemented in one class, as the blueprint is stateless):
 
 ```php
-use App\Identity\Role\Exception\ConflictingRolesException;use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\entos\Compiler\MatchConditionCompiler;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\entos\Compiler\MatchConditionPlan;use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use App\Identity\Role\Exception\ConflictingRolesException;use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\ento\Compiler\MatchConditionCompiler;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\ento\Compiler\MatchConditionPlan;use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /** Configuration to use in `match: disqualified_roles` */
 const disqualified_roles = DisqualifiedRolesMatchCondition::class;

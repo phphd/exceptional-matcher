@@ -39,15 +39,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\entos\Plan\ObjectExceptionMappingPlan
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\entos\Plan\Compiler\ObjectExceptionMappingPlanCompiler
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\entos\Plan\Registry\CompilingObjectExceptionMappingPlanRegistry
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\entos\Plan\PropertyExceptionMappingPlan
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\entos\Plan\CatchExceptionMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\ento\Plan\ObjectExceptionMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\ento\Plan\Compiler\ObjectExceptionMappingPlanCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\ento\Plan\Registry\CompilingObjectExceptionMappingPlanRegistry
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\ento\Plan\PropertyExceptionMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\ento\Plan\CatchExceptionMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\CatchExceptionMappingNode
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Class\ExceptionClassMatchCondition
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Class\ExceptionClassMatchConditionCompiler
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\entos\Compiler\PreCompiledMatchConditionPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\ento\Compiler\PreCompiledMatchConditionPlan
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Delegating\DelegatingMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchCondition
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionCompiler
