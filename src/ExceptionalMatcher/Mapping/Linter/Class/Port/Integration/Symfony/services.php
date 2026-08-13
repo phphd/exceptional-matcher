@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Port\Integration\Symfony
 
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Port\Path\Discovery\ClassNameDiscovery;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\Formatter\LintReportFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -26,7 +27,7 @@ return static function (ContainerConfigurator $configurator): void {
         ->set(LintExceptionalMatcherCommand::class, LintExceptionalMatcherCommand::class)
         ->public()
         ->args([
-            service(MappingLinter::class),
+            service(MappingLinter::class.'<'.'class-string,'.LintReport::class.'>'),
             inline_service(ClassNameDiscovery::class),
             tagged_locator(LintReportFormatter::class, 'id'),
         ])

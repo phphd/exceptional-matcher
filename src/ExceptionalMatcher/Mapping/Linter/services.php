@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter;
 
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ClassNameLinter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Defect\MappingDefectCollector;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\CompilingObjectExceptionMappingPlanRegistry;
@@ -19,7 +21,7 @@ return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
 
     $services
-        ->set(MappingLinter::class, MappingLinter::class)
+        ->set(MappingLinter::class.'<'.'class-string,'.LintReport::class.'>', ClassNameLinter::class)
         ->public()
         ->args([
             // Lint-mode plan registry: it keeps compiling past a broken mapping
