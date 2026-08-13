@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable;
 
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Matcher\ExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatcherAggregate;
 
 use function is_object;
 

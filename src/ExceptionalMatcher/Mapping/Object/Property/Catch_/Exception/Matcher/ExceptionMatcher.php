@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Matcher;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Matcher;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal;
 

@@ -10,8 +10,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\M
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
 use Throwable;
 
-use function iterator_to_array;
-
 /**
  * @internal
  *
@@ -28,9 +26,7 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
 
     public function compile(Catch_ $catch): CompositeMatchConditionPlan
     {
-        // materialized eagerly: compiling a catch IS its validation - every statically
-        // detectable mapping error must surface right here, not on the first bind
-        return new CompositeMatchConditionPlan(iterator_to_array($this->conditionPlans($catch), false));
+        return new CompositeMatchConditionPlan(new ReusableIteratorAggregate($this->conditionPlans($catch)));
     }
 
     /**

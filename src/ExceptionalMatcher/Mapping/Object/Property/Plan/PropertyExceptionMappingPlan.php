@@ -8,12 +8,12 @@ use ArrayIterator;
 use PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\CatchAttributesExceptionMatcherAggregate;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Matcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Matcher\ExceptionMatcherAggregate;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Matcher\ExceptionMatcherAggregateAdapter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\CatchExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\IterablePropertyExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatcherAggregate;
-use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatcherAggregateAdapter;
 use ReflectionProperty;
 
 use function is_iterable;
