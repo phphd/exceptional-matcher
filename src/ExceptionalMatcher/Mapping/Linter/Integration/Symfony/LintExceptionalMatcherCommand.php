@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Integration\Symfony;
 
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Defect\DefectSeverity;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Format\LintReportFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\UseCase\LintMappingUseCase;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -42,7 +41,8 @@ final class LintExceptionalMatcherCommand extends Command
         $this
             ->addArgument('symbols', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Files or directories to scan for mapped classes')
             ->addOption('format', null, InputOption::VALUE_REQUIRED, 'Output format ("txt" or "json")', 'txt')
-            ->addOption('fail-on-warning', null, InputOption::VALUE_NONE, 'Exit with a non-zero code when warnings are reported');
+            ->addOption('fail-on-warning', null, InputOption::VALUE_NONE, 'Exit with a non-zero code when warnings are reported')
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Path\Discovery;
 
 use Composer\ClassMapGenerator\ClassMapGenerator;
-use phpDocumentor\Reflection\PseudoTypes\InterfaceString;
 use RuntimeException;
 
-use function array_filter;
 use function array_keys;
 use function class_exists;
 

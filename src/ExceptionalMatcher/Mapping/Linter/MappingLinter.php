@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter;
 
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\LintReport;
-
 /**
  * Checks the `#[Try_]` / `#[Catch_]` mappings of the given classes for every statically detectable error.
  *

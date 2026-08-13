@@ -7,8 +7,6 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Format\Array;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Format\LintReportFormatter;
 
-use function json_encode;
-
 /**
  * @internal
  *
