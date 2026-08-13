@@ -2,18 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Matcher;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable;
 
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\ItemOfIterableExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRuleAggregate;
+use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatcherAggregate;
 
 use function is_object;
 
 /** @internal */
-final class IterablePropertyExceptionMatcher implements ExceptionMatchingRuleAggregate
+final class IterablePropertyExceptionMatcherAggregate implements ExceptionMatcherAggregate
 {
     public function __construct(
         private readonly PropertyExceptionMappingNode $propertyRuleSet,
@@ -22,7 +21,7 @@ final class IterablePropertyExceptionMatcher implements ExceptionMatchingRuleAgg
     ) {
     }
 
-    public function getExceptionMatchingRules(): Iterator
+    public function getExceptionMatchers(): Iterator
     {
         /** @var iterable<array-key,mixed> $value */
         $value = $this->propertyRuleSet->getValue();

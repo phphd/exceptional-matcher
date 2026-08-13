@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Path\PropertyPath;
-use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRule;
+use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatcher;
 
 /** @internal */
 final class ObjectExceptionMappingNode implements ExceptionMappingNode
@@ -15,7 +15,7 @@ final class ObjectExceptionMappingNode implements ExceptionMappingNode
     public function __construct(
         private readonly object $object,
         private readonly ?ExceptionMappingNode $owner,
-        /** @var iterable<ExceptionMatchingRule> */
+        /** @var iterable<ExceptionMatcher> */
         private readonly iterable $propertyRules,
     ) {
     }

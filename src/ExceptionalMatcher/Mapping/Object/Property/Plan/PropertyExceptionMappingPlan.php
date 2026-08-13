@@ -7,13 +7,13 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan;
 use ArrayIterator;
 use PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\CatchAttributesExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\CatchExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\IterablePropertyExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRule;
-use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRuleAggregate;
-use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRuleAggregateAdapter;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Matcher\CatchAttributesExceptionMatcherAggregate;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Matcher\IterablePropertyExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatcherAggregate;
+use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatcherAggregateAdapter;
 use ReflectionProperty;
 
 use function is_iterable;
@@ -39,13 +39,13 @@ final class PropertyExceptionMappingPlan
         $propertyRuleSet = new PropertyExceptionMappingNode($ownerRule, $name, $value, ($rules = new ArrayIterator()));
 
         if (null !== $catchRules = $this->catchAttributesMatcher($propertyRuleSet)) {
-            $rules->append(new ExceptionMatchingRuleAggregateAdapter($catchRules));
+            $rules->append(new ExceptionMatcherAggregateAdapter($catchRules));
         }
 
         if (null !== $nestedObjectRule = $this->nestedObjectMatcher($propertyRuleSet)) {
             $rules->append($nestedObjectRule);
         } elseif (null !== $nestedIterableRule = $this->nestedObjectsOfIterableMatcher($propertyRuleSet)) {
-            $rules->append(new ExceptionMatchingRuleAggregateAdapter($nestedIterableRule));
+            $rules->append(new ExceptionMatcherAggregateAdapter($nestedIterableRule));
         }
 
         return $propertyRuleSet;
@@ -90,7 +90,7 @@ final class PropertyExceptionMappingPlan
         return $this->property->getValue($object);
     }
 
-    private function catchAttributesMatcher(PropertyExceptionMappingNode $propertyRuleSet): ?ExceptionMatchingRuleAggregate
+    private function catchAttributesMatcher(PropertyExceptionMappingNode $propertyRuleSet): ?ExceptionMatcherAggregate
     {
         if (!$this->hasCatchPlans()) {
             return null;
@@ -99,7 +99,7 @@ final class PropertyExceptionMappingPlan
         return new CatchAttributesExceptionMatcherAggregate($propertyRuleSet, $this->catchPlans);
     }
 
-    private function nestedObjectMatcher(PropertyExceptionMappingNode $propertyRuleSet): ?ExceptionMatchingRule
+    private function nestedObjectMatcher(PropertyExceptionMappingNode $propertyRuleSet): ?ExceptionMatcher
     {
         $value = $propertyRuleSet->getValue();
 
@@ -117,7 +117,7 @@ final class PropertyExceptionMappingPlan
         return $nestedPlan->bind($value, $propertyRuleSet);
     }
 
-    private function nestedObjectsOfIterableMatcher(PropertyExceptionMappingNode $propertyRuleSet): ?ExceptionMatchingRuleAggregate
+    private function nestedObjectsOfIterableMatcher(PropertyExceptionMappingNode $propertyRuleSet): ?ExceptionMatcherAggregate
     {
         $value = $propertyRuleSet->getValue();
 
@@ -125,6 +125,6 @@ final class PropertyExceptionMappingPlan
             return null;
         }
 
-        return new IterablePropertyExceptionMatcher($propertyRuleSet, $this->planRegistry);
+        return new IterablePropertyExceptionMatcherAggregate($propertyRuleSet, $this->planRegistry);
     }
 }

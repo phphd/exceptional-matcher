@@ -7,16 +7,16 @@ namespace PhPhD\ExceptionalMatcher\Rule\Matcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal;
 
 /** @internal */
-final class ExceptionMatchingRuleAggregateAdapter implements ExceptionMatchingRule
+final class ExceptionMatcherAggregateAdapter implements ExceptionMatcher
 {
     public function __construct(
-        private readonly ExceptionMatchingRuleAggregate $aggregate,
+        private readonly ExceptionMatcherAggregate $aggregate,
     ) {
     }
 
     public function match(ExceptionReciprocal $reciprocal): bool
     {
-        foreach ($this->aggregate->getExceptionMatchingRules() as $rule) {
+        foreach ($this->aggregate->getExceptionMatchers() as $rule) {
             if ($rule->match($reciprocal)) {
                 return true;
             }
@@ -25,7 +25,7 @@ final class ExceptionMatchingRuleAggregateAdapter implements ExceptionMatchingRu
         return false;
     }
 
-    public function getAggregate(): ExceptionMatchingRuleAggregate
+    public function getAggregate(): ExceptionMatcherAggregate
     {
         return $this->aggregate;
     }

@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Matcher;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\CatchExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatchingRuleAggregate;
+use PhPhD\ExceptionalMatcher\Rule\Matcher\ExceptionMatcherAggregate;
 use Throwable;
 
-final class CatchAttributesExceptionMatcherAggregate implements ExceptionMatchingRuleAggregate
+/** @internal */
+final class CatchAttributesExceptionMatcherAggregate implements ExceptionMatcherAggregate
 {
     public function __construct(
         private readonly PropertyExceptionMappingNode $propertyRuleSet,
@@ -19,7 +20,7 @@ final class CatchAttributesExceptionMatcherAggregate implements ExceptionMatchin
     ) {
     }
 
-    public function getExceptionMatchingRules(): Iterator
+    public function getExceptionMatchers(): Iterator
     {
         foreach ($this->catchPlans as $catchPlan) {
             yield $catchPlan->bind($this->propertyRuleSet);
