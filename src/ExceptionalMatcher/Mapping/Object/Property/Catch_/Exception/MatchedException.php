@@ -18,7 +18,7 @@ final class MatchedException
         /** @var T */
         private readonly Throwable $exception,
         /** @var CatchExceptionMappingNode<Throwable> */
-        private readonly CatchExceptionMappingNode $rule,
+        private readonly CatchExceptionMappingNode $catchNode,
     ) {
     }
 
@@ -33,8 +33,8 @@ final class MatchedException
      *
      * @internal
      */
-    public function getRule(): CatchExceptionMappingNode
+    public function getCatchNode(): CatchExceptionMappingNode
     {
-        return $this->rule;
+        return $this->catchNode;
     }
 }

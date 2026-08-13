@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Format;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\Formatter;
 
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Format\Array\ArrayLintReportFormatter;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Format\Console\ConsoleLintReportFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\Formatter\Array\ArrayLintReportFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\Formatter\Console\ConsoleLintReportFormatter;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $configurator): void {

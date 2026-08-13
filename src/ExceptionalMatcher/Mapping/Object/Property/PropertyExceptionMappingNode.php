@@ -13,18 +13,18 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Path\PropertyPath;
 final class PropertyExceptionMappingNode implements ExceptionMappingNode
 {
     public function __construct(
-        private readonly ExceptionMappingNode $objectRule,
+        private readonly ExceptionMappingNode $object,
         private readonly string $name,
         private readonly mixed $value,
-        /** @var iterable<ExceptionMatcher> $matchingRules */
-        private readonly iterable $matchingRules,
+        /** @var iterable<ExceptionMatcher> $matchers */
+        private readonly iterable $matchers,
     ) {
     }
 
     public function match(ExceptionReciprocal $reciprocal): bool
     {
-        foreach ($this->matchingRules as $rule) {
-            if ($rule->match($reciprocal)) {
+        foreach ($this->matchers as $matcher) {
+            if ($matcher->match($reciprocal)) {
                 return true;
             }
         }
@@ -34,24 +34,24 @@ final class PropertyExceptionMappingNode implements ExceptionMappingNode
 
     public function getOwner(): ExceptionMappingNode
     {
-        return $this->objectRule;
+        return $this->object;
     }
 
     public function getPropertyPath(): PropertyPath
     {
-        return $this->objectRule->getPropertyPath()
+        return $this->object->getPropertyPath()
             ->with($this->name)
         ;
     }
 
     public function getEnclosingObject(): object
     {
-        return $this->objectRule->getEnclosingObject();
+        return $this->object->getEnclosingObject();
     }
 
     public function getRootObject(): object
     {
-        return $this->objectRule->getRootObject();
+        return $this->object->getRootObject();
     }
 
     public function getValue(): mixed

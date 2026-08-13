@@ -33,8 +33,8 @@ final class ExceptionValueMatchConditionCompiler implements MatchConditionCompil
         return $this;
     }
 
-    public function bind(ExceptionMappingNode $rule): ExceptionValueMatchCondition
+    public function bind(ExceptionMappingNode $node): ExceptionValueMatchCondition
     {
-        return new ExceptionValueMatchCondition($rule->getValue());
+        return new ExceptionValueMatchCondition($node->getValue());
     }
 }

@@ -16,10 +16,10 @@ use Throwable;
  *
  * @template TException of Throwable
  */
-final class CatchExceptionMappingNode implements ExceptionMappingNode
+final class CatchExceptionMappingNode implements ExceptionMappingNode, MatchCondition
 {
     public function __construct(
-        private readonly ExceptionMappingNode $owner,
+        private readonly ExceptionMappingNode $property,
         /** @var MatchCondition<TException> */
         private readonly MatchCondition $condition,
         /** @var class-string<MatchedExceptionFormatter<TException,mixed>> */
@@ -30,37 +30,35 @@ final class CatchExceptionMappingNode implements ExceptionMappingNode
 
     public function match(ExceptionReciprocal $reciprocal): bool
     {
-        $reciprocal->process($this);
-
-        return $reciprocal->isReciprocated();
+        return $reciprocal->match($this);
     }
 
     public function getOwner(): ExceptionMappingNode
     {
-        return $this->owner;
+        return $this->property;
     }
 
     public function getPropertyPath(): PropertyPath
     {
-        return $this->owner->getPropertyPath();
+        return $this->property->getPropertyPath();
     }
 
     public function getEnclosingObject(): object
     {
-        return $this->owner->getEnclosingObject();
+        return $this->property->getEnclosingObject();
     }
 
     public function getRootObject(): object
     {
-        return $this->owner->getRootObject();
+        return $this->property->getRootObject();
     }
 
     public function getValue(): mixed
     {
-        return $this->owner->getValue();
+        return $this->property->getValue();
     }
 
-    public function matchesException(Throwable $exception): bool
+    public function matches(Throwable $exception): bool
     {
         return $this->condition->matches($exception);
     }

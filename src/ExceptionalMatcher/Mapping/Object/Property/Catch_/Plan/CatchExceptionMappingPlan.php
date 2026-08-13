@@ -27,11 +27,11 @@ final class CatchExceptionMappingPlan
     }
 
     /** @return CatchExceptionMappingNode<TException> */
-    public function bind(ExceptionMappingNode $ownerRule): CatchExceptionMappingNode
+    public function bind(ExceptionMappingNode $property): CatchExceptionMappingNode
     {
         return new CatchExceptionMappingNode(
-            $ownerRule,
-            $this->conditionPlan->bind($ownerRule),
+            $property,
+            $this->conditionPlan->bind($property),
             $this->formatterId,
             $this->messageTemplate,
         );

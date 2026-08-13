@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Integration\Symfony;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Port\Integration\Symfony;
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 

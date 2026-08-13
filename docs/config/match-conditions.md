@@ -401,10 +401,10 @@ final class DisqualifiedRolesMatchConditionCompiler implements MatchConditionCom
     }
 
     /** @return MatchCondition<ConflictingRolesException> */
-    public function bind(ExceptionMappingNode $rule): MatchCondition
+    public function bind(ExceptionMappingNode $node): MatchCondition
     {
         /** @var list<string> $roleIds */
-        $roleIds = $rule->getValue();
+        $roleIds = $node->getValue();
 
         // If no roles, nothing could conflict
         if ([] === $roleIds) {

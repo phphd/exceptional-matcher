@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Path;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Port\Path;
 
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Port\Path\Discovery\ClassNameDiscovery;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Path\Discovery\ClassNameDiscovery;
 
 /**
  * @internal
@@ -14,7 +14,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Path\Discovery\ClassNameDiscovery;
  *
  * @implements MappingLinter<string,TReport>
  */
-final class PathBasedLinter implements MappingLinter
+final class ClassNamePathBasedLinter implements MappingLinter
 {
     public function __construct(
         private readonly ClassNameDiscovery $classNameDiscovery,

@@ -16,5 +16,5 @@ use Throwable;
 interface MatchConditionPlan
 {
     /** @return MatchCondition<T> */
-    public function bind(ExceptionMappingNode $rule): MatchCondition;
+    public function bind(ExceptionMappingNode $node): MatchCondition;
 }

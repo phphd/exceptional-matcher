@@ -63,7 +63,7 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
         self::assertCount(2, $matchedExceptionList);
         [$matchedException1, $matchedException2] = $matchedExceptionList->toArray();
 
-        self::assertSame('matchedProperty', $matchedException1->getRule()->getPropertyPath()->join('.'));
-        self::assertSame('anotherMatchedAsNoCondition', $matchedException2->getRule()->getPropertyPath()->join('.'));
+        self::assertSame('matchedProperty', $matchedException1->getCatchNode()->getPropertyPath()->join('.'));
+        self::assertSame('anotherMatchedAsNoCondition', $matchedException2->getCatchNode()->getPropertyPath()->join('.'));
     }
 }

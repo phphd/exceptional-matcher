@@ -33,9 +33,9 @@ final class DelegatingMatchedExceptionFormatter implements MatchedExceptionForma
 
     public function format(MatchedException $matchedException): array
     {
-        $matchedRule = $matchedException->getRule();
+        $catch = $matchedException->getCatchNode();
 
-        $formatterId = $matchedRule->getFormatterId();
+        $formatterId = $catch->getFormatterId();
 
         if (!$this->formatterRegistry->has($formatterId)) {
             throw new LogicException('Matched Exception Formatter not found: '.$formatterId);

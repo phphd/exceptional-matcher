@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Format\Array;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\Formatter\Array;
 
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\Formatter\LintReportFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\LintReport;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Format\LintReportFormatter;
 
 /**
  * @internal

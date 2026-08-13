@@ -14,7 +14,7 @@ use Throwable;
 final class CatchAttributesExceptionMatcherAggregate implements ExceptionMatcherAggregate
 {
     public function __construct(
-        private readonly PropertyExceptionMappingNode $propertyRuleSet,
+        private readonly PropertyExceptionMappingNode $property,
         /** @var iterable<CatchExceptionMappingPlan<Throwable>> */
         private readonly iterable $catchPlans,
     ) {
@@ -23,7 +23,7 @@ final class CatchAttributesExceptionMatcherAggregate implements ExceptionMatcher
     public function getExceptionMatchers(): Iterator
     {
         foreach ($this->catchPlans as $catchPlan) {
-            yield $catchPlan->bind($this->propertyRuleSet);
+            yield $catchPlan->bind($this->property);
         }
     }
 }

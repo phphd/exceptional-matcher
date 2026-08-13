@@ -39,9 +39,9 @@ final class InvalidUidExceptionMatchConditionCompiler implements MatchConditionC
     }
 
     /** @return MatchCondition<InvalidUidException> */
-    public function bind(ExceptionMappingNode $rule): MatchCondition
+    public function bind(ExceptionMappingNode $node): MatchCondition
     {
-        $value = $rule->getValue();
+        $value = $node->getValue();
 
         if (null === $value) {
             /** @psalm-var FalseCondition<InvalidUidException> */

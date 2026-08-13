@@ -63,7 +63,7 @@ final class ClosureMatchConditionUnitTest extends TestCase
 
         [$matchedException] = $matchedExceptionList->toArray();
 
-        self::assertSame('conditionalMessage.secondProperty', $matchedException->getRule()->getPropertyPath()->join('.'));
-        self::assertSame(41, $matchedException->getRule()->getValue());
+        self::assertSame('conditionalMessage.secondProperty', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
+        self::assertSame(41, $matchedException->getCatchNode()->getValue());
     }
 }

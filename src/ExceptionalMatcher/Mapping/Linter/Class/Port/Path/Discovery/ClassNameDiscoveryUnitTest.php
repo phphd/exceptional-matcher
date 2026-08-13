@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Path\Discovery;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Port\Path\Discovery;
 
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Path\PathBasedLinter;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Port\Path\ClassNamePathBasedLinter;
 use PHPUnit\Framework\TestCase;
 
 use function dirname;
@@ -12,7 +12,7 @@ use function dirname;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Path\Discovery\ClassNameDiscovery
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Port\Path\Discovery\ClassNameDiscovery
  */
 final class ClassNameDiscoveryUnitTest extends TestCase
 {
@@ -27,7 +27,7 @@ final class ClassNameDiscoveryUnitTest extends TestCase
         self::assertSame([
             ClassNameDiscovery::class,
             self::class,
-            PathBasedLinter::class,
+            ClassNamePathBasedLinter::class,
         ], $classNames);
     }
 }

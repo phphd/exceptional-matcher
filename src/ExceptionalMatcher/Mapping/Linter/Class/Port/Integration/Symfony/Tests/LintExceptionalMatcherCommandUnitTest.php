@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Integration\Symfony\Tests;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Port\Integration\Symfony\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Integration\Symfony\LintExceptionalMatcherCommand;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Port\Integration\Symfony\LintExceptionalMatcherCommand;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -16,7 +16,7 @@ use function json_decode;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Integration\Symfony\LintExceptionalMatcherCommand
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Port\Integration\Symfony\LintExceptionalMatcherCommand
  */
 final class LintExceptionalMatcherCommandUnitTest extends TestCase
 {

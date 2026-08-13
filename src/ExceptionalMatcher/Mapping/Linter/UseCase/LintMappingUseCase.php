@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\UseCase;
 
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\Formatter\LintReportFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\LintReport;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Format\LintReportFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;

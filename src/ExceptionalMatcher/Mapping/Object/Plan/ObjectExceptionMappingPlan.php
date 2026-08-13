@@ -30,17 +30,17 @@ final class ObjectExceptionMappingPlan
     }
 
     /** @param T $object */
-    public function bind(object $object, ?ExceptionMappingNode $ownerRule = null): ObjectExceptionMappingNode
+    public function bind(object $object, ?ExceptionMappingNode $parentProperty = null): ObjectExceptionMappingNode
     {
         if (!$object instanceof $this->className) {
             throw new InvalidArgumentException(sprintf('Expected object of type "%s", got "%s".', $this->className, $object::class));
         }
 
-        $objectRuleSet = new ObjectExceptionMappingNode($object, $ownerRule, new ReusableIteratorAggregate($propertyRules = new AppendIterator()));
+        $objectNode = new ObjectExceptionMappingNode($object, $parentProperty, new ReusableIteratorAggregate($properties = new AppendIterator()));
 
-        $propertyRules->append($this->bindPropertyRules($objectRuleSet));
+        $properties->append($this->bindPropertyPlans($objectNode));
 
-        return $objectRuleSet;
+        return $objectNode;
     }
 
     /** @return iterable<PropertyExceptionMappingPlan> */
@@ -60,10 +60,10 @@ final class ObjectExceptionMappingPlan
     }
 
     /** @return Iterator<ExceptionMappingNode> */
-    private function bindPropertyRules(ObjectExceptionMappingNode $objectRuleSet): Iterator
+    private function bindPropertyPlans(ObjectExceptionMappingNode $objectNode): Iterator
     {
         foreach ($this->propertyPlans as $propertyPlan) {
-            yield $propertyPlan->bind($objectRuleSet);
+            yield $propertyPlan->bind($objectNode);
         }
     }
 }

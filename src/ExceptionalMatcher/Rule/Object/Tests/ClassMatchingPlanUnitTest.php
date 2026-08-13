@@ -85,7 +85,7 @@ final class ClassMatchingPlanUnitTest extends TestCase
         [$matchedException] = $reciprocal->getMatchedExceptionList()->toArray();
 
         self::assertSame($exception, $matchedException->getException());
-        self::assertSame('caughtValue', $matchedException->getRule()->getPropertyPath()->join('.'));
+        self::assertSame('caughtValue', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
     }
 
     public function testBindsNestedObjectRules(): void
@@ -99,7 +99,7 @@ final class ClassMatchingPlanUnitTest extends TestCase
 
         [$matchedException] = $reciprocal->getMatchedExceptionList()->toArray();
 
-        self::assertSame('nestedItem.itemValue', $matchedException->getRule()->getPropertyPath()->join('.'));
+        self::assertSame('nestedItem.itemValue', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
     }
 
     public function testBindsIterableItemRulesWithKeyedPaths(): void
@@ -115,7 +115,7 @@ final class ClassMatchingPlanUnitTest extends TestCase
 
         [$matchedException] = $reciprocal->getMatchedExceptionList()->toArray();
 
-        self::assertSame('listItems[first].itemValue', $matchedException->getRule()->getPropertyPath()->join('.'));
+        self::assertSame('listItems[first].itemValue', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
     }
 
     public function testDoesNotMatchUnmappedException(): void

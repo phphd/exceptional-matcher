@@ -16,8 +16,8 @@ final class ExceptionMatcherAggregateAdapter implements ExceptionMatcher
 
     public function match(ExceptionReciprocal $reciprocal): bool
     {
-        foreach ($this->aggregate->getExceptionMatchers() as $rule) {
-            if ($rule->match($reciprocal)) {
+        foreach ($this->aggregate->getExceptionMatchers() as $matcher) {
+            if ($matcher->match($reciprocal)) {
                 return true;
             }
         }

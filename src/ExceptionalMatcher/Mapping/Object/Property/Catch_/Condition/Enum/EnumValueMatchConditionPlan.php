@@ -29,9 +29,9 @@ final class EnumValueMatchConditionPlan implements MatchConditionPlan
     }
 
     /** @return MatchCondition<ValueError> */
-    public function bind(ExceptionMappingNode $rule): MatchCondition
+    public function bind(ExceptionMappingNode $node): MatchCondition
     {
-        $value = $rule->getValue();
+        $value = $node->getValue();
 
         if (null === $value) {
             /** @psalm-var FalseCondition<ValueError> */

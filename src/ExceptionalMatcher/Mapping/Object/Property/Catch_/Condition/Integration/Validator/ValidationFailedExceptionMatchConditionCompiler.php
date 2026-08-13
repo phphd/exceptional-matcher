@@ -34,8 +34,8 @@ final class ValidationFailedExceptionMatchConditionCompiler implements MatchCond
         return $this;
     }
 
-    public function bind(ExceptionMappingNode $rule): ValidationFailedExceptionMatchCondition
+    public function bind(ExceptionMappingNode $node): ValidationFailedExceptionMatchCondition
     {
-        return new ValidationFailedExceptionMatchCondition($rule->getValue());
+        return new ValidationFailedExceptionMatchCondition($node->getValue());
     }
 }

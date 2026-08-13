@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Integration\Symfony;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Port\Integration\Symfony;
 
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Format\LintReportFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Port\Path\Discovery\ClassNameDiscovery;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\Formatter\LintReportFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Path\Discovery\ClassNameDiscovery;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 

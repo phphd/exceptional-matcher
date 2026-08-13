@@ -10,8 +10,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondi
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
 use Throwable;
 
+use function is_array;
 use function is_callable;
-use function is_string;
 
 /**
  * @api
@@ -53,17 +53,21 @@ final class Catch_
     /** @return null|array{class-string,non-empty-string}|array{class-string,null}|array{null,callable-string} */
     public function getFrom(): ?array
     {
-        if (is_string($this->from)) {
-            // callable-string
-            if (is_callable($this->from)) {
-                return [null, $this->from];
-            }
-
-            // class-string
-            return [$this->from, null];
+        if (null === $this->from) {
+            return null;
         }
 
-        return $this->from;
+        if (is_array($this->from)) {
+            return $this->from;
+        }
+
+        // callable-string
+        if (is_callable($this->from)) {
+            return [null, $this->from];
+        }
+
+        // class-string
+        return [$this->from, null];
     }
 
     /**

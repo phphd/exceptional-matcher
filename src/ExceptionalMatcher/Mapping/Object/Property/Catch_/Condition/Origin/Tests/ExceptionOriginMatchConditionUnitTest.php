@@ -69,7 +69,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
         [$matchedException] = $matchedExceptionList->toArray();
 
-        self::assertSame('email', $matchedException->getRule()->getPropertyPath()->join('.'));
+        self::assertSame('email', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
     }
 
     public function testMatchExceptionByOriginClassMethod(): void
@@ -90,7 +90,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
         [$matchedException] = $matchedExceptionList->toArray();
 
-        self::assertSame('uid', $matchedException->getRule()->getPropertyPath()->join('.'));
+        self::assertSame('uid', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
     }
 
     public function testMatchExceptionByCallableStringOrigin(): void
@@ -111,7 +111,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
         [$matchedException] = $matchedExceptionList->toArray();
 
-        self::assertSame('anotherEmail', $matchedException->getRule()->getPropertyPath()->join('.'));
+        self::assertSame('anotherEmail', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
     }
 
     public function testMatchExceptionByOriginPropertyHook(): void
@@ -136,7 +136,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
         [$matchedException] = $matchedExceptionList->toArray();
 
-        self::assertSame('title', $matchedException->getRule()->getPropertyPath()->join('.'));
+        self::assertSame('title', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
     }
 
     public function testDoesNotMatchExceptionThrownFromAnotherPropertyHook(): void

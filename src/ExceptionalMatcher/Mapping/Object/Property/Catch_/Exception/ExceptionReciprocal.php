@@ -24,19 +24,23 @@ final class ExceptionReciprocal
     }
 
     /**
-     * @param CatchExceptionMappingNode<Throwable> $rule
+     * @param CatchExceptionMappingNode<Throwable> $catch
      *
      * @internal
      */
-    public function process(CatchExceptionMappingNode $rule): void
+    public function match(CatchExceptionMappingNode $catch): bool
     {
-        foreach ($this->remainingExceptions as $index => $exception) {
-            if ($rule->matchesException($exception)) {
-                $this->reciprocateException($index, $exception, $rule);
-
-                return;
+        foreach ($this->remainingExceptions as $exceptionIndex => $exception) {
+            if (!$catch->matches($exception)) {
+                continue;
             }
+
+            $this->reciprocateException($catch, $exceptionIndex);
+
+            break;
         }
+
+        return $this->isReciprocated();
     }
 
     public function isReciprocated(): bool
@@ -51,11 +55,13 @@ final class ExceptionReciprocal
         return new MatchedExceptionList($this->matchedExceptions);
     }
 
-    /** @param CatchExceptionMappingNode<Throwable> $rule */
-    private function reciprocateException(int $index, Throwable $exception, CatchExceptionMappingNode $rule): void
+    /** @param CatchExceptionMappingNode<Throwable> $catch */
+    private function reciprocateException(CatchExceptionMappingNode $catch, int $exceptionIndex): void
     {
-        unset($this->remainingExceptions[$index]);
+        $exception = $this->remainingExceptions[$exceptionIndex];
 
-        $this->matchedExceptions[] = new MatchedException($exception, $rule);
+        unset($this->remainingExceptions[$exceptionIndex]);
+
+        $this->matchedExceptions[] = new MatchedException($exception, $catch);
     }
 }

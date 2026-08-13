@@ -44,13 +44,13 @@ final class MainExceptionViolationFormatter implements ExceptionViolationFormatt
     public function format(MatchedException $matchedException): array
     {
         $exception = $matchedException->getException();
-        $rule = $matchedException->getRule();
+        $node = $matchedException->getCatchNode();
 
-        $messageTemplate = $rule->getMessageTemplate() ?? $exception->getMessage();
+        $messageTemplate = $node->getMessageTemplate() ?? $exception->getMessage();
         $message = ($this->translate)($messageTemplate);
-        $root = $rule->getRootObject();
-        $propertyPath = $rule->getPropertyPath();
-        $value = $rule->getValue();
+        $root = $node->getRootObject();
+        $propertyPath = $node->getPropertyPath();
+        $value = $node->getValue();
 
         return [
             new ConstraintViolation(

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Integration\Symfony;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Port\Integration\Symfony;
 
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Defect\DefectSeverity;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Format\LintReportFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\Formatter\LintReportFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\UseCase\LintMappingUseCase;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

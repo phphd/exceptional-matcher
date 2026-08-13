@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Format;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\Formatter;
 
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\LintReport;
 

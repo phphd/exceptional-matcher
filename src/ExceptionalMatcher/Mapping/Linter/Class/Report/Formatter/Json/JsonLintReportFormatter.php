@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Format\Json;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\Formatter\Json;
 
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\Formatter\LintReportFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Report\LintReport;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Format\LintReportFormatter;
 
 use function json_encode;
 

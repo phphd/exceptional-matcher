@@ -28,7 +28,7 @@ use function sprintf;
  *
  * @implements MappingLinter<class-string,LintReport>
  */
-final class ClassNameBasedLinter implements MappingLinter
+final class ClassNameLinter implements MappingLinter
 {
     public function __construct(
         /** @var ObjectExceptionMappingPlanRegistry<object> */

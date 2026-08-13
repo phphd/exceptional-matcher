@@ -119,6 +119,6 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
         [$matchedException] = $matchedExceptionList->toArray();
 
         self::assertSame($originalException, $matchedException->getException());
-        self::assertSame('uid', $matchedException->getRule()->getPropertyPath()->join('.'));
+        self::assertSame('uid', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
     }
 }

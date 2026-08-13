@@ -23,16 +23,16 @@ final class CompositeMatchConditionPlan implements MatchConditionPlan
     ) {
     }
 
-    public function bind(ExceptionMappingNode $rule): CompositeMatchCondition
+    public function bind(ExceptionMappingNode $node): CompositeMatchCondition
     {
-        return new CompositeMatchCondition(new ReusableIteratorAggregate($this->conditions($rule)));
+        return new CompositeMatchCondition(new ReusableIteratorAggregate($this->conditions($node)));
     }
 
     /** @return Iterator<MatchCondition<Throwable>> */
-    private function conditions(ExceptionMappingNode $rule): Iterator
+    private function conditions(ExceptionMappingNode $node): Iterator
     {
         foreach ($this->plans as $plan) {
-            yield $plan->bind($rule);
+            yield $plan->bind($node);
         }
     }
 }

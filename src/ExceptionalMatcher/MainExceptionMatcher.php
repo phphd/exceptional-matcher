@@ -33,11 +33,12 @@ final class MainExceptionMatcher implements ExceptionMatcher
             return null;
         }
 
-        $exceptionList = $this->exceptionUnwrapper->unwrap($exception);
+        $matcher = $plan->bind($message);
 
-        $reciprocal = new ExceptionReciprocal($exceptionList);
+        $exceptions = $this->exceptionUnwrapper->unwrap($exception);
+        $reciprocal = new ExceptionReciprocal($exceptions);
 
-        if (!$plan->bind($message)->match($reciprocal)) {
+        if (!$matcher->match($reciprocal)) {
             return null;
         }
 

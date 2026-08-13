@@ -14,16 +14,16 @@ final class ObjectExceptionMappingNode implements ExceptionMappingNode
 {
     public function __construct(
         private readonly object $object,
-        private readonly ?ExceptionMappingNode $owner,
+        private readonly ?ExceptionMappingNode $parentProperty,
         /** @var iterable<ExceptionMatcher> */
-        private readonly iterable $propertyRules,
+        private readonly iterable $properties,
     ) {
     }
 
     public function match(ExceptionReciprocal $reciprocal): bool
     {
-        foreach ($this->propertyRules as $rule) {
-            if ($rule->match($reciprocal)) {
+        foreach ($this->properties as $property) {
+            if ($property->match($reciprocal)) {
                 return true;
             }
         }
@@ -33,12 +33,13 @@ final class ObjectExceptionMappingNode implements ExceptionMappingNode
 
     public function getOwner(): ?ExceptionMappingNode
     {
-        return $this->owner;
+        return $this->parentProperty;
     }
 
     public function getPropertyPath(): PropertyPath
     {
-        return $this->owner?->getPropertyPath() ?? PropertyPath::empty();
+        return $this->parentProperty?->getPropertyPath()
+            ?? PropertyPath::empty();
     }
 
     public function getEnclosingObject(): object
@@ -48,7 +49,8 @@ final class ObjectExceptionMappingNode implements ExceptionMappingNode
 
     public function getRootObject(): object
     {
-        return $this->owner?->getRootObject() ?? $this->object;
+        return $this->parentProperty?->getRootObject()
+            ?? $this->object;
     }
 
     public function getValue(): object

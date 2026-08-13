@@ -24,7 +24,7 @@ final class PreCompiledMatchConditionPlan implements MatchConditionPlan
     }
 
     /** @return MatchCondition<T> */
-    public function bind(ExceptionMappingNode $rule): MatchCondition
+    public function bind(ExceptionMappingNode $node): MatchCondition
     {
         return $this->condition;
     }

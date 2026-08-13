@@ -52,10 +52,10 @@ final class ViolationsEmbeddedExceptionFormatter implements ExceptionViolationFo
             throw new LogicException('Violation list must not be empty');
         }
 
-        $rule = $matchedException->getRule();
+        $node = $matchedException->getCatchNode();
 
-        $root = $rule->getRootObject();
-        $propertyPath = $rule->getPropertyPath()
+        $root = $node->getRootObject();
+        $propertyPath = $node->getPropertyPath()
             ->join('.')
         ;
         $redoTranslation = $this->shouldRedoTranslation($exception);

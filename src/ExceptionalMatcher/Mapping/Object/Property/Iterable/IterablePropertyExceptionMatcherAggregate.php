@@ -15,7 +15,7 @@ use function is_object;
 final class IterablePropertyExceptionMatcherAggregate implements ExceptionMatcherAggregate
 {
     public function __construct(
-        private readonly PropertyExceptionMappingNode $propertyRuleSet,
+        private readonly PropertyExceptionMappingNode $property,
         /** @var ObjectExceptionMappingPlanRegistry<object> */
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
     ) {
@@ -24,7 +24,7 @@ final class IterablePropertyExceptionMatcherAggregate implements ExceptionMatche
     public function getExceptionMatchers(): Iterator
     {
         /** @var iterable<array-key,mixed> $value */
-        $value = $this->propertyRuleSet->getValue();
+        $value = $this->property->getValue();
 
         foreach ($value as $key => $item) {
             if (!is_object($item)) {
@@ -37,7 +37,7 @@ final class IterablePropertyExceptionMatcherAggregate implements ExceptionMatche
                 continue;
             }
 
-            yield new ItemOfIterableExceptionMappingNode($this->propertyRuleSet, $key, $item, $itemPlan);
+            yield new ItemOfIterableExceptionMappingNode($this->property, $key, $item, $itemPlan);
         }
     }
 }

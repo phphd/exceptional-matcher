@@ -23,9 +23,9 @@ final class SimpleIfClosureMatchConditionPlan implements MatchConditionPlan
         Assert::methodExists(...$if);
     }
 
-    public function bind(ExceptionMappingNode $rule): ClosureMatchCondition
+    public function bind(ExceptionMappingNode $node): ClosureMatchCondition
     {
-        $object = $rule->getEnclosingObject();
+        $object = $node->getEnclosingObject();
 
         if ($this->if[0] === $object::class) {
             $if = [$object, $this->if[1]];

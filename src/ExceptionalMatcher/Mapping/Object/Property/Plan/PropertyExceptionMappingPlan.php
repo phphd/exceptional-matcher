@@ -31,24 +31,24 @@ final class PropertyExceptionMappingPlan
     ) {
     }
 
-    public function bind(ObjectExceptionMappingNode $ownerRule): PropertyExceptionMappingNode
+    public function bind(ObjectExceptionMappingNode $objectNode): PropertyExceptionMappingNode
     {
         $name = $this->getName();
-        $value = $this->getPropertyValue($ownerRule->getEnclosingObject());
+        $value = $this->getPropertyValue($objectNode->getEnclosingObject());
 
-        $propertyRuleSet = new PropertyExceptionMappingNode($ownerRule, $name, $value, ($rules = new ArrayIterator()));
+        $propertyNode = new PropertyExceptionMappingNode($objectNode, $name, $value, ($matchers = new ArrayIterator()));
 
-        if (null !== $catchRules = $this->catchAttributesMatcher($propertyRuleSet)) {
-            $rules->append(new ExceptionMatcherAggregateAdapter($catchRules));
+        if (null !== $catchMatcher = $this->catchAttributesMatcher($propertyNode)) {
+            $matchers->append(new ExceptionMatcherAggregateAdapter($catchMatcher));
         }
 
-        if (null !== $nestedObjectRule = $this->nestedObjectMatcher($propertyRuleSet)) {
-            $rules->append($nestedObjectRule);
-        } elseif (null !== $nestedIterableRule = $this->nestedObjectsOfIterableMatcher($propertyRuleSet)) {
-            $rules->append(new ExceptionMatcherAggregateAdapter($nestedIterableRule));
+        if (null !== $nestedObjectMatcher = $this->nestedObjectMatcher($propertyNode)) {
+            $matchers->append($nestedObjectMatcher);
+        } elseif (null !== $nestedIterableMatcher = $this->nestedObjectsOfIterableMatcher($propertyNode)) {
+            $matchers->append(new ExceptionMatcherAggregateAdapter($nestedIterableMatcher));
         }
 
-        return $propertyRuleSet;
+        return $propertyNode;
     }
 
     public function getName(): string
@@ -90,18 +90,18 @@ final class PropertyExceptionMappingPlan
         return $this->property->getValue($object);
     }
 
-    private function catchAttributesMatcher(PropertyExceptionMappingNode $propertyRuleSet): ?ExceptionMatcherAggregate
+    private function catchAttributesMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcherAggregate
     {
         if (!$this->hasCatchPlans()) {
             return null;
         }
 
-        return new CatchAttributesExceptionMatcherAggregate($propertyRuleSet, $this->catchPlans);
+        return new CatchAttributesExceptionMatcherAggregate($property, $this->catchPlans);
     }
 
-    private function nestedObjectMatcher(PropertyExceptionMappingNode $propertyRuleSet): ?ExceptionMatcher
+    private function nestedObjectMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcher
     {
-        $value = $propertyRuleSet->getValue();
+        $value = $property->getValue();
 
         if (!is_object($value)) {
             return null;
@@ -114,17 +114,17 @@ final class PropertyExceptionMappingPlan
             return null;
         }
 
-        return $nestedPlan->bind($value, $propertyRuleSet);
+        return $nestedPlan->bind($value, $property);
     }
 
-    private function nestedObjectsOfIterableMatcher(PropertyExceptionMappingNode $propertyRuleSet): ?ExceptionMatcherAggregate
+    private function nestedObjectsOfIterableMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcherAggregate
     {
-        $value = $propertyRuleSet->getValue();
+        $value = $property->getValue();
 
         if (!is_iterable($value) || [] === $value) {
             return null;
         }
 
-        return new IterablePropertyExceptionMatcherAggregate($propertyRuleSet, $this->planRegistry);
+        return new IterablePropertyExceptionMatcherAggregate($property, $this->planRegistry);
     }
 }
