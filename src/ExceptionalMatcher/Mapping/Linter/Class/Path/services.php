@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Path;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Path;
 
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Path\Discovery\ClassNameDiscovery;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Path\Discovery\ClassNameDiscovery;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -21,5 +21,5 @@ return static function (ContainerConfigurator $configurator): void {
             inline_service(ClassNameDiscovery::class),
             service(MappingLinter::class.'<'.'class-string,'.LintReport::class.'>'),
         ])
-        ->tag(MappingLinter::class, ['id' => 'paths']);
+        ->tag(MappingLinter::class, ['id' => 'path-string']);
 };

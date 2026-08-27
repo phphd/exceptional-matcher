@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Defect;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect;
 
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity;
 use Throwable;
 
 use function rtrim;

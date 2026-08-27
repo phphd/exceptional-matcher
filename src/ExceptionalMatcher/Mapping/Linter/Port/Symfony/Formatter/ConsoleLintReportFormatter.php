@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Formatter\Integration\Symfony;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\Formatter;
 
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Defect\DefectSeverity;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Formatter\LintReportFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -63,7 +63,7 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
 
         $summary = sprintf(
             '%d classes scanned: %d errors, %d warnings.',
-            $report->getScannedClasses(),
+            $report->getScannedSymbols(),
             $errors,
             $warnings,
         );

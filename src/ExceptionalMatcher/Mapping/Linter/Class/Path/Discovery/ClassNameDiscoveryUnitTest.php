@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Path\Discovery;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Path\Discovery;
 
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Path\ClassPathBasedLinter;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Path\ClassPathBasedLinter;
 use PHPUnit\Framework\TestCase;
 
 use function dirname;
@@ -12,7 +12,7 @@ use function dirname;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Path\Discovery\ClassNameDiscovery
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Path\Discovery\ClassNameDiscovery
  */
 final class ClassNameDiscoveryUnitTest extends TestCase
 {

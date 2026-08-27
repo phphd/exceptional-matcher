@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Integration\Symfony\Tests;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Integration\Symfony\LintExceptionalMatcherCommand;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\LintExceptionalMatcherCommand;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -16,7 +16,7 @@ use function json_decode;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Integration\Symfony\LintExceptionalMatcherCommand
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\LintExceptionalMatcherCommand
  */
 final class LintExceptionalMatcherCommandUnitTest extends TestCase
 {
@@ -41,7 +41,7 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
     public function testValidMappingsPass(): void
     {
         $exitCode = $this->commandTester->execute([
-            'paths' => [$this->stubPath('PlannedItem.php', 'Rule/Object/Tests/Stub')],
+            'symbols' => [$this->stubPath('PlannedItem.php', 'Rule/Object/Tests/Stub')],
         ]);
 
         self::assertSame(Command::SUCCESS, $exitCode);
@@ -51,7 +51,7 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
     public function testBrokenMappingsFail(): void
     {
         $exitCode = $this->commandTester->execute([
-            'paths' => [$this->stubPath('Invalid/UndefinedConstantConditionMessage.php')],
+            'symbols' => [$this->stubPath('Invalid/UndefinedConstantConditionMessage.php')],
         ]);
 
         self::assertSame(Command::FAILURE, $exitCode);
@@ -63,7 +63,7 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
     public function testWarningsPassUnlessFailOnWarningIsSet(): void
     {
         $paths = [
-            'paths' => [$this->stubPath('AbstractTryMessage.php')],
+            'symbols' => [$this->stubPath('AbstractTryMessage.php')],
         ];
 
         self::assertSame(Command::SUCCESS, $this->commandTester->execute($paths));
@@ -77,7 +77,7 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
     public function testReportsDefectsAsJson(): void
     {
         $exitCode = $this->commandTester->execute([
-            'paths' => [$this->stubPath('Invalid/UndefinedConstantConditionMessage.php')],
+            'symbols' => [$this->stubPath('Invalid/UndefinedConstantConditionMessage.php')],
             '--format' => 'json',
         ]);
 
@@ -95,7 +95,7 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
     public function testRejectsUnknownFormat(): void
     {
         $exitCode = $this->commandTester->execute([
-            'paths' => [$this->stubPath('AbstractTryMessage.php')],
+            'symbols' => [$this->stubPath('AbstractTryMessage.php')],
             '--format' => 'xml',
         ]);
 
@@ -106,7 +106,7 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
     public function testFailsOnNonExistentPath(): void
     {
         $exitCode = $this->commandTester->execute([
-            'paths' => [__DIR__.'/does-not-exist'],
+            'symbols' => [__DIR__.'/does-not-exist'],
         ]);
 
         self::assertSame(Command::INVALID, $exitCode);

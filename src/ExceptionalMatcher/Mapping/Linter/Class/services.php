@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter;
 
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Defect\MappingDefectCollector;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ClassLinter;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\MappingDefectCollector;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
@@ -33,7 +34,7 @@ return static function (ContainerConfigurator $configurator): void {
                 ]),
             service(MappingDefectCollector::class),
         ])
-        ->tag(MappingLinter::class, ['id' => 'classes'])
+        ->tag(MappingLinter::class, ['id' => 'class-string'])
     ;
 
     $services->set(MappingDefectCollector::class, MappingDefectCollector::class);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Defect;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity;
 
 /** @internal */
 enum DefectSeverity: string

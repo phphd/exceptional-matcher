@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Defect;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location;
 
 /** @internal */
 final class DefectLocation

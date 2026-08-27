@@ -28,21 +28,24 @@ final class LintMappingUseCase
     /**
      * @param iterable<TSymbol> $symbols
      *
-     * @return TFormat
-     *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     *
+     * @return array{bool,TFormat}
      */
-    public function lint(iterable $symbols, string $inputFormat, string $outputFormat): mixed
+    public function lint(string $inputFormat, iterable $symbols, string $outputFormat): array
     {
         /** @var MappingLinter<LintReport> $linter */
         $linter = $this->mappingLinterRegistry->get($inputFormat);
 
+        /** @var LintReport $report */
         $report = $linter->lint($symbols);
 
-        /** @var LintReportFormatter<mixed> $formatter */
+        /** @var LintReportFormatter<TFormat> $formatter */
         $formatter = $this->reportFormatterRegistry->get($outputFormat);
 
-        return $formatter->format($report);
+        $output = $formatter->format($report);
+
+        return [$report->hasDefects(), $output];
     }
 }

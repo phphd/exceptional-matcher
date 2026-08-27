@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Defect;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class;
 
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchExceptionMappingPlanCompilationFailedException;
@@ -11,14 +13,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\Exception\Pro
 use Psr\Log\AbstractLogger;
 use Throwable;
 
-/**
- * Turns the mapping compilers' degraded-compilation records into lint defects.
- *
- * Handed to the compilers instead of the application logger, this is how the linter learns about every
- * mapping they had to drop: each record carries the wrapper exception, and the wrapper knows its own location.
- *
- * @internal
- */
+/** @internal */
 final class MappingDefectCollector extends AbstractLogger
 {
     /** @var list<MappingDefect> */

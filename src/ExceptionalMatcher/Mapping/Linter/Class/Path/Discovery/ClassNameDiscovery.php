@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Path\Discovery;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Path\Discovery;
 
 use Composer\ClassMapGenerator\ClassMapGenerator;
 use RuntimeException;

@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Report;
 
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Defect\DefectSeverity;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Defect\MappingDefect;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity;
 
 /** @internal */
 final class LintReport
 {
     /** @param list<MappingDefect> $defects */
     public function __construct(
-        private readonly int $scannedClasses,
+        private readonly int $scannedSymbols,
         private readonly array $defects,
     ) {
     }
 
-    public function getScannedClasses(): int
+    public function getScannedSymbols(): int
     {
-        return $this->scannedClasses;
+        return $this->scannedSymbols;
     }
 
     /** @return list<MappingDefect> */

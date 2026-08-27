@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Integration\Symfony;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony;
 
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Path\Discovery\ClassNameDiscovery;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Path\Discovery\ClassNameDiscovery;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Port\LintMappingUseCase;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Formatter\LintReportFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use Symfony\Component\Console\Command\Command;
@@ -26,11 +27,7 @@ return static function (ContainerConfigurator $configurator): void {
     $services
         ->set(LintExceptionalMatcherCommand::class, LintExceptionalMatcherCommand::class)
         ->public()
-        ->args([
-            service(MappingLinter::class.'<'.'class-string,'.LintReport::class.'>'),
-            inline_service(ClassNameDiscovery::class),
-            tagged_locator(LintReportFormatter::class, 'id'),
-        ])
+        ->args([service(LintMappingUseCase::class)])
         ->tag('console.command')
     ;
 };

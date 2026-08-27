@@ -6,9 +6,9 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Defect\DefectSeverity;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\AbstractTryMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\ChildOfPrivateCatchMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage;
@@ -35,8 +35,8 @@ use function array_values;
  * @internal
  *
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Defect\MappingDefect
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Defect\DefectLocation
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation
  */
 final class MappingLinterUnitTest extends TestCase
 {

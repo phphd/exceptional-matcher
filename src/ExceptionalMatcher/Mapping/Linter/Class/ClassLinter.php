@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class;
 
 use AppendIterator;
 use Generator;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Defect\DefectLocation;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Defect\MappingDefect;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Defect\MappingDefectCollector;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;

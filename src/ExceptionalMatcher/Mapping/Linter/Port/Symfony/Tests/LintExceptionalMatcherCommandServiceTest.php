@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Integration\Symfony;
+namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\LintExceptionalMatcherCommand;
 
 /**
  * @coversNothing
