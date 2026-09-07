@@ -16,10 +16,11 @@ return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
 
     $services
-        ->set(MappingLinter::class.'<'.'path-string,'.LintReport::class.'>', ClassPathBasedLinter::class)
+        ->set(MappingLinter::class.'<path-string,'.LintReport::class.'>', ClassPathBasedLinter::class)
         ->args([
             inline_service(ClassNameDiscovery::class),
-            service(MappingLinter::class.'<'.'class-string,'.LintReport::class.'>'),
+            service(MappingLinter::class.'<class-string,'.LintReport::class.'>'),
         ])
-        ->tag(MappingLinter::class, ['id' => 'path-string']);
+        ->tag(MappingLinter::class, ['id' => 'path-string'])
+    ;
 };

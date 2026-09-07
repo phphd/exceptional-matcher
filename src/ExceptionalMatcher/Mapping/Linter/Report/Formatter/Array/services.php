@@ -11,5 +11,6 @@ return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
 
     $services
-        ->set(LintReportFormatter::class.'<array>', ArrayLintReportFormatter::class);
+        ->set(LintReportFormatter::class.'<array>', ArrayLintReportFormatter::class)
+    ;
 };

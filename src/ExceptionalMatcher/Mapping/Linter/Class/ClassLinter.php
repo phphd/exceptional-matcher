@@ -21,6 +21,7 @@ use Throwable;
 
 use function class_exists;
 use function is_subclass_of;
+use function iterator_to_array;
 use function sprintf;
 
 /**

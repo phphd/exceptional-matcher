@@ -8,6 +8,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Formatter\LintReportFormatter
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
+use function class_exists;
+
 return static function (ContainerConfigurator $configurator): void {
     if (!class_exists(Command::class)) {
         return;

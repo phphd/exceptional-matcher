@@ -15,5 +15,6 @@ return static function (ContainerConfigurator $configurator): void {
     $services
         ->set(LintReportFormatter::class.'<json-string>', JsonLintReportFormatter::class)
         ->args([service(LintReportFormatter::class.'<array>')])
-        ->tag(LintReportFormatter::class, ['id' => 'json']);
+        ->tag(LintReportFormatter::class, ['id' => 'json'])
+    ;
 };

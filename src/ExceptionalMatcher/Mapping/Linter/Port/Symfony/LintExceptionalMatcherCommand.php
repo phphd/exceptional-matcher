@@ -31,7 +31,8 @@ final class LintExceptionalMatcherCommand extends Command
         $this
             ->addOption('input-format', '-i', InputOption::VALUE_REQUIRED, 'Input format (path-string, class-string, etc.)', 'path-string')
             ->addArgument('symbols', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Files or directories to scan for mapped classes')
-            ->addOption('output-format', '-o', InputOption::VALUE_REQUIRED, 'Output format (console, json, etc.)', 'console');
+            ->addOption('output-format', '-o', InputOption::VALUE_REQUIRED, 'Output format (console, json, etc.)', 'console')
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

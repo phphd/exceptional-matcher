@@ -28,10 +28,10 @@ final class LintMappingUseCase
     /**
      * @param iterable<TSymbol> $symbols
      *
+     * @return array{bool,TFormat}
+     *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     *
-     * @return array{bool,TFormat}
      */
     public function lint(string $inputFormat, iterable $symbols, string $outputFormat): array
     {
