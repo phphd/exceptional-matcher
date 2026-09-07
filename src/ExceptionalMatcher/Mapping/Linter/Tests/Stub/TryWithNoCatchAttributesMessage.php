@@ -11,7 +11,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
  * matchable object, so the compiler produces no ClassMappingPlan and the class can never match.
  */
 #[Try_]
-final class UnmatchableTryMessage
+final class TryWithNoCatchAttributesMessage
 {
     private int $value = 0;
 }
