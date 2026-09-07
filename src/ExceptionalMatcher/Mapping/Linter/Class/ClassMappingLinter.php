@@ -81,23 +81,32 @@ final class ClassMappingLinter implements MappingLinter
      */
     private function lintPlan(ReflectionClass $reflectionClass): array
     {
+        if (!$this->planRegistry->hasPlan($reflectionClass->getName())) {
+            if ([] !== $compilationDefects = $this->defectCollector->flush()) {
+                return $compilationDefects;
+            }
+
+            return $this->possiblyMissingTryAttribute($reflectionClass);
+        }
+
+        /** @var ObjectExceptionMappingPlan<object> $plan */
         $plan = $this->planRegistry->getPlan($reflectionClass->getName());
 
         // Compilation is done lazily through traversal
-        foreach ($plan?->getPropertyPlans() ?? [] as $propertyPlan) {
+        foreach ($plan->getPropertyPlans() ?? [] as $propertyPlan) {
             foreach ($propertyPlan->getCatchPlans() as $catchPlan) {
                 unset($catchPlan);
             }
             unset($propertyPlan);
         }
 
-        $compilationDefects = $this->defectCollector->flush();
+        return $this->defectCollector->flush();
+    }
 
-        if ([] !== $compilationDefects || null !== $plan) {
-            return $compilationDefects;
-        }
-
-        // The class plan is null, and no compilation errors were reported.
+    /** @param ReflectionClass<object> $reflectionClass */
+    private function possiblyMissingTryAttribute(ReflectionClass $reflectionClass): array
+    {
+        // The class plan is null, but it might be so due to a missing #[Try_] attribute
         $missingTryDefects = [];
 
         foreach ($reflectionClass->getProperties() as $property) {
@@ -132,12 +141,6 @@ final class ClassMappingLinter implements MappingLinter
         if ($reflectionClass->isAbstract()) {
             yield MappingDefect::warning(
                 '#[Try_] on an abstract class never matches: attributes are not inherited by its subclasses.',
-                $classLocation,
-            );
-        } elseif (null === $plan && !$compilationFailed) {
-            // a plan missing because its mappings failed to compile is already reported as an error
-            yield MappingDefect::warning(
-                '#[Try_] class declares no #[Catch_] mappings and no nested matchable properties, so it never matches anything.',
                 $classLocation,
             );
         }

@@ -69,7 +69,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
         self::assertStringContainsString('not marked with #[Try_]', $defect->getMessage());
         self::assertSame(MessageWithNoTryAttribute::class, $defect->getLocation()->getClassName());
-        self::assertNull($defect->getLocation()->getPropertyName());
+        self::assertSame('property', $defect->getLocation()->getPropertyName());
     }
 
     public function testValidMappingsProduceNoErrors(): void
@@ -103,7 +103,7 @@ final class MappingLinterUnitTest extends TestCase
     {
         [$defect] = $this->linter->lint([UnmatchableTryMessage::class])->getDefects();
 
-        self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
+        self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertStringContainsString('#[Try_]', $defect->getMessage());
         self::assertStringContainsString('never matches anything', $defect->getMessage());
         self::assertSame(UnmatchableTryMessage::class, $defect->getLocation()->getClassName());
@@ -114,7 +114,7 @@ final class MappingLinterUnitTest extends TestCase
     {
         [$defect] = $this->linter->lint([TryWithNonMatchableObjectMessage::class])->getDefects();
 
-        self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
+        self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertStringContainsString('#[Try_]', $defect->getMessage());
         self::assertStringContainsString('never matches anything', $defect->getMessage());
         self::assertSame(TryWithNonMatchableObjectMessage::class, $defect->getLocation()->getClassName());

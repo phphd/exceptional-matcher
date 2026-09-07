@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler;
 
 use Generator;
+use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\ReusableIteratorAggregate;
@@ -72,7 +73,7 @@ final class ObjectExceptionMappingPlanCompiler implements ExceptionMappingPlanCo
         );
 
         if (!$mappingPlan->hasPropertyPlans()) {
-            return null;
+            throw new LogicException('#[Try_] class has no #[Catch_] mappings and no nested matchable properties, so it never matches anything.');
         }
 
         return $mappingPlan;
