@@ -10,8 +10,10 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\CompilingObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use ReflectionClass;
+use ReflectionProperty;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\inline_service;
@@ -28,10 +30,13 @@ return static function (ContainerConfigurator $configurator): void {
             inline_service(CompilingObjectExceptionMappingPlanRegistry::class)
                 ->args([
                     // Lint-mode compiler - it collects and reports mapping problems
-                    inline_service(ObjectExceptionMappingPlanCompiler::class)
+                    inline_service(ExceptionMappingPlanCompiler::class)
                         ->factory([service(ExceptionMappingPlanCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>'), 'reportingTo'])
                         ->args([service(MappingDefectCollector::class)]),
                 ]),
+            inline_service(ExceptionMappingPlanCompiler::class)
+                ->factory([service(ExceptionMappingPlanCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingPlan::class.'>'), 'reportingTo'])
+                ->args([service(MappingDefectCollector::class)]),
             service(MappingDefectCollector::class),
         ])
         ->tag(MappingLinter::class, ['id' => 'class-string'])

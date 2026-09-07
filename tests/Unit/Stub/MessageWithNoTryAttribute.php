@@ -9,7 +9,7 @@ namespace PhPhD\ExceptionalMatcher\Tests\Unit\Stub;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 
-final class NotHandleableMessageStub
+final class MessageWithNoTryAttribute
 {
     public function __construct(
         #[Catch_(AnException::class, message: 'not matched')]

@@ -25,7 +25,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\Exception\Pro
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedHandleableMessage;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedItem;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NotHandleableMessageStub;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\MessageWithNoTryAttribute;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
@@ -62,6 +62,16 @@ final class MappingLinterUnitTest extends TestCase
         $this->linter = $linter;
     }
 
+    public function testReportsCatchPropertiesWithoutTryAttribute(): void
+    {
+        [$defect] = $this->linter->lint([MessageWithNoTryAttribute::class])->getDefects();
+
+        self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
+        self::assertStringContainsString('not marked with #[Try_]', $defect->getMessage());
+        self::assertSame(MessageWithNoTryAttribute::class, $defect->getLocation()->getClassName());
+        self::assertNull($defect->getLocation()->getPropertyName());
+    }
+
     public function testValidMappingsProduceNoErrors(): void
     {
         $report = $this->linter->lint([
@@ -72,16 +82,6 @@ final class MappingLinterUnitTest extends TestCase
 
         self::assertFalse($report->hasDefects());
         self::assertSame([], $report->getDefects());
-    }
-
-    public function testReportsCatchPropertiesWithoutTryAttribute(): void
-    {
-        [$defect] = $this->linter->lint([NotHandleableMessageStub::class])->getDefects();
-
-        self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
-        self::assertStringContainsString('not marked with #[Try_]', $defect->getMessage());
-        self::assertSame(NotHandleableMessageStub::class, $defect->getLocation()->getClassName());
-        self::assertNull($defect->getLocation()->getPropertyName());
     }
 
     public function testReportsAbstractTryClass(): void

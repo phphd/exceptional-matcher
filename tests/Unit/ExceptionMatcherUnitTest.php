@@ -18,7 +18,7 @@ use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\StaticPropertyMatchedExce
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedHandleableMessage;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedItem;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NotHandleableMessageStub;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\MessageWithNoTryAttribute;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\Reference;
@@ -99,7 +99,7 @@ final class ExceptionMatcherUnitTest extends TestCase
 
     public function testExceptionIsNotCapturedForMessageWithoutExceptionalValidationAttribute(): void
     {
-        $message = new NotHandleableMessageStub(123);
+        $message = new MessageWithNoTryAttribute(123);
         $exception = new AnException();
 
         $violationList = $this->exceptionMatcher->match($exception, $message);

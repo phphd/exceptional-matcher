@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry;
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NotHandleableMessageStub;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\MessageWithNoTryAttribute;
 use Symfony\Contracts\Service\ResetInterface;
 
 /**
@@ -22,7 +22,7 @@ final class ObjectExceptionMappingPlanRegistryServiceTest extends BundleTestCase
 
         self::assertInstanceOf(MemoizingObjectExceptionMappingPlanRegistry::class, $planRegistry);
 
-        self::assertNull($planRegistry->getPlan(NotHandleableMessageStub::class));
+        self::assertNull($planRegistry->getPlan(MessageWithNoTryAttribute::class));
         self::assertNotNull($planRegistry->getPlan(HandleableMessageStub::class));
     }
 

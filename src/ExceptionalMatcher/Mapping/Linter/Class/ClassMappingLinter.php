@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class;
 
-use AppendIterator;
 use Generator;
-use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
@@ -16,13 +14,10 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMapping
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use ReflectionClass;
 use ReflectionProperty;
-use Throwable;
-use UnitEnum;
 
-use function class_exists;
-use function is_subclass_of;
 use function iterator_to_array;
 use function sprintf;
 
@@ -36,6 +31,8 @@ final class ClassMappingLinter implements MappingLinter
     public function __construct(
         /** @var ObjectExceptionMappingPlanRegistry<object> */
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
+        /** @var ExceptionMappingPlanCompiler<ReflectionProperty,PropertyExceptionMappingPlan> */
+        private readonly ExceptionMappingPlanCompiler $propertyMappingPlanCompiler,
         private readonly MappingDefectCollector $defectCollector,
     ) {
     }
@@ -68,24 +65,54 @@ final class ClassMappingLinter implements MappingLinter
             return;
         }
 
-        $className = $reflectionClass->getName();
+        $compilationDefects = $this->lintPlan($reflectionClass);
 
-        $plan = $this->planRegistry->getPlan($className);
+        yield from $compilationDefects;
 
-        // Materializing the whole plan makes the compilers report every mapping they had to drop
-        if (null === $plan) {
-            $planDefects = [];
-        } else {
-            $planDefects = $this->lintPlan($className, $plan);
+        $plan = $this->planRegistry->getPlan($reflectionClass->getName());
+
+        yield from $this->lintStructure($reflectionClass, $plan, [] !== $compilationDefects);
+    }
+
+    /**
+     * @param ReflectionClass<object> $reflectionClass
+     *
+     * @return array<MappingDefect>
+     */
+    private function lintPlan(ReflectionClass $reflectionClass): array
+    {
+        $plan = $this->planRegistry->getPlan($reflectionClass->getName());
+
+        // Compilation is done lazily through traversal
+        foreach ($plan?->getPropertyPlans() ?? [] as $propertyPlan) {
+            foreach ($propertyPlan->getCatchPlans() as $catchPlan) {
+                unset($catchPlan);
+            }
+            unset($propertyPlan);
         }
 
         $compilationDefects = $this->defectCollector->flush();
 
-        yield from $compilationDefects;
+        if ([] !== $compilationDefects || null !== $plan) {
+            return $compilationDefects;
+        }
 
-        yield from $this->lintStructure($reflectionClass, $plan, [] !== $compilationDefects);
+        // The class plan is null, and no compilation errors were reported.
+        $missingTryDefects = [];
 
-        yield from $planDefects;
+        foreach ($reflectionClass->getProperties() as $property) {
+            // if class's property has a catch plan, and class has no plan, - that's a defect
+            if (true !== $this->propertyMappingPlanCompiler->compilePlan($property)?->hasCatchPlans()) {
+                continue;
+            }
+
+            $missingTryDefects [] = MappingDefect::warning(
+                'Properties declare #[Catch_] mappings, but the class is not marked with #[Try_], so it never matches anything.',
+                new DefectLocation($reflectionClass->getName(), $property->getName()),
+            );
+        }
+
+        return $missingTryDefects;
     }
 
     /**
@@ -99,13 +126,6 @@ final class ClassMappingLinter implements MappingLinter
         $classLocation = new DefectLocation($reflectionClass->getName());
 
         if (!$this->hasTryAttribute($reflectionClass)) {
-            if ($this->hasCatchProperties($reflectionClass)) {
-                yield MappingDefect::warning(
-                    'Properties declare #[Catch_] mappings, but the class is not marked with #[Try_], so it never matches anything.',
-                    $classLocation,
-                );
-            }
-
             return;
         }
 
@@ -151,63 +171,10 @@ final class ClassMappingLinter implements MappingLinter
         }
     }
 
-    /**
-     * @param class-string $className
-     * @param ObjectExceptionMappingPlan<object> $plan
-     *
-     * @return list<MappingDefect>
-     */
-    private function lintPlan(string $className, ObjectExceptionMappingPlan $plan): array
-    {
-        $defects = [];
-
-        // a property whose mappings failed to compile is dropped and reported to the collector, never thrown
-        foreach ($plan->getPropertyPlans() as $propertyPlan) {
-            $defect = $this->compileCatchPlans($className, $propertyPlan);
-
-            if (null !== $defect) {
-                $defects[] = $defect;
-            }
-        }
-
-        return $defects;
-    }
-
-    /**
-     * Forces the catch plans of a property, which is what compiles every one of its `#[Catch_]` attributes.
-     *
-     * @param class-string $className
-     */
-    private function compileCatchPlans(string $className, PropertyExceptionMappingPlan $propertyPlan): ?MappingDefect
-    {
-        try {
-            foreach ($propertyPlan->getCatchPlans() as $catchPlan) {
-                unset($catchPlan);
-            }
-        } catch (Throwable $exception) {
-            // a catch plan compiled this late is past the compiler's own guard, so it still throws
-            return MappingDefect::error(new DefectLocation($className, $propertyPlan->getName()), $exception);
-        }
-
-        return null;
-    }
-
     /** @param ReflectionClass<object> $reflectionClass */
     private function hasTryAttribute(ReflectionClass $reflectionClass): bool
     {
         return [] !== $reflectionClass->getAttributes(Try_::class);
-    }
-
-    /** @param ReflectionClass<object> $reflectionClass */
-    private function hasCatchProperties(ReflectionClass $reflectionClass): bool
-    {
-        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            if ($this->hasCatchAttributes($reflectionProperty)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function hasCatchAttributes(ReflectionProperty $reflectionProperty): bool
