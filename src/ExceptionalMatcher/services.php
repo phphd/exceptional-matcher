@@ -16,8 +16,8 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
     $services = $configurator->services();
 
-    /** @var Closure(class-string):((bool|class-string)) $hintLazy */
-    $hintLazy = $container->get('phd_exceptional_matcher.hint_lazy');
+    /** @var Closure(class-string):((bool|class-string)) $lazy */
+    $lazy = $container->get('phd_exceptional_matcher.hint_lazy_proxy');
 
     $services
         ->set(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>', MainExceptionMatcher::class)
@@ -26,7 +26,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
             service(ObjectExceptionMappingPlanRegistry::class),
             service('phd_exceptional_matcher.exception_unwrapper'),
         ])
-        ->lazy($hintLazy(ExceptionMatcher::class))
+        ->lazy($lazy(ExceptionMatcher::class))
     ;
 
     $services->alias('phd_exceptional_matcher.exception_unwrapper', ExceptionUnwrapper::class);

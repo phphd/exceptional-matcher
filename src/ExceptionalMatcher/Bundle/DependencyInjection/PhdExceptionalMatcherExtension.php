@@ -91,14 +91,14 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
     public function loadExtension(array $config, ContainerConfigurator $configurator, ContainerBuilder $container): void
     {
         $container->set('phd_exceptional_matcher.lazy_proxy', $this->lazyProxy(...));
-        $container->set('phd_exceptional_matcher.hint_lazy', $this->hintLazy(...));
+        $container->set('phd_exceptional_matcher.hint_lazy_proxy', $this->hintLazy(...));
         $container->setParameter('phd_exceptional_matcher.validator_available', interface_exists(ValidatorInterface::class));
         $container->setParameter('phd_exceptional_matcher.messenger_available', interface_exists(MessengerMiddlewareInterface::class));
 
         $configurator->import(__DIR__.'/../../**/services.php');
 
         $container->set('phd_exceptional_matcher.lazy_proxy', null);
-        $container->set('phd_exceptional_matcher.hint_lazy', null);
+        $container->set('phd_exceptional_matcher.hint_lazy_proxy', null);
         $container->setParameter('phd_exceptional_matcher.validator_available', null);
         $container->setParameter('phd_exceptional_matcher.messenger_available', null);
     }
