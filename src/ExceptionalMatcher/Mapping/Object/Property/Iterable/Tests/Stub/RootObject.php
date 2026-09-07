@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Rule\Object\Property\Tests\Stub;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\Tests\Stub;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 
