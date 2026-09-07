@@ -18,8 +18,6 @@ final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
 {
     public const PRIORITY = 20;
 
-    public const AUTOLOADER_ID = 'phd_exceptional_matcher.constants_autoloader';
-
     /** @var list<ConstantsAutoloadingClassDiscovery> */
     private readonly array $discovery;
 
