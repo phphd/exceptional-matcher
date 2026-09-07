@@ -14,12 +14,12 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
  *
  * @implements MappingLinter<string,TReport>
  */
-final class ClassPathBasedLinter implements MappingLinter
+final class ClassPathMappingLinter implements MappingLinter
 {
     public function __construct(
         private readonly ClassNameDiscovery $classNameDiscovery,
         /** @var MappingLinter<class-string,TReport> */
-        private readonly MappingLinter $classNameBasedLinter,
+        private readonly MappingLinter $classMappingLinter,
     ) {
     }
 
@@ -28,6 +28,6 @@ final class ClassPathBasedLinter implements MappingLinter
     {
         $classNames = $this->classNameDiscovery->discover($symbols);
 
-        return $this->classNameBasedLinter->lint($classNames);
+        return $this->classMappingLinter->lint($classNames);
     }
 }

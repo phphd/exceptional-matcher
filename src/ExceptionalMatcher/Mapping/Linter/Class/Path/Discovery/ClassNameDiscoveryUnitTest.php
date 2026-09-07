@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Path\Discovery;
 
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Path\ClassPathBasedLinter;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Path\ClassPathMappingLinter;
 use PHPUnit\Framework\TestCase;
 
 use function dirname;
@@ -25,7 +25,7 @@ final class ClassNameDiscoveryUnitTest extends TestCase
         $classNames = $discovery->discover([$directory]);
 
         self::assertSame([
-            ClassPathBasedLinter::class,
+            ClassPathMappingLinter::class,
             self::class,
             ClassNameDiscovery::class,
         ], $classNames);
