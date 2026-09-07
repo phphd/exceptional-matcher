@@ -45,31 +45,16 @@ final class ClassMappingLinter implements MappingLinter
     {
         $processed = 0;
 
-        /** @var AppendIterator<int,MappingDefect,Iterator<MappingDefect>> $defects */
-        $defects = new AppendIterator();
+        /** @var list<iterable<MappingDefect>> $defects */
+        $defects = [];
 
         foreach ($symbols as $className) {
-            if (!$this->isLintableClass($className)) {
-                continue;
-            }
-
-            $defects->append($this->lintClass(new ReflectionClass($className)));
+            $defects[] = $this->lintClass(new ReflectionClass($className));
 
             ++$processed;
         }
 
-        return new LintReport($processed, iterator_to_array($defects, false));
-    }
-
-    /** Interfaces, traits, enums, and files that fail to load have no `#[Catch_]` properties to lint. */
-    private function isLintableClass(string $className): bool
-    {
-        try {
-            return class_exists($className)
-                && !is_subclass_of($className, UnitEnum::class);
-        } catch (Throwable) {
-            return false;
-        }
+        return new LintReport($processed, array_merge(...array_map(iterator_to_array(...), $defects)));
     }
 
     /**
@@ -79,6 +64,10 @@ final class ClassMappingLinter implements MappingLinter
      */
     private function lintClass(ReflectionClass $reflectionClass): Generator
     {
+        if ($reflectionClass->isEnum()) {
+            return;
+        }
+
         $className = $reflectionClass->getName();
 
         $plan = $this->planRegistry->getPlan($className);

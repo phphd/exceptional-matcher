@@ -9,6 +9,7 @@ use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\AbstractTryMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\ChildOfPrivateCatchMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage;
@@ -40,6 +41,7 @@ use function array_values;
  */
 final class MappingLinterUnitTest extends TestCase
 {
+    /** @var MappingLinter<class-string, LintReport> */
     private MappingLinter $linter;
 
     protected function setUp(): void
@@ -56,24 +58,25 @@ final class MappingLinterUnitTest extends TestCase
         $container->compile();
 
         /** @var MappingLinter $linter */
-        $linter = $container->get(MappingLinter::class);
+        $linter = $container->get(MappingLinter::class.'<class-string,'.LintReport::class.'>');
         $this->linter = $linter;
     }
 
     public function testValidMappingsProduceNoErrors(): void
     {
-        $defects = $this->linter->lint([
+        $report = $this->linter->lint([
             HandleableMessageStub::class,
             NestedHandleableMessage::class,
             NestedItem::class,
         ]);
 
-        self::assertSame([], $this->errorsOf($defects));
+        self::assertFalse($report->hasDefects());
+        self::assertSame([], $report->getDefects());
     }
 
     public function testReportsCatchPropertiesWithoutTryAttribute(): void
     {
-        [$defect] = $this->linter->lint([NotHandleableMessageStub::class]);
+        [$defect] = $this->linter->lint([NotHandleableMessageStub::class])->getDefects();
 
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
         self::assertStringContainsString('not marked with #[Try_]', $defect->getMessage());
@@ -83,7 +86,7 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsAbstractTryClass(): void
     {
-        [$defect] = $this->linter->lint([AbstractTryMessage::class]);
+        [$defect] = $this->linter->lint([AbstractTryMessage::class])->getDefects();
 
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
         self::assertStringContainsString('abstract', $defect->getMessage());
@@ -91,14 +94,14 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testValidNestedOnlyMappingProducesNoWarning(): void
     {
-        $defects = $this->linter->lint([RootObject::class]);
+        $defects = $this->linter->lint([RootObject::class])->getDefects();
 
         self::assertSame([], $defects);
     }
 
     public function testReportsTryClassWithoutMappingPlan(): void
     {
-        [$defect] = $this->linter->lint([UnmatchableTryMessage::class]);
+        [$defect] = $this->linter->lint([UnmatchableTryMessage::class])->getDefects();
 
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
         self::assertStringContainsString('#[Try_]', $defect->getMessage());
@@ -109,7 +112,7 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsTryClassWhoseNestedObjectCannotCarryAPlan(): void
     {
-        [$defect] = $this->linter->lint([TryWithNonMatchableObjectMessage::class]);
+        [$defect] = $this->linter->lint([TryWithNonMatchableObjectMessage::class])->getDefects();
 
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
         self::assertStringContainsString('#[Try_]', $defect->getMessage());
@@ -120,7 +123,7 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsParentPrivateCatchProperties(): void
     {
-        [$defect] = $this->linter->lint([ChildOfPrivateCatchMessage::class]);
+        [$defect] = $this->linter->lint([ChildOfPrivateCatchMessage::class])->getDefects();
 
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
         self::assertStringContainsString('$parentCaughtValue', $defect->getMessage());
@@ -130,7 +133,7 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsUnregisteredFormatter(): void
     {
-        [$defect] = $this->linter->lint([UnregisteredFormatterMessage::class]);
+        [$defect] = $this->linter->lint([UnregisteredFormatterMessage::class])->getDefects();
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertStringContainsString(UnregisteredFormatter::class, $defect->getMessage());
@@ -139,7 +142,7 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsBrokenCatchMappingWithVerbatimMessage(): void
     {
-        [$defect] = $this->linter->lint([MissingEnumFromConditionMessage::class]);
+        [$defect] = $this->linter->lint([MissingEnumFromConditionMessage::class])->getDefects();
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertStringContainsString(
@@ -152,7 +155,7 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsUndefinedMatchConstant(): void
     {
-        [$defect] = $this->linter->lint([UndefinedConstantConditionMessage::class]);
+        [$defect] = $this->linter->lint([UndefinedConstantConditionMessage::class])->getDefects();
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertStringContainsString('Undefined constant', $defect->getMessage());
@@ -165,19 +168,5 @@ final class MappingLinterUnitTest extends TestCase
         $catchFailure = $cause->getPrevious();
         self::assertInstanceOf(CatchExceptionMappingPlanCompilationFailedException::class, $catchFailure);
         self::assertInstanceOf(CatchAttributeInstantiationFailedException::class, $catchFailure->getPrevious());
-    }
-
-    /**
-     * @param list<MappingDefect> $defects
-     *
-     * @return list<MappingDefect>
-     */
-    private function errorsOf(array $defects): array
-    {
-        return array_values(array_filter(
-            $defects,
-            static fn (MappingDefect $defect): bool => $defect->getSeverity()
-                ->is(DefectSeverity::Error),
-        ));
     }
 }
