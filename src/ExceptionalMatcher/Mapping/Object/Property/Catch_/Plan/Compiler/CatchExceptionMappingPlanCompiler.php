@@ -88,7 +88,11 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
         }
     }
 
-    /** @param Catch_<Throwable,Throwable> $catch */
+    /**
+     * @param Catch_<Throwable,Throwable> $catch
+     *
+     * @return CatchExceptionMappingPlan<Throwable>
+     */
     private function compile(Catch_ $catch): CatchExceptionMappingPlan
     {
         return new CatchExceptionMappingPlan(
@@ -98,7 +102,11 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
         );
     }
 
-    /** @param Catch_<Throwable,Throwable> $catch */
+    /**
+     * @param Catch_<Throwable,Throwable> $catch
+     *
+     * @return MatchConditionPlan<Throwable>
+     */
     private function compileConditionPlan(Catch_ $catch): MatchConditionPlan
     {
         $conditionPlan = $this->matchConditionCompiler->compile($catch);
@@ -111,13 +119,17 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
     /**
      * @param Catch_<Throwable,Throwable> $catch
      *
-     * @phpstan-return class-string<MatchedExceptionFormatter<Throwable,mixed>>
+     * @phpstan-return ?class-string<MatchedExceptionFormatter<Throwable,mixed>>
      *
-     * @psalm-return class-string<MatchedExceptionFormatter>
+     * @psalm-return ?class-string<MatchedExceptionFormatter>
      */
-    private function compileFormatter(Catch_ $catch): string
+    private function compileFormatter(Catch_ $catch): ?string
     {
         $formatterId = $catch->getFormat();
+
+        if (null === $formatterId) {
+            return null;
+        }
 
         if (!$this->formatterRegistry->has($formatterId)) {
             throw new UnregisteredFormatterException($formatterId);

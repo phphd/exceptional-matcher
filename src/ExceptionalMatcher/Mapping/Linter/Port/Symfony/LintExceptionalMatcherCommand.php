@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class LintExceptionalMatcherCommand extends Command
 {
     public function __construct(
-        /** @var LintMappingUseCase<string,string|iterable> */
+        /** @var LintMappingUseCase<string,string|array<array-key,mixed>> */
         private readonly LintMappingUseCase $linter,
     ) {
         parent::__construct();

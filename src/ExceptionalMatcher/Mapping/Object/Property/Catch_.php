@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property;
 
 use Attribute;
-use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\MainExceptionViolationFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
 use Throwable;
@@ -24,10 +23,10 @@ final class Catch_
 {
     /**
      * @phpstan-param ?class-string<MatchCondition<T1>> $match
-     * @phpstan-param class-string<MatchedExceptionFormatter<T2,mixed>> $format
+     * @phpstan-param ?class-string<MatchedExceptionFormatter<T2,mixed>> $format
      *
      * @psalm-param ?class-string<MatchCondition> $match
-     * @psalm-param class-string<MatchedExceptionFormatter> $format
+     * @psalm-param ?class-string<MatchedExceptionFormatter> $format
      */
     public function __construct(
         /** @var class-string<T1&T2> */
@@ -39,7 +38,7 @@ final class Catch_
         /** @var ?array{object|class-string,string} */
         private readonly ?array $if = null,
         /** @note formatter class is contravariant to the exception */
-        private readonly string $format = MainExceptionViolationFormatter::class, // @phpstan-ignore phpat.testModelDependencies (really, this's a fair catch - it should not depend on the formatter)
+        private readonly ?string $format = null,
         private readonly ?string $message = null,
     ) {
     }
@@ -87,11 +86,11 @@ final class Catch_
     }
 
     /**
-     * @phpstan-return class-string<MatchedExceptionFormatter<T2,mixed>>
+     * @phpstan-return ?class-string<MatchedExceptionFormatter<T2,mixed>>
      *
-     * @psalm-return class-string<MatchedExceptionFormatter>
+     * @psalm-return ?class-string<MatchedExceptionFormatter>
      */
-    public function getFormat(): string
+    public function getFormat(): ?string
     {
         return $this->format;
     }

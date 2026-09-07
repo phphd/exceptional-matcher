@@ -15,6 +15,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\CatchExceptionM
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\IterablePropertyExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
 use ReflectionProperty;
+use Throwable;
 
 use function is_iterable;
 use function is_object;
@@ -24,7 +25,7 @@ final class PropertyExceptionMappingPlan
 {
     public function __construct(
         private readonly ReflectionProperty $property,
-        /** @var iterable<CatchExceptionMappingPlan> */
+        /** @var iterable<CatchExceptionMappingPlan<Throwable>> */
         private readonly iterable $catchPlans,
         /** @var ObjectExceptionMappingPlanRegistry<object> */
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
@@ -36,7 +37,10 @@ final class PropertyExceptionMappingPlan
         $name = $this->getName();
         $value = $this->getPropertyValue($objectNode->getEnclosingObject());
 
-        $propertyNode = new PropertyExceptionMappingNode($objectNode, $name, $value, ($matchers = new ArrayIterator()));
+        /** @var ArrayIterator<int,ExceptionMatcher> $matchers */
+        $matchers = new ArrayIterator();
+
+        $propertyNode = new PropertyExceptionMappingNode($objectNode, $name, $value, $matchers);
 
         if (null !== $catchMatcher = $this->catchAttributesMatcher($propertyNode)) {
             $matchers->append(new ExceptionMatcherAggregateAdapter($catchMatcher));
@@ -64,7 +68,7 @@ final class PropertyExceptionMappingPlan
     /**
      * @api the seam for the mapping linter: forcing this iterable compiles every `#[Catch_]` of the property
      *
-     * @return iterable<CatchExceptionMappingPlan>
+     * @return iterable<CatchExceptionMappingPlan<Throwable>>
      */
     public function getCatchPlans(): iterable
     {
@@ -74,6 +78,7 @@ final class PropertyExceptionMappingPlan
     /** @noinspection PhpLoopNeverIteratesInspection */
     public function hasCatchPlans(): bool
     {
+        /** @psalm-suppress UnusedForeachValue */
         foreach ($this->catchPlans as $catchPlan) {
             return true;
         }

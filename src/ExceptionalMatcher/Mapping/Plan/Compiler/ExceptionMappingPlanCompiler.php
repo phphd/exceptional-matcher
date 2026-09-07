@@ -21,6 +21,10 @@ interface ExceptionMappingPlanCompiler
     /** @return static */
     public function reportingTo(LoggerInterface $reporter): self;
 
-    /** @return null|TPlan the mapping declares nothing to match, if null */
+    /**
+     * @param TReflector $reflector
+     *
+     * @return null|TPlan
+     */
     public function compilePlan(Reflector $reflector): ?object;
 }

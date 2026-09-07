@@ -12,7 +12,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
 /**
- * @template TSymbol
+ * @template TSymbol of string
  * @template TFormat
  */
 final class LintMappingUseCase
@@ -35,7 +35,7 @@ final class LintMappingUseCase
      */
     public function lint(string $inputFormat, iterable $symbols, string $outputFormat): array
     {
-        /** @var MappingLinter<LintReport> $linter */
+        /** @var MappingLinter<TSymbol,LintReport> $linter */
         $linter = $this->mappingLinterRegistry->get($inputFormat);
 
         /** @var LintReport $report */

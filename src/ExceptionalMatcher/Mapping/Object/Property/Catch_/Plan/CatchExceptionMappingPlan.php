@@ -20,8 +20,8 @@ final class CatchExceptionMappingPlan
     public function __construct(
         /** @var MatchConditionPlan<TException> */
         private readonly MatchConditionPlan $conditionPlan,
-        /** @var class-string<MatchedExceptionFormatter<TException,mixed>> */
-        private readonly string $formatterId,
+        /** @var ?class-string<MatchedExceptionFormatter<TException,mixed>> */
+        private readonly ?string $formatterId,
         private readonly ?string $messageTemplate,
     ) {
     }
@@ -35,11 +35,5 @@ final class CatchExceptionMappingPlan
             $this->formatterId,
             $this->messageTemplate,
         );
-    }
-
-    /** @return class-string<MatchedExceptionFormatter<TException,mixed>> */
-    public function getFormatterId(): string
-    {
-        return $this->formatterId;
     }
 }

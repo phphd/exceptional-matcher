@@ -36,7 +36,10 @@ final class ObjectExceptionMappingPlan
             throw new InvalidArgumentException(sprintf('Expected object of type "%s", got "%s".', $this->className, $object::class));
         }
 
-        $objectNode = new ObjectExceptionMappingNode($object, $parentProperty, new ReusableIteratorAggregate($properties = new AppendIterator()));
+        /** @var AppendIterator<int,ExceptionMappingNode,Iterator<ExceptionMappingNode>> $properties */
+        $properties = new AppendIterator();
+
+        $objectNode = new ObjectExceptionMappingNode($object, $parentProperty, new ReusableIteratorAggregate($properties));
 
         $properties->append($this->bindPropertyPlans($objectNode));
 
@@ -52,6 +55,7 @@ final class ObjectExceptionMappingPlan
     /** @noinspection PhpLoopNeverIteratesInspection */
     public function hasPropertyPlans(): bool
     {
+        /** @psalm-suppress UnusedForeachValue */
         foreach ($this->propertyPlans as $catchPlan) {
             return true;
         }

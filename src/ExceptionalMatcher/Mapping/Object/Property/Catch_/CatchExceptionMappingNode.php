@@ -15,6 +15,8 @@ use Throwable;
  * @internal
  *
  * @template TException of Throwable
+ *
+ * @implements MatchCondition<TException>
  */
 final class CatchExceptionMappingNode implements ExceptionMappingNode, MatchCondition
 {
@@ -22,8 +24,8 @@ final class CatchExceptionMappingNode implements ExceptionMappingNode, MatchCond
         private readonly ExceptionMappingNode $property,
         /** @var MatchCondition<TException> */
         private readonly MatchCondition $condition,
-        /** @var class-string<MatchedExceptionFormatter<TException,mixed>> */
-        private readonly string $formatterId,
+        /** @var ?class-string<MatchedExceptionFormatter<TException,mixed>> */
+        private readonly ?string $formatterId,
         private readonly ?string $messageTemplate,
     ) {
     }
@@ -58,13 +60,14 @@ final class CatchExceptionMappingNode implements ExceptionMappingNode, MatchCond
         return $this->property->getValue();
     }
 
+    /** @param TException $exception */
     public function matches(Throwable $exception): bool
     {
         return $this->condition->matches($exception);
     }
 
-    /** @return class-string<MatchedExceptionFormatter<TException,mixed>> */
-    public function getFormatterId(): string
+    /** @return ?class-string<MatchedExceptionFormatter<TException,mixed>> */
+    public function getFormatterId(): ?string
     {
         return $this->formatterId;
     }

@@ -25,9 +25,9 @@ final class ClassNameDiscoveryUnitTest extends TestCase
         $classNames = $discovery->discover([$directory]);
 
         self::assertSame([
-            ClassNameDiscovery::class,
-            self::class,
             ClassPathBasedLinter::class,
+            self::class,
+            ClassNameDiscovery::class,
         ], $classNames);
     }
 }

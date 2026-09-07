@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Integration\Validator\Formatter;
 
+use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\MainExceptionViolationFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Delegating\DelegatingMatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -26,6 +27,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
             DelegatingMatchedExceptionFormatter::class,
         )->args([
             tagged_locator(MatchedExceptionFormatter::class, 'id'),
+            MainExceptionViolationFormatter::class,
         ])
     ;
 };

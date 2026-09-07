@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class;
 
 use AppendIterator;
 use Generator;
+use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
@@ -18,6 +19,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use ReflectionClass;
 use ReflectionProperty;
 use Throwable;
+use UnitEnum;
 
 use function class_exists;
 use function is_subclass_of;
@@ -42,6 +44,8 @@ final class ClassLinter implements MappingLinter
     public function lint(iterable $symbols): LintReport
     {
         $processed = 0;
+
+        /** @var AppendIterator<int,MappingDefect,Iterator<MappingDefect>> $defects */
         $defects = new AppendIterator();
 
         foreach ($symbols as $className) {
@@ -54,7 +58,7 @@ final class ClassLinter implements MappingLinter
             ++$processed;
         }
 
-        return new LintReport($processed, iterator_to_array($defects));
+        return new LintReport($processed, iterator_to_array($defects, false));
     }
 
     /** Interfaces, traits, enums, and files that fail to load have no `#[Catch_]` properties to lint. */
@@ -97,6 +101,7 @@ final class ClassLinter implements MappingLinter
 
     /**
      * @param ReflectionClass<object> $reflectionClass
+     * @param ?ObjectExceptionMappingPlan<object> $plan
      *
      * @return Generator<MappingDefect>
      */
@@ -159,6 +164,7 @@ final class ClassLinter implements MappingLinter
 
     /**
      * @param class-string $className
+     * @param ObjectExceptionMappingPlan<object> $plan
      *
      * @return list<MappingDefect>
      */

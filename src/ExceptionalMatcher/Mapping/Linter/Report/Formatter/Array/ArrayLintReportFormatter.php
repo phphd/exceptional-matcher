@@ -10,10 +10,11 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 /**
  * @internal
  *
- * @implements LintReportFormatter<array>
+ * @implements LintReportFormatter<array<array-key,mixed>>
  */
 final class ArrayLintReportFormatter implements LintReportFormatter
 {
+    /** @return array<array-key,mixed> */
     public function format(LintReport $report): array
     {
         $defects = [];

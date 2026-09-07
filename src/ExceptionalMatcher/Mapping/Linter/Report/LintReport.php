@@ -7,6 +7,10 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Report;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity;
 
+use function array_filter;
+use function array_values;
+use function count;
+
 /** @internal */
 final class LintReport
 {
@@ -35,16 +39,16 @@ final class LintReport
 
     public function countOf(DefectSeverity $severity): int
     {
-        $count = 0;
+        return count($this->ofSeverity($severity));
+    }
 
-        foreach ($this->defects as $defect) {
-            if ($defect->getSeverity()
-                ->is($severity)
-            ) {
-                ++$count;
-            }
-        }
-
-        return $count;
+    /** @return list<MappingDefect> */
+    private function ofSeverity(DefectSeverity $severity): array
+    {
+        return array_values(array_filter(
+            $this->defects,
+            static fn (MappingDefect $defect): bool => $defect->getSeverity()
+                ->is($severity),
+        ));
     }
 }

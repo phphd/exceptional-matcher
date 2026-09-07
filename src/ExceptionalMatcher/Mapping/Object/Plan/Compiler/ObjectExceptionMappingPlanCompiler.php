@@ -55,6 +55,11 @@ final class ObjectExceptionMappingPlanCompiler implements ExceptionMappingPlanCo
         }
     }
 
+    /**
+     * @param ReflectionClass<object> $reflectionClass
+     *
+     * @return ?ObjectExceptionMappingPlan<object>
+     */
     private function compile(ReflectionClass $reflectionClass): ?ObjectExceptionMappingPlan
     {
         if ([] === $reflectionClass->getAttributes(Try_::class)) {
@@ -73,7 +78,11 @@ final class ObjectExceptionMappingPlanCompiler implements ExceptionMappingPlanCo
         return $mappingPlan;
     }
 
-    /** @return Generator<int,PropertyExceptionMappingPlan> */
+    /**
+     * @param ReflectionClass<object> $reflectionClass
+     *
+     * @return Generator<PropertyExceptionMappingPlan>
+     */
     private function compilePropertyPlans(ReflectionClass $reflectionClass): Generator
     {
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {

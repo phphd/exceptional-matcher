@@ -23,11 +23,14 @@ final class DelegatingMatchedExceptionFormatter implements MatchedExceptionForma
      * @template T of MatchedExceptionFormatter
      *
      * @phpstan-param ContainerInterface<class-string<T>,T> $formatterRegistry
+     * @phpstan-param ?class-string<MatchedExceptionFormatter<Throwable,mixed>> $defaultFormatter
      *
      * @psalm-param ContainerInterface<class-string<MatchedExceptionFormatter>,MatchedExceptionFormatter> $formatterRegistry
+     * @psalm-param ?class-string<MatchedExceptionFormatter> $defaultFormatter
      */
     public function __construct(
         private readonly ContainerInterface $formatterRegistry,
+        private readonly ?string $defaultFormatter = null,
     ) {
     }
 
@@ -35,10 +38,14 @@ final class DelegatingMatchedExceptionFormatter implements MatchedExceptionForma
     {
         $catch = $matchedException->getCatchNode();
 
-        $formatterId = $catch->getFormatterId();
+        $formatterId = $catch->getFormatterId() ?? $this->defaultFormatter;
+
+        if (null === $formatterId) {
+            throw new LogicException('No MatchedExceptionFormatter provided and no default one configured.');
+        }
 
         if (!$this->formatterRegistry->has($formatterId)) {
-            throw new LogicException('Matched Exception Formatter not found: '.$formatterId);
+            throw new LogicException('MatchedExceptionFormatter not found: '.$formatterId);
         }
 
         $exceptionFormatter = $this->formatterRegistry->get($formatterId);

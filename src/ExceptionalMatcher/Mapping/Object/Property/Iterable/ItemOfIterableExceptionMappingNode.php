@@ -14,10 +14,11 @@ final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode
 {
     private readonly ExceptionMappingNode $objectNode;
 
+    /** @param ObjectExceptionMappingPlan<object> $matchingPlan */
     public function __construct(
         private readonly ExceptionMappingNode $propertyNode,
         private readonly int|string $key,
-        private readonly mixed $item,
+        private readonly object $item,
         ObjectExceptionMappingPlan $matchingPlan,
     ) {
         $this->objectNode = $matchingPlan->bind($this->item, $this);
