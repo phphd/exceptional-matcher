@@ -21,8 +21,8 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
         return;
     }
 
-    /** @var Closure(class-string):((bool|class-string)) $lazy */
-    $lazy = $container->get('phd_exceptional_matcher.hint_lazy_proxy');
+    /** @var Closure(class-string):((bool|class-string)) $hintLazy */
+    $hintLazy = $container->get('phd_exceptional_matcher.hint_lazy_proxy');
 
     $services = $configurator->services();
 
@@ -33,6 +33,6 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
             service(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>'),
             service(MatchedExceptionFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>'),
         ])
-        ->lazy($lazy(ExceptionMatcher::class))
+        ->lazy($hintLazy(ExceptionMatcher::class))
     ;
 };
