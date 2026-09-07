@@ -73,7 +73,7 @@ final class ObjectExceptionMappingPlanCompiler implements ExceptionMappingPlanCo
         );
 
         if (!$mappingPlan->hasPropertyPlans()) {
-            throw new LogicException('#[Try_] class has no #[Catch_] mappings and no nested matchable properties, so it never matches anything.');
+            throw new LogicException('#[Try_] class does not define any #[Catch_] mappings and no nested matchable properties, so it never matches anything.');
         }
 
         return $mappingPlan;

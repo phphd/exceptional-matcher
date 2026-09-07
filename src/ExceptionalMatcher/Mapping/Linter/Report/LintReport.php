@@ -10,15 +10,23 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverit
 use function array_filter;
 use function array_values;
 use function count;
+use function is_array;
+use function iterator_to_array;
 
 /** @internal */
 final class LintReport
 {
-    /** @param list<MappingDefect> $defects */
+    /** @var list<MappingDefect> */
+    private readonly array $defects;
+
+    /** @param iterable<MappingDefect> $defects */
     public function __construct(
         private readonly int $scannedSymbols,
-        private readonly array $defects,
+        iterable $defects,
     ) {
+        $this->defects = is_array($defects)
+            ? array_values($defects)
+            : iterator_to_array($defects, false);
     }
 
     public function getScannedSymbols(): int

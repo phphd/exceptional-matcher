@@ -36,4 +36,10 @@ final class CatchExceptionMappingPlan
             $this->messageTemplate,
         );
     }
+
+    /** @return MatchConditionPlan<TException> */
+    public function getConditionPlan(): MatchConditionPlan
+    {
+        return $this->conditionPlan;
+    }
 }

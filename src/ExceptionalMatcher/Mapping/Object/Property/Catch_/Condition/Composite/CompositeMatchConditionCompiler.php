@@ -6,8 +6,10 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Comp
 
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\PreCompiledMatchConditionPlan;
 use Throwable;
 
 /**
@@ -24,9 +26,16 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
     ) {
     }
 
-    public function compile(Catch_ $catch): CompositeMatchConditionPlan
+    /** @return CompositeMatchConditionPlan|PreCompiledMatchConditionPlan<Throwable> */
+    public function compile(Catch_ $catch): CompositeMatchConditionPlan|PreCompiledMatchConditionPlan
     {
-        return new CompositeMatchConditionPlan(new ReusableIteratorAggregate($this->conditionPlans($catch)));
+        $plan = new CompositeMatchConditionPlan(new ReusableIteratorAggregate($this->conditionPlans($catch)));
+
+        if (!$plan->hasPlans()) {
+            return new PreCompiledMatchConditionPlan(new FalseCondition());
+        }
+
+        return $plan;
     }
 
     /**

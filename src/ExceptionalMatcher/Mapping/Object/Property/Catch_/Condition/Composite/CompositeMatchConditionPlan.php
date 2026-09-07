@@ -28,6 +28,23 @@ final class CompositeMatchConditionPlan implements MatchConditionPlan
         return new CompositeMatchCondition(new ReusableIteratorAggregate($this->conditions($node)));
     }
 
+    /** @return iterable<MatchConditionPlan<Throwable>> */
+    public function getPlans(): iterable
+    {
+        return $this->plans;
+    }
+
+    /** @psalm-suppress UnusedForeachValue */
+    public function hasPlans(): bool
+    {
+        /** @noinspection PhpLoopNeverIteratesInspection */
+        foreach ($this->plans as $plan) {
+            return true;
+        }
+
+        return false;
+    }
+
     /** @return Iterator<MatchCondition<Throwable>> */
     private function conditions(ExceptionMappingNode $node): Iterator
     {

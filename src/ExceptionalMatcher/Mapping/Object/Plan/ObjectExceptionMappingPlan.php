@@ -52,10 +52,10 @@ final class ObjectExceptionMappingPlan
         return $this->propertyPlans;
     }
 
-    /** @noinspection PhpLoopNeverIteratesInspection */
+    /** @psalm-suppress UnusedForeachValue */
     public function hasPropertyPlans(): bool
     {
-        /** @psalm-suppress UnusedForeachValue */
+        /** @noinspection PhpLoopNeverIteratesInspection */
         foreach ($this->propertyPlans as $catchPlan) {
             return true;
         }

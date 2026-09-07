@@ -75,10 +75,10 @@ final class PropertyExceptionMappingPlan
         return $this->catchPlans;
     }
 
-    /** @noinspection PhpLoopNeverIteratesInspection */
+    /** @psalm-suppress UnusedForeachValue */
     public function hasCatchPlans(): bool
     {
-        /** @psalm-suppress UnusedForeachValue */
+        /** @noinspection PhpLoopNeverIteratesInspection */
         foreach ($this->catchPlans as $catchPlan) {
             return true;
         }

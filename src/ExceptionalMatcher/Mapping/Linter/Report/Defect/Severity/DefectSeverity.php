@@ -9,6 +9,7 @@ enum DefectSeverity: string
 {
     case Error = 'error';
     case Warning = 'warning';
+    case Notice = 'notice';
 
     public function is(self $other): bool
     {

@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class;
 
+use AppendIterator;
+use Exception;
 use Generator;
+use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
@@ -12,13 +15,15 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\PreCompiledMatchConditionPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\ReusableIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use ReflectionClass;
 use ReflectionProperty;
 
-use function iterator_to_array;
 use function sprintf;
 
 /**
@@ -42,16 +47,16 @@ final class ClassMappingLinter implements MappingLinter
     {
         $processed = 0;
 
-        /** @var list<iterable<MappingDefect>> $defects */
-        $defects = [];
+        /** @var AppendIterator<int,MappingDefect,Iterator<MappingDefect>> $defects */
+        $defects = new AppendIterator();
 
         foreach ($symbols as $className) {
-            $defects[] = $this->lintClass(new ReflectionClass($className));
+            $defects->append($this->lintClass(new ReflectionClass($className)));
 
             ++$processed;
         }
 
-        return new LintReport($processed, array_merge(...array_map(iterator_to_array(...), $defects)));
+        return new LintReport($processed, new ReusableIteratorAggregate($defects));
     }
 
     /**
@@ -61,10 +66,6 @@ final class ClassMappingLinter implements MappingLinter
      */
     private function lintClass(ReflectionClass $reflectionClass): Generator
     {
-        if ($reflectionClass->isEnum()) {
-            return;
-        }
-
         $compilationDefects = $this->lintPlan($reflectionClass);
 
         yield from $compilationDefects;
@@ -77,33 +78,63 @@ final class ClassMappingLinter implements MappingLinter
     /**
      * @param ReflectionClass<object> $reflectionClass
      *
-     * @return array<MappingDefect>
+     * @return iterable<MappingDefect>
      */
-    private function lintPlan(ReflectionClass $reflectionClass): array
+    private function lintPlan(ReflectionClass $reflectionClass): iterable
     {
         if (!$this->planRegistry->hasPlan($reflectionClass->getName())) {
             if ([] !== $compilationDefects = $this->defectCollector->flush()) {
-                return $compilationDefects;
+                return yield from $compilationDefects;
             }
 
-            return $this->possiblyMissingTryAttribute($reflectionClass);
+            return yield from $this->possiblyMissingTryAttribute($reflectionClass);
         }
 
         /** @var ObjectExceptionMappingPlan<object> $plan */
         $plan = $this->planRegistry->getPlan($reflectionClass->getName());
 
         // Compilation is done lazily through traversal
-        foreach ($plan->getPropertyPlans() ?? [] as $propertyPlan) {
+        foreach ($plan->getPropertyPlans() as $propertyPlan) {
             foreach ($propertyPlan->getCatchPlans() as $catchPlan) {
+                $conditionPlan = $catchPlan->getConditionPlan();
+
+                if ($conditionPlan instanceof PreCompiledMatchConditionPlan) {
+                    continue;
+                }
+
+                if (!$conditionPlan instanceof CompositeMatchConditionPlan) {
+                    yield MappingDefect::notice('#[Catch_] condition plan is not composite, so it cannot be linted.', new DefectLocation($reflectionClass->getName(), $propertyPlan->getProperty()->getName()));
+
+                    continue;
+                }
+
+                try {
+                    foreach ($conditionPlan->getPlans() as $conditionSubPlan) {
+                        unset($conditionSubPlan);
+                    }
+                } catch (\Throwable $e) {
+                    yield MappingDefect::error(
+                        new DefectLocation(
+                            $reflectionClass->getName(),
+                            $propertyPlan->getProperty()->getName(),
+                        ),
+                        $e,
+                    );
+                }
+
                 unset($catchPlan);
             }
             unset($propertyPlan);
         }
 
-        return $this->defectCollector->flush();
+        yield from $this->defectCollector->flush();
     }
 
-    /** @param ReflectionClass<object> $reflectionClass */
+    /**
+     * @param ReflectionClass<object> $reflectionClass
+     *
+     * @return list<MappingDefect>
+     */
     private function possiblyMissingTryAttribute(ReflectionClass $reflectionClass): array
     {
         // The class plan is null, but it might be so due to a missing #[Try_] attribute
@@ -115,7 +146,7 @@ final class ClassMappingLinter implements MappingLinter
                 continue;
             }
 
-            $missingTryDefects [] = MappingDefect::warning(
+            $missingTryDefects[] = MappingDefect::warning(
                 'Properties declare #[Catch_] mappings, but the class is not marked with #[Try_], so it never matches anything.',
                 new DefectLocation($reflectionClass->getName(), $property->getName()),
             );

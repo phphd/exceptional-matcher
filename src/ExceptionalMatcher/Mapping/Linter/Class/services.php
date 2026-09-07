@@ -7,7 +7,6 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Linter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ClassMappingLinter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\MappingDefectCollector;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler\ObjectExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\CompilingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
