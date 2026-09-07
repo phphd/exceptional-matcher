@@ -57,7 +57,8 @@ Mark a command or dto with `#[Try_]` attribute, and properties with `#[Catch_]`.
 Finally, throw those exceptions from your use-case handler:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 
 #[Try_]
 class UserRegistration
@@ -251,7 +252,8 @@ You don't have limitations at all. \
 The mapping for profile update `Dto` is just as high-level as it was for [registration `Dto`](#map-and-throw-):
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 
 #[Try_]
 class UserProfileUpdate
@@ -325,7 +327,16 @@ That's really all this library does – matches the exception and formats it (i.
 For a cheat-sheet example of configuration, check the following:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\enum_value;use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\uid_value;use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\validated_value;use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\exception_value;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
+
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\enum_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\uid_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\validated_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\exception_value;
+use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
 class ImportProductDto
