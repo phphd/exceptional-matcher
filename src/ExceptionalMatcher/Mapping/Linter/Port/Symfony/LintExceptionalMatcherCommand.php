@@ -45,10 +45,10 @@ final class LintExceptionalMatcherCommand extends Command
         /** @var string $outputFormat */
         $outputFormat = $input->getOption('output-format');
 
-        [$code, $result] = $this->linter->lint($inputFormat, $symbols, $outputFormat);
+        [$hasDefects, $outputMessage] = $this->linter->lint($inputFormat, $symbols, $outputFormat);
 
-        $output->writeln($result);
+        $output->writeln($outputMessage);
 
-        return (int)$code;
+        return (int)$hasDefects;
     }
 }
