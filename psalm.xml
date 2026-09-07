@@ -16,7 +16,7 @@
             <directory name="stubs"/>
             <file name="rector.php"/>
             <!-- References an undefined constant on purpose (broken-mapping lint fixture) -->
-            <file name="src/ExceptionalMatcher/Integration/Linter/Tests/Stub/Invalid/UndefinedConstantConditionMessage.php"/>
+            <file name="src/ExceptionalMatcher/Mapping/Linter/Tests/Stub/Invalid/UndefinedConstantConditionMessage.php"/>
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
