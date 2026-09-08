@@ -138,7 +138,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame('caughtValue', $defect->getLocation()->getPropertyName());
     }
 
-    public function testReportsBrokenCatchMappingWithVerbatimMessage(): void
+    public function testBrokenMatchConditionMappingIsReported(): void
     {
         [$defect] = $this->linter->lint([MissingEnumFromConditionMessage::class])->getDefects();
 
