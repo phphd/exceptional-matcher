@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler;
 
 use Generator;
 use LogicException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\ReusableIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;

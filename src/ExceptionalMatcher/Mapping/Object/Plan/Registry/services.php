@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\CompilingObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Memory\MemoizingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;

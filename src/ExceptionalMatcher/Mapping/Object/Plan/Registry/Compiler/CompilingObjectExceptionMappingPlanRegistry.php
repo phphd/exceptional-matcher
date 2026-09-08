@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use ReflectionClass;
 use ReflectionException;

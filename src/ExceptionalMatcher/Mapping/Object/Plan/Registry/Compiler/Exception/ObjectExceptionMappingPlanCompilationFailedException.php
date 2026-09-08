@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler\Exception;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception;
 
 use RuntimeException;
 use Throwable;

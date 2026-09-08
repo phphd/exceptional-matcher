@@ -8,7 +8,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ClassMappingLinter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\MappingDefectCollector;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\CompilingObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\CompilingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use ReflectionClass;

@@ -40,8 +40,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Compiler\ObjectExceptionMappingPlanCompiler
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\CompilingObjectExceptionMappingPlanRegistry
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\ObjectExceptionMappingPlanCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\CompilingObjectExceptionMappingPlanRegistry
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\CatchExceptionMappingPlan
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\CatchExceptionMappingNode

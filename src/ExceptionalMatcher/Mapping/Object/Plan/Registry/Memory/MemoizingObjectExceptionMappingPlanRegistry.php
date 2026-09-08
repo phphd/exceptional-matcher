@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Memory;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
 
 use function array_key_exists;
 
