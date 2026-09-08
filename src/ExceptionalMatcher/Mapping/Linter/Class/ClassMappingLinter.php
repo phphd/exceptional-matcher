@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class;
 
 use AppendIterator;
-use Exception;
 use Generator;
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
@@ -23,6 +22,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use ReflectionClass;
 use ReflectionProperty;
+
+use Throwable;
 
 use function sprintf;
 
@@ -103,7 +104,10 @@ final class ClassMappingLinter implements MappingLinter
                 }
 
                 if (!$conditionPlan instanceof CompositeMatchConditionPlan) {
-                    yield MappingDefect::notice('#[Catch_] condition plan is not composite, so it cannot be linted.', new DefectLocation($reflectionClass->getName(), $propertyPlan->getProperty()->getName()));
+                    yield MappingDefect::notice(
+                        '#[Catch_] condition plan is not composite, so it cannot be linted.',
+                        DefectLocation::ofProperty($propertyPlan->getProperty()),
+                    );
 
                     continue;
                 }
@@ -112,12 +116,9 @@ final class ClassMappingLinter implements MappingLinter
                     foreach ($conditionPlan->getPlans() as $conditionSubPlan) {
                         unset($conditionSubPlan);
                     }
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     yield MappingDefect::error(
-                        new DefectLocation(
-                            $reflectionClass->getName(),
-                            $propertyPlan->getProperty()->getName(),
-                        ),
+                        DefectLocation::ofProperty($propertyPlan->getProperty()),
                         $e,
                     );
                 }
@@ -148,7 +149,7 @@ final class ClassMappingLinter implements MappingLinter
 
             $missingTryDefects[] = MappingDefect::warning(
                 'Properties declare #[Catch_] mappings, but the class is not marked with #[Try_], so it never matches anything.',
-                new DefectLocation($reflectionClass->getName(), $property->getName()),
+                DefectLocation::ofProperty($property),
             );
         }
 

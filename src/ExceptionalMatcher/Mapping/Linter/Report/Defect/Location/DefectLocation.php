@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location;
 
+use ReflectionProperty;
+
 /** @internal */
 final class DefectLocation
 {
@@ -12,6 +14,15 @@ final class DefectLocation
         private readonly string $className,
         private readonly ?string $propertyName = null,
     ) {
+    }
+
+    public static function ofProperty(ReflectionProperty $property): self
+    {
+        return new self(
+            $property->getDeclaringClass()
+                ->getName(),
+            $property->getName(),
+        );
     }
 
     /** @return class-string */
