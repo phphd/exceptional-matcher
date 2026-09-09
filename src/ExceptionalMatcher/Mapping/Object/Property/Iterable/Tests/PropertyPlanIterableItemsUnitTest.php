@@ -6,16 +6,13 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\Tests;
 
 use ArrayObject;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\Tests\Stub\RootObject;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedException;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\MessageWithNoTryAttribute;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedItem;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 /**
  * @internal
@@ -36,8 +33,6 @@ final class PropertyPlanIterableItemsUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->addCompilerPass(new TestServicesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, TestServicesCompilerPass::PRIORITY);
-
         $container->compile();
 
         /** @var ExceptionMatcher<MatchedExceptionList> $matcher */
@@ -47,7 +42,7 @@ final class PropertyPlanIterableItemsUnitTest extends TestCase
 
     public function testExceptionCanBeCaughtOnNestedArrayItems(): void
     {
-        $message = HandleableMessageStub::create()->withNestedArrayItems([
+        $message = RootObject::create()->withNestedArrayItems([
             new NestedItem(41),
             new NestedItem(57),
             new NestedItem(32),
@@ -66,7 +61,7 @@ final class PropertyPlanIterableItemsUnitTest extends TestCase
 
     public function testExceptionCanBeCaughtOnANestedIterableItems(): void
     {
-        $message = HandleableMessageStub::create()->withNestedIterableItems(new ArrayObject([
+        $message = RootObject::create()->withNestedIterableItems(new ArrayObject([
             'first' => new NestedItem(1),
             'second' => new NestedItem(2),
             'third' => new NestedItem(3),
@@ -85,7 +80,7 @@ final class PropertyPlanIterableItemsUnitTest extends TestCase
 
     public function testExceptionCanBeCaughtOnMixedArrayItems(): void
     {
-        $message = RootObject::create()->withNotTypedArray([
+        $message = RootObject::create()->withNestedArrayItems([
             'not an object',
             new MessageWithNoTryAttribute(1),
             new NestedItem(2),
@@ -99,6 +94,6 @@ final class PropertyPlanIterableItemsUnitTest extends TestCase
         self::assertCount(1, $matchedExceptionList);
 
         [$matchedException] = $matchedExceptionList->toArray();
-        self::assertSame('notTypedArray[2].property', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
+        self::assertSame('nestedArrayItems[2].property', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
     }
 }

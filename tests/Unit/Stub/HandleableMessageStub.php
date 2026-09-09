@@ -49,7 +49,6 @@ final class HandleableMessageStub
     #[Catch_(LogicException::class, message: 'oops')]
     private string $messageText;
 
-    // exception_value catch also keeps ConstantsAutoloadingCompilerPassIntegrationTest's constant class in the plan
     #[Catch_(SomeValueException::class, match: exception_value, message: 'oops')]
     #[Catch_(ValidationFailedException::class, match: validated_value, format: embedded_violations)]
     private string $matchedProperty = 'matched!';
