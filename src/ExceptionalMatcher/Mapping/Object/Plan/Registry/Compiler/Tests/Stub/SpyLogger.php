@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Tests\Stub;
 
-use Exception;
 use Psr\Log\AbstractLogger;
 use Stringable;
 
