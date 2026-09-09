@@ -229,11 +229,9 @@ final class ArchitectureRuleSet
             ],
             'node' => [
                 'deps' => [
+                    $this->plan(),
                     $this->exception(),
                     $this->matchCondition(),
-                    // Lazy nesting: a node holds a nested object's plan, or resolves one through the registry
-                    Selector::classname(ObjectExceptionMappingPlan::class),
-                    Selector::classname(ObjectExceptionMappingPlanRegistry::class),
                 ],
                 'description' => 'Mapping nodes are the residual model layer: a class that no other layer claims lands here, and must depend on almost nothing',
             ],

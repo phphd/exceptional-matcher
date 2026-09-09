@@ -36,7 +36,7 @@ final class PropertyExceptionMappingPlanCompiler implements ExceptionMappingPlan
 
     public function reportingTo(LoggerInterface $reporter): self
     {
-        return new self($this->catchPlanCompiler, $this->planRegistry, $reporter);
+        return new self($this->catchPlanCompiler->reportingTo($reporter), $this->planRegistry, $reporter);
     }
 
     /** @param ReflectionProperty $reflector */

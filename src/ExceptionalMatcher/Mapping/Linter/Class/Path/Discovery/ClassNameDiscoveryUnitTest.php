@@ -23,11 +23,12 @@ final class ClassNameDiscoveryUnitTest extends TestCase
         $directory = dirname(__DIR__);
 
         $classNames = $discovery->discover([$directory]);
+        rsort($classNames);
 
         self::assertSame([
-            ClassPathMappingLinter::class,
             self::class,
             ClassNameDiscovery::class,
+            ClassPathMappingLinter::class,
         ], $classNames);
     }
 }
