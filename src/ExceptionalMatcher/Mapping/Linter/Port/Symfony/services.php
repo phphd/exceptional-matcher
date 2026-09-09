@@ -20,7 +20,6 @@ return static function (ContainerConfigurator $configurator): void {
 
     $services
         ->set(LintExceptionalMatcherCommand::class, LintExceptionalMatcherCommand::class)
-        ->public()
         ->args([service(LintMappingUseCase::class)])
         ->tag('console.command')
     ;
