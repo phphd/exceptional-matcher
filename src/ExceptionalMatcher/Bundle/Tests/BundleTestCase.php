@@ -8,6 +8,7 @@ use Nyholm\BundleTest\TestKernel;
 use PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle;
 use PhPhD\ExceptionToolkit\Bundle\PhdExceptionToolkitBundle;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -37,11 +38,21 @@ abstract class BundleTestCase extends KernelTestCase
 
         $kernel->addTestBundle(PhdExceptionalMatcherBundle::class);
         $kernel->addTestBundle(PhdExceptionToolkitBundle::class);
-        $kernel->addTestCompilerPass(new TestServicesCompilerPass(), priority: TestServicesCompilerPass::PRIORITY);
+        $kernel->addTestCompilerPass(new CustomViolationFormatterCompilerPass(), priority: CustomViolationFormatterCompilerPass::PRIORITY);
+
+        foreach (static::compilerPasses() as $compilerPass) {
+            $kernel->addTestCompilerPass($compilerPass);
+        }
 
         /** @see https://github.com/SymfonyTest/symfony-bundle-test/issues/94 */
         $kernel->setClearCacheAfterShutdown(false);
 
         return $kernel;
+    }
+
+    /** @return list<CompilerPassInterface> */
+    protected static function compilerPasses(): array
+    {
+        return [];
     }
 }
