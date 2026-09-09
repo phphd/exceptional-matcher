@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Bundle\Tests\TestServicesCompilerPass;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\CustomViolationFormatterCompilerPass;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
@@ -20,7 +21,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\Tests
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchAttributeInstantiationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\Tests\Stub\RootObject;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\MessageWithNoTryAttribute;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedHandleableMessage;
@@ -51,7 +51,9 @@ final class MappingLinterUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->addCompilerPass(new TestServicesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, TestServicesCompilerPass::PRIORITY);
+        $container->addCompilerPass(new CustomViolationFormatterCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, CustomViolationFormatterCompilerPass::PRIORITY);
+
+        $container->addCompilerPass(new PublicServiceCompilerPass(MappingLinter::class.'<class-string,'.LintReport::class.'>'));
 
         $container->compile();
 
@@ -161,10 +163,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame('caughtValue', $defect->getLocation()->getPropertyName());
 
         $cause = $defect->getCause();
-        self::assertInstanceOf(PropertyExceptionMappingPlanCompilationFailedException::class, $cause);
-
-        $catchFailure = $cause->getPrevious();
-        self::assertInstanceOf(CatchExceptionMappingPlanCompilationFailedException::class, $catchFailure);
-        self::assertInstanceOf(CatchAttributeInstantiationFailedException::class, $catchFailure->getPrevious());
+        self::assertInstanceOf(CatchExceptionMappingPlanCompilationFailedException::class, $cause);
+        self::assertInstanceOf(CatchAttributeInstantiationFailedException::class, $cause->getPrevious());
     }
 }

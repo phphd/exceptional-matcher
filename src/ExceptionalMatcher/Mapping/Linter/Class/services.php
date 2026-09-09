@@ -23,7 +23,6 @@ return static function (ContainerConfigurator $configurator): void {
 
     $services
         ->set(MappingLinter::class.'<class-string,'.LintReport::class.'>', ClassMappingLinter::class)
-        ->public()
         ->args([
             // Lint-mode plan registry: it keeps compiling past a broken mapping
             inline_service(CompilingObjectExceptionMappingPlanRegistry::class)
