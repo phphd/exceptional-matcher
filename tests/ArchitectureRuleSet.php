@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Tests;
 
 use Composer\InstalledVersions;
-use PHPat\Selector\Modifier\AnyOfSelectorModifier;
 use PHPat\Selector\Selector;
 use PHPat\Selector\SelectorInterface;
 use PHPat\Test\Attributes\TestRule;
@@ -29,12 +28,10 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autolo
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload\ConstantsClassLoader;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Path\PropertyPath;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
-use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Webmozart\Assert\Assert;
@@ -170,25 +167,36 @@ final class ArchitectureRuleSet
         return [
             'bundle' => [
                 'deps' => [
-                    Selector::inNamespace('Symfony\Component'),
-                    Selector::classname(InstalledVersions::class),
                     Selector::inNamespace('PhPhD\ExceptionToolkit'),
-                    // Container tags the autoloading discovery scans for
+                    // Class discovery
+                    Selector::classname(ConstantsClassLoader::class),
                     Selector::classname(MatchConditionCompiler::class),
                     Selector::classname(MatchedExceptionFormatter::class),
+                    // Bundle
+                    Selector::inNamespace('Symfony\Component'),
+                    Selector::classname(InstalledVersions::class),
                 ],
                 'description' => 'Container wiring must not reach into the mapping model',
             ],
             'linter' => [
                 'deps' => [
-                    $this->node(),
                     $this->plan(),
                     $this->planCompiler(),
-                    $this->exception(),
                     $this->matchCondition(),
                     Selector::inNamespace('Psr'),
                     Selector::inNamespace('Composer\ClassMapGenerator'),
                     Selector::inNamespace('Symfony\Component\Console'),
+                ],
+            ],
+            'messengerValidatorMiddleware' => [
+                'wraps' => ['validatorMiddleware', 'validatorMatcher'],
+                'deps' => [
+                    Selector::inNamespace('Symfony\Component\Messenger'),
+                ],
+            ],
+            'validatorMiddleware' => [
+                'deps' => [
+                    Selector::inNamespace('Symfony\Component\Validator'),
                 ],
             ],
             'validatorMatcher' => [
@@ -198,34 +206,14 @@ final class ArchitectureRuleSet
                     $this->exception(),
                     Selector::inNamespace('Symfony\Component\Validator'),
                     Selector::classname(TranslatorInterface::class),
-                    Selector::inNamespace('Psr\Container'),
-                ],
-            ],
-            'messengerValidatorMiddleware' => [
-                'deps' => [
-                    Selector::AllOf(
-                        Selector::isInterface(),
-                        $this->matcher(),
-                    ),
-                    $this->validatorMiddleware(),
-                    Selector::inNamespace('Symfony\Component\Messenger'),
-                    Selector::classname(ConstraintViolationListInterface::class),
-                ],
-            ],
-            'validatorMiddleware' => [
-                'deps' => [
-                    Selector::inNamespace('Symfony\Component\Validator'),
                 ],
             ],
             'matcher' => [
                 'deps' => [
-                    $this->node(),
                     $this->plan(),
-                    $this->planCompiler(),
+                    $this->node(),
                     $this->exception(),
                     Selector::classname(ExceptionUnwrapper::class),
-                    Selector::inNamespace('Psr\Container'),
-                    Selector::inNamespace('Psr\Log'),
                 ],
             ],
             'planCompiler' => [
