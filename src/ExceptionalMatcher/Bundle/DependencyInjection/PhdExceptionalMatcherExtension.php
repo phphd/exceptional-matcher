@@ -7,11 +7,8 @@ namespace PhPhD\ExceptionalMatcher\Bundle\DependencyInjection;
 use Composer\InstalledVersions;
 use Exception;
 use LogicException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload\ConstantsAutoloadingCompilerPass;
-use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use PhPhD\ExceptionToolkit\Bundle\DependencyInjection\PhdExceptionToolkitExtension;
-use ReflectionClass;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\Compiler\ResolveChildDefinitionsPass;
@@ -110,7 +107,6 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
     public function process(ContainerBuilder $container): void
     {
         $this->wireTranslatorDependency($container);
-        $this->wireLoggerDependency($container);
         $this->failOnUnresolvedBackwardCompatibilityBreaks($container);
     }
 
@@ -155,18 +151,6 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
         $container->removeDefinition('phd_exceptional_matcher.translator');
         $container->getParameterBag()
             ->remove('phd_exceptional_matcher.translation_domain')
-        ;
-    }
-
-    /** With nowhere to report a broken mapping to, the compiler keeps throwing it, as it does by default. */
-    private function wireLoggerDependency(ContainerBuilder $container): void
-    {
-        if ($container->has('logger')) {
-            return;
-        }
-
-        $container->getDefinition(ExceptionMappingPlanCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>')
-            ->removeMethodCall('reportingTo')
         ;
     }
 

@@ -18,18 +18,17 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\ObjectExceptionMappingPlanCompiler
- * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension::wireLoggerDependency()
  *
  * @internal
  */
 final class ObjectExceptionMappingPlanCompilerUnitTest extends TestCase
 {
-    public function testErrorReporterIsNotSetUpRegardlessOfNoDebugModeWhenLoggerIsNotAvailable(): void
+    public function testErrorReporterIsNotSetUpRegardlessOfDebugModeWhenLoggerIsNotAvailable(): void
     {
         $container = $this->getContainer();
         $container->compile();
 
-        /** @var ExceptionMappingPlanCompiler<ReflectionClass,ObjectExceptionMappingPlan> $compiler */
+        /** @var ExceptionMappingPlanCompiler<ReflectionClass<object>,ObjectExceptionMappingPlan<object>> $compiler */
         $compiler = $container->get(ExceptionMappingPlanCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>');
 
         $this->expectException(ObjectExceptionMappingPlanCompilationFailedException::class);
@@ -37,7 +36,7 @@ final class ObjectExceptionMappingPlanCompilerUnitTest extends TestCase
         $compiler->compilePlan(new ReflectionClass(TryWithNoCatchAttributesMessage::class));
     }
 
-    public function testErrorReporterIsUsedInNoDebugModeWhenLoggerIsAvailable(): void
+    public function testLoggerIsUsedAsErrorReporterIsInNoDebugMode(): void
     {
         $container = $this->getContainer();
 
@@ -45,7 +44,7 @@ final class ObjectExceptionMappingPlanCompilerUnitTest extends TestCase
         $container->set('logger', $spyLogger);
         $container->compile();
 
-        /** @var ExceptionMappingPlanCompiler<ReflectionClass,ObjectExceptionMappingPlan> $compiler */
+        /** @var ExceptionMappingPlanCompiler<ReflectionClass<object>,ObjectExceptionMappingPlan<object>> $compiler */
         $compiler = $container->get(ExceptionMappingPlanCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>');
 
         $plan = $compiler->compilePlan(new ReflectionClass(TryWithNoCatchAttributesMessage::class));

@@ -10,6 +10,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappi
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use ReflectionClass;
 use ReflectionProperty;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
@@ -30,7 +31,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
 
     if ($container->hasParameter('kernel.debug') && false === $container->getParameter('kernel.debug')) {
         $planCompiler
-            ->call('reportingTo', [service('logger')], returnsClone: true)
+            ->call('reportingTo', [service('logger')->ignoreOnInvalid()], returnsClone: true)
             ->tag('monolog.logger', ['channel' => PhdExceptionalMatcherExtension::LOGGER_CHANNEL])
         ;
     }
