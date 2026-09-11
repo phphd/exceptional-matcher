@@ -16,6 +16,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
  */
 final class ClassPathMappingLinter implements MappingLinter
 {
+    /** @api */
     public function __construct(
         private readonly ClassNameDiscovery $classNameDiscovery,
         /** @var MappingLinter<class-string,TReport> */

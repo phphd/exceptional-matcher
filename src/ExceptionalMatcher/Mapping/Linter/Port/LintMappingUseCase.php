@@ -12,11 +12,14 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
 /**
+ * @internal
+ *
  * @template TSymbol of string
  * @template TFormat
  */
 final class LintMappingUseCase
 {
+    /** @api */
     public function __construct(
         /** @var ContainerInterface<string,MappingLinter<TSymbol,LintReport>> */
         private readonly ContainerInterface $mappingLinterRegistry,

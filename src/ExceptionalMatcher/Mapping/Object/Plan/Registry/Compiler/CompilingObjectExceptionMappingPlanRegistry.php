@@ -19,6 +19,7 @@ use ReflectionException;
  */
 final class CompilingObjectExceptionMappingPlanRegistry implements ObjectExceptionMappingPlanRegistry
 {
+    /** @api */
     public function __construct(
         /** @var ExceptionMappingPlanCompiler<ReflectionClass<T>,ObjectExceptionMappingPlan<T>> */
         private readonly ExceptionMappingPlanCompiler $planCompiler,

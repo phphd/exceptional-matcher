@@ -24,9 +24,4 @@ final class ExceptionMatcherAggregateAdapter implements ExceptionMatcher
 
         return false;
     }
-
-    public function getAggregate(): ExceptionMatcherAggregate
-    {
-        return $this->aggregate;
-    }
 }

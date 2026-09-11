@@ -21,6 +21,7 @@ final class MemoizingObjectExceptionMappingPlanRegistry implements ObjectExcepti
     /** @var array<class-string<T>,null|ObjectExceptionMappingPlan<T>> */
     private array $plans = [];
 
+    /** @api */
     public function __construct(
         /** @var ObjectExceptionMappingPlanRegistry<T> */
         private readonly ObjectExceptionMappingPlanRegistry $registry,
@@ -47,6 +48,7 @@ final class MemoizingObjectExceptionMappingPlanRegistry implements ObjectExcepti
         return $this->plans[$className] = $this->registry->getPlan($className);
     }
 
+    /** @api */
     public function clear(): void
     {
         $this->plans = [];

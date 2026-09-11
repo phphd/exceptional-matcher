@@ -9,6 +9,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /** @internal */
 final class SymfonyTranslator
 {
+    /** @api */
     public function __construct(
         private readonly TranslatorInterface $translator,
         private readonly string $translationDomain,

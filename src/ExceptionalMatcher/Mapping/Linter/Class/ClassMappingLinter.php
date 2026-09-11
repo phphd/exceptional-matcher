@@ -34,6 +34,7 @@ use function sprintf;
  */
 final class ClassMappingLinter implements MappingLinter
 {
+    /** @api */
     public function __construct(
         /** @var ObjectExceptionMappingPlanRegistry<object> */
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
@@ -67,13 +68,9 @@ final class ClassMappingLinter implements MappingLinter
      */
     private function lintClass(ReflectionClass $reflectionClass): Generator
     {
-        $compilationDefects = $this->lintPlan($reflectionClass);
+        yield from $this->lintPlan($reflectionClass);
 
-        yield from $compilationDefects;
-
-        $plan = $this->planRegistry->getPlan($reflectionClass->getName());
-
-        yield from $this->lintStructure($reflectionClass, $plan, [] !== $compilationDefects);
+        yield from $this->lintStructure($reflectionClass);
     }
 
     /**
@@ -158,11 +155,10 @@ final class ClassMappingLinter implements MappingLinter
 
     /**
      * @param ReflectionClass<object> $reflectionClass
-     * @param ?ObjectExceptionMappingPlan<object> $plan
      *
      * @return Generator<MappingDefect>
      */
-    private function lintStructure(ReflectionClass $reflectionClass, ?ObjectExceptionMappingPlan $plan, bool $compilationFailed): Generator
+    private function lintStructure(ReflectionClass $reflectionClass): Generator
     {
         $classLocation = new DefectLocation($reflectionClass->getName());
 

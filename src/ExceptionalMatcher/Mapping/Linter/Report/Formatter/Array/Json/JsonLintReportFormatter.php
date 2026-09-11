@@ -16,6 +16,7 @@ use function json_encode;
  */
 final class JsonLintReportFormatter implements LintReportFormatter
 {
+    /** @api */
     public function __construct(
         /** @var LintReportFormatter<array<array-key,mixed>> */
         private readonly LintReportFormatter $arrayFormatter,
