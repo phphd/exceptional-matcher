@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests;
 
 use LogicException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Bundle\Tests\CustomViolationFormatterCompilerPass;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\RegisterCustomViolationFormatterCompilerPass;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests\Stub\MessageContainingException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
@@ -44,7 +44,7 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->addCompilerPass(new CustomViolationFormatterCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, CustomViolationFormatterCompilerPass::PRIORITY);
+        $container->addCompilerPass(new RegisterCustomViolationFormatterCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, RegisterCustomViolationFormatterCompilerPass::PRIORITY);
 
         $translator = $this->createMock(TranslatorInterface::class);
         $translations = [

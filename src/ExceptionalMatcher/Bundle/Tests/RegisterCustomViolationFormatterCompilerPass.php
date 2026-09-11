@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 /** @internal */
-final class CustomViolationFormatterCompilerPass implements CompilerPassInterface
+final class RegisterCustomViolationFormatterCompilerPass implements CompilerPassInterface
 {
     /** Must outrank {@see ResolveInstanceofConditionalsPass} (100) for interface autoconfiguration to work */
     public const PRIORITY = 105;

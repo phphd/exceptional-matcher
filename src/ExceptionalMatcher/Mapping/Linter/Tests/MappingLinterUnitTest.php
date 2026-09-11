@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Bundle\Tests\CustomViolationFormatterCompilerPass;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\RegisterCustomViolationFormatterCompilerPass;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity;
@@ -51,7 +51,7 @@ final class MappingLinterUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->addCompilerPass(new CustomViolationFormatterCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, CustomViolationFormatterCompilerPass::PRIORITY);
+        $container->addCompilerPass(new RegisterCustomViolationFormatterCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, RegisterCustomViolationFormatterCompilerPass::PRIORITY);
 
         $container->addCompilerPass(new PublicServiceCompilerPass(MappingLinter::class.'<class-string,'.LintReport::class.'>'));
 

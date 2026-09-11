@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Tests\Unit;
 
 use ArrayObject;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Bundle\Tests\CustomViolationFormatterCompilerPass;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\RegisterCustomViolationFormatterCompilerPass;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
@@ -71,7 +71,7 @@ final class ExceptionMatcherUnitTest extends TestCase
             'phd_exceptional_matcher.translation_domain' => 'domain',
         ]);
 
-        $container->addCompilerPass(new CustomViolationFormatterCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, CustomViolationFormatterCompilerPass::PRIORITY);
+        $container->addCompilerPass(new RegisterCustomViolationFormatterCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, RegisterCustomViolationFormatterCompilerPass::PRIORITY);
 
         $translator = $this->createMock(TranslatorInterface::class);
         $translations = [

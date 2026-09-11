@@ -38,7 +38,7 @@ abstract class BundleTestCase extends KernelTestCase
 
         $kernel->addTestBundle(PhdExceptionalMatcherBundle::class);
         $kernel->addTestBundle(PhdExceptionToolkitBundle::class);
-        $kernel->addTestCompilerPass(new CustomViolationFormatterCompilerPass(), priority: CustomViolationFormatterCompilerPass::PRIORITY);
+        $kernel->addTestCompilerPass(new RegisterCustomViolationFormatterCompilerPass(), priority: RegisterCustomViolationFormatterCompilerPass::PRIORITY);
 
         foreach (static::compilerPasses() as $compilerPass) {
             $kernel->addTestCompilerPass($compilerPass);
