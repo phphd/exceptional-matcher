@@ -11,6 +11,6 @@ final class CatchAttributeInstantiationFailedException extends RuntimeException
 {
     public function __construct(Throwable $previous)
     {
-        parent::__construct('#[Catch_] attribute instantiation has failed.', previous: $previous);
+        parent::__construct('#[Catch_] attribute instantiation failed.', previous: $previous);
     }
 }
