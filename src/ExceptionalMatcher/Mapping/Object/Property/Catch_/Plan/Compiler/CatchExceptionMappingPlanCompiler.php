@@ -11,7 +11,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\CatchExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchAttributeInstantiationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\UnregisteredFormatterException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\UnregisteredExceptionFormatterException;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -31,21 +31,21 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
     /**
      * @template T of MatchedExceptionFormatter
      *
-     * @phpstan-param ContainerInterface<class-string<T>,T> $formatterRegistry
+     * @phpstan-param ContainerInterface<class-string<T>,T> $exceptionFormatterRegistry
      *
-     * @psalm-param ContainerInterface<class-string<MatchedExceptionFormatter>,MatchedExceptionFormatter> $formatterRegistry
+     * @psalm-param ContainerInterface<class-string<MatchedExceptionFormatter>,MatchedExceptionFormatter> $exceptionFormatterRegistry
      */
     public function __construct(
         /** @var MatchConditionCompiler<Throwable> */
         private readonly MatchConditionCompiler $matchConditionCompiler,
-        private readonly ContainerInterface $formatterRegistry,
+        private readonly ContainerInterface $exceptionFormatterRegistry,
         private readonly ?LoggerInterface $errorReporter = null,
     ) {
     }
 
     public function reportingTo(LoggerInterface $reporter): self
     {
-        return new self($this->matchConditionCompiler, $this->formatterRegistry, $reporter);
+        return new self($this->matchConditionCompiler, $this->exceptionFormatterRegistry, $reporter);
     }
 
     /** @param ReflectionAttribute<Catch_<Throwable,Throwable>> $reflector */
@@ -96,8 +96,8 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
     private function compile(Catch_ $catch): CatchExceptionMappingPlan
     {
         return new CatchExceptionMappingPlan(
-            $this->compileConditionPlan($catch),
-            $this->compileFormatter($catch),
+            $this->compileMatchConditionPlan($catch),
+            $this->compileExceptionFormatter($catch),
             $catch->getMessage(),
         );
     }
@@ -107,7 +107,7 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
      *
      * @return MatchConditionPlan<Throwable>
      */
-    private function compileConditionPlan(Catch_ $catch): MatchConditionPlan
+    private function compileMatchConditionPlan(Catch_ $catch): MatchConditionPlan
     {
         $conditionPlan = $this->matchConditionCompiler->compile($catch);
 
@@ -123,7 +123,7 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
      *
      * @psalm-return ?class-string<MatchedExceptionFormatter>
      */
-    private function compileFormatter(Catch_ $catch): ?string
+    private function compileExceptionFormatter(Catch_ $catch): ?string
     {
         $formatterId = $catch->getFormat();
 
@@ -131,8 +131,9 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
             return null;
         }
 
-        if (!$this->formatterRegistry->has($formatterId)) {
-            throw new UnregisteredFormatterException($formatterId);
+        /** Duplicates {@see \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Delegating\DelegatingMatchedExceptionFormatter} */
+        if (!$this->exceptionFormatterRegistry->has($formatterId)) {
+            throw new UnregisteredExceptionFormatterException($formatterId);
         }
 
         return $formatterId;

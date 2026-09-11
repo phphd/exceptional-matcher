@@ -66,12 +66,17 @@ final class CatchExceptionMappingNode implements ExceptionMappingNode, MatchCond
         return $this->condition->matches($exception);
     }
 
-    /** @return ?class-string<MatchedExceptionFormatter<TException,mixed>> */
+    /**
+     * @internal
+     *
+     * @return ?class-string<MatchedExceptionFormatter<TException,mixed>>
+     */
     public function getFormatterId(): ?string
     {
         return $this->formatterId;
     }
 
+    /** @internal */
     public function getMessageTemplate(): ?string
     {
         return $this->messageTemplate;

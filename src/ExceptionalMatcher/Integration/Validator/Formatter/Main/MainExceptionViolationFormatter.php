@@ -8,7 +8,6 @@ use Closure;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\ExceptionViolationFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException;
 use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
 /**
@@ -29,15 +28,6 @@ final class MainExceptionViolationFormatter implements ExceptionViolationFormatt
     public function __construct(?Closure $translate = null)
     {
         $this->translate = $translate ?? static fn (string $messageTemplate): string => $messageTemplate;
-    }
-
-    /** @api */
-    public static function translator(TranslatorInterface $translator, string $translationDomain): Closure
-    {
-        return static fn (
-            string $messageTemplate,
-            array $parameters = [],
-        ): string => $translator->trans($messageTemplate, $parameters, domain: $translationDomain);
     }
 
     /** @return array{ConstraintViolation} */

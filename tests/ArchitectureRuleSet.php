@@ -22,6 +22,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\ValueException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Matcher\ExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload\ConstantsAutoloadingClassDiscovery;
@@ -77,6 +78,12 @@ final class ArchitectureRuleSet
     public function testExceptionDependencies(): BuildStep
     {
         return $this->layerRule('exception');
+    }
+
+    #[TestRule]
+    public function testExceptionFormatterDependencies(): BuildStep
+    {
+        return $this->layerRule('exceptionFormatter');
     }
 
     #[TestRule]
@@ -172,7 +179,7 @@ final class ArchitectureRuleSet
                     Selector::classname(ConstantsClassLoader::class),
                     Selector::classname(MatchConditionCompiler::class),
                     Selector::classname(MatchedExceptionFormatter::class),
-                    // Bundle
+                    // Bundle & Extension
                     Selector::inNamespace('Symfony\Component'),
                     Selector::classname(InstalledVersions::class),
                 ],
@@ -205,7 +212,6 @@ final class ArchitectureRuleSet
                     $this->node(),
                     $this->exception(),
                     Selector::inNamespace('Symfony\Component\Validator'),
-                    Selector::classname(TranslatorInterface::class),
                 ],
             ],
             'matcher' => [
@@ -220,6 +226,7 @@ final class ArchitectureRuleSet
                 'wraps' => ['plan', 'node'],
                 'deps' => [
                     $this->matchConditionCompiler(),
+                    $this->exceptionFormatter(),
                     Selector::inNamespace('Psr'),
                 ],
             ],
@@ -247,10 +254,16 @@ final class ArchitectureRuleSet
                     $this->exception(),
                 ],
             ],
+            'exceptionFormatter' => [
+                'deps' => [
+                    Selector::classname(MatchedException::class),
+                    Selector::classname(TranslatorInterface::class),
+                    Selector::inNamespace('Psr\Container'), // Registry
+                ],
+            ],
             'exception' => [
                 'deps' => [
                     Selector::classname(CatchExceptionMappingNode::class),
-                    Selector::inNamespace('Psr\Container'), // formatter
                 ],
                 'description' => 'Exception models must not depend on anything else',
             ],
@@ -337,11 +350,23 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function exception(): SelectorInterface
+    public function exceptionFormatter(): SelectorInterface
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception'),
+            Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter'),
             Selector::Not($this->bundle()),
+        );
+    }
+
+    public function exception(): SelectorInterface
+    {
+        return Selector::AnyOf(
+            Selector::AllOf(
+                Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception'),
+                Selector::Not($this->exceptionFormatter()),
+                Selector::Not($this->bundle()),
+            ),
+            Selector::classname(MatchedExceptionFormatter::class),
         );
     }
 

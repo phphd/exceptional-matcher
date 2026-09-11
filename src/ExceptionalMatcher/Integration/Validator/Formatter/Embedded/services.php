@@ -23,7 +23,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
         ->set(ExceptionViolationFormatter::class.'<'.ViolationsEmbeddedException::class.'>', ViolationsEmbeddedExceptionFormatter::class)
         ->args([
             service('phd_exceptional_matcher.translator')
-                ->ignoreOnInvalid(),
+                ->nullOnInvalid(),
         ])
         ->tag(MatchedExceptionFormatter::class, ['id' => ViolationsEmbeddedExceptionFormatter::class])
     ;

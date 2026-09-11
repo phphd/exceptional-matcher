@@ -8,11 +8,11 @@ use RuntimeException;
 
 use function sprintf;
 
-final class UnregisteredFormatterException extends RuntimeException
+final class UnregisteredExceptionFormatterException extends RuntimeException
 {
     /** @param class-string $formatterId */
     public function __construct(string $formatterId)
     {
-        parent::__construct(sprintf('Formatter "%s" is not registered in the formatter registry.', $formatterId));
+        parent::__construct(sprintf('Exception Formatter "%s" is not registered in the formatter registry.', $formatterId));
     }
 }
