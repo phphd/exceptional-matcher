@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /** @internal */
 #[AsCommand(
     name: 'lint:exceptional-matcher',
-    description: 'Lints the #[Try_] / #[Catch_] exception mappings of the classes within the given paths',
+    description: 'Lints the #[Try_] / #[Catch_] exception mappings of the classes',
 )]
 final class LintExceptionalMatcherCommand extends Command
 {

@@ -22,7 +22,7 @@ final class ClassNameDiscovery
     {
         if (!class_exists(ClassMapGenerator::class)) {
             throw new RuntimeException(
-                'Class discovery requires the "composer/class-map-generator" package.'
+                'Class discovery requires the "composer/class-map-generator" package.' . PHP_EOL
                 .' Try running "composer require --dev composer/class-map-generator".',
             );
         }

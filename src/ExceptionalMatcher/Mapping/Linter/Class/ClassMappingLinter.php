@@ -22,7 +22,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use ReflectionClass;
 use ReflectionProperty;
-
 use Throwable;
 
 use function sprintf;
@@ -53,6 +52,10 @@ final class ClassMappingLinter implements MappingLinter
         $defects = new AppendIterator();
 
         foreach ($symbols as $className) {
+            if (!$this->loadClass($className)) {
+                continue;
+            }
+
             $defects->append($this->lintClass(new ReflectionClass($className)));
 
             ++$processed;
@@ -211,5 +214,19 @@ final class ClassMappingLinter implements MappingLinter
     private function hasCatchAttributes(ReflectionProperty $reflectionProperty): bool
     {
         return [] !== $reflectionProperty->getAttributes(Catch_::class);
+    }
+
+    /** @param class-string $className */
+    private function loadClass(string $className): bool
+    {
+        try {
+            if (!class_exists($className)) {
+                return false;
+            }
+        } catch (\ErrorException $e) {
+            return false;
+        }
+
+        return true;
     }
 }
