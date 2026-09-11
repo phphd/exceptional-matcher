@@ -64,7 +64,9 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testTryAttributePresentButCatchAttributesMissingIsReported(): void
     {
-        [$defect] = $this->linter->lint([TryWithNoCatchAttributesMessage::class])->getDefects();
+        [$classReport] = $this->linter->lint([TryWithNoCatchAttributesMessage::class])->getDefects();
+
+        [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertStringContainsString('#[Try_]', $defect->getMessage());
@@ -75,7 +77,9 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testCatchAttributesPresentButTryAttributeMissingIsReported(): void
     {
-        [$defect] = $this->linter->lint([MessageWithNoTryAttribute::class])->getDefects();
+        [$classReport] = $this->linter->lint([MessageWithNoTryAttribute::class])->getDefects();
+
+        [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
         self::assertStringContainsString('not marked with #[Try_]', $defect->getMessage());
@@ -85,7 +89,9 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsAbstractTryClass(): void
     {
-        [$defect] = $this->linter->lint([AbstractTryMessage::class])->getDefects();
+        [$classReport] = $this->linter->lint([AbstractTryMessage::class])->getDefects();
+
+        [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
         self::assertStringContainsString('abstract', $defect->getMessage());
@@ -112,7 +118,9 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsTryClassWhoseNestedObjectCannotCarryAPlan(): void
     {
-        [$defect] = $this->linter->lint([TryWithNonMatchableObjectMessage::class])->getDefects();
+        [$classReport] = $this->linter->lint([TryWithNonMatchableObjectMessage::class])->getDefects();
+
+        [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertStringContainsString('#[Try_]', $defect->getMessage());
@@ -123,7 +131,9 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsParentPrivateCatchProperties(): void
     {
-        [$defect] = $this->linter->lint([ChildOfPrivateCatchMessage::class])->getDefects();
+        [$classReport] = $this->linter->lint([ChildOfPrivateCatchMessage::class])->getDefects();
+
+        [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
         self::assertStringContainsString('$parentCaughtValue', $defect->getMessage());
@@ -133,7 +143,9 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsUnregisteredFormatter(): void
     {
-        [$defect] = $this->linter->lint([UnregisteredFormatterMessage::class])->getDefects();
+        [$classReport] = $this->linter->lint([UnregisteredFormatterMessage::class])->getDefects();
+
+        [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertStringContainsString(UnregisteredFormatter::class, $defect->getMessage());
@@ -142,7 +154,9 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testBrokenMatchConditionMappingIsReported(): void
     {
-        [$defect] = $this->linter->lint([MissingEnumFromConditionMessage::class])->getDefects();
+        [$classReport] = $this->linter->lint([MissingEnumFromConditionMessage::class])->getDefects();
+
+        [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertStringContainsString(
@@ -155,7 +169,9 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsUndefinedMatchConstant(): void
     {
-        [$defect] = $this->linter->lint([UndefinedConstantConditionMessage::class])->getDefects();
+        [$classReport] = $this->linter->lint([UndefinedConstantConditionMessage::class])->getDefects();
+
+        [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertStringContainsString('Undefined constant', $defect->getMessage());

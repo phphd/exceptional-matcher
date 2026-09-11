@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class;
 
-use AppendIterator;
 use Generator;
-use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
@@ -16,7 +15,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMapping
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\PreCompiledMatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\ReusableIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
@@ -24,6 +22,7 @@ use ReflectionClass;
 use ReflectionProperty;
 use Throwable;
 
+use function count;
 use function sprintf;
 
 /**
@@ -46,22 +45,40 @@ final class ClassMappingLinter implements MappingLinter
     /** @param iterable<class-string> $symbols */
     public function lint(iterable $symbols): LintReport
     {
-        $processed = 0;
-
-        /** @var AppendIterator<int,MappingDefect,Iterator<MappingDefect>> $defects */
-        $defects = new AppendIterator();
+        $classNames = [];
 
         foreach ($symbols as $className) {
-            if (!$this->loadClass($className)) {
-                continue;
+            if ($this->loadClass($className)) {
+                $classNames[] = $className;
             }
-
-            $defects->append($this->lintClass(new ReflectionClass($className)));
-
-            ++$processed;
         }
 
-        return new LintReport($processed, new ReusableIteratorAggregate($defects));
+        return new LintReport(count($classNames), $this->lintClasses($classNames));
+    }
+
+    /**
+     * A scanned class may hold defects of an inherited property, which belong to the class declaring it,
+     * so every class is scanned before any of them is reported on.
+     *
+     * @param list<class-string> $classNames
+     *
+     * @return Generator<ClassReport>
+     */
+    private function lintClasses(array $classNames): Generator
+    {
+        /** @var array<class-string,non-empty-list<MappingDefect>> $classDefects */
+        $classDefects = [];
+
+        foreach ($classNames as $className) {
+            foreach ($this->lintClass(new ReflectionClass($className)) as $defect) {
+                $classDefects[$defect->getLocation()
+                    ->getClassName()][] = $defect;
+            }
+        }
+
+        foreach ($classDefects as $className => $defects) {
+            yield new ClassReport($className, $defects);
+        }
     }
 
     /**

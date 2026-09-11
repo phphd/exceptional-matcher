@@ -4,22 +4,20 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Report;
 
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity;
 
-use function array_filter;
 use function array_values;
-use function count;
 use function is_array;
 use function iterator_to_array;
 
 /** @internal */
 final class LintReport
 {
-    /** @var list<MappingDefect> */
+    /** @var list<ClassReport> */
     private readonly array $defects;
 
-    /** @param iterable<MappingDefect> $defects */
+    /** @param iterable<ClassReport> $defects */
     public function __construct(
         private readonly int $scannedSymbols,
         iterable $defects,
@@ -34,7 +32,11 @@ final class LintReport
         return $this->scannedSymbols;
     }
 
-    /** @return list<MappingDefect> */
+    /**
+     * Defects of a single class stay together, in the order their classes were scanned.
+     *
+     * @return list<ClassReport>
+     */
     public function getDefects(): array
     {
         return $this->defects;
@@ -47,16 +49,12 @@ final class LintReport
 
     public function countOf(DefectSeverity $severity): int
     {
-        return count($this->ofSeverity($severity));
-    }
+        $count = 0;
 
-    /** @return list<MappingDefect> */
-    private function ofSeverity(DefectSeverity $severity): array
-    {
-        return array_values(array_filter(
-            $this->defects,
-            static fn (MappingDefect $defect): bool => $defect->getSeverity()
-                ->is($severity),
-        ));
+        foreach ($this->defects as $classReport) {
+            $count += $classReport->countOf($severity);
+        }
+
+        return $count;
     }
 }
