@@ -47,7 +47,7 @@ Install it in either a vanilla PHP project or a Symfony project.
    You can use features of this library outside frameworks. \
    See [Standalone Usage](#standalone-usage-).
 
-### 2. Map and Throw 🎯
+### 2. Throw and Map 🎯
 
 Mark a command or dto with `#[Try_]` attribute, and properties with `#[Catch_]`.
 
