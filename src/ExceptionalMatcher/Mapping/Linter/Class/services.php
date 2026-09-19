@@ -23,22 +23,25 @@ return static function (ContainerConfigurator $configurator): void {
 
     $services
         ->set(MappingLinter::class.'<class-string,'.LintReport::class.'>', ClassMappingLinter::class)
-        ->args([
-            // Lint-mode plan registry: it keeps compiling past a broken mapping
+        ->arg('$planRegistry',
             inline_service(CompilingObjectExceptionMappingPlanRegistry::class)
-                ->args([
+                ->arg('$planCompiler',
                     // Lint-mode compiler - it collects and reports mapping problems
                     inline_service(ExceptionMappingPlanCompiler::class)
-                        ->factory([service(ExceptionMappingPlanCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>'), 'reportingTo'])
-                        ->args([service(MappingDefectCollector::class)]),
-                ]),
+                        ->factory([
+                            service(ExceptionMappingPlanCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>'),
+                            'reportingTo',
+                        ])->args([service(MappingDefectCollector::class)]),
+                ),
+        )->arg('$propertyMappingPlanCompiler',
             inline_service(ExceptionMappingPlanCompiler::class)
-                ->factory([service(ExceptionMappingPlanCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingPlan::class.'>'), 'reportingTo'])
-                ->args([service(MappingDefectCollector::class)]),
+                ->factory([
+                    service(ExceptionMappingPlanCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingPlan::class.'>'),
+                    'reportingTo',
+                ])->args([service(MappingDefectCollector::class)])
+        )->arg('$defectCollector',
             service(MappingDefectCollector::class),
-        ])
-        ->tag(MappingLinter::class, ['id' => 'class-string'])
-    ;
+        )->tag(MappingLinter::class, ['id' => 'class-string']);
 
     $services->set($id = MappingDefectCollector::class, $id);
 };
