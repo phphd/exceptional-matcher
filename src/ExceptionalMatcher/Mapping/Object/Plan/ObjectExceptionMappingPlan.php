@@ -56,7 +56,7 @@ final class ObjectExceptionMappingPlan
     public function hasPropertyPlans(): bool
     {
         /** @noinspection PhpLoopNeverIteratesInspection */
-        foreach ($this->propertyPlans as $catchPlan) {
+        foreach ($this->propertyPlans as $propertyPlan) {
             return true;
         }
 

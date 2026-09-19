@@ -46,15 +46,11 @@ final class ClassMappingLinter implements MappingLinter
     /** @param iterable<class-string> $symbols */
     public function lint(iterable $symbols): LintReport
     {
-        $classNames = [];
+        $classNames = $this->loadClassNames($symbols);
 
-        foreach ($symbols as $className) {
-            if ($this->loadClass($className)) {
-                $classNames[] = $className;
-            }
-        }
+        $classReports = $this->lintClasses($classNames);
 
-        return new LintReport(count($classNames), $this->lintClasses($classNames));
+        return new LintReport(count($classNames), $classReports);
     }
 
     /**
@@ -234,11 +230,25 @@ final class ClassMappingLinter implements MappingLinter
         return [] !== $reflectionProperty->getAttributes(Catch_::class);
     }
 
-    /** @param class-string $className */
-    private function loadClass(string $className): bool
+    /**
+     * @param iterable<class-string> $symbols
+     *
+     * @return iterable<class-string>
+     */
+    private function loadClassNames(iterable $symbols): iterable
+    {
+        foreach ($symbols as $symbol) {
+            if ($this->loadClassName($symbol)) {
+                yield $symbol;
+            }
+        }
+    }
+
+    /** @param class-string $symbol */
+    private function loadClassName(string $symbol): bool
     {
         try {
-            if (!class_exists($className)) {
+            if (!class_exists($symbol)) {
                 return false;
             }
         } catch (ErrorException) {

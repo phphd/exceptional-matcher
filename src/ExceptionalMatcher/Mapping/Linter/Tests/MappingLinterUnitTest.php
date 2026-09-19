@@ -60,7 +60,7 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testTryAttributePresentButCatchAttributesMissingIsReported(): void
     {
-        [$classReport] = $this->linter->lint([TryWithNoCatchAttributesMessage::class])->getDefects();
+        [$classReport] = $this->linter->lint([TryWithNoCatchAttributesMessage::class])->getClassReports();
 
         [$defect] = $classReport->getDefects();
 
@@ -73,7 +73,7 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testCatchAttributesPresentButTryAttributeMissingIsReported(): void
     {
-        [$classReport] = $this->linter->lint([MessageWithNoTryAttribute::class])->getDefects();
+        [$classReport] = $this->linter->lint([MessageWithNoTryAttribute::class])->getClassReports();
 
         [$defect] = $classReport->getDefects();
 
@@ -85,7 +85,7 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsAbstractTryClass(): void
     {
-        [$classReport] = $this->linter->lint([AbstractTryMessage::class])->getDefects();
+        [$classReport] = $this->linter->lint([AbstractTryMessage::class])->getClassReports();
 
         [$defect] = $classReport->getDefects();
 
@@ -102,19 +102,19 @@ final class MappingLinterUnitTest extends TestCase
         ]);
 
         self::assertFalse($report->hasDefects());
-        self::assertSame([], $report->getDefects());
+        self::assertSame([], $report->getClassReports());
     }
 
     public function testValidNestedOnlyMappingProducesNoWarning(): void
     {
-        $defects = $this->linter->lint([RootObject::class])->getDefects();
+        $defects = $this->linter->lint([RootObject::class])->getClassReports();
 
         self::assertSame([], $defects);
     }
 
     public function testReportsTryClassWhoseNestedObjectCannotCarryAPlan(): void
     {
-        [$classReport] = $this->linter->lint([TryWithNonMatchableObjectMessage::class])->getDefects();
+        [$classReport] = $this->linter->lint([TryWithNonMatchableObjectMessage::class])->getClassReports();
 
         [$defect] = $classReport->getDefects();
 
@@ -127,7 +127,7 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsParentPrivateCatchProperties(): void
     {
-        [$classReport] = $this->linter->lint([ChildOfPrivateCatchMessage::class])->getDefects();
+        [$classReport] = $this->linter->lint([ChildOfPrivateCatchMessage::class])->getClassReports();
 
         [$defect] = $classReport->getDefects();
 
@@ -139,7 +139,7 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsUnregisteredFormatter(): void
     {
-        [$classReport] = $this->linter->lint([UnregisteredFormatterMessage::class])->getDefects();
+        [$classReport] = $this->linter->lint([UnregisteredFormatterMessage::class])->getClassReports();
 
         [$defect] = $classReport->getDefects();
 
@@ -150,7 +150,7 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testBrokenMatchConditionMappingIsReported(): void
     {
-        [$classReport] = $this->linter->lint([MissingEnumFromConditionMessage::class])->getDefects();
+        [$classReport] = $this->linter->lint([MissingEnumFromConditionMessage::class])->getClassReports();
 
         [$defect] = $classReport->getDefects();
 
@@ -165,7 +165,7 @@ final class MappingLinterUnitTest extends TestCase
 
     public function testReportsUndefinedMatchConstant(): void
     {
-        [$classReport] = $this->linter->lint([UndefinedConstantConditionMessage::class])->getDefects();
+        [$classReport] = $this->linter->lint([UndefinedConstantConditionMessage::class])->getClassReports();
 
         [$defect] = $classReport->getDefects();
 

@@ -57,7 +57,7 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
         $output = new BufferedOutput(decorated: true);
         $style = new SymfonyStyle(new ArrayInput([]), $output);
 
-        foreach ($report->getDefects() as $classReport) {
+        foreach ($report->getClassReports() as $classReport) {
             $this->writeClassReport($style, $classReport);
         }
 
