@@ -40,5 +40,5 @@ return static function (ContainerConfigurator $configurator): void {
         ->tag(MappingLinter::class, ['id' => 'class-string'])
     ;
 
-    $services->set(MappingDefectCollector::class, MappingDefectCollector::class);
+    $services->set($id = MappingDefectCollector::class, $id);
 };
