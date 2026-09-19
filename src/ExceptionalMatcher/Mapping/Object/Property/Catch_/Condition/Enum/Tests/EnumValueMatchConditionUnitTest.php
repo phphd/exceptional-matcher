@@ -98,7 +98,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $exception = $this->weekDayEnumError('mon');
 
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage(sprintf('EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: %s', var_export(NonBackedStatus::class, true)));
+        $this->expectExceptionMessage(sprintf('EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: %s', var_export(NonBackedStatus::class, return: true)));
 
         try {
             $this->matcher->match($exception, $message);

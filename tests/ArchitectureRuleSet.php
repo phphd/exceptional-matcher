@@ -149,7 +149,7 @@ final class ArchitectureRuleSet
         return PHPat::rule()
             ->classes(Selector::AllOf(
                 $layerClassesSelector,
-                Selector::Not(Selector::classname('/\\\Tests\\\/', true)),
+                Selector::Not(Selector::classname('/\\\Tests\\\/', regex: true)),
                 Selector::Not(Selector::extends(TestCase::class)),
             ))
             ->canOnly()
@@ -304,7 +304,7 @@ final class ArchitectureRuleSet
     public function plan(): SelectorInterface
     {
         return Selector::AnyOf(
-            Selector::classname('/ExceptionMappingPlan$/', true),
+            Selector::classname('/ExceptionMappingPlan$/', regex: true),
             Selector::classname(ObjectExceptionMappingPlanRegistry::class),
         );
     }
@@ -313,7 +313,7 @@ final class ArchitectureRuleSet
     {
         return Selector::AllOf(
             Selector::AnyOf(
-                Selector::inNamespace('/\\\Plan\\\(Registry\\\)?Compiler/', true),
+                Selector::inNamespace('/\\\Plan\\\(Registry\\\)?Compiler/', regex: true),
                 Selector::classname(Try_::class),
                 Selector::classname(Catch_::class),
                 Selector::classname(CompilingObjectExceptionMappingPlanRegistry::class),

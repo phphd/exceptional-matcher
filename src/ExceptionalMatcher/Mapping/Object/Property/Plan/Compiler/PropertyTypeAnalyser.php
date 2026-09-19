@@ -58,7 +58,7 @@ final class PropertyTypeAnalyser
         }
 
         if ($this->type->isBuiltin()) {
-            return in_array($this->type->getName(), self::MATCHABLE_BUILTIN_TYPES, true);
+            return in_array($this->type->getName(), self::MATCHABLE_BUILTIN_TYPES, strict: true);
         }
 
         $className = $this->type->getName();
@@ -68,7 +68,7 @@ final class PropertyTypeAnalyser
             return true;
         }
 
-        if (is_a($className, Traversable::class, true)) {
+        if (is_a($className, Traversable::class, allow_string: true)) {
             return true;
         }
 

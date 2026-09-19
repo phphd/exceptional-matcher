@@ -26,7 +26,7 @@ final class ExceptionValueMatchConditionCompiler implements MatchConditionCompil
     /** @return MatchConditionPlan<ValueException> */
     public function compile(Catch_ $catch): MatchConditionPlan
     {
-        if (!is_a($catch->getExceptionClass(), ValueException::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
+        if (!is_a($catch->getExceptionClass(), ValueException::class, allow_string: true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('ExceptionValueMatchCondition can only be used for exception classes that implement ValueException');
         }
 

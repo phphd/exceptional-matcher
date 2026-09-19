@@ -18,7 +18,7 @@ final class PublicServiceCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         $container->getDefinition($this->serviceId)
-            ->setPublic(true)
+            ->setPublic(boolean: true)
         ;
     }
 }
