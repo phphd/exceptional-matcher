@@ -34,7 +34,8 @@ final class PropertyExceptionMappingPlanCompiler implements ExceptionMappingPlan
     ) {
     }
 
-    public function reportingTo(LoggerInterface $reporter): self
+    /** @noinspection PhpUnnecessaryStaticReferenceInspection */
+    public function reportingTo(LoggerInterface $reporter): static
     {
         return new self($this->catchPlanCompiler->reportingTo($reporter), $this->planRegistry, $reporter);
     }
