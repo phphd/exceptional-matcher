@@ -20,16 +20,13 @@ return static function (ContainerConfigurator $configurator): void {
 
     $services
         ->set(MatchConditionCompiler::class.'<'.Throwable::class.'>', CompositeMatchConditionCompiler::class)
-        ->args([
-            [
-                inline_service(ExceptionClassMatchConditionCompiler::class),
-                inline_service(ExceptionOriginMatchConditionCompiler::class),
-                inline_service(DelegatingMatchConditionCompiler::class)
-                    ->args([
-                        tagged_locator(MatchConditionCompiler::class, 'id'),
-                    ]),
-                inline_service(SimpleIfClosureMatchConditionCompiler::class),
-            ],
-        ])
-    ;
+        ->arg('$compilers', [
+            inline_service(ExceptionClassMatchConditionCompiler::class),
+            inline_service(ExceptionOriginMatchConditionCompiler::class),
+            inline_service(DelegatingMatchConditionCompiler::class)
+                ->args([
+                    tagged_locator(MatchConditionCompiler::class, 'id'),
+                ]),
+            inline_service(SimpleIfClosureMatchConditionCompiler::class),
+        ]);
 };

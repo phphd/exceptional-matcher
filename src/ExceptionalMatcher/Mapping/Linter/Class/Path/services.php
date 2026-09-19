@@ -17,10 +17,7 @@ return static function (ContainerConfigurator $configurator): void {
 
     $services
         ->set(MappingLinter::class.'<path-string,'.LintReport::class.'>', ClassPathMappingLinter::class)
-        ->args([
-            inline_service(ClassNameDiscovery::class),
-            service(MappingLinter::class.'<class-string,'.LintReport::class.'>'),
-        ])
-        ->tag(MappingLinter::class, ['id' => 'path-string'])
-    ;
+        ->arg('$classNameDiscovery', inline_service(ClassNameDiscovery::class))
+        ->arg('$classMappingLinter', service(MappingLinter::class.'<class-string,'.LintReport::class.'>'))
+        ->tag(MappingLinter::class, ['id' => 'path-string']);
 };

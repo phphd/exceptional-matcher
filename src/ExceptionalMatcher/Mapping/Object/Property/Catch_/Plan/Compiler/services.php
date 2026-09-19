@@ -24,11 +24,9 @@ return static function (ContainerConfigurator $configurator): void {
             ExceptionMappingPlanCompiler::class.'<'.ReflectionAttribute::class.','.CatchExceptionMappingPlan::class.'>',
             CatchExceptionMappingPlanCompiler::class,
         )
-        ->args([
-            service(MatchConditionCompiler::class.'<'.Throwable::class.'>'),
-            tagged_locator(MatchedExceptionFormatter::class, 'id'),
-        ])
-        // #[Catch_] compilation requires mapping constants to be loaded
+        ->arg('$matchConditionCompiler', service(MatchConditionCompiler::class.'<'.Throwable::class.'>'))
+        ->arg('$exceptionFormatterRegistry', tagged_locator(MatchedExceptionFormatter::class, 'id'))
+        // #[Catch_] compilation requires mapping constants loaded
         ->configurator(service(ConstantsClassLoader::class))
     ;
 };
