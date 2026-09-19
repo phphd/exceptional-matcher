@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object;
 use Attribute;
 
 /** @api */
-#[Attribute(Attribute::TARGET_CLASS)]
+#[Attribute(flags: Attribute::TARGET_CLASS)]
 final class Try_
 {
 }
