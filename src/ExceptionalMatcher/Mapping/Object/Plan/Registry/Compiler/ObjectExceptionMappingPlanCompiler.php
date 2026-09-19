@@ -32,7 +32,8 @@ final class ObjectExceptionMappingPlanCompiler implements ExceptionMappingPlanCo
     ) {
     }
 
-    public function reportingTo(LoggerInterface $reporter): self
+    /** @noinspection PhpUnnecessaryStaticReferenceInspection */
+    public function reportingTo(LoggerInterface $reporter): static
     {
         return new self($this->propertyMappingPlanCompiler->reportingTo($reporter), $reporter);
     }
