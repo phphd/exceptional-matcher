@@ -19,7 +19,7 @@ final class ArrayLintReportFormatter implements LintReportFormatter
     {
         $defects = [];
 
-        foreach ($report->getDefects() as $classReport) {
+        foreach ($report->getClassReports() as $classReport) {
             foreach ($classReport->getDefects() as $defect) {
                 $defects[] = [
                     'severity' => $defect->getSeverity()

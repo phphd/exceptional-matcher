@@ -15,16 +15,16 @@ use function iterator_to_array;
 final class LintReport
 {
     /** @var list<ClassReport> */
-    private readonly array $defects;
+    private readonly array $classReports;
 
-    /** @param iterable<ClassReport> $defects */
+    /** @param iterable<ClassReport> $classReports */
     public function __construct(
         private readonly int $scannedSymbols,
-        iterable $defects,
+        iterable $classReports,
     ) {
-        $this->defects = is_array($defects)
-            ? array_values($defects)
-            : iterator_to_array($defects, false);
+        $this->classReports = is_array($classReports)
+            ? array_values($classReports)
+            : iterator_to_array($classReports, false);
     }
 
     public function getScannedSymbols(): int
@@ -37,21 +37,21 @@ final class LintReport
      *
      * @return list<ClassReport>
      */
-    public function getDefects(): array
+    public function getClassReports(): array
     {
-        return $this->defects;
+        return $this->classReports;
     }
 
     public function hasDefects(): bool
     {
-        return [] !== $this->defects;
+        return [] !== $this->classReports;
     }
 
     public function countOf(DefectSeverity $severity): int
     {
         $count = 0;
 
-        foreach ($this->defects as $classReport) {
+        foreach ($this->classReports as $classReport) {
             $count += $classReport->countOf($severity);
         }
 
