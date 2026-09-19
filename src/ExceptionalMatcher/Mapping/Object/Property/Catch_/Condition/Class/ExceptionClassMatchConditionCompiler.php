@@ -24,7 +24,7 @@ final class ExceptionClassMatchConditionCompiler implements MatchConditionCompil
     {
         $exceptionClass = $catch->getExceptionClass();
 
-        if (!is_a($exceptionClass, Throwable::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
+        if (!is_a($exceptionClass, Throwable::class, allow_string: true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('Exception class condition should only be used for exception classes that implement Throwable');
         }
 

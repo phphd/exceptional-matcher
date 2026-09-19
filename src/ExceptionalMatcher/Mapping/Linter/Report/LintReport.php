@@ -24,7 +24,7 @@ final class LintReport
     ) {
         $this->classReports = is_array($classReports)
             ? array_values($classReports)
-            : iterator_to_array($classReports, false);
+            : iterator_to_array($classReports, preserve_keys: false);
     }
 
     public function getScannedSymbols(): int

@@ -26,6 +26,6 @@ final class PhdExceptionalMatcherBundle extends Bundle
     /** @override */
     protected function createContainerExtension(): PhdExceptionalMatcherExtension
     {
-        return new PhdExceptionalMatcherExtension(true);
+        return new PhdExceptionalMatcherExtension(allowGeneratedProxies: true);
     }
 }

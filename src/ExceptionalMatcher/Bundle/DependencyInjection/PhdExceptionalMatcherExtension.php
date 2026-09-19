@@ -52,7 +52,7 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
     {
         $container = new ContainerBuilder();
 
-        $container->setResourceTracking(false);
+        $container->setResourceTracking(track: false);
         $container->getCompilerPassConfig()->setBeforeOptimizationPasses([]);
         $container->getCompilerPassConfig()->setOptimizationPasses([]);
         $container->getCompilerPassConfig()->setRemovingPasses([]);

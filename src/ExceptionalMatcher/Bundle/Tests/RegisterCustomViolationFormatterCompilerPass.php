@@ -26,6 +26,6 @@ final class RegisterCustomViolationFormatterCompilerPass implements CompilerPass
                 CustomExceptionViolationFormatter::class,
                 [new Reference(ExceptionViolationFormatter::class.'<Throwable>')],
             ),
-        )->setAutoconfigured(true);
+        )->setAutoconfigured(autoconfigured: true);
     }
 }

@@ -45,7 +45,7 @@ abstract class BundleTestCase extends KernelTestCase
         }
 
         /** @see https://github.com/SymfonyTest/symfony-bundle-test/issues/94 */
-        $kernel->setClearCacheAfterShutdown(false);
+        $kernel->setClearCacheAfterShutdown(clearCache: false);
 
         return $kernel;
     }

@@ -87,7 +87,7 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
         self::assertSame(Command::FAILURE, $exitCode);
 
         /** @var array{defects:list<array{severity:string,class:string,property:?string,message:string}>} $report */
-        $report = json_decode($this->commandTester->getDisplay(), true, flags: JSON_THROW_ON_ERROR);
+        $report = json_decode($this->commandTester->getDisplay(), associative: true, flags: JSON_THROW_ON_ERROR);
 
         [$defect] = $report['defects'];
 

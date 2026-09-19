@@ -27,7 +27,7 @@ final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
 {
     public function compile(Catch_ $catch): EnumValueMatchConditionPlan
     {
-        if (!is_a($catch->getExceptionClass(), ValueError::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
+        if (!is_a($catch->getExceptionClass(), ValueError::class, allow_string: true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('EnumValueMatchCondition can only be used for '.ValueError::class);
         }
 
@@ -42,10 +42,10 @@ final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
     /** @phpstan-assert class-string<BackedEnum> $className */
     private static function assertEnumClass(?string $className): void
     {
-        if (null === $className || !is_a($className, BackedEnum::class, true)) {
+        if (null === $className || !is_a($className, BackedEnum::class, allow_string: true)) {
             throw new LogicException(sprintf(
                 'EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: %s',
-                var_export($className, true),
+                var_export($className, return: true),
             ));
         }
     }

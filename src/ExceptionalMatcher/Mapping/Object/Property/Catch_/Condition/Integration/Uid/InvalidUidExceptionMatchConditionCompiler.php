@@ -31,7 +31,7 @@ final class InvalidUidExceptionMatchConditionCompiler implements MatchConditionC
     /** @return MatchConditionPlan<InvalidUidException> */
     public function compile(Catch_ $catch): MatchConditionPlan
     {
-        if (!is_a($catch->getExceptionClass(), InvalidUidException::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
+        if (!is_a($catch->getExceptionClass(), InvalidUidException::class, allow_string: true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('InvalidUidExceptionMatchCondition can only be used for '.InvalidUidException::class);
         }
 

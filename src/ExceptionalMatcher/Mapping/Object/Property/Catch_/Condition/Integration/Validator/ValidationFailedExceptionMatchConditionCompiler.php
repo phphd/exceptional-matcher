@@ -27,7 +27,7 @@ final class ValidationFailedExceptionMatchConditionCompiler implements MatchCond
     /** @return MatchConditionPlan<ValidationFailedException> */
     public function compile(Catch_ $catch): MatchConditionPlan
     {
-        if (!is_a($catch->getExceptionClass(), ValidationFailedException::class, true)) { // @phpstan-ignore function.alreadyNarrowedType
+        if (!is_a($catch->getExceptionClass(), ValidationFailedException::class, allow_string: true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new LogicException('ValidationFailedExceptionMatchCondition can only be used for ValidationFailedException');
         }
 
