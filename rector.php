@@ -31,14 +31,16 @@ use Rector\Symfony\Configs\Rector\Closure\ServiceTagsToDefaultsAutoconfigureRect
 use Rector\ValueObject\PhpVersion;
 
 return RectorConfig::configure()
+    ->withPhpVersion(PhpVersion::PHP_81)
     ->withPaths([__DIR__.'/src', __DIR__.'/tests', __DIR__.'/upgrade'])
     ->withSets([PhdSetList::rector()->getPath()])
-    ->withPhpVersion(PhpVersion::PHP_81)
     ->withSkip([
-        ...stubExclusions(),
         ArrayToFirstClassCallableRector::class => [
             __DIR__.'/src/*/services.php',
             __DIR__.'/src/*/*CompilerPass.php',
+        ],
+        ClassPropertyAssignToConstructorPromotionRector::class => [
+            __DIR__.'/'.'src/ExceptionalMatcher/Mapping/Object/Property/Catch_/Exception/ExceptionReciprocal.php',
         ],
         IssetOnPropertyObjectToPropertyExistsRector::class => [
             __DIR__.'/'.'src/ExceptionalMatcher/Mapping/Object/Property/Catch_/Condition/Origin/ExceptionOriginMatchCondition.php',
@@ -46,36 +48,27 @@ return RectorConfig::configure()
         RemoveParentDelegatingClassMethodRector::class => [
             __DIR__.'/'.'src/ExceptionalMatcher/Integration/Validator/Middleware/Messenger/ExceptionalValidationFailedMessengerException.php',
         ],
-        ClassPropertyAssignToConstructorPromotionRector::class => [
-            __DIR__.'/'.'src/ExceptionalMatcher/Mapping/Object/Property/Catch_/Exception/ExceptionReciprocal.php',
+        AddNameToNullArgumentRector::class => [
+            __DIR__.'/'.'src/ExceptionalMatcher/Bundle/DependencyInjection/PhdExceptionalMatcherExtension.php',
         ],
-        StringClassNameToClassConstantRector::class => [
-            __DIR__.'/upgrade',
-        ],
-        ReduceAlwaysFalseIfOrRector::class => [
-            __DIR__.'/upgrade',
-        ],
-    ])
-    ->withSkip([ /// FIXME: process this list, removing the rules one by one:
-//        ExplicitAttributeNamedArgsRector::class,
-//        AddNameToBooleanArgumentRector::class,
-//        AddNameToNullArgumentRector::class,
-//        DecorateWillReturnMapWithExpectsMockRector::class,
-//        NewlineAfterStatementRector::class,
-    ])
-    ;
+        ...upgradeExclusions(),
+        ...stubExclusions(),
+    ]);
+
+function upgradeExclusions(): array
+{
+    return array_fill_keys([
+        StringClassNameToClassConstantRector::class,
+        ReduceAlwaysFalseIfOrRector::class,
+    ], [__DIR__.'/upgrade']);
+}
 
 function stubExclusions(): array
 {
-    return [
-        RemoveUnusedPrivatePropertyRector::class => [
-            __DIR__ .'/*/Stub/*',
-        ],
-        RemoveUnusedPromotedPropertyRector::class => [
-            __DIR__ .'/*/Stub/*',
-        ],
-        ReadOnlyPropertyRector::class => [
-            __DIR__.'/*/Stub/*',
-        ],
-    ];
+    return array_fill_keys([
+        RemoveUnusedPrivatePropertyRector::class,
+        RemoveUnusedPromotedPropertyRector::class,
+        ReadOnlyPropertyRector::class,
+        ExplicitAttributeNamedArgsRector::class,
+    ], [__DIR__.'/*/Stub/*']);
 }
