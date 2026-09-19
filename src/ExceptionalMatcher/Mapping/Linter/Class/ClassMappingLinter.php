@@ -139,6 +139,7 @@ final class ClassMappingLinter implements MappingLinter
 
                 unset($catchPlan);
             }
+
             unset($propertyPlan);
         }
 

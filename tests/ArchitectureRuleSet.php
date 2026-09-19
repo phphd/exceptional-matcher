@@ -144,6 +144,7 @@ final class ArchitectureRuleSet
                 $deps = [...$deps, $wrappedLayerSelector, ...$wrappedLayerDeps];
             }
         }
+
         $deps = [...$deps, self::coreDeps()];
 
         return PHPat::rule()
