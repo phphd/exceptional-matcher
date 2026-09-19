@@ -12,7 +12,7 @@ return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
 
     $services
-        ->set(ConstantsClassLoader::class, ConstantsClassLoader::class)
+        ->set($id = ConstantsClassLoader::class, $id)
         ->args([abstract_arg('Injected by '.ConstantsAutoloadingCompilerPass::class)])
     ;
 };

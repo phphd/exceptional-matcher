@@ -17,7 +17,7 @@ return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
 
     $services
-        ->set(MemoizingObjectExceptionMappingPlanRegistry::class, MemoizingObjectExceptionMappingPlanRegistry::class)
+        ->set($id = MemoizingObjectExceptionMappingPlanRegistry::class, $id)
         ->decorate(ObjectExceptionMappingPlanRegistry::class)
         ->args([service('.inner')])
         ->tag('kernel.reset', ['method' => 'clear'])

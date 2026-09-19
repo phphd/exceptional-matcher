@@ -18,7 +18,7 @@ return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
 
     $services
-        ->set(ConsoleLintReportFormatter::class, ConsoleLintReportFormatter::class)
+        ->set($id = ConsoleLintReportFormatter::class, $id)
         ->tag(LintReportFormatter::class, ['id' => 'console'])
     ;
 };

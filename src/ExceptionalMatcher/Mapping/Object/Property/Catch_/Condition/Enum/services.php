@@ -11,7 +11,7 @@ return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
 
     $services
-        ->set(EnumValueMatchConditionCompiler::class, EnumValueMatchConditionCompiler::class)
+        ->set($id = EnumValueMatchConditionCompiler::class, $id)
         ->tag(MatchConditionCompiler::class, ['id' => EnumValueMatchCondition::class])
     ;
 };
