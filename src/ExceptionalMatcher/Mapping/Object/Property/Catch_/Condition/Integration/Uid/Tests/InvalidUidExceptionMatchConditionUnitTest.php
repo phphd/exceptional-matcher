@@ -52,7 +52,7 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
 
     public function testInvalidUidExceptionIsNotCapturedWhenValueIsNull(): void
     {
-        $message = new MessageWithInvalidUidCondition(null);
+        $message = new MessageWithInvalidUidCondition(uid: null);
 
         try {
             Uuid::fromString('just bad');

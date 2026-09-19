@@ -30,12 +30,12 @@ final class MappingDefect
 
     public static function warning(string $message, DefectLocation $location): self
     {
-        return new self(DefectSeverity::Warning, [$message], $location, null);
+        return new self(DefectSeverity::Warning, [$message], $location, cause: null);
     }
 
     public static function notice(string $message, DefectLocation $location): self
     {
-        return new self(DefectSeverity::Notice, [$message], $location, null);
+        return new self(DefectSeverity::Notice, [$message], $location, cause: null);
     }
 
     public function getSeverity(): DefectSeverity
