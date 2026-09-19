@@ -21,6 +21,6 @@ return static function (ContainerConfigurator $configurator): void {
     $services
         ->set($id = LintExceptionalMatcherCommand::class, $id)
         ->args([service(LintMappingUseCase::class)])
-        ->tag('console.command')
+        ->autoconfigure()
     ;
 };
