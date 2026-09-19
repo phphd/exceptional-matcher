@@ -13,11 +13,7 @@ use ReflectionAttribute;
 use ReflectionProperty;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-
-use function Symfony\Component\DependencyInjection\Loader\Configurator\inline_service;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\service_closure;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\service_locator;
 
 return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
     $services = $configurator->services();
