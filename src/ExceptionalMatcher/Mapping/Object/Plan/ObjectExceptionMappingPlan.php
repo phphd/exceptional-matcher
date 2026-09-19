@@ -36,7 +36,7 @@ final class ObjectExceptionMappingPlan
             throw new InvalidArgumentException(sprintf('Expected object of type "%s", got "%s".', $this->className, $object::class));
         }
 
-        /** @var AppendIterator<int,ExceptionMappingNode,Iterator<ExceptionMappingNode>> $properties */
+        /** @var AppendIterator<int,ExceptionMappingNode,Iterator<int,ExceptionMappingNode>> $properties */
         $properties = new AppendIterator();
 
         $objectNode = new ObjectExceptionMappingNode($object, $parentProperty, new ReusableIteratorAggregate($properties));
@@ -63,7 +63,7 @@ final class ObjectExceptionMappingPlan
         return false;
     }
 
-    /** @return Iterator<ExceptionMappingNode> */
+    /** @return Iterator<int,ExceptionMappingNode> */
     private function bindPropertyPlans(ObjectExceptionMappingNode $objectNode): Iterator
     {
         foreach ($this->propertyPlans as $propertyPlan) {
