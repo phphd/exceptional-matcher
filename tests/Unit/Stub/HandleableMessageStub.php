@@ -10,8 +10,6 @@ use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests\Stub\Mes
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\Tests\Stub\SomeValueException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
@@ -30,9 +28,6 @@ final class HandleableMessageStub
 {
     #[Catch_(AnException::class, message: 'oops')]
     private int $property;
-
-    #[Catch_(CustomFormattedException::class, format: CustomExceptionViolationFormatter::class, message: 'oops')]
-    private string $formatted;
 
     #[Catch_(ObjectPropertyMatchedException::class, message: 'oops')]
     private object $objectProperty;

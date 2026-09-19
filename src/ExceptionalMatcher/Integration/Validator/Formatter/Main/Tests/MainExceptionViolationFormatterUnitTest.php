@@ -6,7 +6,6 @@ namespace PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests;
 
 use LogicException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Bundle\Tests\RegisterCustomViolationFormatterCompilerPass;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests\Stub\MessageContainingException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
@@ -16,7 +15,6 @@ use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapp
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -43,8 +41,6 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);
-
-        $container->addCompilerPass(new RegisterCustomViolationFormatterCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, RegisterCustomViolationFormatterCompilerPass::PRIORITY);
 
         $translator = $this->createMock(TranslatorInterface::class);
         $translations = [

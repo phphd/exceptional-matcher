@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Delegating\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\RegisterCustomViolationFormatterCompilerPass;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\ExceptionViolationFormatter;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedMessage;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
@@ -34,10 +33,7 @@ final class DelegatingMatchedExceptionFormatterUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->register(CustomExceptionViolationFormatter::class, CustomExceptionViolationFormatter::class)
-            ->setArguments([new Reference(ExceptionViolationFormatter::class.'<Throwable>')])
-            ->setAutoconfigured(true)
-        ;
+        $container->addCompilerPass(new RegisterCustomViolationFormatterCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, RegisterCustomViolationFormatterCompilerPass::PRIORITY);
 
         $container->compile();
 
@@ -48,7 +44,7 @@ final class DelegatingMatchedExceptionFormatterUnitTest extends TestCase
 
     public function testCustomViolationFormatter(): void
     {
-        $message = HandleableMessageStub::create();
+        $message = new CustomFormattedMessage();
         $originalException = new CustomFormattedException();
 
         $violationList = $this->matcher->match($originalException, $message);
