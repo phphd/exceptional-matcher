@@ -241,7 +241,7 @@ final class ClassMappingLinter implements MappingLinter
             if (!class_exists($className)) {
                 return false;
             }
-        } catch (ErrorException $e) {
+        } catch (ErrorException) {
             return false;
         }
 
