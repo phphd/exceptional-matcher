@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class;
 
+use ErrorException;
 use Generator;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport;
@@ -240,7 +241,7 @@ final class ClassMappingLinter implements MappingLinter
             if (!class_exists($className)) {
                 return false;
             }
-        } catch (\ErrorException $e) {
+        } catch (ErrorException $e) {
             return false;
         }
 
