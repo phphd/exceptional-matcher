@@ -56,6 +56,7 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
         $resultEnvelope = Envelope::wrap(new stdClass());
 
         $this->nextMiddleware
+            ->expects(self::atLeastOnce())
             ->method('handle')
             ->willReturnMap([[$envelope, $this->stack, $resultEnvelope]])
         ;
