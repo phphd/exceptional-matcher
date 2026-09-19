@@ -62,7 +62,7 @@ final class MatchConditionCompilerServiceTest extends BundleTestCase
 
         /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */
         return (static fn (): ContainerInterface => $factory->matchConditionCompilerRegistry) // @phpstan-ignore-line
-            ->bindTo(null, DelegatingMatchConditionCompiler::class)->__invoke()
+            ->bindTo(newThis: null, newScope: DelegatingMatchConditionCompiler::class)->__invoke()
         ;
     }
 
@@ -70,7 +70,7 @@ final class MatchConditionCompilerServiceTest extends BundleTestCase
     {
         /** @psalm-suppress InternalProperty, InaccessibleProperty, InvalidArrayAccess, PossiblyNullFunctionCall, PossiblyNullReference */
         return (static fn (): DelegatingMatchConditionCompiler => $compiler->compilers[2]) // @phpstan-ignore-line
-            ->bindTo(null, CompositeMatchConditionCompiler::class)->__invoke()
+            ->bindTo(newThis: null, newScope: CompositeMatchConditionCompiler::class)->__invoke()
         ;
     }
 }

@@ -60,7 +60,7 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
     {
         /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */
         return (static fn (): ContainerInterface => $violationFormatter->formatterRegistry) // @phpstan-ignore-line
-            ->bindTo(null, DelegatingMatchedExceptionFormatter::class)->__invoke()
+            ->bindTo(newThis: null, newScope: DelegatingMatchedExceptionFormatter::class)->__invoke()
         ;
     }
 

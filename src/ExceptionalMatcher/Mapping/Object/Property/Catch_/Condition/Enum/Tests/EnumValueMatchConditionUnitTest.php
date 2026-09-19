@@ -128,7 +128,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
     public function testDoesNotCaptureStringEnumErrorWhenRuleValueIsNull(): void
     {
-        $message = new WeekDayConditionMessage(null);
+        $message = new WeekDayConditionMessage(weekDay: null);
         $originalException = $this->weekDayEnumError('');
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
@@ -158,7 +158,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
     public function testDoesNotCaptureIntEnumErrorWhenRuleValueIsNull(): void
     {
-        $message = new WeekDayNumberConditionMessage(null);
+        $message = new WeekDayNumberConditionMessage(weekDayNumber: null);
         $originalException = $this->weekDayNumberEnumError(0);
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
