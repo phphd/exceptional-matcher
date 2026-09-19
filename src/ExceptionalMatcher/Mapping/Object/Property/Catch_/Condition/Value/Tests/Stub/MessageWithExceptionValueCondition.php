@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnused */
 
 declare(strict_types=1);
 
@@ -13,21 +13,11 @@ use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Valu
 final class MessageWithExceptionValueCondition
 {
     #[Catch_(SomeValueException::class, match: exception_value, message: 'oops')]
-    public string $notMatchedProperty;
+    public string $notMatchedProperty = 'not matched';
 
     #[Catch_(SomeValueException::class, match: exception_value, message: 'oops')]
-    public string $matchedProperty;
+    public string $matchedProperty = 'matched!';
 
     #[Catch_(SomeValueException::class, message: 'oops')]
-    public string $anotherMatchedAsNoCondition;
-
-    public function __construct(
-        string $notMatchedProperty = 'not matched',
-        string $matchedProperty = 'matched!',
-        string $anotherMatchedAsNoCondition = 'whatever',
-    ) {
-        $this->notMatchedProperty = $notMatchedProperty;
-        $this->matchedProperty = $matchedProperty;
-        $this->anotherMatchedAsNoCondition = $anotherMatchedAsNoCondition;
-    }
+    public string $anotherMatchedAsNoCondition = 'whatever';
 }
