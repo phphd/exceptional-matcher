@@ -10,19 +10,28 @@ use PHPat\Selector\SelectorInterface;
 use PHPat\Test\Attributes\TestRule;
 use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\PHPat;
-use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssembler;
-use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService;
-use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionBlueprint;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\_Compiler\MatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\MatchCondition;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\MatchExceptionRule;
+use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\CompilingObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\CatchExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\ReusableIteratorAggregate;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\ValueException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Matcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Matcher\ExceptionMatcherAggregate;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload\ConstantsAutoloadingClassDiscovery;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload\ConstantsClassLoader;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Path\PropertyPath;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Webmozart\Assert\Assert;
@@ -35,9 +44,33 @@ use Webmozart\Assert\Assert;
 final class ArchitectureRuleSet
 {
     #[TestRule]
-    public function testMatcherDependencies(): BuildStep
+    public function testPlanCompilerDependencies(): BuildStep
     {
-        return $this->layerRule('matcher');
+        return $this->layerRule('planCompiler');
+    }
+
+    #[TestRule]
+    public function testPlanDependencies(): BuildStep
+    {
+        return $this->layerRule('plan');
+    }
+
+    #[TestRule]
+    public function testNodeDependencies(): BuildStep
+    {
+        return $this->layerRule('node');
+    }
+
+    #[TestRule]
+    public function testMatchConditionDependencies(): BuildStep
+    {
+        return $this->layerRule('matchCondition');
+    }
+
+    #[TestRule]
+    public function testMatchConditionCompilerDependencies(): BuildStep
+    {
+        return $this->layerRule('matchConditionCompiler');
     }
 
     #[TestRule]
@@ -47,21 +80,21 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
-    public function testMatchingRuleSetAssemblerDependencies(): BuildStep
+    public function testExceptionFormatterDependencies(): BuildStep
     {
-        return $this->layerRule('matchingRuleSetAssembler');
+        return $this->layerRule('exceptionFormatter');
     }
 
     #[TestRule]
-    public function testModelDependencies(): BuildStep
+    public function testLinterDependencies(): BuildStep
     {
-        return $this->layerRule('model');
+        return $this->layerRule('linter');
     }
 
     #[TestRule]
-    public function testMatchConditionDependencies(): BuildStep
+    public function testMatcherDependencies(): BuildStep
     {
-        return $this->layerRule('matchCondition');
+        return $this->layerRule('matcher');
     }
 
     #[TestRule]
@@ -90,79 +123,82 @@ final class ArchitectureRuleSet
 
     public function layerRule(string $name): BuildStep
     {
-        $layer = $this->layers()[$name];
+        $layers = $this->layers();
+
+        $layer = $layers[$name];
 
         /** @var SelectorInterface $layerClassesSelector */
         $layerClassesSelector = $this->{$name}(); // @phpstan-ignore method.dynamicName
 
+        $deps = [$layerClassesSelector, ...$layer['deps']];
+
+        if (isset($layer['wraps'])) {
+            $wrappedLayerNames = $layer['wraps'];
+
+            foreach ($wrappedLayerNames as $wrappedLayerName) {
+                /** @var SelectorInterface $wrappedLayerSelector */
+                $wrappedLayerSelector = $this->{$wrappedLayerName}(); // @phpstan-ignore method.dynamicName
+
+                $wrappedLayerDeps = $layers[$wrappedLayerName]['deps'];
+
+                $deps = [...$deps, $wrappedLayerSelector, ...$wrappedLayerDeps];
+            }
+        }
+
+        $deps = [...$deps, self::coreDeps()];
+
         return PHPat::rule()
             ->classes(Selector::AllOf(
                 $layerClassesSelector,
-                Selector::Not(Selector::classname('/\\\Tests\\\/', true)),
+                Selector::Not(Selector::classname('/\\\Tests\\\/', regex: true)),
                 Selector::Not(Selector::extends(TestCase::class)),
             ))
             ->canOnly()
             ->dependOn()
-            ->classes($layerClassesSelector, ...$layer['deps'])
+            ->classes(...$deps)
             ->because($layer['description'] ?? 'See its dependency rules in '.self::class.'::layers()')
         ;
     }
 
-    /** @return array<string,array{deps:list<SelectorInterface>,description?: string}> */
+    public static function coreDeps(): SelectorInterface
+    {
+        return Selector::AnyOf(
+            Selector::classname(Assert::class),
+            Selector::classname(ReusableIteratorAggregate::class),
+        );
+    }
+
+    /** @return array<string,array{deps:list<SelectorInterface>, wraps?: list<string>, description?: string}> */
     public function layers(): array
     {
         return [
-            'matcher' => [
+            'bundle' => [
                 'deps' => [
-                    Selector::classname(MatchingRuleSetAssemblerService::class),
-                    Selector::classname(ObjectMatchingRuleSetAssembler::class),
-                    $this->exception(),
-                    $this->model(),
-                    Selector::classname(ExceptionUnwrapper::class),
+                    Selector::inNamespace('PhPhD\ExceptionToolkit'),
+                    // Class discovery
+                    Selector::classname(ConstantsClassLoader::class),
+                    Selector::classname(MatchConditionCompiler::class),
+                    Selector::classname(MatchedExceptionFormatter::class),
+                    // Bundle & Extension
+                    Selector::inNamespace('Symfony\Component'),
+                    Selector::classname(InstalledVersions::class),
                 ],
+                'description' => 'Container wiring must not reach into the mapping model',
             ],
-            'exception' => [
+            'linter' => [
                 'deps' => [
-                    Selector::classname(MatchExceptionRule::class),
-                    Selector::classname(Assert::class),
-                    Selector::classname(ContainerInterface::class), // formatter
-                ],
-                'description' => 'Exception Models must not depend on anything else',
-            ],
-            'matchingRuleSetAssembler' => [
-                'deps' => [
-                    $this->model(),
+                    $this->plan(),
+                    $this->planCompiler(),
                     $this->matchCondition(),
-                    Selector::classname(Assert::class),
+                    Selector::inNamespace('Psr'),
+                    Selector::inNamespace('Composer\ClassMapGenerator'),
+                    Selector::inNamespace('Symfony\Component\Console'),
                 ],
             ],
-            'model' => [
+            'messengerValidatorMiddleware' => [
+                'wraps' => ['validatorMiddleware', 'validatorMatcher'],
                 'deps' => [
-                    $this->exception(),
-                    Selector::classname(Assert::class),
-                    Selector::classname(ContainerInterface::class),
-                ],
-                'description' => 'Model classes must not depend on anything else',
-            ],
-            'matchCondition' => [
-                'deps' => [
-                    $this->model(),
-                    Selector::classname(Assert::class),
-                    Selector::inNamespace('Psr\Container'),
-                    // Third-party
-                    Selector::classname(ValidationFailedException::class),
-                    Selector::classname(InvalidUidException::class),
-                ],
-            ],
-            'validatorMatcher' => [
-                'deps' => [
-                    $this->matcher(),
-                    $this->exception(),
-                    $this->model(),
-                    Selector::inNamespace('Symfony\Component\Validator'),
-                    Selector::classname(TranslatorInterface::class),
-                    Selector::classname(Assert::class),
-                    Selector::inNamespace('Psr\Container'),
+                    Selector::inNamespace('Symfony\Component\Messenger'),
                 ],
             ],
             'validatorMiddleware' => [
@@ -170,43 +206,186 @@ final class ArchitectureRuleSet
                     Selector::inNamespace('Symfony\Component\Validator'),
                 ],
             ],
-            'messengerValidatorMiddleware' => [
+            'validatorMatcher' => [
                 'deps' => [
-                    Selector::AllOf(
-                        Selector::isInterface(),
-                        $this->matcher(),
-                    ),
-                    $this->validatorMiddleware(),
-                    Selector::inNamespace('Symfony\Component\Messenger'),
-                    Selector::classname(ConstraintViolationListInterface::class),
+                    $this->matcher(),
+                    $this->node(),
+                    $this->exception(),
+                    Selector::inNamespace('Symfony\Component\Validator'),
                 ],
             ],
-            'bundle' => [
+            'matcher' => [
                 'deps' => [
-                    Selector::implements(CompilerPassInterface::class),
-                    Selector::inNamespace('Symfony\Component'),
-                    Selector::classname(InstalledVersions::class),
-                    Selector::inNamespace('PhPhD\ExceptionToolkit'),
+                    $this->plan(),
+                    $this->node(),
+                    $this->exception(),
+                    Selector::classname(ExceptionUnwrapper::class),
                 ],
+            ],
+            'planCompiler' => [
+                'wraps' => ['plan', 'node'],
+                'deps' => [
+                    $this->matchConditionCompiler(),
+                    $this->exceptionFormatter(),
+                    Selector::inNamespace('Psr'),
+                ],
+            ],
+            'plan' => [
+                'wraps' => ['node'],
+                'deps' => [],
+            ],
+            'node' => [
+                'deps' => [
+                    $this->plan(),
+                    $this->exception(),
+                    $this->matchCondition(),
+                ],
+                'description' => 'Mapping nodes are the residual model layer: a class that no other layer claims lands here, and must depend on almost nothing',
+            ],
+            'matchConditionCompiler' => [
+                'wraps' => ['matchCondition'],
+                'deps' => [
+                    Selector::inNamespace('Psr'),
+                ],
+            ],
+            'matchCondition' => [
+                'deps' => [
+                    $this->node(),
+                    $this->exception(),
+                ],
+            ],
+            'exceptionFormatter' => [
+                'deps' => [
+                    Selector::classname(MatchedException::class),
+                    Selector::classname(TranslatorInterface::class),
+                    Selector::inNamespace('Psr\Container'), // Registry
+                ],
+            ],
+            'exception' => [
+                'deps' => [
+                    Selector::classname(CatchExceptionMappingNode::class),
+                ],
+                'description' => 'Exception models must not depend on anything else',
             ],
         ];
     }
 
-    /** @psalm-suppress UnusedMethod */
+    /**
+     * Container wiring: the bundle extension, the compiler passes, and the class discovery they drive.
+     *
+     * @psalm-suppress UnusedMethod
+     */
     public function bundle(): SelectorInterface
     {
-        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Bundle');
+        return Selector::AnyOf(
+            Selector::inNamespace('PhPhD\ExceptionalMatcher\Bundle'),
+            Selector::implements(CompilerPassInterface::class),
+            Selector::classname(ConstantsAutoloadingClassDiscovery::class),
+            Selector::implements(ConstantsAutoloadingClassDiscovery::class),
+        );
+    }
+
+    /** The residual model layer: everything under `Mapping` that no other layer claims. */
+    public function node(): SelectorInterface
+    {
+        return Selector::AnyOf(
+            Selector::classname(ExceptionMatcher::class),
+            Selector::implements(ExceptionMatcher::class),
+
+            Selector::classname(ExceptionMappingNode::class),
+            Selector::implements(ExceptionMappingNode::class),
+
+            Selector::classname(ExceptionMatcherAggregate::class),
+            Selector::implements(ExceptionMatcherAggregate::class),
+
+            Selector::classname(PropertyPath::class),
+        );
+    }
+
+    public function plan(): SelectorInterface
+    {
+        return Selector::AnyOf(
+            Selector::classname('/ExceptionMappingPlan$/', regex: true),
+            Selector::classname(ObjectExceptionMappingPlanRegistry::class),
+        );
+    }
+
+    public function planCompiler(): SelectorInterface
+    {
+        return Selector::AllOf(
+            Selector::AnyOf(
+                Selector::inNamespace('/\\\Plan\\\(Registry\\\)?Compiler/', regex: true),
+                Selector::classname(Try_::class),
+                Selector::classname(Catch_::class),
+                Selector::classname(CompilingObjectExceptionMappingPlanRegistry::class),
+            ),
+            Selector::Not($this->bundle()),
+        );
+    }
+
+    public function matchConditionCompiler(): SelectorInterface
+    {
+        return Selector::AnyOf(
+            Selector::classname(MatchConditionCompiler::class),
+            Selector::implements(MatchConditionCompiler::class),
+            Selector::classname(Catch_::class),
+        );
+    }
+
+    public function matchCondition(): SelectorInterface
+    {
+        return Selector::AnyOf(
+            Selector::classname(MatchCondition::class),
+            Selector::implements(MatchCondition::class),
+            Selector::classname(MatchConditionPlan::class),
+            Selector::AllOf(
+                Selector::implements(MatchConditionPlan::class),
+                Selector::Not($this->matchConditionCompiler())
+            ),
+            // Contract
+            Selector::classname(ValueException::class),
+            // Third-party
+            Selector::classname(ValidationFailedException::class),
+            Selector::classname(InvalidUidException::class),
+        );
+    }
+
+    public function exceptionFormatter(): SelectorInterface
+    {
+        return Selector::AllOf(
+            Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter'),
+            Selector::Not($this->bundle()),
+        );
+    }
+
+    public function exception(): SelectorInterface
+    {
+        return Selector::AnyOf(
+            Selector::AllOf(
+                Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception'),
+                Selector::Not($this->exceptionFormatter()),
+                Selector::Not($this->bundle()),
+            ),
+            Selector::classname(MatchedExceptionFormatter::class),
+        );
+    }
+
+    public function linter(): SelectorInterface
+    {
+        return Selector::AllOf(
+            Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Linter'),
+            Selector::Not($this->bundle()),
+        );
     }
 
     public function matcher(): SelectorInterface
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher'),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Bundle')),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Exception')),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Upgrade')),
+            Selector::Not($this->bundle()),
         );
     }
 
@@ -230,41 +409,5 @@ final class ArchitectureRuleSet
     public function messengerValidatorMiddleware(): SelectorInterface
     {
         return Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger');
-    }
-
-    public function matchingRuleSetAssembler(): SelectorInterface
-    {
-        return Selector::AnyOf(
-            Selector::classname(MatchingRuleSetAssembler::class),
-            Selector::implements(MatchingRuleSetAssembler::class),
-            Selector::classname(MatchingRuleSetAssemblerService::class),
-            Selector::implements(MatchingRuleSetAssemblerService::class),
-        );
-    }
-
-    public function matchCondition(): SelectorInterface
-    {
-        return Selector::AnyOf(
-            Selector::implements(MatchCondition::class),
-            Selector::classname(MatchConditionCompiler::class),
-            Selector::implements(MatchConditionCompiler::class),
-            Selector::classname(MatchConditionBlueprint::class),
-            Selector::implements(MatchConditionBlueprint::class),
-        );
-    }
-
-    public function exception(): SelectorInterface
-    {
-        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Exception');
-    }
-
-    public function model(): SelectorInterface
-    {
-        return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalMatcher\Rule'),
-            Selector::Not($this->matchCondition()),
-            Selector::Not($this->matchingRuleSetAssembler()),
-            Selector::Not(Selector::implements(CompilerPassInterface::class)),
-        );
     }
 }

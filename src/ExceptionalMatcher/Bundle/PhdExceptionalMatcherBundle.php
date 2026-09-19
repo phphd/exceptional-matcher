@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Bundle;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\Autoload\ConstantsAutoloadingCompilerPass;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload\ConstantsAutoloadingCompilerPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -26,6 +26,6 @@ final class PhdExceptionalMatcherBundle extends Bundle
     /** @override */
     protected function createContainerExtension(): PhdExceptionalMatcherExtension
     {
-        return new PhdExceptionalMatcherExtension(true);
+        return new PhdExceptionalMatcherExtension(allowGeneratedProxies: true);
     }
 }

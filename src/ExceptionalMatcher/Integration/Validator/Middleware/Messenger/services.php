@@ -21,7 +21,6 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
 
     $container->services()
         ->set('phd_exceptional_validation', ExceptionalValidationMiddleware::class)
-        ->public()
         ->args([new Reference(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>')])
     ;
 };

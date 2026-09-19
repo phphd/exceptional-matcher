@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\ExceptionalValidationFailedException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger\ExceptionalValidationMiddleware;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
@@ -13,6 +14,7 @@ use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use stdClass;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
@@ -54,6 +56,7 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
         $resultEnvelope = Envelope::wrap(new stdClass());
 
         $this->nextMiddleware
+            ->expects(self::atLeastOnce())
             ->method('handle')
             ->willReturnMap([[$envelope, $this->stack, $resultEnvelope]])
         ;
@@ -130,6 +133,12 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
         $this->expectExceptionObject($exception);
 
         $this->middleware->handle($envelope, $this->stack);
+    }
+
+    /** @return list<CompilerPassInterface> */
+    protected static function compilerPasses(): array
+    {
+        return [new PublicServiceCompilerPass('phd_exceptional_validation')];
     }
 
     private function willThrow(Throwable $exception): void

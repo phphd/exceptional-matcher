@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher;
 
 use Closure;
-use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
-use PhPhD\ExceptionalMatcher\Rule\Assembler\MatchingRuleSetAssemblerService;
-use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\ObjectMatchingRuleSetAssembler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -17,17 +16,17 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
     $services = $configurator->services();
 
-    /** @var Closure(class-string):((bool|class-string)) $lazy */
-    $lazy = $container->get('phd_exceptional_matcher.lazy_proxy');
+    /** @var Closure(class-string):((bool|class-string)) $hintLazy */
+    $hintLazy = $container->get('phd_exceptional_matcher.hint_lazy_proxy');
 
     $services
         ->set(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>', MainExceptionMatcher::class)
         ->public()
         ->args([
-            service(MatchingRuleSetAssemblerService::class.'<'.ObjectMatchingRuleSetAssembler::class.'>'),
+            service(ObjectExceptionMappingPlanRegistry::class),
             service('phd_exceptional_matcher.exception_unwrapper'),
         ])
-        ->lazy($lazy(ExceptionMatcher::class))
+        ->lazy($hintLazy(ExceptionMatcher::class))
     ;
 
     $services->alias('phd_exceptional_matcher.exception_unwrapper', ExceptionUnwrapper::class);
