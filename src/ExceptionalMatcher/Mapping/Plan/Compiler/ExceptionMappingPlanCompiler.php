@@ -18,8 +18,7 @@ use Reflector;
  */
 interface ExceptionMappingPlanCompiler
 {
-    /** @return static */
-    public function reportingTo(LoggerInterface $reporter): self;
+    public function reportingTo(LoggerInterface $reporter): static;
 
     /**
      * @param TReflector $reflector
