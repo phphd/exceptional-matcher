@@ -57,11 +57,11 @@ final class ClassMappingLinter implements MappingLinter
      * A scanned class may hold defects of an inherited property, which belong to the class declaring it,
      * so every class is scanned before any of them is reported on.
      *
-     * @param list<class-string> $classNames
+     * @param iterable<class-string> $classNames
      *
      * @return Generator<ClassReport>
      */
-    private function lintClasses(array $classNames): Generator
+    private function lintClasses(iterable $classNames): Generator
     {
         /** @var array<class-string,non-empty-list<MappingDefect>> $classDefects */
         $classDefects = [];
