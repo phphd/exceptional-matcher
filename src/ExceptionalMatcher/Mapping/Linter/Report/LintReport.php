@@ -7,10 +7,6 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Report;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity;
 
-use function array_values;
-use function is_array;
-use function iterator_to_array;
-
 /** @internal */
 final class LintReport
 {
