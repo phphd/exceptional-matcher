@@ -50,7 +50,10 @@ final class ClassMappingLinter implements MappingLinter
 
         $classReports = $this->lintClasses($classNames);
 
-        return new LintReport(count($classNames), $classReports);
+        return new LintReport(
+            iterator_to_array($classReports, false),
+            $classReports->getReturn(),
+        );
     }
 
     /**
@@ -59,23 +62,28 @@ final class ClassMappingLinter implements MappingLinter
      *
      * @param iterable<class-string> $classNames
      *
-     * @return Generator<ClassReport>
+     * @return Generator<int,ClassReport,never,int>
      */
     private function lintClasses(iterable $classNames): Generator
     {
         /** @var array<class-string,non-empty-list<MappingDefect>> $classDefects */
         $classDefects = [];
+        $scannedSymbols = 0;
 
         foreach ($classNames as $className) {
             foreach ($this->lintClass(new ReflectionClass($className)) as $defect) {
                 $classDefects[$defect->getLocation()
                     ->getClassName()][] = $defect;
             }
+
+            ++$scannedSymbols;
         }
 
         foreach ($classDefects as $className => $defects) {
             yield new ClassReport($className, $defects);
         }
+
+        return $scannedSymbols;
     }
 
     /**
@@ -249,13 +257,9 @@ final class ClassMappingLinter implements MappingLinter
     private function loadClassName(string $symbol): bool
     {
         try {
-            if (!class_exists($symbol)) {
-                return false;
-            }
+            return class_exists($symbol);
         } catch (ErrorException) {
             return false;
         }
-
-        return true;
     }
 }
