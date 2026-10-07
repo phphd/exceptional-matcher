@@ -1,0 +1,99 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\Tests;
+
+use ArrayObject;
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\Tests\Stub\RootObject;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedException;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\MessageWithNoTryAttribute;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedItem;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @internal
+ *
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan
+ */
+final class PropertyPlanIterableItemsUnitTest extends TestCase
+{
+    /** @var ExceptionMatcher<MatchedExceptionList> */
+    private ExceptionMatcher $matcher;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $container = (new PhdExceptionalMatcherExtension())->getContainer([
+            'kernel.environment' => 'test',
+            'kernel.build_dir' => __DIR__.'/var',
+        ]);
+
+        $container->compile();
+
+        /** @var ExceptionMatcher<MatchedExceptionList> $matcher */
+        $matcher = $container->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
+        $this->matcher = $matcher;
+    }
+
+    public function testExceptionCanBeCaughtOnNestedArrayItems(): void
+    {
+        $message = RootObject::create()->withNestedArrayItems([
+            new NestedItem(41),
+            new NestedItem(57),
+            new NestedItem(32),
+        ]);
+        $originalException = new NestedItemMatchedException(code: 57);
+
+        $matchedExceptionList = $this->matcher->match($originalException, $message);
+
+        self::assertNotNull($matchedExceptionList);
+        self::assertCount(1, $matchedExceptionList);
+
+        [$matchedException] = $matchedExceptionList->toArray();
+
+        self::assertSame('nestedArrayItems[1].property', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
+    }
+
+    public function testExceptionCanBeCaughtOnANestedIterableItems(): void
+    {
+        $message = RootObject::create()->withNestedIterableItems(new ArrayObject([
+            'first' => new NestedItem(1),
+            'second' => new NestedItem(2),
+            'third' => new NestedItem(3),
+            4 => new NestedItem(2),
+        ]));
+        $originalException = new NestedItemMatchedException(code: 3);
+
+        $matchedExceptionList = $this->matcher->match($originalException, $message);
+
+        self::assertNotNull($matchedExceptionList);
+        self::assertCount(1, $matchedExceptionList);
+
+        [$matchedException] = $matchedExceptionList->toArray();
+        self::assertSame('nestedIterableItems[third].property', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
+    }
+
+    public function testExceptionCanBeCaughtOnMixedArrayItems(): void
+    {
+        $message = RootObject::create()->withNestedArrayItems([
+            'not an object',
+            new MessageWithNoTryAttribute(1),
+            new NestedItem(2),
+            new MessageWithNoTryAttribute(3),
+        ]);
+        $originalException = new NestedItemMatchedException(code: 2);
+
+        $matchedExceptionList = $this->matcher->match($originalException, $message);
+
+        self::assertNotNull($matchedExceptionList);
+        self::assertCount(1, $matchedExceptionList);
+
+        [$matchedException] = $matchedExceptionList->toArray();
+        self::assertSame('nestedArrayItems[2].property', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
+    }
+}

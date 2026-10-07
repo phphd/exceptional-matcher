@@ -6,21 +6,18 @@ namespace PhPhD\ExceptionalMatcher\Tests\Unit\Stub;
 
 use ArrayObject;
 use LogicException;
-use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
-use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomFormattedException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests\Stub\MessageContainingException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Closure\Tests\Stub\ConditionalMessage;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\Tests\Stub\SomeValueException;
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\Tests\Stub\SomeValueException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Validator\validated_value;
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\validated_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\exception_value;
 
 /**
  * @psalm-suppress InvalidAttribute ("Attribute Catch_ is not repeatable")
@@ -31,9 +28,6 @@ final class HandleableMessageStub
 {
     #[Catch_(AnException::class, message: 'oops')]
     private int $property;
-
-    #[Catch_(CustomFormattedException::class, format: CustomExceptionViolationFormatter::class, message: 'oops')]
-    private string $formatted;
 
     #[Catch_(ObjectPropertyMatchedException::class, message: 'oops')]
     private object $objectProperty;
@@ -52,14 +46,7 @@ final class HandleableMessageStub
 
     #[Catch_(SomeValueException::class, match: exception_value, message: 'oops')]
     #[Catch_(ValidationFailedException::class, match: validated_value, format: embedded_violations)]
-    private string $notMatchedProperty = 'not matched';
-
-    #[Catch_(SomeValueException::class, match: exception_value, message: 'oops')]
-    #[Catch_(ValidationFailedException::class, match: validated_value, format: embedded_violations)]
     private string $matchedProperty = 'matched!';
-
-    #[Catch_(SomeValueException::class, message: 'oops')]
-    private string $anotherMatchedAsNoCondition;
 
     #[Catch_(MessageContainingException::class)]
     private int $fallBackToExceptionMessage;
@@ -98,13 +85,6 @@ final class HandleableMessageStub
         $message->nestedObject = $nestedObject;
 
         return $message;
-    }
-
-    public function withConditionalMessage(int $firstConditionalProperty, int $secondConditionalProperty): self
-    {
-        return $this->withNestedObject(NestedHandleableMessage::createWithConditionalMessage(
-            ConditionalMessage::createWithConditionalProperties($firstConditionalProperty, $secondConditionalProperty),
-        ));
     }
 
     /** @param array<array-key,NestedItem> $items */

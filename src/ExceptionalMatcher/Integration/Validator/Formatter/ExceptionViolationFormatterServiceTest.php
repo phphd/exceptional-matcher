@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Integration\Validator\Formatter;
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
-use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\DelegatingMatchedExceptionFormatter;
-use PhPhD\ExceptionalMatcher\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
-use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\ViolationsEmbeddedException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\ViolationsEmbeddedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\MainExceptionViolationFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Delegating\DelegatingMatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Delegating\Tests\Stub\CustomExceptionViolationFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -48,9 +48,9 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
         $providedServices = $formatterRegistry->getProvidedServices();
         krsort($providedServices);
         self::assertSame([
+            CustomExceptionViolationFormatter::class => CustomExceptionViolationFormatter::class,
             MainExceptionViolationFormatter::class => MainExceptionViolationFormatter::class,
             ViolationsEmbeddedExceptionFormatter::class => ViolationsEmbeddedExceptionFormatter::class,
-            CustomExceptionViolationFormatter::class => CustomExceptionViolationFormatter::class,
         ], $providedServices);
 
         self::assertSame($defaultFormatter, $formatterRegistry->get(MainExceptionViolationFormatter::class));
@@ -60,7 +60,7 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
     {
         /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */
         return (static fn (): ContainerInterface => $violationFormatter->formatterRegistry) // @phpstan-ignore-line
-            ->bindTo(null, DelegatingMatchedExceptionFormatter::class)->__invoke()
+            ->bindTo(newThis: null, newScope: DelegatingMatchedExceptionFormatter::class)->__invoke()
         ;
     }
 

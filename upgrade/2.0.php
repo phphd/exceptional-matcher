@@ -10,8 +10,8 @@ use Rector\Renaming\ValueObject\MethodCallRename;
 return static function (RectorConfig $rectorConfig): void {
     /** @noinspection ClassConstantCanBeUsedInspection */
     $rectorConfig->ruleWithConfiguration(RenameClassRector::class, [
-        'PhPhD\ExceptionalValidation' => 'PhPhD\ExceptionalMatcher\Rule\Object\Try_',
-        'PhPhD\ExceptionalValidation\Capture' => 'PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_',
+        'PhPhD\ExceptionalValidation' => 'PhPhD\ExceptionalMatcher\Mapping\Object\Try_',
+        'PhPhD\ExceptionalValidation\Capture' => 'PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_',
         'PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle' => 'PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle',
         'PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension' => 'PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension',
         'PhPhD\ExceptionalValidation\Model\Exception\CapturedException' => 'PhPhD\ExceptionalMatcher\Exception\MatchedException',

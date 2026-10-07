@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Integration\Validator;
 
 use Closure;
-use PhPhD\ExceptionalMatcher\Exception\Formatter\MatchedExceptionFormatter;
-use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -21,8 +21,8 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
         return;
     }
 
-    /** @var Closure(class-string):((bool|class-string)) $lazy */
-    $lazy = $container->get('phd_exceptional_matcher.lazy_proxy');
+    /** @var Closure(class-string):((bool|class-string)) $hintLazy */
+    $hintLazy = $container->get('phd_exceptional_matcher.hint_lazy_proxy');
 
     $services = $configurator->services();
 
@@ -33,6 +33,6 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
             service(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>'),
             service(MatchedExceptionFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>'),
         ])
-        ->lazy($lazy(ExceptionMatcher::class))
+        ->lazy($hintLazy(ExceptionMatcher::class))
     ;
 };

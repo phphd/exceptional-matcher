@@ -11,8 +11,8 @@ use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\MessageWithNoTryAttribute;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedItem;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NotHandleableMessageStub;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -48,7 +48,7 @@ final class ContainerBench
 
         $matcher = $this->createMatcher($isProxyAllowed);
 
-        $message = new NotHandleableMessageStub(123);
+        $message = new MessageWithNoTryAttribute(123);
         $exception = new AnException();
 
         $violationList = $matcher->match($exception, $message);

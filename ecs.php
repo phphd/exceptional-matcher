@@ -11,12 +11,13 @@ return ECSConfig::configure()
     ->withSkip([
         Symplify\CodingStandard\Fixer\ArrayNotation\ArrayOpenerAndCloserNewlineFixer::class => [
             __DIR__.'/**/services.php',
+            // Single-line PSR-3 log context reads better than an exploded array
+            __DIR__.'/src/*/*ExceptionMappingPlanCompiler.php',
         ],
         PhpCsFixer\Fixer\Import\FullyQualifiedStrictTypesFixer::class => [ // Conflicts with rector's removeUnusedImports()
             __DIR__.'/src/ExceptionalMatcher/Bundle/DependencyInjection/PhdExceptionalMatcherExtension.php',
         ],
         Symplify\CodingStandard\Fixer\Spacing\MethodChainingNewlineFixer::class => [
             __DIR__.'/src/ExceptionalMatcher/Bundle/DependencyInjection/PhdExceptionalMatcherExtension.php',
-            __DIR__.'/src/ExceptionalMatcher/Rule/LazyMatchingRule.php',
         ],
     ]);

@@ -24,9 +24,9 @@ final class TestsArchitectureRuleSet
             ->classes(Selector::AllOf(
                 Selector::extends(TestCase::class),
                 Selector::Not(Selector::isAbstract()),
-                Selector::Not(Selector::classname('/UnitTest$/', true)),
-                Selector::Not(Selector::classname('/IntegrationTest$/', true)),
-                Selector::Not(Selector::classname('/ServiceTest$/', true)),
+                Selector::Not(Selector::classname('/UnitTest$/', regex: true)),
+                Selector::Not(Selector::classname('/IntegrationTest$/', regex: true)),
+                Selector::Not(Selector::classname('/ServiceTest$/', regex: true)),
             ))
             ->shouldNot()
             ->extend()
