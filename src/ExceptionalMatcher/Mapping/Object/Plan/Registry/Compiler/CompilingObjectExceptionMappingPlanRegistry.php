@@ -29,16 +29,6 @@ final class CompilingObjectExceptionMappingPlanRegistry implements ObjectExcepti
     /**
      * @param class-string<T> $className
      *
-     * @throws ReflectionException
-     */
-    public function hasPlan(string $className): bool
-    {
-        return null !== $this->getPlan($className);
-    }
-
-    /**
-     * @param class-string<T> $className
-     *
      * @return null|ObjectExceptionMappingPlan<T>
      *
      * @throws ReflectionException

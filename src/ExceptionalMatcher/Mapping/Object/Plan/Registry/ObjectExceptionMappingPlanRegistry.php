@@ -13,9 +13,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
  */
 interface ObjectExceptionMappingPlanRegistry
 {
-    /** @param class-string<T> $className */
-    public function hasPlan(string $className): bool;
-
     /**
      * @param class-string<T> $className
      *
