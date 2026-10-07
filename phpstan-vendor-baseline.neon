@@ -18,3 +18,8 @@ parameters:
             identifier: property.notFound
             path: src/ExceptionalMatcher/Mapping/Object/Property/Catch_/Condition/Integration/Uid/InvalidUidExceptionMatchCondition.php
             reportUnmatched: false
+        -
+            message: '#^Removing parent param type is forbidden$#'
+            identifier: typePerfect.noParamTypeRemoval
+            path: src/ExceptionalMatcher/Mapping/Object/Plan/Registry/Compiler/Tests/Stub/SpyLogger.php
+            reportUnmatched: false
