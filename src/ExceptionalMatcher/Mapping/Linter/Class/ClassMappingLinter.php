@@ -22,8 +22,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use ReflectionClass;
 use ReflectionProperty;
 use Throwable;
-
-use function count;
 use function sprintf;
 
 /**
@@ -51,7 +49,7 @@ final class ClassMappingLinter implements MappingLinter
         $classReports = $this->lintClasses($classNames);
 
         return new LintReport(
-            iterator_to_array($classReports, false),
+            iterator_to_array($classReports, preserve_keys: false),
             $classReports->getReturn(),
         );
     }
