@@ -14,17 +14,11 @@ use function iterator_to_array;
 /** @internal */
 final class LintReport
 {
-    /** @var list<ClassReport> */
-    private readonly array $classReports;
-
-    /** @param iterable<ClassReport> $classReports */
     public function __construct(
+        /** @var list<ClassReport> */
+        private readonly array $classReports,
         private readonly int $scannedSymbols,
-        iterable $classReports,
     ) {
-        $this->classReports = is_array($classReports)
-            ? array_values($classReports)
-            : iterator_to_array($classReports, preserve_keys: false);
     }
 
     public function getScannedSymbols(): int
