@@ -28,12 +28,6 @@ final class MemoizingObjectExceptionMappingPlanRegistry implements ObjectExcepti
     ) {
     }
 
-    /** @param class-string<T> $className */
-    public function hasPlan(string $className): bool
-    {
-        return null !== $this->getPlan($className);
-    }
-
     /**
      * @param class-string<T> $className
      *

@@ -11,7 +11,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\PreCompiledMatchConditionPlan;
@@ -103,16 +102,15 @@ final class ClassMappingLinter implements MappingLinter
      */
     private function lintPlan(ReflectionClass $reflectionClass): iterable
     {
-        if (!$this->planRegistry->hasPlan($reflectionClass->getName())) {
+        $plan = $this->planRegistry->getPlan($reflectionClass->getName());
+
+        if (null === $plan) {
             if ([] !== $compilationDefects = $this->defectCollector->flush()) {
                 return yield from $compilationDefects;
             }
 
             return yield from $this->possiblyMissingTryAttribute($reflectionClass);
         }
-
-        /** @var ObjectExceptionMappingPlan<object> $plan */
-        $plan = $this->planRegistry->getPlan($reflectionClass->getName());
 
         // Compilation is done lazily through traversal
         foreach ($plan->getPropertyPlans() as $propertyPlan) {
@@ -209,19 +207,17 @@ final class ClassMappingLinter implements MappingLinter
     {
         for ($parent = $reflectionClass->getParentClass(); false !== $parent; $parent = $parent->getParentClass()) {
             foreach ($parent->getProperties(ReflectionProperty::IS_PRIVATE) as $parentProperty) {
-                if (!$this->hasCatchAttributes($parentProperty)) {
-                    continue;
+                if ($this->hasCatchAttributes($parentProperty)) {
+                    yield MappingDefect::warning(
+                        sprintf(
+                            'Private property %s::$%s declares #[Catch_] mappings that are invisible to %s.',
+                            $parent->getName(),
+                            $parentProperty->getName(),
+                            $reflectionClass->getName(),
+                        ),
+                        new DefectLocation($reflectionClass->getName(), $parentProperty->getName()),
+                    );
                 }
-
-                yield MappingDefect::warning(
-                    sprintf(
-                        'Private property %s::$%s declares #[Catch_] mappings that are invisible to %s.',
-                        $parent->getName(),
-                        $parentProperty->getName(),
-                        $reflectionClass->getName(),
-                    ),
-                    new DefectLocation($reflectionClass->getName(), $parentProperty->getName()),
-                );
             }
         }
     }
