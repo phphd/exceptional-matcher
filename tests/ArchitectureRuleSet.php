@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Tests;
 
 use Composer\InstalledVersions;
+use PHPat\Selector\ClassNamespace;
+use PHPat\Selector\Modifier\AllOfSelectorModifier;
+use PHPat\Selector\Modifier\AnyOfSelectorModifier;
 use PHPat\Selector\Selector;
 use PHPat\Selector\SelectorInterface;
 use PHPat\Test\Attributes\TestRule;
@@ -160,7 +163,7 @@ final class ArchitectureRuleSet
         ;
     }
 
-    public static function coreDeps(): SelectorInterface
+    public static function coreDeps(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
             Selector::classname(Assert::class),
@@ -275,7 +278,7 @@ final class ArchitectureRuleSet
      *
      * @psalm-suppress UnusedMethod
      */
-    public function bundle(): SelectorInterface
+    public function bundle(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Bundle'),
@@ -286,7 +289,7 @@ final class ArchitectureRuleSet
     }
 
     /** The residual model layer: everything under `Mapping` that no other layer claims. */
-    public function node(): SelectorInterface
+    public function node(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
             Selector::classname(ExceptionMatcher::class),
@@ -302,7 +305,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function plan(): SelectorInterface
+    public function plan(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
             Selector::classname('/ExceptionMappingPlan$/', regex: true),
@@ -310,7 +313,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function planCompiler(): SelectorInterface
+    public function planCompiler(): AllOfSelectorModifier
     {
         return Selector::AllOf(
             Selector::AnyOf(
@@ -323,7 +326,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function matchConditionCompiler(): SelectorInterface
+    public function matchConditionCompiler(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
             Selector::classname(MatchConditionCompiler::class),
@@ -332,7 +335,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function matchCondition(): SelectorInterface
+    public function matchCondition(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
             Selector::classname(MatchCondition::class),
@@ -350,7 +353,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function exceptionFormatter(): SelectorInterface
+    public function exceptionFormatter(): AllOfSelectorModifier
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter'),
@@ -358,7 +361,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function exception(): SelectorInterface
+    public function exception(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
             Selector::AllOf(
@@ -370,7 +373,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function linter(): SelectorInterface
+    public function linter(): AllOfSelectorModifier
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Linter'),
@@ -378,7 +381,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function matcher(): SelectorInterface
+    public function matcher(): AllOfSelectorModifier
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher'),
@@ -389,7 +392,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function validatorMatcher(): SelectorInterface
+    public function validatorMatcher(): AllOfSelectorModifier
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator'),
@@ -397,7 +400,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function validatorMiddleware(): SelectorInterface
+    public function validatorMiddleware(): AllOfSelectorModifier
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator\Middleware'),
@@ -406,7 +409,7 @@ final class ArchitectureRuleSet
     }
 
     /** @psalm-suppress UnusedMethod */
-    public function messengerValidatorMiddleware(): SelectorInterface
+    public function messengerValidatorMiddleware(): ClassNamespace
     {
         return Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger');
     }

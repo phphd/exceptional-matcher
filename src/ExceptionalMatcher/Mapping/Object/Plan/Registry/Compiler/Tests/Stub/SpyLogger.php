@@ -16,7 +16,7 @@ final class SpyLogger extends AbstractLogger
      * @param string|Stringable $message
      * @param array<array-key,mixed> $context
      */
-    public function log(mixed $level, $message, array $context = []): void // @phpstan-ignore typePerfect.noParamTypeRemoval
+    public function log(mixed $level, $message, array $context = []): void
     {
         $this->records[] = [
             'level' => $level,
