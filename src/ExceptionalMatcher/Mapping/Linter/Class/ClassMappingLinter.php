@@ -96,6 +96,8 @@ final class ClassMappingLinter implements MappingLinter
     }
 
     /**
+     * @psalm-suppress NullableReturnStatement
+     *
      * @param ReflectionClass<object> $reflectionClass
      *
      * @return iterable<MappingDefect>

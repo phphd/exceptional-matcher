@@ -32,6 +32,7 @@ final class ObjectExceptionMappingPlan
     /** @param T $object */
     public function bind(object $object, ?ExceptionMappingNode $parentProperty = null): ObjectExceptionMappingNode
     {
+        /** @psalm-suppress DocblockTypeContradiction */
         if (!$object instanceof $this->className) {
             throw new InvalidArgumentException(sprintf('Expected object of type "%s", got "%s".', $this->className, $object::class));
         }

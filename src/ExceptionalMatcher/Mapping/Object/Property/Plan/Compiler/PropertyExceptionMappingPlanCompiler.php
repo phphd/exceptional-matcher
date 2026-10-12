@@ -81,7 +81,11 @@ final class PropertyExceptionMappingPlanCompiler implements ExceptionMappingPlan
         return $propertyMappingPlan;
     }
 
-    /** @return Generator<int,CatchExceptionMappingPlan<Throwable>> */
+    /**
+     * @psalm-suppress UnnecessaryVarAnnotation
+     *
+     * @return Generator<int,CatchExceptionMappingPlan<Throwable>>
+     */
     private function compileCatchPlans(ReflectionProperty $property): Generator
     {
         /** @phpstan-var ReflectionAttribute<Catch_<Throwable,Throwable>> $catchAttribute */
