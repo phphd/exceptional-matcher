@@ -18,6 +18,7 @@ use Reflector;
  */
 interface ExceptionMappingPlanCompiler
 {
+    /** @return static<TReflector,TPlan> */
     public function reportingTo(LoggerInterface $reporter): static;
 
     /**

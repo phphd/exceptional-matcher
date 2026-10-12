@@ -51,6 +51,7 @@
         <file name="stubs/WrappedExceptionsInterface.stub"/>
         <file name="stubs/ContainerInterface.stub"/>
         <file name="stubs/ConstraintViolationInterface.stub"/>
+        <file name="vendor/jetbrains/phpstorm-stubs/Reflection/ReflectionAttribute.php"/>
 
         <!-- This one is included directly in psalm's composer autoloader: -->
         <!-- <file name="stubs/conditional.php"/> -->

@@ -40,7 +40,8 @@
         "nyholm/symfony-bundle-test": "^3.1",
         "phpbench/phpbench": "^1.2.6",
         "composer/class-map-generator": "^1.1",
-        "symfony/console": ">=6.0"
+        "symfony/console": ">=6.0",
+        "jetbrains/phpstorm-stubs": "dev-master"
     },
     "suggest": {
         "symfony/validator": "Install Validator component to format matched exceptions into ConstraintViolationList format",
