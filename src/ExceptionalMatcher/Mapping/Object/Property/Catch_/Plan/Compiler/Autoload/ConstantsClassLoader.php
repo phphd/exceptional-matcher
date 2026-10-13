@@ -22,6 +22,7 @@ final class ConstantsClassLoader
 
     public function __invoke(): void
     {
+        /** @psalm-suppress UnusedFunctionCall */
         array_map(
             class_exists(...),
             $this->classNames,
