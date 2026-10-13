@@ -35,13 +35,14 @@ final class LintMappingUseCase
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
+     *
+     * @psalm-suppress UnnecessaryVarAnnotation
      */
     public function lint(string $inputFormat, iterable $symbols, string $outputFormat): array
     {
         /** @var MappingLinter<TSymbol,LintReport> $linter */
         $linter = $this->mappingLinterRegistry->get($inputFormat);
 
-        /** @var LintReport $report */
         $report = $linter->lint($symbols);
 
         /** @var LintReportFormatter<TFormat> $formatter */
