@@ -15,8 +15,7 @@ use Symfony\Component\Validator\Validation;
 #[Try_]
 final class OriginConditionMessage
 {
-    /** @psalm-suppress ArgumentTypeCoercion */
-    public function __construct(
+        public function __construct(
         #[Catch_(ValidationFailedException::class, from: Email::class)]
         public string $email = 'some-email',
         #[Catch_(InvalidArgumentException::class, from: [Uuid::class, 'fromString'])]

@@ -11,7 +11,6 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
 use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\validated_value;
 
-/** @psalm-suppress ArgumentTypeCoercion */
 #[Try_]
 final class MessageWithEmbeddedViolations
 {

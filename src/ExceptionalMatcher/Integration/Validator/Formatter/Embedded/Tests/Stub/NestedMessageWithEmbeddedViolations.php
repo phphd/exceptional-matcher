@@ -9,7 +9,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 
 use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
 
-/** @psalm-suppress ArgumentTypeCoercion */
 #[Try_]
 final class NestedMessageWithEmbeddedViolations
 {
