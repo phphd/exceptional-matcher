@@ -14,8 +14,7 @@ use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum
 #[Try_]
 final class NonEnumExceptionClassConditionMessage
 {
-    /** @psalm-suppress ArgumentTypeCoercion */
-    public function __construct(
+        public function __construct(
         #[Catch_(RuntimeException::class, from: [WeekDay::class, 'from'], match: enum_value)] // @phpstan-ignore argument.type (specifically test the case of missing static analysis)
         public mixed $weekDay,
     ) {

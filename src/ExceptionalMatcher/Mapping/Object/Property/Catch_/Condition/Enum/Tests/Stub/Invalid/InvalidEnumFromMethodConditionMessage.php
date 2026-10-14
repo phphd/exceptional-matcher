@@ -14,8 +14,7 @@ use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum
 #[Try_]
 final class InvalidEnumFromMethodConditionMessage
 {
-    /** @psalm-suppress ArgumentTypeCoercion */
-    public function __construct(
+        public function __construct(
         #[Catch_(ValueError::class, from: [WeekDay::class, 'tryFrom'], match: enum_value)]
         public mixed $weekDay,
     ) {

@@ -13,8 +13,7 @@ use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embe
 #[Try_]
 final class HookOriginConditionMessage
 {
-    /** @psalm-suppress ArgumentTypeCoercion */
-    public function __construct(
+        public function __construct(
         #[Catch_(ValidationFailedException::class, from: [ProductHookedEntity::class, '$title::set'], format: embedded_violations)]
         public string $title,
     ) {

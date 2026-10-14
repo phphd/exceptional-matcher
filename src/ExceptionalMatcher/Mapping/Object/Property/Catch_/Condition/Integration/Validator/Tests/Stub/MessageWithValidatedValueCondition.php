@@ -14,8 +14,7 @@ use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Inte
 #[Try_]
 final class MessageWithValidatedValueCondition
 {
-    /** @psalm-suppress ArgumentTypeCoercion */
-    public function __construct(
+        public function __construct(
         #[Catch_(ValidationFailedException::class, match: validated_value, format: embedded_violations)]
         public string $notMatchedProperty = 'not matched',
         #[Catch_(ValidationFailedException::class, match: validated_value, format: embedded_violations)]
