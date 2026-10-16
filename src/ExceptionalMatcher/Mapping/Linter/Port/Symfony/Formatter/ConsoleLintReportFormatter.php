@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\Formatter;
 
+use Generator;
+use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
@@ -58,31 +60,20 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
         $style = new SymfonyStyle(new ArrayInput([]), $output);
 
         foreach ($report->getClassReports() as $classReport) {
-            $this->writeClassReport($style, $classReport);
+            $this->dumpClassReport($style, $classReport);
         }
 
-        $this->writeSummary($style, $report);
+        $this->dumpSummary($style, $report);
 
         return $output->fetch();
     }
 
-    private function writeClassReport(SymfonyStyle $style, ClassReport $classReport): void
+    private function dumpClassReport(SymfonyStyle $style, ClassReport $classReport): void
     {
-        $defects = $classReport->getDefects();
-
-        $header = $this->headerOf($classReport);
-        $width = $this->cellWidthOf($defects, $header);
-
-        $rows = [];
-
-        foreach ($defects as $defect) {
-            // A blank line keeps consecutive defects of the same class apart
-            $rows[] = [([] === $rows ? '' : "\n").$this->cellOf($defect, $width)];
-        }
-
-        $style->createTable()
-            ->setHeaders([$header])
-            ->setRows($rows)
+        $style
+            ->createTable()
+            ->setHeaders([$header = $this->location($classReport)])
+            ->setRows(iterator_to_array($this->defectRows($classReport, $header)))
             ->render()
         ;
 
@@ -112,11 +103,15 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
     }
 
     /** The source file, so that the terminal and the IDE can link right to it. */
-    private function headerOf(ClassReport $classReport): string
+    private function location(ClassReport $classReport): string
     {
         $filePath = $classReport->getFilePath();
 
-        return null !== $filePath ? $this->relativePath($filePath) : $classReport->getClassName();
+        if (null === $filePath) {
+            return $classReport->getClassName();
+        }
+
+        return $this->relativePath($filePath);
     }
 
     private function relativePath(string $filePath): string
@@ -132,6 +127,17 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
         return str_starts_with($filePath, $prefix)
             ? substr($filePath, strlen($prefix))
             : $filePath;
+    }
+
+    private function defectRows(ClassReport $classReport, string $header): Generator
+    {
+        $defects = $classReport->getDefects();
+
+        $width = $this->cellWidthOf($defects, $header);
+
+        foreach ($defects as $defect) {
+            yield [$this->cellOf($defect, $width)];
+        }
     }
 
     private function cellOf(MappingDefect $defect, int $width): string
@@ -212,16 +218,13 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
         return sprintf('<fg=%s>%s</>', $color, $label);
     }
 
-    private function writeSummary(SymfonyStyle $style, LintReport $report): void
+    private function dumpSummary(SymfonyStyle $style, LintReport $report): void
     {
-        $errors = $report->countOf(DefectSeverity::Error);
-        $warnings = $report->countOf(DefectSeverity::Warning);
-
         $summary = sprintf(
             '%d classes scanned: %d errors, %d warnings.',
             $report->getScannedSymbols(),
-            $errors,
-            $warnings,
+            $errors = $report->countOf(DefectSeverity::Error),
+            $warnings = $report->countOf(DefectSeverity::Warning),
         );
 
         if ($errors > 0) {
