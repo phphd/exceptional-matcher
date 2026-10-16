@@ -7,7 +7,6 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\Formatter;
 use Generator;
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Formatter\LintReportFormatter;
@@ -23,6 +22,7 @@ use function getcwd;
 use function implode;
 use function max;
 use function sprintf;
+use function str_pad;
 use function str_repeat;
 use function str_replace;
 use function str_starts_with;
@@ -42,6 +42,9 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
 {
     private const LOCATION_MARKER = '✏️';
 
+    /** Terminals disagree on the marker width, yet all of them stop a tab at this column */
+    private const LOCATION_TAB_STOP = 8;
+
     private const CAUSE_MARKER = '↳';
 
     private const CAUSE_INDENT = '  ';
@@ -51,6 +54,9 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
 
     /** Table indentation, the two cell paddings and the closing border */
     private const TABLE_DECORATION_WIDTH = 4;
+
+    /** Table indentation and the leading cell padding */
+    private const CELL_OFFSET = 2;
 
     public function format(LintReport $report): string
     {
@@ -94,7 +100,7 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
         );
 
         foreach ($defects as $defect) {
-            $width = max($width, Helper::width($this->defectLocation($defect->getLocation())));
+            $width = max($width, Helper::width($this->defectLocation($defect)));
         }
 
         return $width;
@@ -139,13 +145,15 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
     private function defect(MappingDefect $defect, int $width): string
     {
         return implode("\n", [
-            $this->defectMessage($defect, $width),
-            sprintf('<fg=gray>%s</>', $this->defectLocation($defect->getLocation())),
+            $this->decorate($this->defectLocation($defect), $defect->getSeverity()),
+            $this->exceptionTraceMessage($defect, $width),
         ]);
     }
 
-    private function defectLocation(DefectLocation $location): string
+    /** The symbol aligns with the message, past the label */
+    private function defectLocation(MappingDefect $defect): string
     {
+        $location = $defect->getLocation();
         $propertyName = $location->getPropertyName();
 
         if (null !== $propertyName) {
@@ -154,18 +162,24 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
             $symbol = $location->getClassName();
         }
 
-        return sprintf('%s  %s', self::LOCATION_MARKER, $symbol);
+        $gap = self::CELL_OFFSET + $this->messageOffset($defect->getSeverity()) - self::LOCATION_TAB_STOP;
+
+        return self::LOCATION_MARKER."\t".str_repeat(' ', $gap).$symbol;
     }
 
     /** The root cause leads, and every failure it went on to cause trails it. */
-    private function defectMessage(MappingDefect $defect, int $width): string
+    private function exceptionTraceMessage(MappingDefect $defect, int $width): string
     {
+        $severity = $defect->getSeverity();
         $messages = $defect->getMessages();
 
-        $lines = [$this->rootExceptionMessage($defect->getSeverity(), array_shift($messages), $width)];
+        $lines = [$this->rootExceptionMessage($severity, array_shift($messages), $width)];
+
+        // Causes align with the root message, past its label
+        $messageIndent = str_repeat(' ', $this->messageOffset($severity));
 
         foreach ($messages as $depth => $message) {
-            $lines[] = $this->chainedExceptionMessage($message, $depth + 1, $width);
+            $lines[] = $this->chainedExceptionMessage($message, $messageIndent, $depth, $width);
         }
 
         return implode("\n", $lines);
@@ -174,18 +188,18 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
     /** Errors carry no label: they are what the linter is expected to report. */
     private function rootExceptionMessage(DefectSeverity $severity, string $message, int $width): string
     {
-        $label = '['.strtoupper($severity->value).']';
+        $label = $this->label($severity);
 
-        $wrapped = wordwrap(sprintf('%s %s', $label, $message), $width, "\n", cut_long_words: true);
+        $wrapped = wordwrap(str_pad($label, $this->messageOffset($severity)).$message, $width, "\n", cut_long_words: true);
 
         // Decorate the label after wrapping
-        return substr_replace($wrapped, $this->decorate($label, $severity), 0, strlen($label));
+        return $this->decorate($label, $severity).$this->italic(substr($wrapped, strlen($label)));
     }
 
     /** Each chained exception message nests one level deeper than the previous. */
-    private function chainedExceptionMessage(string $message, int $depth, int $width): string
+    private function chainedExceptionMessage(string $message, string $baseIndent, int $depth, int $width): string
     {
-        $indent = str_repeat(self::CAUSE_INDENT, $depth);
+        $indent = $baseIndent.str_repeat(self::CAUSE_INDENT, $depth);
         $offset = Helper::width($indent.self::CAUSE_MARKER.' ');
 
         $wrapped = wordwrap($message, max(self::MIN_MESSAGE_WIDTH, $width - $offset), "\n", cut_long_words: true);
@@ -195,11 +209,28 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
             $indent,
             self::CAUSE_MARKER,
             // Continuation lines align under the text rather than under the arrow
-            str_replace("\n", "\n".str_repeat(' ', $offset), $wrapped),
+            $this->italic(str_replace("\n", "\n".str_repeat(' ', $offset), $wrapped)),
         );
     }
 
-    private function decorate(string $label, DefectSeverity $severity): string
+    /** Raw SGR codes, since Symfony styles know no italic; reset per line, as the table renders each line apart */
+    private function italic(string $text): string
+    {
+        return "\e[3m".str_replace("\n", "\e[23m\n\e[3m", $text)."\e[23m";
+    }
+
+    /** Where the message starts: two columns past the label */
+    private function messageOffset(DefectSeverity $severity): int
+    {
+        return strlen($this->label($severity)) + 2;
+    }
+
+    private function label(DefectSeverity $severity): string
+    {
+        return '['.strtoupper($severity->value).']';
+    }
+
+    private function decorate(string $text, DefectSeverity $severity): string
     {
         $color = match ($severity) {
             DefectSeverity::Error => 'red',
@@ -207,7 +238,7 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
             DefectSeverity::Notice => 'blue',
         };
 
-        return sprintf('<fg=%s>%s</>', $color, $label);
+        return sprintf('<fg=%s>%s</>', $color, $text);
     }
 
     private function dumpSummary(SymfonyStyle $style, LintReport $report): void
