@@ -40,10 +40,8 @@ use function wordwrap;
  */
 final class ConsoleLintReportFormatter implements LintReportFormatter
 {
-    /** Marks the class or property the defect belongs to, where phpstan puts the file path */
     private const LOCATION_MARKER = '✏️';
 
-    /** Leads every failure that the root cause went on to trigger */
     private const CAUSE_MARKER = '↳';
 
     private const CAUSE_INDENT = '  ';
@@ -72,8 +70,8 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
     {
         $style
             ->createTable()
-            ->setHeaders([$header = $this->location($classReport)])
-            ->setRows(iterator_to_array($this->defectRows($classReport, $header)))
+            ->setHeaders([$header = $this->classLocation($classReport)])
+            ->setRows(iterator_to_array($this->defectRows($classReport->getDefects(), $header)))
             ->render()
         ;
 
@@ -96,14 +94,14 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
         );
 
         foreach ($defects as $defect) {
-            $width = max($width, Helper::width($this->attributionOf($defect->getLocation())));
+            $width = max($width, Helper::width($this->defectLocation($defect->getLocation())));
         }
 
         return $width;
     }
 
     /** The source file, so that the terminal and the IDE can link right to it. */
-    private function location(ClassReport $classReport): string
+    private function classLocation(ClassReport $classReport): string
     {
         $filePath = $classReport->getFilePath();
 
@@ -129,69 +127,63 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
             : $filePath;
     }
 
-    private function defectRows(ClassReport $classReport, string $header): Generator
+    private function defectRows(array $defects, string $header): Generator
     {
-        $defects = $classReport->getDefects();
-
         $width = $this->cellWidthOf($defects, $header);
 
         foreach ($defects as $defect) {
-            yield [$this->cellOf($defect, $width)];
+            yield [$this->defect($defect, $width) . "\n"];
         }
     }
 
-    private function cellOf(MappingDefect $defect, int $width): string
+    private function defect(MappingDefect $defect, int $width): string
     {
         return implode("\n", [
-            $this->messageOf($defect, $width),
-            sprintf('<fg=gray>%s</>', $this->attributionOf($defect->getLocation())),
+            $this->defectMessage($defect, $width),
+            sprintf('<fg=gray>%s</>', $this->defectLocation($defect->getLocation())),
         ]);
     }
 
-    /** Trails the message the way phpstan trails its own with the file the error belongs to. */
-    private function attributionOf(DefectLocation $location): string
+    private function defectLocation(DefectLocation $location): string
     {
         $propertyName = $location->getPropertyName();
 
-        // Class-wide defects belong to no property
-        $symbol = null !== $propertyName
-            ? sprintf('%s::$%s', $location->getClassName(), $propertyName)
-            : $location->getClassName();
+        if (null !== $propertyName) {
+            $symbol = sprintf('%s::$%s', $location->getClassName(), $propertyName);
+        } else {
+            $symbol = $location->getClassName();
+        }
 
         return sprintf('%s  %s', self::LOCATION_MARKER, $symbol);
     }
 
     /** The root cause leads, and every failure it went on to cause trails it. */
-    private function messageOf(MappingDefect $defect, int $width): string
+    private function defectMessage(MappingDefect $defect, int $width): string
     {
         $messages = $defect->getMessages();
 
-        $lines = [$this->rootCauseOf($defect->getSeverity(), array_shift($messages), $width)];
+        $lines = [$this->rootExceptionMessage($defect->getSeverity(), array_shift($messages), $width)];
 
         foreach ($messages as $depth => $message) {
-            $lines[] = $this->consequenceOf($message, $width, $depth + 1);
+            $lines[] = $this->chainedExceptionMessage($message, $depth + 1, $width);
         }
 
         return implode("\n", $lines);
     }
 
     /** Errors carry no label: they are what the linter is expected to report. */
-    private function rootCauseOf(DefectSeverity $severity, string $message, int $width): string
+    private function rootExceptionMessage(DefectSeverity $severity, string $message, int $width): string
     {
-        if ($severity->is(DefectSeverity::Error)) {
-            return wordwrap($message, $width, "\n", cut_long_words: true);
-        }
+        $label = '['.strtoupper($severity->value).']';
 
-        $label = $severity->value;
+        $wrapped = wordwrap(sprintf('%s %s', $label, $message), $width, "\n", cut_long_words: true);
 
-        $wrapped = wordwrap(sprintf('%s: %s', $label, $message), $width, "\n", cut_long_words: true);
-
-        // The label is shorter than the wrapping width, so it always survives it whole and in place
+        // Decorate the label after wrapping
         return substr_replace($wrapped, $this->decorate($label, $severity), 0, strlen($label));
     }
 
-    /** Each consequence nests one level deeper than the failure it was caused by. */
-    private function consequenceOf(string $message, int $width, int $depth): string
+    /** Each chained exception message nests one level deeper than the previous. */
+    private function chainedExceptionMessage(string $message, int $depth, int $width): string
     {
         $indent = str_repeat(self::CAUSE_INDENT, $depth);
         $offset = Helper::width($indent.self::CAUSE_MARKER.' ');
