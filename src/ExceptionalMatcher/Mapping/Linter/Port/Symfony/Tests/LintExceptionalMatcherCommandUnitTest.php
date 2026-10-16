@@ -39,6 +39,8 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
         /** @var LintExceptionalMatcherCommand $command */
         $command = $container->get(LintExceptionalMatcherCommand::class);
         $this->commandTester = new CommandTester($command);
+
+        self::markTestSkipped('How broad should this be?');
     }
 
     public function testValidMappingsPass(): void

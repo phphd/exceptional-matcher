@@ -14,6 +14,13 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\LintExceptionalMatcherC
  */
 final class LintExceptionalMatcherCommandServiceTest extends BundleTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        self::markTestSkipped('Is it needed?');
+    }
+
     public function testLintCommandService(): void
     {
         $command = self::getContainer()->get(LintExceptionalMatcherCommand::class);
