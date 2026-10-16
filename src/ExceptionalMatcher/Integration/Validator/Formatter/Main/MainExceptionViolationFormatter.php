@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main;
 
 use Closure;
-use PhPhD\ExceptionalMatcher\Exception\MatchedException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\ExceptionViolationFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException;
 use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
 /**
@@ -31,26 +30,17 @@ final class MainExceptionViolationFormatter implements ExceptionViolationFormatt
         $this->translate = $translate ?? static fn (string $messageTemplate): string => $messageTemplate;
     }
 
-    /** @api */
-    public static function translator(TranslatorInterface $translator, string $translationDomain): Closure
-    {
-        return static fn (
-            string $messageTemplate,
-            array $parameters = [],
-        ): string => $translator->trans($messageTemplate, $parameters, domain: $translationDomain);
-    }
-
     /** @return array{ConstraintViolation} */
     public function format(MatchedException $matchedException): array
     {
         $exception = $matchedException->getException();
-        $rule = $matchedException->getRule();
+        $node = $matchedException->getCatchNode();
 
-        $messageTemplate = $rule->getMessageTemplate() ?? $exception->getMessage();
+        $messageTemplate = $node->getMessageTemplate() ?? $exception->getMessage();
         $message = ($this->translate)($messageTemplate);
-        $root = $rule->getRootObject();
-        $propertyPath = $rule->getPropertyPath();
-        $value = $rule->getValue();
+        $root = $node->getRootObject();
+        $propertyPath = $node->getPropertyPath();
+        $value = $node->getValue();
 
         return [
             new ConstraintViolation(

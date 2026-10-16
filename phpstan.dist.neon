@@ -20,6 +20,8 @@ parameters:
         analyse:
             # Property hook syntax is not supported at the minimum PHP version
             - src/*/*Hooked*.php
+            # References an undefined constant on purpose (broken-mapping lint fixture)
+            - src/*/*UndefinedConstant*.php
     fileExtensions:
         - 'php'
     stubFiles:
@@ -27,19 +29,27 @@ parameters:
     bootstrapFiles:
         - stubs/SymfonyUidInvalidArgumentException.php
     ignoreErrors:
-        - identifier: ternary.shortNotAllowed
         - identifier: property.unused
           message: '/^Property PhPhD\\[\w\\]+\\Stub\\\w+::\$\w+ is unused\.$/'
         - identifier: property.onlyWritten
           message: '/^(Static )?(Property|property) PhPhD\\[\w\\]+\\Stub\\\w+::\$\w+ is never read, only written\.$/'
+        - identifier: property.unusedType
+          message: '/^Property PhPhD\\[\w\\]+\\Stub\\\w+::\$\w+ \(.+\) is never assigned .+ so it can be removed from the property type\.$/'
         - identifier: missingType.iterableValue
           message: '/^(Static )?(Method|Property|property) PhPhD\\[\w\\]+\\Stub\\\w+::[\$\w\(\)]+ .* no value type specified (in )?iterable type array\.$/'
     type_coverage:
-        declare: 100
-        return_type: 100
-        param_type: 100
-        property_type: 100
+        return: 100
+        param: 100
+        property: 100
         constant: 0 # requires php 8.3
+    type_perfect:
+        no_isset_on_object: false # we don't want it
+        no_empty_on_object: true
+        no_param_type_removal: true
+        no_mixed_property: true
+        no_mixed_caller: true
+        narrow_param: true
+        narrow_return: true
     phpat:
         ignore_built_in_classes: true
 

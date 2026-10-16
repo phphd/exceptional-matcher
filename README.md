@@ -47,7 +47,7 @@ Install it in either a vanilla PHP project or a Symfony project.
    You can use features of this library outside frameworks. \
    See [Standalone Usage](#standalone-usage-).
 
-### 2. Map and Throw 🎯
+### 2. Throw and Map 🎯
 
 Mark a command or dto with `#[Try_]` attribute, and properties with `#[Catch_]`.
 
@@ -57,8 +57,8 @@ Mark a command or dto with `#[Try_]` attribute, and properties with `#[Catch_]`.
 Finally, throw those exceptions from your use-case handler:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 
 #[Try_]
 class UserRegistration
@@ -252,8 +252,8 @@ You don't have limitations at all. \
 The mapping for profile update `Dto` is just as high-level as it was for [registration `Dto`](#map-and-throw-):
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 
 #[Try_]
 class UserProfileUpdate
@@ -316,7 +316,9 @@ There are two configuration features:
 
 - [Match Conditions 🖇️](docs/config/match-conditions.md) – determine whether a given exception should match the given
   property;
-- [Violation Formatters 🎨](docs/config/violation-formatters.md) – represent the exception in a desired format.
+- [Violation Formatters 🎨](docs/config/violation-formatters.md) – represent the exception in a desired format;
+- [Linting Mappings 🔍](docs/config/lint.md) – catch every statically detectable mapping error ahead of time
+  with the `lint:exceptional-matcher` command.
 
 That's really all this library does – matches the exception and formats it (i.e. roasts the fish).
 
@@ -325,15 +327,15 @@ That's really all this library does – matches the exception and formats it (i.
 For a cheat-sheet example of configuration, check the following:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\enum_value;
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Uid\uid_value;
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Validator\validated_value;
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\enum_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\uid_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\validated_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\exception_value;
 use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
@@ -386,9 +388,7 @@ class ImportProductDto
 The matcher automatically picks all nested objects for analysis, provided that they define `#[Try_]` attribute.
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use Symfony\Component\Validator\Constraints as Assert;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 
 #[Try_]
 class ImportProductBatchDto
@@ -463,10 +463,12 @@ and use it to get necessary services:
 ```php
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 
 $container = (new PhdExceptionalMatcherExtension())->getContainer([
-    // These are not used but still required by Symfony DI
+    // In a non-debug mode broken mappings are logged instead of thrown
+    'kernel.debug' => false,
+    // These are not required by the library but are required by Symfony DI
     'kernel.environment' => 'prod',
     'kernel.build_dir' => __DIR__.'/var/cache',
 ]);
