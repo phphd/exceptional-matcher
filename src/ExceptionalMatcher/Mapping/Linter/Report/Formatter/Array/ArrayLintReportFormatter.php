@@ -28,7 +28,7 @@ final class ArrayLintReportFormatter implements LintReportFormatter
                         ->getClassName(),
                     'property' => $defect->getLocation()
                         ->getPropertyName(),
-                    'message' => $defect->getMessage(),
+                    'messages' => $defect->getMessages(),
                 ];
             }
         }

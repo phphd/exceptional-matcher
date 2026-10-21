@@ -133,6 +133,7 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
             : $filePath;
     }
 
+    /** @param non-empty-list<MappingDefect> $defects */
     private function defectRows(array $defects, string $header): Generator
     {
         $width = $this->cellWidthOf($defects, $header);
@@ -153,18 +154,11 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
     /** The symbol aligns with the message, past the label */
     private function defectLocation(MappingDefect $defect): string
     {
-        $location = $defect->getLocation();
-        $propertyName = $location->getPropertyName();
-
-        if (null !== $propertyName) {
-            $symbol = sprintf('%s::$%s', $location->getClassName(), $propertyName);
-        } else {
-            $symbol = $location->getClassName();
-        }
+        $location = $defect->getLocation()->toReference();
 
         $gap = self::CELL_OFFSET + $this->messageOffset($defect->getSeverity()) - self::LOCATION_TAB_STOP;
 
-        return self::LOCATION_MARKER."\t".str_repeat(' ', $gap).$symbol;
+        return self::LOCATION_MARKER."\t".str_repeat(' ', $gap).$location;
     }
 
     /** The root cause leads, and every failure it went on to cause trails it. */

@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location;
 
 use ReflectionProperty;
 
-/** @internal */
+ /** @internal */
 final class DefectLocation
 {
     public function __construct(
@@ -34,5 +34,14 @@ final class DefectLocation
     public function getPropertyName(): ?string
     {
         return $this->propertyName;
+    }
+
+    public function toReference(): string
+    {
+        if (null === $this->propertyName) {
+            return $this->className;
+        }
+
+        return sprintf('%s::$%s', $this->className, $this->propertyName);
     }
 }

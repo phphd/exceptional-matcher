@@ -13,6 +13,16 @@ use function class_exists;
 /** @internal */
 final class ClassNameDiscovery
 {
+    public function __construct()
+    {
+        if (!class_exists(ClassMapGenerator::class)) {
+            throw new RuntimeException(
+                'Class discovery requires the "composer/class-map-generator" package.'.PHP_EOL
+                .' Try running "composer require --dev composer/class-map-generator".',
+            );
+        }
+    }
+
     /**
      * @param iterable<string> $paths
      *
@@ -20,13 +30,6 @@ final class ClassNameDiscovery
      */
     public function discover(iterable $paths): array
     {
-        if (!class_exists(ClassMapGenerator::class)) {
-            throw new RuntimeException(
-                'Class discovery requires the "composer/class-map-generator" package.' . PHP_EOL
-                .' Try running "composer require --dev composer/class-map-generator".',
-            );
-        }
-
         $classMapGenerator = new ClassMapGenerator();
 
         foreach ($paths as $path) {
