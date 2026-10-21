@@ -31,7 +31,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  *
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ClassMappingLinter
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\MappingDefectCollector
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\CompilationExceptionCollector
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect

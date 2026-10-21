@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\Exception;
 
-use RuntimeException;
+use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException;
 use Throwable;
 
 use function sprintf;
 
-final class PropertyExceptionMappingPlanCompilationFailedException extends RuntimeException
+final class PropertyExceptionMappingPlanCompilationFailedException extends ExceptionMappingPlanCompilationFailedException
 {
     public function __construct(
         /** @var class-string */
