@@ -53,11 +53,6 @@ final class MappingDefect
         return $this->messages;
     }
 
-    public function getMessage(): string
-    {
-        return implode("\n", $this->messages);
-    }
-
     public function getLocation(): DefectLocation
     {
         return $this->location;
