@@ -15,7 +15,10 @@ final class CatchExceptionMappingPlanCompilationFailedException extends Exceptio
         private readonly ?string $propertyName,
         Throwable $previous,
     ) {
-        parent::__construct('CatchExceptionMappingPlan compilation failed.', previous: $previous);
+        parent::__construct(
+            'CatchExceptionMappingPlan compilation failed.',
+            previous: $previous,
+        );
     }
 
     /** @return ?class-string */
