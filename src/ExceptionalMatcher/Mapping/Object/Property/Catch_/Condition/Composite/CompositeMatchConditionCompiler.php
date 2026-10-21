@@ -48,11 +48,9 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
         foreach ($this->compilers as $compiler) {
             $plan = $compiler->compile($catch);
 
-            if (null === $plan) {
-                continue;
+            if (null !== $plan) {
+                yield $plan;
             }
-
-            yield $plan;
         }
     }
 }
