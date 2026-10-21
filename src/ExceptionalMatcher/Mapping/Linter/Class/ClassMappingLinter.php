@@ -19,6 +19,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappi
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionProperty;
 use Throwable;
 use function sprintf;
@@ -68,7 +69,7 @@ final class ClassMappingLinter implements MappingLinter
         $scannedSymbols = 0;
 
         foreach ($classNames as $className) {
-            foreach ($this->lintClass(new ReflectionClass($className)) as $defect) {
+            foreach ($this->lintClass($className) as $defect) {
                 $classDefects[$defect->getLocation()
                     ->getClassName()][] = $defect;
             }
@@ -84,12 +85,14 @@ final class ClassMappingLinter implements MappingLinter
     }
 
     /**
-     * @param ReflectionClass<object> $reflectionClass
+     * @param class-string $className
      *
      * @return Generator<MappingDefect>
      */
-    private function lintClass(ReflectionClass $reflectionClass): Generator
+    private function lintClass(string $className): Generator
     {
+        $reflectionClass = new ReflectionClass($className);
+
         yield from $this->lintPlan($reflectionClass);
 
         yield from $this->lintStructure($reflectionClass);
@@ -163,11 +166,12 @@ final class ClassMappingLinter implements MappingLinter
         $missingTryDefects = [];
 
         foreach ($reflectionClass->getProperties() as $property) {
-            // if class's property has a catch plan, and class has no plan, - that's a defect
             if (true !== $this->propertyMappingPlanCompiler->compilePlan($property)?->hasCatchPlans()) {
                 continue;
             }
 
+            // If class's property has a catch plan,
+            // but the class itself has no plan, that's a defect
             $missingTryDefects[] = MappingDefect::warning(
                 'Properties declare #[Catch_] mappings, but the class is not marked with #[Try_], so it never matches anything.',
                 DefectLocation::ofProperty($property),

@@ -81,6 +81,7 @@ final class MappingLinterUnitTest extends TestCase
         [$classReport] = $this->linter->lint([MessageWithNoTryAttribute::class])->getClassReports();
 
         [$defect] = $classReport->getDefects();
+        self::assertCount(1, $classReport->getDefects());
 
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
         self::assertSame(MessageWithNoTryAttribute::class, $defect->getLocation()->getClassName());

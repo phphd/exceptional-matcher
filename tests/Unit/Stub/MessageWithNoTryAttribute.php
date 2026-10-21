@@ -11,6 +11,8 @@ use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 
 final class MessageWithNoTryAttribute
 {
+    private ?int $noCatchMapping = null;
+
     public function __construct(
         #[Catch_(AnException::class, message: 'not matched')]
         private readonly int $property,
