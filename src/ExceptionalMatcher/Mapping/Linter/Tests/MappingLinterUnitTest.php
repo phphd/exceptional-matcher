@@ -7,7 +7,6 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Tests;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\AbstractTryMessage;
@@ -37,6 +36,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionPlan
  */
 final class MappingLinterUnitTest extends TestCase
 {

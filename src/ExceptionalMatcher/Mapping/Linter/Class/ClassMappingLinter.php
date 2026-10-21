@@ -13,8 +13,10 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\PreCompiledMatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\CatchExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
@@ -93,9 +95,9 @@ final class ClassMappingLinter implements MappingLinter
     {
         $reflectionClass = new ReflectionClass($className);
 
-        yield from $this->lintPlan($reflectionClass);
-
         yield from $this->lintStructure($reflectionClass);
+
+        yield from $this->lintPlan($reflectionClass);
     }
 
     /**
@@ -120,36 +122,15 @@ final class ClassMappingLinter implements MappingLinter
         // Compilation is done lazily through traversal
         foreach ($plan->getPropertyPlans() as $propertyPlan) {
             foreach ($propertyPlan->getCatchPlans() as $catchPlan) {
-                $conditionPlan = $catchPlan->getConditionPlan();
-
-                if ($conditionPlan instanceof PreCompiledMatchConditionPlan) {
+                if (true === yield from $this->lintCatchPlan($propertyPlan, $catchPlan->getConditionPlan())) {
                     continue;
                 }
 
-                if (!$conditionPlan instanceof CompositeMatchConditionPlan) {
-                    yield MappingDefect::notice(
-                        '#[Catch_] condition plan is not composite, so it cannot be linted.',
-                        DefectLocation::ofProperty($propertyPlan->getProperty()),
-                    );
-
-                    continue;
-                }
-
-                try {
-                    foreach ($conditionPlan->getPlans() as $conditionSubPlan) {
-                        unset($conditionSubPlan);
-                    }
-                } catch (Throwable $e) {
-                    yield MappingDefect::error(
-                        DefectLocation::ofProperty($propertyPlan->getProperty()),
-                        $e,
-                    );
-                }
-
-                unset($catchPlan);
+                yield MappingDefect::notice(
+                    '#[Catch_] condition plan is not composite, so it cannot be linted.',
+                    DefectLocation::ofProperty($propertyPlan->getProperty()),
+                );
             }
-
-            unset($propertyPlan);
         }
 
         yield from $this->defectCollector->flush();
@@ -261,5 +242,31 @@ final class ClassMappingLinter implements MappingLinter
         } catch (ErrorException) {
             return false;
         }
+    }
+
+    /**
+     * @param MatchConditionPlan<Throwable> $matchConditionPlan
+     *
+     * @return Generator<MappingDefect>
+     */
+    private function lintCatchPlan(PropertyExceptionMappingPlan $propertyPlan, MatchConditionPlan $matchConditionPlan): Generator
+    {
+        if (!$matchConditionPlan instanceof CompositeMatchConditionPlan) {
+            return false;
+        }
+
+        try {
+            // Traversal compiles the plans
+            foreach ($matchConditionPlan->getPlans() as $subPlan) {
+                yield from $this->lintCatchPlan($propertyPlan, $subPlan); // recurse
+            }
+        } catch (Throwable $e) {
+            yield MappingDefect::error(
+                DefectLocation::ofProperty($propertyPlan->getProperty()),
+                $e,
+            );
+        }
+
+        return true;
     }
 }
