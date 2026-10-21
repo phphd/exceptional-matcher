@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception;
 
-use RuntimeException;
+use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException;
 use Throwable;
 
-final class CatchExceptionMappingPlanCompilationFailedException extends RuntimeException
+final class CatchExceptionMappingPlanCompilationFailedException extends ExceptionMappingPlanCompilationFailedException
 {
     public function __construct(
         /** @var ?class-string */

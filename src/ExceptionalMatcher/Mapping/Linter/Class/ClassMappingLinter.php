@@ -11,6 +11,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
@@ -39,7 +40,7 @@ final class ClassMappingLinter implements MappingLinter
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
         /** @var ExceptionMappingPlanCompiler<ReflectionProperty,PropertyExceptionMappingPlan> */
         private readonly ExceptionMappingPlanCompiler $propertyMappingPlanCompiler,
-        private readonly MappingDefectCollector $defectCollector,
+        private readonly CompilationExceptionCollector $compilationDefectCollector,
     ) {
     }
 
@@ -97,7 +98,7 @@ final class ClassMappingLinter implements MappingLinter
 
         yield from $this->lintStructure($reflectionClass);
 
-        yield from $this->lintPlan($reflectionClass);
+        yield from $this->lintClassPlan($reflectionClass);
     }
 
     /**
@@ -107,33 +108,19 @@ final class ClassMappingLinter implements MappingLinter
      *
      * @return iterable<MappingDefect>
      */
-    private function lintPlan(ReflectionClass $reflectionClass): iterable
+    private function lintClassPlan(ReflectionClass $reflectionClass): iterable
     {
-        $plan = $this->planRegistry->getPlan($reflectionClass->getName());
-
-        if (null === $plan) {
-            if ([] !== $compilationDefects = $this->defectCollector->flush()) {
-                return yield from $compilationDefects;
-            }
-
-            return yield from $this->possiblyMissingTryAttribute($reflectionClass);
+        if (null !== $plan = $this->planRegistry->getPlan($reflectionClass->getName())) {
+            return yield from $this->lintPlan($plan);
         }
 
-        // Compilation is done lazily through traversal
-        foreach ($plan->getPropertyPlans() as $propertyPlan) {
-            foreach ($propertyPlan->getCatchPlans() as $catchPlan) {
-                if (true === yield from $this->lintCatchPlan($propertyPlan, $catchPlan->getConditionPlan())) {
-                    continue;
-                }
-
-                yield MappingDefect::notice(
-                    '#[Catch_] condition plan is not composite, so it cannot be linted.',
-                    DefectLocation::ofProperty($propertyPlan->getProperty()),
-                );
-            }
+        // If no plan, it possibly has failed compilation:
+        if ([] !== $compilationDefects = $this->compilationDefectCollector->flush()) {
+            return yield from $compilationDefects;
         }
 
-        yield from $this->defectCollector->flush();
+        // Or lacks #[Try] attribute:
+        return yield from $this->possiblyMissingTryAttribute($reflectionClass);
     }
 
     /**
@@ -242,6 +229,30 @@ final class ClassMappingLinter implements MappingLinter
         } catch (ErrorException) {
             return false;
         }
+    }
+
+    /**
+     * @param ObjectExceptionMappingPlan<object> $plan
+     *
+     * @return Generator<MappingDefect>
+     */
+    private function lintPlan(ObjectExceptionMappingPlan $plan): Generator
+    {
+        // Compilation is done lazily through traversal
+        foreach ($plan->getPropertyPlans() as $propertyPlan) {
+            foreach ($propertyPlan->getCatchPlans() as $catchPlan) {
+                if (true === yield from $this->lintCatchPlan($propertyPlan, $catchPlan->getConditionPlan())) {
+                    continue;
+                }
+
+                yield MappingDefect::notice(
+                    '#[Catch_] condition plan is not composite, so it cannot be linted.',
+                    DefectLocation::ofProperty($propertyPlan->getProperty()),
+                );
+            }
+        }
+
+        yield from $this->compilationDefectCollector->flush();
     }
 
     /**
