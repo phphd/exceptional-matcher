@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler;
 
 use Generator;
 use LogicException;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\ReusableIteratorAggregate;
@@ -66,6 +67,10 @@ final class ObjectExceptionMappingPlanCompiler implements ExceptionMappingPlanCo
     {
         if ([] === $reflectionClass->getAttributes(Try_::class)) {
             return null;
+        }
+
+        if ($reflectionClass->isAbstract()) {
+            throw new LogicException('#[Try_] on an abstract class has no effect: the attribute is not inherited by the subclasses.');
         }
 
         $mappingPlan = new ObjectExceptionMappingPlan(

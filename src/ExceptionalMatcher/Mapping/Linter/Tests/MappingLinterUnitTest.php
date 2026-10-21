@@ -97,9 +97,10 @@ final class MappingLinterUnitTest extends TestCase
 
         [$defect] = $classReport->getDefects();
 
-        self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
+        self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertSame([
-            '#[Try_] on an abstract class never matches: attributes are not inherited by its subclasses.',
+            '#[Try_] on an abstract class has no effect: the attribute is not inherited by the subclasses.',
+             'Class '.AbstractTryMessage::class.' exception mapping compilation has failed.'
         ], $defect->getMessages());
     }
 

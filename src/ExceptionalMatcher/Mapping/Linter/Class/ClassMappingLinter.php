@@ -156,17 +156,8 @@ final class ClassMappingLinter implements MappingLinter
      */
     private function lintStructure(ReflectionClass $reflectionClass): Generator
     {
-        $classLocation = new DefectLocation($reflectionClass->getName());
-
         if (!$this->hasTryAttribute($reflectionClass)) {
             return;
-        }
-
-        if ($reflectionClass->isAbstract()) {
-            yield MappingDefect::warning(
-                '#[Try_] on an abstract class never matches: attributes are not inherited by its subclasses.',
-                $classLocation,
-            );
         }
 
         yield from $this->lintParentPrivateCatches($reflectionClass);
