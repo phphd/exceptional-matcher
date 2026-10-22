@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler;
 
 use RuntimeException;
 
+/** @internal */
 abstract class ExceptionMappingPlanCompilationFailedException extends RuntimeException
 {
 }

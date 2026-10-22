@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException;
 use Throwable;
 
+/** @internal */
 final class CatchExceptionMappingPlanCompilationFailedException extends ExceptionMappingPlanCompilationFailedException
 {
     public function __construct(

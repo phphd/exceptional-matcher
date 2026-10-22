@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 final class ObjectExceptionMappingPlanCompilerUnitTest extends TestCase
 {
-    public function testErrorReporterIsNotSetUpRegardlessOfDebugModeWhenLoggerIsNotAvailable(): void
+    public function testErrorReporterIsNotSetUpWhenLoggerIsNotAvailableRegardlessOfDebugMode(): void
     {
         $container = $this->getContainer();
         $container->compile();

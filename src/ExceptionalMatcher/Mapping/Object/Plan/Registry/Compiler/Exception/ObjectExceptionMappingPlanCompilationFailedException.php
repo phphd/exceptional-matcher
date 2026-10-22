@@ -9,6 +9,7 @@ use Throwable;
 
 use function sprintf;
 
+/** @internal */
 final class ObjectExceptionMappingPlanCompilationFailedException extends ExceptionMappingPlanCompilationFailedException
 {
     /** @param class-string $className */
