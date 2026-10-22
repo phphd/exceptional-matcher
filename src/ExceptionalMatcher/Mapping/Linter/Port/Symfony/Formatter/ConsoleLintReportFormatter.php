@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\Formatter;
 
 use Generator;
-use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity;
@@ -28,7 +27,6 @@ use function str_replace;
 use function str_starts_with;
 use function strlen;
 use function substr;
-use function substr_replace;
 use function wordwrap;
 
 /**
