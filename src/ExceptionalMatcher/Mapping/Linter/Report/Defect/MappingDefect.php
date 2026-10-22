@@ -9,7 +9,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverit
 use Throwable;
 
 use function array_reverse;
-use function implode;
 
 /** @internal */
 final class MappingDefect
