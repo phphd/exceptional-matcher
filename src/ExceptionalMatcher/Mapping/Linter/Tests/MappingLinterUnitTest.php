@@ -17,7 +17,9 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\TryWithNoCatchAttributesM
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\TryWithNonMatchableObjectMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\UnregisteredFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\UnregisteredFormatterMessage;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\CatchExceptionMappingPlanCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchAttributeInstantiationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\Tests\Stub\RootObject;
@@ -31,11 +33,17 @@ use PHPUnit\Framework\TestCase;
  * @internal
  *
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ClassMappingLinter
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\CompilationExceptionCollector
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\ObjectExceptionMappingPlanCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\PropertyExceptionMappingPlanCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\CatchExceptionMappingPlanCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchExceptionMappingPlanCompilationFailedException
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\CompilationExceptionCollector
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionPlan
  */
 final class MappingLinterUnitTest extends TestCase
