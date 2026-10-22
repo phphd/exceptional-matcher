@@ -9,6 +9,7 @@ use Throwable;
 
 use function sprintf;
 
+/** @internal */
 final class PropertyExceptionMappingPlanCompilationFailedException extends ExceptionMappingPlanCompilationFailedException
 {
     public function __construct(
