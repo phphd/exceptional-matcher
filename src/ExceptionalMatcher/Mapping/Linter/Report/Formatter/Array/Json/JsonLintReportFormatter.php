@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Formatter\Array\Json;
 
+use JsonException;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Formatter\LintReportFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 
@@ -23,6 +24,7 @@ final class JsonLintReportFormatter implements LintReportFormatter
     ) {
     }
 
+    /** @throws JsonException */
     public function format(LintReport $report): string
     {
         return json_encode(
