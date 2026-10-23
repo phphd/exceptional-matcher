@@ -20,6 +20,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappi
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionProperty;
 use Throwable;
 use function sprintf;
@@ -44,9 +45,7 @@ final class ClassMappingLinter implements MappingLinter
     /** @param iterable<class-string> $symbols */
     public function lint(iterable $symbols): LintReport
     {
-        $classNames = $this->loadClassNames($symbols);
-
-        $classReports = $this->lintClasses($classNames);
+        $classReports = $this->lintClasses($symbols);
 
         return new LintReport(
             iterator_to_array($classReports, preserve_keys: false),
@@ -193,30 +192,6 @@ final class ClassMappingLinter implements MappingLinter
     private function hasCatchAttributes(ReflectionProperty $reflectionProperty): bool
     {
         return [] !== $reflectionProperty->getAttributes(Catch_::class);
-    }
-
-    /**
-     * @param iterable<class-string> $symbols
-     *
-     * @return iterable<class-string>
-     */
-    private function loadClassNames(iterable $symbols): iterable
-    {
-        foreach ($symbols as $symbol) {
-            if ($this->loadClassName($symbol)) {
-                yield $symbol;
-            }
-        }
-    }
-
-    /** @param class-string $symbol */
-    private function loadClassName(string $symbol): bool
-    {
-        try {
-            return class_exists($symbol);
-        } catch (ErrorException) {
-            return false;
-        }
     }
 
     /**
