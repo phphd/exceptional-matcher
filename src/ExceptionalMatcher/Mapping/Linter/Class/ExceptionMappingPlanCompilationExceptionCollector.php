@@ -14,7 +14,7 @@ use Psr\Log\AbstractLogger;
 use Throwable;
 
 /** @internal */
-final class CompilationExceptionCollector extends AbstractLogger
+final class ExceptionMappingPlanCompilationExceptionCollector extends AbstractLogger
 {
     /** @var list<MappingDefect> */
     private array $defects = [];

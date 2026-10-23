@@ -22,6 +22,7 @@ use Symfony\Component\Messenger\Middleware\StackMiddleware;
 use Throwable;
 
 /**
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle
  * @covers \PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger\ExceptionalValidationMiddleware
  * @covers \PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger\ExceptionalValidationFailedMessengerException
  *

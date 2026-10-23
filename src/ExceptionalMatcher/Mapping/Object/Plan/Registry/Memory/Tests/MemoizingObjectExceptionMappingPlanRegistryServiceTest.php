@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Memory\MemoizingObjectExceptionMappingPlanRegistry::clear()
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Memory\MemoizingObjectExceptionMappingPlanRegistry::clear
  *
  * @internal
  */

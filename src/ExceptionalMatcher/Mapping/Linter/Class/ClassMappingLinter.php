@@ -37,7 +37,7 @@ final class ClassMappingLinter implements MappingLinter
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
         /** @var ExceptionMappingPlanCompiler<ReflectionProperty,PropertyExceptionMappingPlan> */
         private readonly ExceptionMappingPlanCompiler $propertyMappingPlanCompiler,
-        private readonly CompilationExceptionCollector $compilationDefectCollector,
+        private readonly ExceptionMappingPlanCompilationExceptionCollector $compilationDefectCollector,
     ) {
     }
 
@@ -229,7 +229,7 @@ final class ClassMappingLinter implements MappingLinter
         // Compilation is done lazily through traversal
         foreach ($plan->getPropertyPlans() as $propertyPlan) {
             foreach ($propertyPlan->getCatchPlans() as $catchPlan) {
-                if (true === yield from $this->lintCatchPlan($propertyPlan, $catchPlan->getConditionPlan())) {
+                if (true === yield from $this->traverseMatchConditionPlan($propertyPlan, $catchPlan->getConditionPlan())) {
                     continue;
                 }
 
@@ -248,16 +248,16 @@ final class ClassMappingLinter implements MappingLinter
      *
      * @return Generator<MappingDefect>
      */
-    private function lintCatchPlan(PropertyExceptionMappingPlan $propertyPlan, MatchConditionPlan $matchConditionPlan): Generator
+    private function traverseMatchConditionPlan(PropertyExceptionMappingPlan $propertyPlan, MatchConditionPlan $matchConditionPlan): Generator
     {
         if (!$matchConditionPlan instanceof CompositeMatchConditionPlan) {
             return false;
         }
 
         try {
-            // Traversal compiles the plans
+            // Traversal compiles the match conditions' plans
             foreach ($matchConditionPlan->getPlans() as $subPlan) {
-                yield from $this->lintCatchPlan($propertyPlan, $subPlan); // recurse
+                yield from $this->traverseMatchConditionPlan($propertyPlan, $subPlan); // recurse
             }
         } catch (Throwable $e) {
             yield MappingDefect::error(

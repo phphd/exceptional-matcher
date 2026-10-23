@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Tests;
 
+use LogicException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
@@ -11,6 +12,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverit
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\AbstractTryMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\ChildOfPrivateCatchMessage;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\Invalid\LazilyDiscoveredUnknownMatchConditionMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\ParentPrivateCatchMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\TryWithNoCatchAttributesMessage;
@@ -31,7 +33,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  *
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ClassMappingLinter
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\CompilationExceptionCollector
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ExceptionMappingPlanCompilationExceptionCollector
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect
@@ -46,6 +48,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\CatchExceptionMappingPlanCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchExceptionMappingPlanCompilationFailedException
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\ReusableIteratorAggregate
  */
 final class MappingLinterUnitTest extends TestCase
 {
@@ -77,8 +80,7 @@ final class MappingLinterUnitTest extends TestCase
         [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
-        self::assertSame(TryWithNoCatchAttributesMessage::class, $defect->getLocation()->getClassName());
-        self::assertNull($defect->getLocation()->getPropertyName());
+        self::assertSame(TryWithNoCatchAttributesMessage::class, $defect->getLocation()->toReference());
         self::assertSame([
             '#[Try_] class does not define any #[Catch_] mappings and no nested matchable properties, so it never matches anything.',
             'Class '.TryWithNoCatchAttributesMessage::class.' exception mapping compilation has failed.',
@@ -93,8 +95,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertCount(1, $classReport->getDefects());
 
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
-        self::assertSame(MessageWithNoTryAttribute::class, $defect->getLocation()->getClassName());
-        self::assertSame('property', $defect->getLocation()->getPropertyName());
+        self::assertSame(MessageWithNoTryAttribute::class.'::$property', $defect->getLocation()->toReference());
         self::assertSame([
             'Properties declare #[Catch_] mappings, but the class is not marked with #[Try_], so it never matches anything.',
         ], $defect->getMessages());
@@ -120,8 +121,7 @@ final class MappingLinterUnitTest extends TestCase
         [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
-        self::assertSame(TryWithNonMatchableObjectMessage::class, $defect->getLocation()->getClassName());
-        self::assertNull($defect->getLocation()->getPropertyName());
+        self::assertSame(TryWithNonMatchableObjectMessage::class, $defect->getLocation()->toReference());
         self::assertSame([
             '#[Try_] class does not define any #[Catch_] mappings and no nested matchable properties, so it never matches anything.',
             'Class '.TryWithNonMatchableObjectMessage::class.' exception mapping compilation has failed.',
@@ -135,10 +135,9 @@ final class MappingLinterUnitTest extends TestCase
         [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
-        self::assertSame(ChildOfPrivateCatchMessage::class, $defect->getLocation()->getClassName());
-        self::assertSame('parentCaughtValue', $defect->getLocation()->getPropertyName());
+        self::assertSame(ChildOfPrivateCatchMessage::class.'::$parentDivisor', $defect->getLocation()->toReference());
         self::assertSame([
-            'Private property '.ParentPrivateCatchMessage::class.'::$parentCaughtValue declares #[Catch_] mappings that are invisible to '.ChildOfPrivateCatchMessage::class.'.',
+            'Private property '.ParentPrivateCatchMessage::class.'::$parentDivisor declares #[Catch_] mappings that are invisible to '.ChildOfPrivateCatchMessage::class.'.',
         ], $defect->getMessages());
     }
 
@@ -149,8 +148,7 @@ final class MappingLinterUnitTest extends TestCase
         [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
-        self::assertSame(UnregisteredFormatterMessage::class, $defect->getLocation()->getClassName());
-        self::assertSame('caughtValue', $defect->getLocation()->getPropertyName());
+        self::assertSame(UnregisteredFormatterMessage::class.'::$divisor', $defect->getLocation()->toReference());
         self::assertSame([
             'Exception Formatter "'.UnregisteredFormatter::class.'" is not registered in the formatter registry.',
             'CatchExceptionMappingPlan compilation failed.',
@@ -164,8 +162,7 @@ final class MappingLinterUnitTest extends TestCase
         [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
-        self::assertSame(MissingEnumFromConditionMessage::class, $defect->getLocation()->getClassName());
-        self::assertSame('weekDay', $defect->getLocation()->getPropertyName());
+        self::assertSame(MissingEnumFromConditionMessage::class.'::$weekDay', $defect->getLocation()->toReference());
         self::assertSame([
             'EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: NULL',
             'CatchExceptionMappingPlan compilation failed.',
@@ -179,8 +176,7 @@ final class MappingLinterUnitTest extends TestCase
         [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
-        self::assertSame(UndefinedConstantConditionMessage::class, $defect->getLocation()->getClassName());
-        self::assertSame('caughtValue', $defect->getLocation()->getPropertyName());
+        self::assertSame(UndefinedConstantConditionMessage::class.'::$divisor', $defect->getLocation()->toReference());
 
         $cause = $defect->getCause();
         self::assertInstanceOf(CatchExceptionMappingPlanCompilationFailedException::class, $cause);
@@ -190,6 +186,20 @@ final class MappingLinterUnitTest extends TestCase
             'Undefined constant "PhPhD\\ExceptionalMatcher\\Mapping\\Object\\Property\\Catch_\\Condition\\Undefined\\undefined_condition"',
             '#[Catch_] attribute instantiation failed.',
             'CatchExceptionMappingPlan compilation failed.',
+        ], $defect->getMessages());
+    }
+
+    public function testLazilyCompiledBrokenMatchConditionIsReported(): void
+    {
+        [$classReport] = $this->linter->lint([LazilyDiscoveredUnknownMatchConditionMessage::class])->getClassReports();
+
+        [$defect] = $classReport->getDefects();
+
+        self::assertSame(DefectSeverity::Error, $defect->getSeverity());
+        self::assertSame(LazilyDiscoveredUnknownMatchConditionMessage::class.'::$divisor', $defect->getLocation()->toReference());
+        self::assertInstanceOf(LogicException::class, $defect->getCause());
+        self::assertSame([
+            'Match condition compiler not found for: unknown_condition',
         ], $defect->getMessages());
     }
 
