@@ -31,17 +31,17 @@ final class LintMappingUseCase
     /**
      * @param iterable<TSymbol> $symbols
      *
-     * @return array{bool,TFormat}
+     * @return array{LintReport,TFormat}
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      *
      * @psalm-suppress UnnecessaryVarAnnotation
      */
-    public function lint(string $inputFormat, iterable $symbols, string $outputFormat): array
+    public function lint(string $symbolFormat, iterable $symbols, string $outputFormat): array
     {
         /** @var MappingLinter<TSymbol,LintReport> $linter */
-        $linter = $this->mappingLinterRegistry->get($inputFormat);
+        $linter = $this->mappingLinterRegistry->get($symbolFormat);
 
         $report = $linter->lint($symbols);
 
@@ -50,6 +50,6 @@ final class LintMappingUseCase
 
         $output = $formatter->format($report);
 
-        return [$report->hasDefects(), $output];
+        return [$report, $output];
     }
 }
