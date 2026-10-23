@@ -4,20 +4,35 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\Tests;
 
+use Closure;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\LintExceptionalMatcherCommand;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\MessageWithNoTryAttribute;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Formatter\OutputFormatter;
+use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Tester\CommandTester;
 
-use function dirname;
+use function array_map;
+use function explode;
+use function implode;
 use function json_decode;
+use function rtrim;
 
 /**
  * @internal
  *
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\LintExceptionalMatcherCommand
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\Formatter\ConsoleLintReportFormatter
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Port\LintMappingUseCase
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Formatter\Array\Json\JsonLintReportFormatter
  */
 final class LintExceptionalMatcherCommandUnitTest extends TestCase
 {
@@ -39,87 +54,111 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
         /** @var LintExceptionalMatcherCommand $command */
         $command = $container->get(LintExceptionalMatcherCommand::class);
         $this->commandTester = new CommandTester($command);
-
-        self::markTestSkipped('How broad should this be?');
     }
 
-    public function testValidMappingsPass(): void
+    public function testErrorsAreRenderedAndFailTheCommand(): void
     {
         $exitCode = $this->commandTester->execute([
-            'symbols' => [$this->stubPath('PlannedItem.php', 'Rule/Object/Tests/Stub')],
+            '--symbol-format' => 'class-string',
+            'symbols' => [UndefinedConstantConditionMessage::class],
+        ]);
+
+        self::assertSame(Command::FAILURE, $exitCode);
+
+        $display = self::trim(self::undecorate($this->commandTester->getDisplay()));
+
+        self::assertSame(
+            <<<'TXT'
+             ---------------------------------------------------------------------------------------------------------------
+              src/ExceptionalMatcher/Mapping/Linter/Tests/Stub/Invalid/UndefinedConstantConditionMessage.php
+             ---------------------------------------------------------------------------------------------------------------
+              ✏️	   PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage::$divisor
+              [ERROR]  Undefined constant
+              "PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Undefined\undefined_condition"
+                       ↳ #[Catch_] attribute instantiation failed.
+                         ↳ CatchExceptionMappingPlan compilation failed.
+
+              ✏️	   PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage
+              [ERROR]  #[Try_] class does not define any #[Catch_] mappings and no nested matchable properties, so it never
+              matches anything.
+                       ↳ Class PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage
+                         exception mapping compilation has failed.
+
+             ---------------------------------------------------------------------------------------------------------------
+
+
+
+             [ERROR] 1 classes scanned: 2 errors, 0 warnings.
+            TXT,
+            $display,
+        );
+    }
+
+    public function testWarningsAreRenderedAndFailTheCommand(): void
+    {
+        $exitCode = $this->commandTester->execute([
+            '--symbol-format' => 'class-string',
+            'symbols' => [MessageWithNoTryAttribute::class],
+        ]);
+
+        self::assertSame(Command::FAILURE, $exitCode);
+
+        $display = self::undecorate($this->commandTester->getDisplay());
+
+        self::assertStringContainsString(MessageWithNoTryAttribute::class.'::$property', $display);
+        self::assertStringContainsString('[WARNING]  Properties declare #[Catch_] mappings', $display);
+        self::assertStringContainsString('[WARNING] 1 classes scanned: 0 errors, 1 warnings.', $display);
+    }
+
+    /**
+     * @param Closure(class-string):string $toSymbolFormat
+     *
+     * @dataProvider symbolFormatDataProvider
+     */
+    public function testProperlyMappedClassPassesTheCheck(string $symbolFormat, Closure $toSymbolFormat): void
+    {
+        $exitCode = $this->commandTester->execute([
+            '--symbol-format' => $symbolFormat,
+            'symbols' => [$toSymbolFormat(HandleableMessageStub::class)],
         ]);
 
         self::assertSame(Command::SUCCESS, $exitCode);
-        self::assertStringContainsString('1 classes scanned: 0 errors, 0 warnings.', $this->commandTester->getDisplay());
+        self::assertStringContainsString('[OK] 1 classes scanned: 0 errors, 0 warnings.', $this->commandTester->getDisplay());
     }
 
-    public function testBrokenMappingsFail(): void
+    /** @return iterable<array{string,Closure(class-string):string}> */
+    public static function symbolFormatDataProvider(): iterable
+    {
+        yield ['class-string', static fn (string $className): string => $className];
+        yield ['path-string', self::filePathOf(...)];
+    }
+
+    public function testRendersOutputAsJson(): void
     {
         $exitCode = $this->commandTester->execute([
-            'symbols' => [$this->stubPath('Invalid/UndefinedConstantConditionMessage.php')],
-        ]);
-
-        self::assertSame(Command::FAILURE, $exitCode);
-        self::assertStringContainsString('undefined_condition', $this->commandTester->getDisplay());
-        self::assertStringContainsString('$caughtValue', $this->commandTester->getDisplay());
-        self::assertStringContainsString('1 classes scanned: 1 errors, 0 warnings.', $this->commandTester->getDisplay());
-    }
-
-    public function testWarningsPassUnlessFailOnWarningIsSet(): void
-    {
-        $paths = [
-            'symbols' => [$this->stubPath('AbstractTryMessage.php')],
-        ];
-
-        self::assertSame(Command::SUCCESS, $this->commandTester->execute($paths));
-
-        self::assertSame(Command::FAILURE, $this->commandTester->execute([
-            ...$paths,
-            '--fail-on-warning' => true,
-        ]));
-    }
-
-    public function testReportsDefectsAsJson(): void
-    {
-        $exitCode = $this->commandTester->execute([
-            'symbols' => [$this->stubPath('Invalid/UndefinedConstantConditionMessage.php')],
-            '--format' => 'json',
+            '--output-format' => 'json',
+            'symbols' => [self::filePathOf(UndefinedConstantConditionMessage::class)],
         ]);
 
         self::assertSame(Command::FAILURE, $exitCode);
 
-        /** @var array{defects:list<array{severity:string,class:string,property:?string,message:string}>} $report */
-        $report = json_decode($this->commandTester->getDisplay(), associative: true, flags: JSON_THROW_ON_ERROR);
-
-        [$defect] = $report['defects'];
-
-        self::assertSame('error', $defect['severity']);
-        self::assertSame('caughtValue', $defect['property']);
+        self::assertJson($this->commandTester->getDisplay());
     }
 
-    public function testRejectsUnknownFormat(): void
+    /** Escape sequences and the padding of the table cells obscure the layout */
+    private static function undecorate(string $display): string
     {
-        $exitCode = $this->commandTester->execute([
-            'symbols' => [$this->stubPath('AbstractTryMessage.php')],
-            '--format' => 'xml',
-        ]);
-
-        self::assertSame(Command::INVALID, $exitCode);
-        self::assertStringContainsString('Unknown format "xml"', $this->commandTester->getDisplay());
+        return Helper::removeDecoration(new OutputFormatter(), $display);
     }
 
-    public function testFailsOnNonExistentPath(): void
+    private static function trim(string $display): string
     {
-        $exitCode = $this->commandTester->execute([
-            'symbols' => [__DIR__.'/does-not-exist'],
-        ]);
-
-        self::assertSame(Command::INVALID, $exitCode);
-        self::assertStringContainsString('does-not-exist', $this->commandTester->getDisplay());
+        return rtrim(implode("\n", array_map(rtrim(...), explode("\n", $display))));
     }
 
-    private function stubPath(string $fileName, string $stubDirectory = 'Integration/Linter/Tests/Stub'): string
+    /** @param class-string $className */
+    private static function filePathOf(string $className): string
     {
-        return dirname(__DIR__, 4).'/'.$stubDirectory.'/'.$fileName;
+        return (string)(new ReflectionClass($className))->getFileName();
     }
 }

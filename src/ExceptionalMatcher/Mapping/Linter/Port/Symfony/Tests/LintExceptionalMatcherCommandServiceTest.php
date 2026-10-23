@@ -6,6 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\LintExceptionalMatcherCommand;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Command\LazyCommand;
 
 /**
  * @coversNothing
@@ -14,18 +16,11 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\LintExceptionalMatcherC
  */
 final class LintExceptionalMatcherCommandServiceTest extends BundleTestCase
 {
-    protected function setUp(): void
+    public function testCommandIsRegisteredInConsoleApplication(): void
     {
-        parent::setUp();
+        $command = (new Application(self::bootKernel()))->find('lint:exceptional-matcher');
 
-        self::markTestSkipped('Is it needed?');
-    }
-
-    public function testLintCommandService(): void
-    {
-        $command = self::getContainer()->get(LintExceptionalMatcherCommand::class);
-
-        self::assertInstanceOf(LintExceptionalMatcherCommand::class, $command);
-        self::assertSame('lint:exceptional-matcher', $command->getName());
+        self::assertInstanceOf(LazyCommand::class, $command);
+        self::assertInstanceOf(LintExceptionalMatcherCommand::class, $command->getCommand());
     }
 }
