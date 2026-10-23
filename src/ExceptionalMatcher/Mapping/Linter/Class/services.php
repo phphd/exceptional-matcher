@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter;
 
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ClassMappingLinter;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\CompilationExceptionCollector;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ExceptionMappingPlanCompilationExceptionCollector;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\CompilingObjectExceptionMappingPlanRegistry;
@@ -31,17 +31,17 @@ return static function (ContainerConfigurator $configurator): void {
                         ->factory([
                             service(ExceptionMappingPlanCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>'),
                             'reportingTo',
-                        ])->args([service(CompilationExceptionCollector::class)]),
+                        ])->args([service(ExceptionMappingPlanCompilationExceptionCollector::class)]),
                 ),
         )->arg('$propertyMappingPlanCompiler',
             inline_service(ExceptionMappingPlanCompiler::class)
                 ->factory([
                     service(ExceptionMappingPlanCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingPlan::class.'>'),
                     'reportingTo',
-                ])->args([service(CompilationExceptionCollector::class)])
+                ])->args([service(ExceptionMappingPlanCompilationExceptionCollector::class)])
         )->arg('$compilationDefectCollector',
-            service(CompilationExceptionCollector::class),
+            service(ExceptionMappingPlanCompilationExceptionCollector::class),
         )->tag(MappingLinter::class, ['id' => 'class-string']);
 
-    $services->set($id = CompilationExceptionCollector::class, $id);
+    $services->set($id = ExceptionMappingPlanCompilationExceptionCollector::class, $id);
 };
