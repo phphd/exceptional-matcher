@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded;
 
 use Closure;
 use LogicException;
-use PhPhD\ExceptionalMatcher\Exception\MatchedException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\ExceptionViolationFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
@@ -52,10 +52,10 @@ final class ViolationsEmbeddedExceptionFormatter implements ExceptionViolationFo
             throw new LogicException('Violation list must not be empty');
         }
 
-        $rule = $matchedException->getRule();
+        $node = $matchedException->getCatchNode();
 
-        $root = $rule->getRootObject();
-        $propertyPath = $rule->getPropertyPath()
+        $root = $node->getRootObject();
+        $propertyPath = $node->getPropertyPath()
             ->join('.')
         ;
         $redoTranslation = $this->shouldRedoTranslation($exception);

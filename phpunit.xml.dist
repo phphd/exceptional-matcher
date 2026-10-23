@@ -20,6 +20,11 @@
         </testsuite>
     </testsuites>
 
+    <php>
+        <!-- Setting the terminal width as otherwise the linter tests would fail on different terminals. -->
+        <env name="COLUMNS" value="120" force="true"/>
+    </php>
+
     <source restrictDeprecations="true" restrictNotices="true" restrictWarnings="true">
         <include>
             <directory>src</directory>
@@ -31,6 +36,7 @@
             <directory>src/*/*/*/*/*/Tests</directory>
             <directory>src/*/*/*/*/*/*/Tests</directory>
             <directory>src/*/*/*/*/*/*/*/Tests</directory>
+            <directory>src/*/*/*/*/*/*/*/*/Tests</directory>
             <directory suffix="Test.php">src</directory>
             <directory suffix="services.php">src</directory>
         </exclude>
