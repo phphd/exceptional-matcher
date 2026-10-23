@@ -46,6 +46,8 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
 
     private const CAUSE_INDENT = '  ';
 
+    private const LABEL_GAP = 2;
+
     /** Narrow terminals wrap the messages rather than squeeze them into nothing */
     private const MIN_MESSAGE_WIDTH = 40;
 
@@ -133,18 +135,18 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
     /** @param non-empty-list<MappingDefect> $defects */
     private function defectRows(array $defects, string $header): Generator
     {
-        $width = $this->cellWidthOf($defects, $header);
+        $cellWidth = $this->cellWidthOf($defects, $header);
 
         foreach ($defects as $defect) {
-            yield [$this->defect($defect, $width) . "\n"];
+            yield [$this->defect($defect, $cellWidth) . "\n"];
         }
     }
 
-    private function defect(MappingDefect $defect, int $width): string
+    private function defect(MappingDefect $defect, int $cellWidth): string
     {
         return implode("\n", [
             $this->decorate($this->defectLocation($defect), $defect->getSeverity()),
-            $this->exceptionTraceMessage($defect, $width),
+            $this->exceptionTraceMessage($defect, $cellWidth),
         ]);
     }
 
@@ -153,59 +155,55 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
     {
         $location = $defect->getLocation()->toReference();
 
-        $gap = self::CELL_OFFSET + $this->messageOffset($defect->getSeverity()) - self::LOCATION_TAB_STOP;
+        $gap = self::CELL_OFFSET + $this->messageColumn($defect->getSeverity()) - self::LOCATION_TAB_STOP;
 
         return self::LOCATION_MARKER."\t".str_repeat(' ', $gap).$location;
     }
 
     /** The root cause leads, and every failure it went on to cause trails it. */
-    private function exceptionTraceMessage(MappingDefect $defect, int $width): string
+    private function exceptionTraceMessage(MappingDefect $defect, int $cellWidth): string
     {
         $severity = $defect->getSeverity();
         $messages = $defect->getMessages();
 
-        $lines = [$this->rootExceptionMessage($severity, array_shift($messages), $width)];
+        $lines = [$this->rootExceptionMessage($severity, array_shift($messages), $cellWidth)];
 
         // Causes align with the root message, past its label
-        $messageIndent = str_repeat(' ', $this->messageOffset($severity));
+        $messageIndent = str_repeat(' ', $this->messageColumn($severity));
 
         foreach ($messages as $depth => $message) {
-            $lines[] = $this->chainedExceptionMessage($message, $messageIndent, $depth, $width);
+            $lines[] = $this->chainedExceptionMessage($message, $messageIndent, $depth, $cellWidth);
         }
 
         return implode("\n", $lines);
     }
 
-    /** Errors carry no label: they are what the linter is expected to report. */
-    private function rootExceptionMessage(DefectSeverity $severity, string $message, int $width): string
+    private function rootExceptionMessage(DefectSeverity $severity, string $message, int $cellWidth): string
     {
-        $label = $this->label($severity);
-        $offset = $this->messageOffset($severity);
-        $indent = str_repeat(' ', $offset);
-
-        $wrapped = wordwrap($message, max(self::MIN_MESSAGE_WIDTH, $width - $offset), "\n", cut_long_words: true);
-
-        return $this->decorate($label, $severity)
-            .substr($indent, strlen($label))
-            // Continuation lines align under the text rather than under the label
-            .$this->italic(str_replace("\n", "\n".$indent, $wrapped));
+        return $this->decorate($this->label($severity), $severity)
+            .str_repeat(' ', self::LABEL_GAP)
+            .$this->italic($this->hangingParagraph($message, $this->messageColumn($severity), $cellWidth));
     }
 
     /** Each chained exception message nests one level deeper than the previous. */
-    private function chainedExceptionMessage(string $message, string $baseIndent, int $depth, int $width): string
+    private function chainedExceptionMessage(string $message, string $baseIndent, int $depth, int $cellWidth): string
     {
         $indent = $baseIndent.str_repeat(self::CAUSE_INDENT, $depth);
-        $offset = Helper::width($indent.self::CAUSE_MARKER.' ');
-
-        $wrapped = wordwrap($message, max(self::MIN_MESSAGE_WIDTH, $width - $offset), "\n", cut_long_words: true);
 
         return sprintf(
             '%s<fg=gray>%s</> %s',
             $indent,
             self::CAUSE_MARKER,
-            // Continuation lines align under the text rather than under the arrow
-            $this->italic(str_replace("\n", "\n".str_repeat(' ', $offset), $wrapped)),
+            $this->italic($this->hangingParagraph($message, Helper::width($indent.self::CAUSE_MARKER.' '), $cellWidth)),
         );
+    }
+
+    /** The message wraps within the cell and continues under its own first column */
+    private function hangingParagraph(string $message, int $indentWidth, int $cellWidth): string
+    {
+        $wrapped = wordwrap($message, max(self::MIN_MESSAGE_WIDTH, $cellWidth - $indentWidth), "\n", cut_long_words: true);
+
+        return str_replace("\n", "\n".str_repeat(' ', $indentWidth), $wrapped);
     }
 
     /** Raw SGR codes, since Symfony styles know no italic; reset per line, as the table renders each line apart */
@@ -215,9 +213,9 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
     }
 
     /** Where the message starts: two columns past the label */
-    private function messageOffset(DefectSeverity $severity): int
+    private function messageColumn(DefectSeverity $severity): int
     {
-        return strlen($this->label($severity)) + 2;
+        return strlen($this->label($severity)) + self::LABEL_GAP;
     }
 
     private function label(DefectSeverity $severity): string
