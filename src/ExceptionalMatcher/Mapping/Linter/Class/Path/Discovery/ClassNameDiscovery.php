@@ -13,6 +13,7 @@ use function class_exists;
 /** @internal */
 final class ClassNameDiscovery
 {
+    /** @codeCoverageIgnore */
     public function __construct()
     {
         if (!class_exists(ClassMapGenerator::class)) {

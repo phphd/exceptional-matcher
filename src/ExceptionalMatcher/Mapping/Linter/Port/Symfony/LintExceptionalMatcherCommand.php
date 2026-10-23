@@ -30,16 +30,16 @@ final class LintExceptionalMatcherCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addOption('input-format', '-i', InputOption::VALUE_REQUIRED, 'Input format (path-string, class-string, etc.)', 'path-string')
-            ->addArgument('symbols', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Files or directories to scan for mapped classes')
+            ->addOption('symbol-format', '-s', InputOption::VALUE_REQUIRED, 'Symbol format (path-string, class-string, etc.)', 'path-string')
+            ->addArgument('symbols', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Paths / classes to lint')
             ->addOption('output-format', '-o', InputOption::VALUE_REQUIRED, 'Output format (console, json, etc.)', 'console')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var string $inputFormat */
-        $inputFormat = $input->getOption('input-format');
+        /** @var string $symbolFormat */
+        $symbolFormat = $input->getOption('symbol-format');
 
         /** @var list<string> $symbols */
         $symbols = $input->getArgument('symbols');
@@ -47,10 +47,10 @@ final class LintExceptionalMatcherCommand extends Command
         /** @var string $outputFormat */
         $outputFormat = $input->getOption('output-format');
 
-        [$hasDefects, $outputMessage] = $this->linter->lint($inputFormat, $symbols, $outputFormat);
+        [$report, $outputMessage] = $this->linter->lint($symbolFormat, $symbols, $outputFormat);
 
         $output->writeln($outputMessage);
 
-        return (int)$hasDefects;
+        return (int)$report->hasDefects();
     }
 }
