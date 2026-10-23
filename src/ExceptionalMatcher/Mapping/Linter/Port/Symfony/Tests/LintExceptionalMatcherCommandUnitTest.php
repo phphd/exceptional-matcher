@@ -74,13 +74,13 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
              ---------------------------------------------------------------------------------------------------------------
               ✏️	   PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage::$divisor
               [ERROR]  Undefined constant
-              "PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Undefined\undefined_condition"
+                       "PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Undefined\undefined_condition"
                        ↳ #[Catch_] attribute instantiation failed.
                          ↳ CatchExceptionMappingPlan compilation failed.
 
               ✏️	   PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage
               [ERROR]  #[Try_] class does not define any #[Catch_] mappings and no nested matchable properties, so it never
-              matches anything.
+                       matches anything.
                        ↳ Class PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage
                          exception mapping compilation has failed.
 

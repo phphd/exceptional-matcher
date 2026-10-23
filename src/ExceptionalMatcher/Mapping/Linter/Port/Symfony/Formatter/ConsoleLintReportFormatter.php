@@ -21,7 +21,6 @@ use function getcwd;
 use function implode;
 use function max;
 use function sprintf;
-use function str_pad;
 use function str_repeat;
 use function str_replace;
 use function str_starts_with;
@@ -181,11 +180,15 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
     private function rootExceptionMessage(DefectSeverity $severity, string $message, int $width): string
     {
         $label = $this->label($severity);
+        $offset = $this->messageOffset($severity);
+        $indent = str_repeat(' ', $offset);
 
-        $wrapped = wordwrap(str_pad($label, $this->messageOffset($severity)).$message, $width, "\n", cut_long_words: true);
+        $wrapped = wordwrap($message, max(self::MIN_MESSAGE_WIDTH, $width - $offset), "\n", cut_long_words: true);
 
-        // Decorate the label after wrapping
-        return $this->decorate($label, $severity).$this->italic(substr($wrapped, strlen($label)));
+        return $this->decorate($label, $severity)
+            .substr($indent, strlen($label))
+            // Continuation lines align under the text rather than under the label
+            .$this->italic(str_replace("\n", "\n".$indent, $wrapped));
     }
 
     /** Each chained exception message nests one level deeper than the previous. */
