@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter;
 
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ClassMappingLinter;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ExceptionMappingPlanCompilationExceptionCollector;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\CompilationDefectCollector;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\CompilingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\Log\SpyLogger;
 use ReflectionClass;
 use ReflectionProperty;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -31,17 +32,21 @@ return static function (ContainerConfigurator $configurator): void {
                         ->factory([
                             service(ExceptionMappingPlanCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>'),
                             'reportingTo',
-                        ])->args([service(ExceptionMappingPlanCompilationExceptionCollector::class)]),
+                        ])->args([service(CompilationDefectCollector::class.'::$compilationLogger')]),
                 ),
         )->arg('$propertyMappingPlanCompiler',
             inline_service(ExceptionMappingPlanCompiler::class)
                 ->factory([
                     service(ExceptionMappingPlanCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingPlan::class.'>'),
                     'reportingTo',
-                ])->args([service(ExceptionMappingPlanCompilationExceptionCollector::class)])
-        )->arg('$compilationDefectCollector',
-            service(ExceptionMappingPlanCompilationExceptionCollector::class),
-        )->tag(MappingLinter::class, ['id' => 'class-string']);
+                ])->args([service(CompilationDefectCollector::class.'::$compilationLogger')])
+        )->arg('$compilationDefectCollector', service(CompilationDefectCollector::class))
+        ->tag(MappingLinter::class, ['id' => 'class-string']);
 
-    $services->set($id = ExceptionMappingPlanCompilationExceptionCollector::class, $id);
+    $services
+        ->set($id = CompilationDefectCollector::class, $id)
+        ->arg('$compilationLogger', service(CompilationDefectCollector::class.'::$compilationLogger'));
+
+    // Linter's own logger to collect compilation exceptions
+    $services->set(CompilationDefectCollector::class.'::$compilationLogger', SpyLogger::class);
 };

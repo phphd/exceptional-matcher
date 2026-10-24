@@ -38,7 +38,7 @@ final class ClassMappingLinter implements MappingLinter
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
         /** @var ExceptionMappingPlanCompiler<ReflectionProperty,PropertyExceptionMappingPlan> */
         private readonly ExceptionMappingPlanCompiler $propertyMappingPlanCompiler,
-        private readonly ExceptionMappingPlanCompilationExceptionCollector $compilationDefectCollector,
+        private readonly CompilationDefectCollector $compilationDefectCollector,
     ) {
     }
 
@@ -111,7 +111,7 @@ final class ClassMappingLinter implements MappingLinter
         }
 
         // If no plan, it possibly has failed compilation:
-        if ([] !== $compilationDefects = $this->compilationDefectCollector->flush()) {
+        if ([] !== $compilationDefects = $this->compilationDefectCollector->flushDefects()) {
             return yield from $compilationDefects;
         }
 
@@ -215,7 +215,7 @@ final class ClassMappingLinter implements MappingLinter
             }
         }
 
-        yield from $this->compilationDefectCollector->flush();
+        yield from $this->compilationDefectCollector->flushDefects();
     }
 
     /**

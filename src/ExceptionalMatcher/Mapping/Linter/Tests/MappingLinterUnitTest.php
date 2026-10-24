@@ -33,7 +33,8 @@ use PHPUnit\Framework\TestCase;
  * @internal
  *
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ClassMappingLinter
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ExceptionMappingPlanCompilationExceptionCollector
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\CompilationDefectCollector
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\Log\SpyLogger
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect

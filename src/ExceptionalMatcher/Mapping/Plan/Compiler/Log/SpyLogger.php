@@ -2,14 +2,19 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Tests\Stub;
+namespace PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\Log;
 
 use Psr\Log\AbstractLogger;
 use Stringable;
 
+/**
+ * @internal
+ *
+ * @phpstan-type LogRecord array{level: mixed, message: string|Stringable, context: array<mixed>}
+ */
 final class SpyLogger extends AbstractLogger
 {
-    /** @var list<array{level: mixed, message: string, context: array<mixed>}> */
+    /** @var list<LogRecord> */
     private array $records = [];
 
     /**
@@ -20,12 +25,12 @@ final class SpyLogger extends AbstractLogger
     {
         $this->records[] = [
             'level' => $level,
-            'message' => (string)$message,
+            'message' => $message,
             'context' => $context,
         ];
     }
 
-    /** @return list<array{level: mixed, message: string, context: array<mixed>}> */
+    /** @return list<LogRecord> */
     public function flush(): array
     {
         try {
