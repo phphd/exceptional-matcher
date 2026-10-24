@@ -10,7 +10,7 @@ parameters:
     level: max
     phpVersion:
         min: 80100
-        max: 80499
+        max: 80599
     editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
     paths:
         - src
