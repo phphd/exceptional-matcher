@@ -28,6 +28,7 @@ use function rtrim;
  * @internal
  *
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\LintExceptionalMatcherCommand
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Path\ClassPathMappingLinter
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\Formatter\ConsoleLintReportFormatter
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Port\LintMappingUseCase
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport

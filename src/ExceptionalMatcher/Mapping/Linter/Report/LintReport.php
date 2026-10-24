@@ -37,7 +37,7 @@ final class LintReport
         return [] !== $this->classReports;
     }
 
-    /** @return non-negative-int */
+    /** @return int<0,max> */
     public function countOf(DefectSeverity $severity): int
     {
         $count = 0;

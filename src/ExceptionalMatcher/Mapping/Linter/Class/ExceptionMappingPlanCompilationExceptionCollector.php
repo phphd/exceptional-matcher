@@ -4,20 +4,24 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class;
 
+use Exception;
+use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException;
 use Psr\Log\AbstractLogger;
-use Throwable;
+
+use function array_map;
 
 /** @internal */
 final class ExceptionMappingPlanCompilationExceptionCollector extends AbstractLogger
 {
-    /** @var list<MappingDefect> */
-    private array $defects = [];
+    /** @var list<ExceptionMappingPlanCompilationFailedException> */
+    private array $exceptions = [];
 
     /**
      * @param array<array-key,mixed> $context
@@ -28,30 +32,26 @@ final class ExceptionMappingPlanCompilationExceptionCollector extends AbstractLo
     {
         $exception = $context['exception'] ?? null;
 
-        if (!$exception instanceof Throwable) {
+        if (!$exception instanceof ExceptionMappingPlanCompilationFailedException) {
             return;
         }
 
-        $location = self::defectLocationOf($exception);
-
-        if (null === $location) {
-            return;
-        }
-
-        $this->defects[] = MappingDefect::error($location, $exception);
+        $this->exceptions[] = $exception;
     }
 
     /** @return list<MappingDefect> */
     public function flush(): array
     {
-        $defects = $this->defects;
+        try {
+            $locations = array_map(self::defectLocationOf(...), $this->exceptions);
 
-        $this->defects = [];
-
-        return $defects;
+            return array_map(MappingDefect::error(...), $locations, $this->exceptions);
+        } finally {
+            $this->exceptions = [];
+        }
     }
 
-    private static function defectLocationOf(Throwable $exception): ?DefectLocation
+    private static function defectLocationOf(ExceptionMappingPlanCompilationFailedException $exception): DefectLocation
     {
         if ($exception instanceof CatchExceptionMappingPlanCompilationFailedException) {
             // #[Catch_] that was compiled apart from the property is reported on the attribute itself
@@ -68,6 +68,6 @@ final class ExceptionMappingPlanCompilationExceptionCollector extends AbstractLo
             return new DefectLocation($exception->getClassName());
         }
 
-        return null;
+        throw new LogicException('Defect location is not known for: '.$exception::class);
     }
 }

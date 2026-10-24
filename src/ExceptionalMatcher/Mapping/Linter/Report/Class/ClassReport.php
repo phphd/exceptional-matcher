@@ -47,6 +47,7 @@ final class ClassReport
         return $this->defects;
     }
 
+    /** @return int<0,max> */
     public function countOf(DefectSeverity $severity): int
     {
         return count($this->ofSeverity($severity));
