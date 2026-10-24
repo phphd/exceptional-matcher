@@ -18,6 +18,8 @@ use PHPUnit\Framework\TestCase;
  * @internal
  *
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\IterablePropertyExceptionMatcherAggregate
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\ItemOfIterableExceptionMappingNode
  */
 final class PropertyPlanIterableItemsUnitTest extends TestCase
 {

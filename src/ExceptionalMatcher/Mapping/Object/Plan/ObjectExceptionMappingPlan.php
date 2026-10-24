@@ -12,6 +12,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\ReusableIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
 
+use Webmozart\Assert\Assert;
+
 use function sprintf;
 
 /**
@@ -32,10 +34,7 @@ final class ObjectExceptionMappingPlan
     /** @param T $object */
     public function bind(object $object, ?ExceptionMappingNode $parentProperty = null): ObjectExceptionMappingNode
     {
-        /** @psalm-suppress DocblockTypeContradiction */
-        if (!$object instanceof $this->className) {
-            throw new InvalidArgumentException(sprintf('Expected object of type "%s", got "%s".', $this->className, $object::class));
-        }
+        Assert::isInstanceOf($object, $this->className);
 
         /** @var AppendIterator<int,ExceptionMappingNode,Iterator<int,ExceptionMappingNode>> $properties */
         $properties = new AppendIterator();

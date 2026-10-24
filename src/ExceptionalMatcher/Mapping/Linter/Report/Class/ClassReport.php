@@ -36,9 +36,11 @@ final class ClassReport
     /** Path of the file which declares the class, or null when it has no source file. */
     public function getFilePath(): ?string
     {
-        $filePath = (new ReflectionClass($this->className))->getFileName();
+        if (false === $filePath = (new ReflectionClass($this->className))->getFileName()) {
+            return null;
+        }
 
-        return false !== $filePath ? $filePath : null;
+        return $filePath;
     }
 
     /** @return non-empty-list<MappingDefect> */

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\Tests;
 
+use InvalidArgumentException;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\EnumValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\Tests\Stub\Invalid\InvalidEnumFromMethodConditionMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\Tests\Stub\Invalid\NonEnumExceptionClassConditionMessage;
@@ -58,21 +60,21 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $this->matcher = $matcher;
     }
 
-    public function testThrowsWhenMatchConditionIsForNonEnumExceptionClass(): void
+    public function testThrowsWhenMatchConditionUsesNonEnumExceptionClass(): void
     {
         $message = new NonEnumExceptionClassConditionMessage('pend');
         $exception = new RuntimeException('oops');
 
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('EnumValueMatchCondition can only be used for ValueError');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(EnumValueMatchConditionCompiler::TYPE_GUARANTEE_MESSAGE);
 
         try {
             $this->matcher->match($exception, $message);
-
-            self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
         } catch (ObjectExceptionMappingPlanCompilationFailedException $e) {
             throw $this->rootCauseOf($e, NonEnumExceptionClassConditionMessage::class, 'weekDay');
         }
+
+        self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
     }
 
     public function testThrowsWhenFromClauseIsMissing(): void
@@ -85,11 +87,11 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
         try {
             $this->matcher->match($exception, $message);
-
-            self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
         } catch (ObjectExceptionMappingPlanCompilationFailedException $e) {
             throw $this->rootCauseOf($e, MissingEnumFromConditionMessage::class, 'weekDay');
         }
+
+        self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
     }
 
     public function testThrowsWhenFromClassIsNotBackedEnum(): void
@@ -98,15 +100,18 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $exception = $this->weekDayEnumError('mon');
 
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage(sprintf('EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: %s', var_export(NonBackedStatus::class, return: true)));
+        $this->expectExceptionMessage(sprintf(
+            'EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: %s',
+            var_export(NonBackedStatus::class, return: true),
+        ));
 
         try {
             $this->matcher->match($exception, $message);
-
-            self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
         } catch (ObjectExceptionMappingPlanCompilationFailedException $e) {
             throw $this->rootCauseOf($e, NonBackedEnumConditionMessage::class, 'status');
         }
+
+        self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
     }
 
     public function testThrowsWhenFromMethodIsNotEnumFrom(): void
@@ -119,11 +124,11 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
         try {
             $this->matcher->match($exception, $message);
-
-            self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
         } catch (ObjectExceptionMappingPlanCompilationFailedException $e) {
             throw $this->rootCauseOf($e, InvalidEnumFromMethodConditionMessage::class, 'weekDay');
         }
+
+        self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
     }
 
     public function testDoesNotCaptureStringEnumErrorWhenRuleValueIsNull(): void
@@ -215,23 +220,21 @@ final class EnumValueMatchConditionUnitTest extends TestCase
     {
         try {
             WeekDay::from($value);
-
-            self::fail('The exception must be thrown.');
         } catch (ValueError $exception) {
+            return $exception;
         }
 
-        return $exception;
+        self::fail('The exception must be thrown.');
     }
 
     private function weekDayNumberEnumError(int $value): ValueError
     {
         try {
             WeekDayNumber::from($value);
-
-            self::fail('The exception must be thrown.');
         } catch (ValueError $exception) {
+            return $exception;
         }
 
-        return $exception;
+        self::fail('The exception must be thrown.');
     }
 }

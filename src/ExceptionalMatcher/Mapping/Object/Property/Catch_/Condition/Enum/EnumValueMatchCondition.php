@@ -45,6 +45,7 @@ final class EnumValueMatchCondition implements MatchCondition
         return $exception->getMessage() === $this->expectedMessage;
     }
 
+    /** @codeCoverageIgnore - covered by running CI on different PHP versions */
     private static function enumReference(string $enumClassName): string
     {
         if (\PHP_VERSION_ID < 80200) {

@@ -10,6 +10,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
 
+use Webmozart\Assert\Assert;
+
 use function is_a;
 
 /** @api */
@@ -23,12 +25,13 @@ const exception_value = ExceptionValueMatchCondition::class;
  */
 final class ExceptionValueMatchConditionCompiler implements MatchConditionCompiler, MatchConditionPlan
 {
+    public const TYPE_GUARANTEE_MESSAGE = 'ExceptionValueMatchCondition can only be used for exception classes that implement ValueException';
+
     /** @return MatchConditionPlan<ValueException> */
     public function compile(Catch_ $catch): MatchConditionPlan
     {
-        if (!is_a($catch->getExceptionClass(), ValueException::class, allow_string: true)) { // @phpstan-ignore function.alreadyNarrowedType
-            throw new LogicException('ExceptionValueMatchCondition can only be used for exception classes that implement ValueException');
-        }
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        Assert::isAOf($catch->getExceptionClass(), ValueException::class, self::TYPE_GUARANTEE_MESSAGE);
 
         return $this;
     }

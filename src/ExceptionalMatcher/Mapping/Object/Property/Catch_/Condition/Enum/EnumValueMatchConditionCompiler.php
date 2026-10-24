@@ -10,6 +10,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
 use ReflectionEnum;
 use ValueError;
+use Webmozart\Assert\Assert;
 
 use function is_a;
 use function sprintf;
@@ -25,11 +26,12 @@ const enum_value = EnumValueMatchCondition::class;
  */
 final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
 {
+    public const TYPE_GUARANTEE_MESSAGE = 'EnumValueMatchCondition can only be used for '.ValueError::class;
+
     public function compile(Catch_ $catch): EnumValueMatchConditionPlan
     {
-        if (!is_a($catch->getExceptionClass(), ValueError::class, allow_string: true)) { // @phpstan-ignore function.alreadyNarrowedType
-            throw new LogicException('EnumValueMatchCondition can only be used for '.ValueError::class);
-        }
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        Assert::isAOf($catch->getExceptionClass(), ValueError::class, self::TYPE_GUARANTEE_MESSAGE);
 
         @[$enumClassName, $fromMethod] = $catch->getFrom(); // @phpstan-ignore offsetAccess.nonArray
 

@@ -10,6 +10,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\M
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\PreCompiledMatchConditionPlan;
 use Throwable;
 
+use Webmozart\Assert\Assert;
+
 use function is_a;
 
 /**
@@ -19,15 +21,14 @@ use function is_a;
  */
 final class ExceptionClassMatchConditionCompiler implements MatchConditionCompiler
 {
+    public const TYPE_GUARANTEE_MESSAGE = 'Exception matching can only be done for classes implementing Throwable';
+
     /** @return PreCompiledMatchConditionPlan<Throwable> */
     public function compile(Catch_ $catch): PreCompiledMatchConditionPlan
     {
-        $exceptionClass = $catch->getExceptionClass();
+        Assert::isAOf($exceptionClass = $catch->getExceptionClass(), Throwable::class, self::TYPE_GUARANTEE_MESSAGE);
 
-        if (!is_a($exceptionClass, Throwable::class, allow_string: true)) { // @phpstan-ignore function.alreadyNarrowedType
-            throw new LogicException('Exception class condition should only be used for exception classes that implement Throwable');
-        }
-
+        /** @psalm-suppress ImplicitToStringCast */
         $condition = new ExceptionClassMatchCondition($exceptionClass);
 
         return new PreCompiledMatchConditionPlan($condition);

@@ -28,12 +28,13 @@ const uid_value = InvalidUidExceptionMatchCondition::class;
  */
 final class InvalidUidExceptionMatchConditionCompiler implements MatchConditionCompiler, MatchConditionPlan
 {
+    public const TYPE_GUARANTEE_MESSAGE = 'InvalidUidExceptionMatchCondition can only be used for '.InvalidUidException::class;
+
     /** @return MatchConditionPlan<InvalidUidException> */
     public function compile(Catch_ $catch): MatchConditionPlan
     {
-        if (!is_a($catch->getExceptionClass(), InvalidUidException::class, allow_string: true)) { // @phpstan-ignore function.alreadyNarrowedType
-            throw new LogicException('InvalidUidExceptionMatchCondition can only be used for '.InvalidUidException::class);
-        }
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        Assert::isAOf($catch->getExceptionClass(), InvalidUidException::class, self::TYPE_GUARANTEE_MESSAGE);
 
         return $this;
     }

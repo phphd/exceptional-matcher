@@ -11,6 +11,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\M
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
+use Webmozart\Assert\Assert;
+
 use function is_a;
 
 /** @api */
@@ -24,12 +26,13 @@ const validated_value = ValidationFailedExceptionMatchCondition::class;
  */
 final class ValidationFailedExceptionMatchConditionCompiler implements MatchConditionCompiler, MatchConditionPlan
 {
+    public const TYPE_GUARANTEE_MESSAGE = 'ValidationFailedExceptionMatchCondition can only be used for ValidationFailedException';
+
     /** @return MatchConditionPlan<ValidationFailedException> */
     public function compile(Catch_ $catch): MatchConditionPlan
     {
-        if (!is_a($catch->getExceptionClass(), ValidationFailedException::class, allow_string: true)) { // @phpstan-ignore function.alreadyNarrowedType
-            throw new LogicException('ValidationFailedExceptionMatchCondition can only be used for ValidationFailedException');
-        }
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        Assert::isAOf($catch->getExceptionClass(), ValidationFailedException::class, self::TYPE_GUARANTEE_MESSAGE);
 
         return $this;
     }
