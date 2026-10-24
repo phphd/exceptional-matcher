@@ -9,19 +9,26 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Path\PropertyPath;
 
-/** @internal */
+/**
+ * @internal
+ *
+ * @template T of object
+ */
 final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode
 {
     private readonly ExceptionMappingNode $objectNode;
 
-    /** @param ObjectExceptionMappingPlan<object> $matchingPlan */
+    /**
+     * @param T $value
+     * @param ObjectExceptionMappingPlan<T> $matchingPlan
+     */
     public function __construct(
         private readonly ExceptionMappingNode $propertyNode,
         private readonly int|string $key,
-        private readonly object $item,
+        private readonly object $value,
         ObjectExceptionMappingPlan $matchingPlan,
     ) {
-        $this->objectNode = $matchingPlan->bind($this->item, $this);
+        $this->objectNode = $matchingPlan->bind($this->value, $this);
     }
 
     public function match(ExceptionReciprocal $reciprocal): bool
@@ -37,8 +44,7 @@ final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode
     public function getPropertyPath(): PropertyPath
     {
         return $this->propertyNode->getPropertyPath()
-            ->at($this->key)
-        ;
+            ->at($this->key);
     }
 
     public function getEnclosingObject(): object
@@ -51,8 +57,9 @@ final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode
         return $this->propertyNode->getRootObject();
     }
 
-    public function getValue(): mixed
+    /** @return T */
+    public function getValue(): object
     {
-        return $this->item;
+        return $this->value;
     }
 }
