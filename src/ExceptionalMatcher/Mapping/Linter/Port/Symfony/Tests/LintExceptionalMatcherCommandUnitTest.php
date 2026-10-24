@@ -88,7 +88,7 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
 
 
 
-             [ERROR] 1 classes scanned: 2 errors, 0 warnings.
+             [ERROR] 1 classes scanned: 2 errors found.
             TXT,
             $display,
         );
@@ -107,7 +107,7 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
 
         self::assertStringContainsString(MessageWithNoTryAttribute::class.'::$property', $display);
         self::assertStringContainsString('[WARNING]  Properties declare #[Catch_] mappings', $display);
-        self::assertStringContainsString('[WARNING] 1 classes scanned: 0 errors, 1 warnings.', $display);
+        self::assertStringContainsString('[WARNING] 1 classes scanned: 1 warning found.', $display);
     }
 
     /**
@@ -123,7 +123,7 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
         ]);
 
         self::assertSame(Command::SUCCESS, $exitCode);
-        self::assertStringContainsString('[OK] 1 classes scanned: 0 errors, 0 warnings.', $this->commandTester->getDisplay());
+        self::assertStringContainsString('[OK] 1 classes scanned: no defects found.', $this->commandTester->getDisplay());
     }
 
     /** @return iterable<array{string,Closure(class-string):string}> */

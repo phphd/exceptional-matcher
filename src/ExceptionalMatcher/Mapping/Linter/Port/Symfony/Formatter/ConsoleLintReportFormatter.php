@@ -76,7 +76,7 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
         $style
             ->createTable()
             ->setHeaders([$header = $this->classLocation($classReport)])
-            ->setRows(iterator_to_array($this->defectRows($classReport->getDefects(), $header)))
+            ->setRows(iterator_to_array($this->dumpDefectRows($classReport->getDefects(), $header)))
             ->render()
         ;
 
@@ -133,7 +133,7 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
     }
 
     /** @param non-empty-list<MappingDefect> $defects */
-    private function defectRows(array $defects, string $header): Generator
+    private function dumpDefectRows(array $defects, string $header): Generator
     {
         $cellWidth = $this->cellWidthOf($defects, $header);
 
@@ -236,25 +236,46 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
 
     private function dumpSummary(SymfonyStyle $style, LintReport $report): void
     {
-        $summary = sprintf(
-            '%d classes scanned: %d errors, %d warnings.',
-            $report->getScannedSymbols(),
-            $errors = $report->countOf(DefectSeverity::Error),
-            $warnings = $report->countOf(DefectSeverity::Warning),
-        );
+        $summary = sprintf('%d classes scanned: %s found.', $report->getScannedSymbols(), $this->defectBreakdown($report));
 
-        if ($errors > 0) {
+        if ($report->countOf(DefectSeverity::Error) > 0) {
             $style->error($summary);
 
             return;
         }
 
-        if ($warnings > 0) {
+        if ($report->countOf(DefectSeverity::Warning) > 0) {
             $style->warning($summary);
 
             return;
         }
 
+        if ($report->countOf(DefectSeverity::Notice) > 0) {
+            $style->note($summary);
+
+            return;
+        }
+
         $style->success($summary);
+    }
+
+    /** Only the severities that occurred, so that the summary names nothing but what is there to fix */
+    private function defectBreakdown(LintReport $report): string
+    {
+        if (!$report->hasDefects()) {
+            return 'no defects';
+        }
+
+        $severityCounts = [];
+
+        foreach (DefectSeverity::cases() as $severity) {
+            $count = $report->countOf($severity);
+
+            if ($count > 0) {
+                $severityCounts[] = sprintf('%d %s', $count, $severity->trans($count));
+            }
+        }
+
+        return implode(', ', $severityCounts);
     }
 }
