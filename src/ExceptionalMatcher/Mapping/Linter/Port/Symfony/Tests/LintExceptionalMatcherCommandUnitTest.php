@@ -33,6 +33,8 @@ use function rtrim;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Port\LintMappingUseCase
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Formatter\Array\Json\JsonLintReportFormatter
  */
 final class LintExceptionalMatcherCommandUnitTest extends TestCase

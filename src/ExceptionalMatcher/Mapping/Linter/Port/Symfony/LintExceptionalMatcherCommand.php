@@ -47,7 +47,7 @@ final class LintExceptionalMatcherCommand extends Command
         /** @var string $outputFormat */
         $outputFormat = $input->getOption('output-format');
 
-        [$report, $outputMessage] = $this->linter->lint($symbolFormat, $symbols, $outputFormat);
+        [$outputMessage, $report] = $this->linter->lint($symbolFormat, $symbols, $outputFormat);
 
         $output->writeln($outputMessage);
 

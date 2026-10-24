@@ -31,7 +31,7 @@ final class LintMappingUseCase
     /**
      * @param iterable<TSymbol> $symbols
      *
-     * @return array{LintReport,TFormat}
+     * @return array{TFormat,LintReport}
      *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -48,8 +48,6 @@ final class LintMappingUseCase
         /** @var LintReportFormatter<TFormat> $formatter */
         $formatter = $this->reportFormatterRegistry->get($outputFormat);
 
-        $output = $formatter->format($report);
-
-        return [$report, $output];
+        return [$formatter->format($report), $report];
     }
 }
