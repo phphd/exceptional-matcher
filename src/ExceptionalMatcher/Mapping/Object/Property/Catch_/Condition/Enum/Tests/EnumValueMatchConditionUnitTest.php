@@ -76,7 +76,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             throw self::rootCompilationException($e, NonEnumExceptionClassMessage::class, 'weekDay');
         }
 
-        self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
+        self::fail('The exception must be thrown.');
     }
 
     public function testThrowsWhenFromClauseIsMissing(): void
@@ -93,7 +93,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             throw self::rootCompilationException($e, MissingEnumFromConditionMessage::class, 'weekDay');
         }
 
-        self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
+        self::fail('The exception must be thrown.');
     }
 
     public function testThrowsWhenFromClassIsNotBackedEnum(): void
@@ -113,7 +113,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             throw self::rootCompilationException($e, NonBackedEnumConditionMessage::class, 'status');
         }
 
-        self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
+        self::fail('The exception must be thrown.');
     }
 
     public function testThrowsWhenFromMethodIsNotEnumFrom(): void
@@ -130,7 +130,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             throw self::rootCompilationException($e, InvalidEnumFromMethodConditionMessage::class, 'weekDay');
         }
 
-        self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
+        self::fail('The exception must be thrown.');
     }
 
     public function testDoesNotCaptureStringEnumErrorWhenRuleValueIsNull(): void

@@ -67,7 +67,7 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
             throw self::rootCompilationException($e, NonValidationFailedExceptionClassMessage::class, 'value');
         }
 
-        self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
+        self::fail('The exception must be thrown.');
     }
 
     public function testValidationFailedExceptionCanBeCaptured(): void

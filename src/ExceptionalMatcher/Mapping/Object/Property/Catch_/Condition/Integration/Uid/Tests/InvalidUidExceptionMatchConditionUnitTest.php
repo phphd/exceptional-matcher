@@ -73,7 +73,7 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
             throw self::rootCompilationException($e, NonInvalidUidExceptionClassMessage::class, 'uid');
         }
 
-        self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
+        self::fail('The exception must be thrown.');
     }
 
     public function testInvalidUidExceptionIsNotCapturedWhenValueIsNull(): void

@@ -72,7 +72,7 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
             throw self::rootCompilationException($e, NonValueExceptionClassMessage::class, 'value');
         }
 
-        self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
+        self::fail('The exception must be thrown.');
     }
 
     public function testValueExceptionCondition(): void
