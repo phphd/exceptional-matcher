@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Tests\Trait\CompilationExceptionRoot;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Tests\Trait\AssertCompilationFailedFor;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\ExceptionValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\Tests\Stub\Invalid\NonValueExceptionClassMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\Tests\Stub\MessageWithExceptionValueCondition;
@@ -33,7 +33,7 @@ use Symfony\Component\DependencyInjection\Reference;
 final class ExceptionValueMatchConditionUnitTest extends TestCase
 {
     use CatchException;
-    use CompilationExceptionRoot;
+    use AssertCompilationFailedFor;
 
     /** @var ExceptionMatcher<MatchedExceptionList> */
     private ExceptionMatcher $matcher;
@@ -60,6 +60,7 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
         $this->matcher = $matcher;
     }
 
+    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException::getRootException */
     public function testThrowsWhenMatchConditionUsesNonValueExceptionClass(): void
     {
         $message = new NonValueExceptionClassMessage();
@@ -73,7 +74,9 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
             ObjectExceptionMappingPlanCompilationFailedException::class,
         );
 
-        throw self::compilationExceptionRoot($compilationException, NonValueExceptionClassMessage::class, 'value');
+        self::assertCompilationFailedFor($compilationException, NonValueExceptionClassMessage::class, 'value');
+
+        throw $compilationException->getRootException();
     }
 
     public function testValueExceptionCondition(): void

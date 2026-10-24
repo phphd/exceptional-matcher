@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Tests\Trait\CompilationExceptionRoot;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Tests\Trait\AssertCompilationFailedFor;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\Tests\Stub\Invalid\NonValidationFailedExceptionClassMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\Tests\Stub\MessageWithValidatedValueCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\ValidationFailedExceptionMatchConditionCompiler;
@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Validation;
 final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
 {
     use CatchException;
-    use CompilationExceptionRoot;
+    use AssertCompilationFailedFor;
 
     /** @var ExceptionMatcher<ConstraintViolationListInterface> */
     private ExceptionMatcher $matcher;
@@ -53,6 +53,7 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
         $this->matcher = $matcher;
     }
 
+    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException::getRootException */
     public function testThrowsWhenMatchConditionUsesNonValidationFailedExceptionClass(): void
     {
         $message = new NonValidationFailedExceptionClassMessage();
@@ -66,7 +67,9 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
             ObjectExceptionMappingPlanCompilationFailedException::class,
         );
 
-        throw self::compilationExceptionRoot($compilationException, NonValidationFailedExceptionClassMessage::class, 'value');
+        self::assertCompilationFailedFor($compilationException, NonValidationFailedExceptionClassMessage::class, 'value');
+
+        throw $compilationException->getRootException();
     }
 
     public function testValidationFailedExceptionCanBeCaptured(): void

@@ -9,7 +9,7 @@ use LogicException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Tests\Trait\CompilationExceptionRoot;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Tests\Trait\AssertCompilationFailedFor;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\EnumValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\Tests\Stub\Invalid\InvalidEnumFromMethodConditionMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
@@ -41,7 +41,7 @@ use function var_export;
 final class EnumValueMatchConditionUnitTest extends TestCase
 {
     use CatchException;
-    use CompilationExceptionRoot;
+    use AssertCompilationFailedFor;
 
     /** @var ExceptionMatcher<MatchedExceptionList> */
     private ExceptionMatcher $matcher;
@@ -62,6 +62,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $this->matcher = $matcher;
     }
 
+    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException::getRootException */
     public function testThrowsWhenMatchConditionUsesNonEnumExceptionClass(): void
     {
         $message = new NonEnumExceptionClassMessage();
@@ -75,9 +76,12 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             ObjectExceptionMappingPlanCompilationFailedException::class,
         );
 
-        throw self::compilationExceptionRoot($compilationException, NonEnumExceptionClassMessage::class, 'weekDay');
+        self::assertCompilationFailedFor($compilationException, NonEnumExceptionClassMessage::class, 'weekDay');
+
+        throw $compilationException->getRootException();
     }
 
+    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException::getRootException */
     public function testThrowsWhenFromClauseIsMissing(): void
     {
         $message = new MissingEnumFromConditionMessage();
@@ -91,9 +95,12 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             ObjectExceptionMappingPlanCompilationFailedException::class,
         );
 
-        throw self::compilationExceptionRoot($compilationException, MissingEnumFromConditionMessage::class, 'weekDay');
+        self::assertCompilationFailedFor($compilationException, MissingEnumFromConditionMessage::class, 'weekDay');
+
+        throw $compilationException->getRootException();
     }
 
+    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException::getRootException */
     public function testThrowsWhenFromClassIsNotBackedEnum(): void
     {
         $message = new NonBackedEnumConditionMessage();
@@ -110,9 +117,12 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             ObjectExceptionMappingPlanCompilationFailedException::class,
         );
 
-        throw self::compilationExceptionRoot($compilationException, NonBackedEnumConditionMessage::class, 'status');
+        self::assertCompilationFailedFor($compilationException, NonBackedEnumConditionMessage::class, 'status');
+
+        throw $compilationException->getRootException();
     }
 
+    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException::getRootException */
     public function testThrowsWhenFromMethodIsNotEnumFrom(): void
     {
         $message = new InvalidEnumFromMethodConditionMessage();
@@ -126,7 +136,9 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             ObjectExceptionMappingPlanCompilationFailedException::class,
         );
 
-        throw self::compilationExceptionRoot($compilationException, InvalidEnumFromMethodConditionMessage::class, 'weekDay');
+        self::assertCompilationFailedFor($compilationException, InvalidEnumFromMethodConditionMessage::class, 'weekDay');
+
+        throw $compilationException->getRootException();
     }
 
     public function testDoesNotCaptureStringEnumErrorWhenRuleValueIsNull(): void

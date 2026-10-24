@@ -8,7 +8,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Obj
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException;
 use PHPUnit\Framework\TestCase;
-use Throwable;
 
 /**
  * @mixin TestCase
@@ -16,30 +15,24 @@ use Throwable;
  * @phpstan-require-extends TestCase
  * @psalm-require-extends TestCase
  */
-trait CompilationExceptionRoot // @phpstan-ignore requireExtends.duplicate
+trait AssertCompilationFailedFor // @phpstan-ignore requireExtends.duplicate
 {
     /**
-     * Asserts the whole compilation failure chain and returns the condition error that started it.
+     * Asserts the whole compilation failure chain down to the #[Catch_] of the given property.
      *
      * @param class-string $className
      */
-    private static function compilationExceptionRoot(
+    private static function assertCompilationFailedFor(
         ObjectExceptionMappingPlanCompilationFailedException $exception,
         string $className,
         string $propertyName,
-    ): Throwable {
+    ): void {
         self::assertSame($className, $exception->getClassName());
 
         $propertyFailure = $exception->getPrevious();
         self::assertInstanceOf(PropertyExceptionMappingPlanCompilationFailedException::class, $propertyFailure);
         self::assertSame($propertyName, $propertyFailure->getPropertyName());
 
-        $catchFailure = $propertyFailure->getPrevious();
-        self::assertInstanceOf(CatchExceptionMappingPlanCompilationFailedException::class, $catchFailure);
-
-        $rootCause = $catchFailure->getPrevious();
-        self::assertNotNull($rootCause);
-
-        return $rootCause;
+        self::assertInstanceOf(CatchExceptionMappingPlanCompilationFailedException::class, $propertyFailure->getPrevious());
     }
 }
