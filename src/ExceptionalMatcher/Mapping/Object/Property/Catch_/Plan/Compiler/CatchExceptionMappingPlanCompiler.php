@@ -52,15 +52,17 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
     /** @param ReflectionAttribute<Catch_<Throwable,Throwable>> $reflector */
     public function compilePlan(Reflector $reflector, ?ReflectionProperty $property = null): ?CatchExceptionMappingPlan
     {
+        Assert::notNull($property);
+
         try {
             $catch = $this->instantiateCatch($reflector);
 
             return $this->compile($catch);
         } catch (Throwable $exception) {
             $e = new CatchExceptionMappingPlanCompilationFailedException(
-                $property?->getDeclaringClass()
+                $property->getDeclaringClass()
                     ->getName(),
-                $property?->getName(),
+                $property->getName(),
                 $exception,
             );
 

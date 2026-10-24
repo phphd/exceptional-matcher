@@ -54,10 +54,7 @@ final class ExceptionMappingPlanCompilationExceptionCollector extends AbstractLo
     private static function defectLocationOf(ExceptionMappingPlanCompilationFailedException $exception): DefectLocation
     {
         if ($exception instanceof CatchExceptionMappingPlanCompilationFailedException) {
-            // #[Catch_] that was compiled apart from the property is reported on the attribute itself
-            $className = $exception->getClassName() ?? Catch_::class;
-
-            return new DefectLocation($className, $exception->getPropertyName());
+            return new DefectLocation($exception->getClassName(), $exception->getPropertyName());
         }
 
         if ($exception instanceof PropertyExceptionMappingPlanCompilationFailedException) {

@@ -11,9 +11,9 @@ use Throwable;
 final class CatchExceptionMappingPlanCompilationFailedException extends ExceptionMappingPlanCompilationFailedException
 {
     public function __construct(
-        /** @var ?class-string */
-        private readonly ?string $className,
-        private readonly ?string $propertyName,
+        /** @var class-string */
+        private readonly string $className,
+        private readonly string $propertyName,
         Throwable $previous,
     ) {
         parent::__construct(
@@ -22,13 +22,13 @@ final class CatchExceptionMappingPlanCompilationFailedException extends Exceptio
         );
     }
 
-    /** @return ?class-string */
-    public function getClassName(): ?string
+    /** @return class-string */
+    public function getClassName(): string
     {
         return $this->className;
     }
 
-    public function getPropertyName(): ?string
+    public function getPropertyName(): string
     {
         return $this->propertyName;
     }
