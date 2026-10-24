@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Inte
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\Tests\Stub\MessageWithValidatedValueCondition;
+use PhPhD\ExceptionalMatcher\Tests\Trait\CatchesExceptions;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -24,6 +25,8 @@ use Symfony\Component\Validator\Validation;
  */
 final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
 {
+    use CatchesExceptions;
+
     /** @var ExceptionMatcher<ConstraintViolationListInterface> */
     private ExceptionMatcher $matcher;
 
@@ -45,17 +48,16 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
 
     public function testValidationFailedExceptionCanBeCaptured(): void
     {
-        $validation = Validation::createCallable($constraint = new Length(min: 11));
         $message = new MessageWithValidatedValueCondition();
 
-        try {
-            $validation('matched!');
+        $validation = Validation::createCallable($constraint = new Length(min: 11));
 
-            self::fail('The exception must be thrown.');
-        } catch (ValidationFailedException $originalException) {
-        }
+        $validationFailedException = self::catchException(
+            static fn (): mixed => $validation('matched!'),
+            ValidationFailedException::class,
+        );
 
-        $violationList = $this->matcher->match($originalException, $message);
+        $violationList = $this->matcher->match($validationFailedException, $message);
 
         self::assertNotNull($violationList);
         self::assertCount(1, $violationList);

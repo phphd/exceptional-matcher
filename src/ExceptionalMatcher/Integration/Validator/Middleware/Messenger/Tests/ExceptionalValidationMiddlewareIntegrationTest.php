@@ -8,6 +8,7 @@ use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\ExceptionalValidationFailedException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger\ExceptionalValidationMiddleware;
+use PhPhD\ExceptionalMatcher\Tests\Trait\CatchesExceptions;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
@@ -30,6 +31,8 @@ use Throwable;
  */
 final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCase
 {
+    use CatchesExceptions;
+
     private ExceptionalValidationMiddleware $middleware;
 
     private MockObject $nextMiddleware;
@@ -113,12 +116,10 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
 
         $this->willThrow($handlerException);
 
-        try {
-            $this->middleware->handle($envelope, $this->stack);
-
-            self::fail('The exception must be thrown.');
-        } catch (ExceptionalValidationFailedException $e) {
-        }
+        $e = self::catchException(
+            fn (): Envelope => $this->middleware->handle($envelope, $this->stack),
+            ExceptionalValidationFailedException::class,
+        );
 
         self::assertSame($handlerException, $e->getPrevious());
     }

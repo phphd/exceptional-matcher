@@ -9,6 +9,7 @@ use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExt
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\Tests\Stub\MessageWithInvalidUidCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
+use PhPhD\ExceptionalMatcher\Tests\Trait\CatchesExceptions;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 use Symfony\Component\Uid\Uuid;
@@ -27,6 +28,8 @@ use function property_exists;
  */
 final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
 {
+    use CatchesExceptions;
+
     /** @var ExceptionMatcher<MatchedExceptionList> */
     private ExceptionMatcher $matcher;
 
@@ -54,12 +57,10 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
     {
         $message = new MessageWithInvalidUidCondition(uid: null);
 
-        try {
-            Uuid::fromString('just bad');
-
-            self::fail('The exception must be thrown.');
-        } catch (InvalidUidException $originalException) {
-        }
+        $originalException = self::catchException(
+            static fn (): Uuid => Uuid::fromString('just bad'),
+            InvalidUidException::class,
+        );
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -72,12 +73,10 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
             'a' => 'very bad',
         ]);
 
-        try {
-            Uuid::fromString('very bad');
-
-            self::fail('The exception must be thrown.');
-        } catch (InvalidUidException $originalException) {
-        }
+        $originalException = self::catchException(
+            static fn (): Uuid => Uuid::fromString('very bad'),
+            InvalidUidException::class,
+        );
 
         $this->expectExceptionMessage('InvalidUidExceptionMatchCondition requires a stringable value, got: array');
         $this->expectException(InvalidArgumentException::class);
@@ -89,12 +88,10 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
     {
         $message = new MessageWithInvalidUidCondition('way too bad');
 
-        try {
-            Uuid::fromString('just bad');
-
-            self::fail('The exception must be thrown.');
-        } catch (InvalidUidException $originalException) {
-        }
+        $originalException = self::catchException(
+            static fn (): Uuid => Uuid::fromString('just bad'),
+            InvalidUidException::class,
+        );
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -105,12 +102,10 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
     {
         $message = new MessageWithInvalidUidCondition('bad');
 
-        try {
-            Uuid::fromString('bad');
-
-            self::fail('The exception must be thrown.');
-        } catch (InvalidUidException $originalException) {
-        }
+        $originalException = self::catchException(
+            static fn (): Uuid => Uuid::fromString('bad'),
+            InvalidUidException::class,
+        );
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 

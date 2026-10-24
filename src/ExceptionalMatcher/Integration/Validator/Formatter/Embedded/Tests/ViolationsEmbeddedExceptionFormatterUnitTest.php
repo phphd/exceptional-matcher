@@ -9,6 +9,7 @@ use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\Tests\Stub\MessageWithEmbeddedViolations;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\Tests\Stub\NestedMessageWithEmbeddedViolations;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\Tests\Stub\ViolationsEmbeddedExampleException;
+use PhPhD\ExceptionalMatcher\Tests\Trait\CatchesExceptions;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -30,6 +31,8 @@ use function strtr;
  */
 final class ViolationsEmbeddedExceptionFormatterUnitTest extends TestCase
 {
+    use CatchesExceptions;
+
     /** @var ExceptionMatcher<ConstraintViolationListInterface> */
     private ExceptionMatcher $matcher;
 
@@ -102,12 +105,12 @@ final class ViolationsEmbeddedExceptionFormatterUnitTest extends TestCase
     {
         $message = MessageWithEmbeddedViolations::create();
 
-        try {
-            Validation::createCallable(new Length(max: 3))('matched!');
+        $validation = Validation::createCallable(new Length(max: 3));
 
-            self::fail('The exception must be thrown.');
-        } catch (ValidationFailedException $originalException) {
-        }
+        $originalException = self::catchException(
+            static fn (): mixed => $validation('matched!'),
+            ValidationFailedException::class,
+        );
 
         $violation = $this->matchOne($originalException, $message);
 

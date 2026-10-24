@@ -22,6 +22,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\Tests
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Tests\Trait\CatchesExceptions;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Throwable;
@@ -41,6 +42,8 @@ use function var_export;
  */
 final class EnumValueMatchConditionUnitTest extends TestCase
 {
+    use CatchesExceptions;
+
     /** @var ExceptionMatcher<MatchedExceptionList> */
     private ExceptionMatcher $matcher;
 
@@ -218,23 +221,11 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
     private function weekDayEnumError(string $value): ValueError
     {
-        try {
-            WeekDay::from($value);
-        } catch (ValueError $exception) {
-            return $exception;
-        }
-
-        self::fail('The exception must be thrown.');
+        return self::catchException(static fn () => WeekDay::from($value), ValueError::class);
     }
 
     private function weekDayNumberEnumError(int $value): ValueError
     {
-        try {
-            WeekDayNumber::from($value);
-        } catch (ValueError $exception) {
-            return $exception;
-        }
-
-        self::fail('The exception must be thrown.');
+        return self::catchException(static fn () => WeekDayNumber::from($value), ValueError::class);
     }
 }
