@@ -58,7 +58,7 @@ final class ViolationsEmbeddedExceptionFormatter implements ExceptionViolationFo
         $propertyPath = $node->getPropertyPath()
             ->join('.')
         ;
-        $redoTranslation = $this->shouldRedoTranslation($exception);
+        $redoTranslation = (null !== $this->translate) && $this->shouldRedoTranslation($exception);
 
         /** @psalm-suppress PossiblyNullFunctionCall */
         return array_map(
@@ -81,18 +81,11 @@ final class ViolationsEmbeddedExceptionFormatter implements ExceptionViolationFo
     }
 
     /**
-     * Validation::createCallable() instantiates a validator afresh,
-     * so the pre-translated message does not reflect an Accept-Language header,
-     * thereby it requires re-translation.
-     *
-     * @phpstan-assert-if-true !null $this->translate
+     * {@see Validation::createCallable()} instantiates a validator afresh
+     * w/o the Translator configuration (i.e. locale set from Accept-Language header)
      */
     private function shouldRedoTranslation(Throwable $exception): bool
     {
-        if (null === $this->translate) {
-            return false;
-        }
-
         if (ValidationFailedException::class !== $exception::class) {
             return false;
         }
