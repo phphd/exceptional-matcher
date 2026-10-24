@@ -13,9 +13,6 @@ use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum
 #[Try_]
 final class MissingEnumFromConditionMessage
 {
-        public function __construct(
-        #[Catch_(ValueError::class, match: enum_value)]
-        public mixed $weekDay,
-    ) {
-    }
+    #[Catch_(ValueError::class, match: enum_value)]
+    public mixed $weekDay;
 }

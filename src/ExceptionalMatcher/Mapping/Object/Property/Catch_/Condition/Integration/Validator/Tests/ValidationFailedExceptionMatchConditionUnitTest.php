@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\Tests;
 
+use InvalidArgumentException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Tests\Trait\RootCompilationException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\Tests\Stub\Invalid\NonValidationFailedExceptionClassMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\Tests\Stub\MessageWithValidatedValueCondition;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\ValidationFailedExceptionMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Tests\Trait\CatchesExceptions;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -26,6 +32,7 @@ use Symfony\Component\Validator\Validation;
 final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
 {
     use CatchesExceptions;
+    use RootCompilationException;
 
     /** @var ExceptionMatcher<ConstraintViolationListInterface> */
     private ExceptionMatcher $matcher;
@@ -44,6 +51,23 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
         /** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
         $matcher = $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>');
         $this->matcher = $matcher;
+    }
+
+    public function testThrowsWhenMatchConditionUsesNonValidationFailedExceptionClass(): void
+    {
+        $message = new NonValidationFailedExceptionClassMessage();
+        $exception = new RuntimeException();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(ValidationFailedExceptionMatchConditionCompiler::TYPE_GUARANTEE_MESSAGE);
+
+        try {
+            $this->matcher->match($exception, $message);
+        } catch (ObjectExceptionMappingPlanCompilationFailedException $e) {
+            throw self::rootCompilationException($e, NonValidationFailedExceptionClassMessage::class, 'value');
+        }
+
+        self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
     }
 
     public function testValidationFailedExceptionCanBeCaptured(): void

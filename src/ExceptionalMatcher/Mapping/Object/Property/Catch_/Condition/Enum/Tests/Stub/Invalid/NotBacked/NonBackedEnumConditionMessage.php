@@ -13,9 +13,6 @@ use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum
 #[Try_]
 final class NonBackedEnumConditionMessage
 {
-        public function __construct(
-        #[Catch_(ValueError::class, from: [NonBackedStatus::class, 'from'], match: enum_value)]
-        public mixed $status,
-    ) {
-    }
+    #[Catch_(ValueError::class, from: [NonBackedStatus::class, 'from'], match: enum_value)]
+    public mixed $status;
 }

@@ -7,10 +7,15 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Inte
 use InvalidArgumentException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Tests\Trait\RootCompilationException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\InvalidUidExceptionMatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\Tests\Stub\Invalid\NonInvalidUidExceptionClassMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\Tests\Stub\MessageWithInvalidUidCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\Tests\Trait\CatchesExceptions;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 use Symfony\Component\Uid\Uuid;
 
@@ -29,6 +34,7 @@ use function property_exists;
 final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
 {
     use CatchesExceptions;
+    use RootCompilationException;
 
     /** @var ExceptionMatcher<MatchedExceptionList> */
     private ExceptionMatcher $matcher;
@@ -51,6 +57,23 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
         /** @var ExceptionMatcher<MatchedExceptionList> $matcher */
         $matcher = $container->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
         $this->matcher = $matcher;
+    }
+
+    public function testThrowsWhenMatchConditionUsesNonInvalidUidExceptionClass(): void
+    {
+        $message = new NonInvalidUidExceptionClassMessage();
+        $exception = new RuntimeException();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(InvalidUidExceptionMatchConditionCompiler::TYPE_GUARANTEE_MESSAGE);
+
+        try {
+            $this->matcher->match($exception, $message);
+        } catch (ObjectExceptionMappingPlanCompilationFailedException $e) {
+            throw self::rootCompilationException($e, NonInvalidUidExceptionClassMessage::class, 'uid');
+        }
+
+        self::fail('ObjectExceptionMappingPlanCompilationFailedException should be thrown');
     }
 
     public function testInvalidUidExceptionIsNotCapturedWhenValueIsNull(): void
