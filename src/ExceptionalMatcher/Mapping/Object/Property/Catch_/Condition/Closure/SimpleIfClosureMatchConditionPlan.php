@@ -25,7 +25,7 @@ final class SimpleIfClosureMatchConditionPlan implements MatchConditionPlan
 
     public function bind(ExceptionMappingNode $node): ClosureMatchCondition
     {
-        $object = $node->getEnclosingObject();
+        $object = $node->getObject();
 
         if ($this->if[0] === $object::class) {
             $if = [$object, $this->if[1]];

@@ -35,7 +35,7 @@ final class PropertyExceptionMappingPlan
     public function bind(ObjectExceptionMappingNode $objectNode): PropertyExceptionMappingNode
     {
         $name = $this->getName();
-        $value = $this->getPropertyValue($objectNode->getEnclosingObject());
+        $value = $this->getPropertyValue($objectNode->getObject());
 
         /** @var ArrayIterator<int,ExceptionMatcher> $matchers */
         $matchers = new ArrayIterator();

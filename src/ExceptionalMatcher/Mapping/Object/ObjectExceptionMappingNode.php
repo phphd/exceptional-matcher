@@ -42,7 +42,7 @@ final class ObjectExceptionMappingNode implements ExceptionMappingNode
             ?? PropertyPath::empty();
     }
 
-    public function getEnclosingObject(): object
+    public function getObject(): object
     {
         return $this->object;
     }

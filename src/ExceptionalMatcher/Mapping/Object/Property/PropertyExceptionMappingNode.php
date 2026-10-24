@@ -44,9 +44,9 @@ final class PropertyExceptionMappingNode implements ExceptionMappingNode
         ;
     }
 
-    public function getEnclosingObject(): object
+    public function getObject(): object
     {
-        return $this->object->getEnclosingObject();
+        return $this->object->getObject();
     }
 
     public function getRootObject(): object

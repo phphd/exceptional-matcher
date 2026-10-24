@@ -14,7 +14,7 @@ interface ExceptionMappingNode extends ExceptionMatcher
 
     public function getPropertyPath(): PropertyPath;
 
-    public function getEnclosingObject(): object;
+    public function getObject(): object;
 
     public function getRootObject(): object;
 
