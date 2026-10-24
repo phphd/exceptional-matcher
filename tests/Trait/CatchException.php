@@ -14,7 +14,7 @@ use Throwable;
  * @phpstan-require-extends TestCase
  * @psalm-require-extends TestCase
  */
-trait CatchesExceptions // @phpstan-ignore requireExtends.duplicate
+trait CatchException // @phpstan-ignore requireExtends.duplicate
 {
     /**
      * @template T of Throwable

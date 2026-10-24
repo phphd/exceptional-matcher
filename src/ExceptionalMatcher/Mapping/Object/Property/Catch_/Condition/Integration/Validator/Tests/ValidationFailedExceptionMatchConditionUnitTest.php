@@ -12,7 +12,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Tes
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\Tests\Stub\Invalid\NonValidationFailedExceptionClassMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\Tests\Stub\MessageWithValidatedValueCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\ValidationFailedExceptionMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Tests\Trait\CatchesExceptions;
+use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Validator\Constraints\Length;
@@ -31,7 +31,7 @@ use Symfony\Component\Validator\Validation;
  */
 final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
 {
-    use CatchesExceptions;
+    use CatchException;
     use RootCompilationException;
 
     /** @var ExceptionMatcher<ConstraintViolationListInterface> */

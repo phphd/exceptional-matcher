@@ -9,7 +9,7 @@ use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\Tests\Stub\MessageWithEmbeddedViolations;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\Tests\Stub\NestedMessageWithEmbeddedViolations;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\Tests\Stub\ViolationsEmbeddedExampleException;
-use PhPhD\ExceptionalMatcher\Tests\Trait\CatchesExceptions;
+use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -31,7 +31,7 @@ use function strtr;
  */
 final class ViolationsEmbeddedExceptionFormatterUnitTest extends TestCase
 {
-    use CatchesExceptions;
+    use CatchException;
 
     /** @var ExceptionMatcher<ConstraintViolationListInterface> */
     private ExceptionMatcher $matcher;

@@ -8,7 +8,7 @@ use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\ExceptionalValidationFailedException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger\ExceptionalValidationMiddleware;
-use PhPhD\ExceptionalMatcher\Tests\Trait\CatchesExceptions;
+use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
@@ -31,7 +31,7 @@ use Throwable;
  */
 final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCase
 {
-    use CatchesExceptions;
+    use CatchException;
 
     private ExceptionalValidationMiddleware $middleware;
 

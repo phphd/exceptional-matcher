@@ -13,7 +13,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integratio
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\Tests\Stub\Invalid\NonInvalidUidExceptionClassMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\Tests\Stub\MessageWithInvalidUidCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
-use PhPhD\ExceptionalMatcher\Tests\Trait\CatchesExceptions;
+use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
@@ -33,7 +33,7 @@ use function property_exists;
  */
 final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
 {
-    use CatchesExceptions;
+    use CatchException;
     use RootCompilationException;
 
     /** @var ExceptionMatcher<MatchedExceptionList> */

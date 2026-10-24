@@ -12,7 +12,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Origin\Tes
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Origin\Tests\Stub\Hook\ProductHookedEntity;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Origin\Tests\Stub\OriginConditionMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
-use PhPhD\ExceptionalMatcher\Tests\Trait\CatchesExceptions;
+use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
@@ -32,7 +32,7 @@ use function PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\O
  */
 final class ExceptionOriginMatchConditionUnitTest extends TestCase
 {
-    use CatchesExceptions;
+    use CatchException;
 
     /** @var ExceptionMatcher<MatchedExceptionList> */
     private ExceptionMatcher $matcher;

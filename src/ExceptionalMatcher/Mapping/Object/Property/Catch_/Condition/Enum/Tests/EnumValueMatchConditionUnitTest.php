@@ -21,7 +21,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\Tests
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\Tests\Stub\WeekDayNumber\WeekDayNumber;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\Tests\Stub\WeekDayNumber\WeekDayNumberConditionMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
-use PhPhD\ExceptionalMatcher\Tests\Trait\CatchesExceptions;
+use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use ValueError;
@@ -40,7 +40,7 @@ use function var_export;
  */
 final class EnumValueMatchConditionUnitTest extends TestCase
 {
-    use CatchesExceptions;
+    use CatchException;
     use RootCompilationException;
 
     /** @var ExceptionMatcher<MatchedExceptionList> */
