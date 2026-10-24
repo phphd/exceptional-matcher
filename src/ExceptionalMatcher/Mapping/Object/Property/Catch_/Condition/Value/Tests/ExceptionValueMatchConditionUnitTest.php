@@ -8,12 +8,13 @@ use InvalidArgumentException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Tests\Trait\RootCompilationException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Tests\Trait\CompilationExceptionRoot;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\ExceptionValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\Tests\Stub\Invalid\NonValueExceptionClassMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\Tests\Stub\MessageWithExceptionValueCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\Tests\Stub\SomeValueException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
+use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
@@ -31,7 +32,8 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 final class ExceptionValueMatchConditionUnitTest extends TestCase
 {
-    use RootCompilationException;
+    use CatchException;
+    use CompilationExceptionRoot;
 
     /** @var ExceptionMatcher<MatchedExceptionList> */
     private ExceptionMatcher $matcher;
@@ -66,13 +68,12 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(ExceptionValueMatchConditionCompiler::TYPE_GUARANTEE_MESSAGE);
 
-        try {
-            $this->matcher->match($exception, $message);
-        } catch (ObjectExceptionMappingPlanCompilationFailedException $e) {
-            throw self::rootCompilationException($e, NonValueExceptionClassMessage::class, 'value');
-        }
+        $compilationException = self::catchException(
+            fn () => $this->matcher->match($exception, $message),
+            ObjectExceptionMappingPlanCompilationFailedException::class,
+        );
 
-        self::fail('The exception must be thrown.');
+        throw self::compilationExceptionRoot($compilationException, NonValueExceptionClassMessage::class, 'value');
     }
 
     public function testValueExceptionCondition(): void

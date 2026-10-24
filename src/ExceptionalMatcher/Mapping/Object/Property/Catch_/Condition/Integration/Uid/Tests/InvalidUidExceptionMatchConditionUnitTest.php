@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Tests\Trait\RootCompilationException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Tests\Trait\CompilationExceptionRoot;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\InvalidUidExceptionMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\Tests\Stub\Invalid\NonInvalidUidExceptionClassMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\Tests\Stub\MessageWithInvalidUidCondition;
@@ -34,7 +34,7 @@ use function property_exists;
 final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
 {
     use CatchException;
-    use RootCompilationException;
+    use CompilationExceptionRoot;
 
     /** @var ExceptionMatcher<MatchedExceptionList> */
     private ExceptionMatcher $matcher;
@@ -67,13 +67,12 @@ final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(InvalidUidExceptionMatchConditionCompiler::TYPE_GUARANTEE_MESSAGE);
 
-        try {
-            $this->matcher->match($exception, $message);
-        } catch (ObjectExceptionMappingPlanCompilationFailedException $e) {
-            throw self::rootCompilationException($e, NonInvalidUidExceptionClassMessage::class, 'uid');
-        }
+        $compilationException = self::catchException(
+            fn () => $this->matcher->match($exception, $message),
+            ObjectExceptionMappingPlanCompilationFailedException::class,
+        );
 
-        self::fail('The exception must be thrown.');
+        throw self::compilationExceptionRoot($compilationException, NonInvalidUidExceptionClassMessage::class, 'uid');
     }
 
     public function testInvalidUidExceptionIsNotCapturedWhenValueIsNull(): void

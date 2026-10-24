@@ -16,14 +16,14 @@ use Throwable;
  * @phpstan-require-extends TestCase
  * @psalm-require-extends TestCase
  */
-trait RootCompilationException // @phpstan-ignore requireExtends.duplicate
+trait CompilationExceptionRoot // @phpstan-ignore requireExtends.duplicate
 {
     /**
      * Asserts the whole compilation failure chain and returns the condition error that started it.
      *
      * @param class-string $className
      */
-    private static function rootCompilationException(
+    private static function compilationExceptionRoot(
         ObjectExceptionMappingPlanCompilationFailedException $exception,
         string $className,
         string $propertyName,
