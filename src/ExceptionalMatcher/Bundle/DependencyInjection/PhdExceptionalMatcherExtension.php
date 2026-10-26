@@ -33,13 +33,14 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
 
     public const LOGGER_CHANNEL = 'phd_exceptional_matcher';
 
-    private readonly bool $nativeProxiesSupported;
+    private readonly bool $nativeProxiesAllowed;
 
     public function __construct(
         /** Pass true if proxies are dumped. */
-        private readonly bool $allowGeneratedProxies = false,
+        private readonly bool $generatedProxiesAllowed = false,
+        bool $nativeProxiesAllowed = true,
     ) {
-        $this->nativeProxiesSupported = self::nativeProxiesAreSupported();
+        $this->nativeProxiesAllowed = $nativeProxiesAllowed && self::nativeProxiesAreSupported();
     }
 
     /**
@@ -113,18 +114,17 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
     /** For those services, which are better to be lazy. */
     public function hintLazy(string $interface): bool|string
     {
-        if (!$this->allowGeneratedProxies && !$this->nativeProxiesSupported) {
+        if (!$this->generatedProxiesAllowed && !$this->nativeProxiesAllowed) {
             return false;
         }
 
         return $this->lazyProxy($interface);
     }
 
-    /** For those services, which cannot be built eagerly at all */
     public function lazyProxy(string $interface): bool|string
     {
-        if (!$this->nativeProxiesSupported) {
-            return $interface;
+        if (!$this->nativeProxiesAllowed) {
+            return $interface; // Interface-Proxying the services requiring laziness.
         }
 
         // Not returning interface so that Symfony uses native proxy

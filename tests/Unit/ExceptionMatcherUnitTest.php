@@ -65,7 +65,7 @@ final class ExceptionMatcherUnitTest extends TestCase
     {
         parent::setUp();
 
-        $container = (new PhdExceptionalMatcherExtension())->getContainer([
+        $container = (new PhdExceptionalMatcherExtension(nativeProxiesAllowed: false))->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
             'phd_exceptional_matcher.translation_domain' => 'domain',
