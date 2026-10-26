@@ -14,6 +14,8 @@ use PHPat\Test\Attributes\TestRule;
 use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\PHPat;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\CompilingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
@@ -25,8 +27,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondi
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ValueException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Matcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Matcher\ExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload\ConstantsAutoloadingClassDiscovery;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload\ConstantsClassLoader;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Path\PropertyPath;
@@ -86,6 +86,12 @@ final class ArchitectureRuleSet
     public function testExceptionFormatterDependencies(): BuildStep
     {
         return $this->layerRule('exceptionFormatter');
+    }
+
+    #[TestRule]
+    public function testValidatorExceptionFormatterDependencies(): BuildStep
+    {
+        return $this->layerRule('validatorExceptionFormatter');
     }
 
     #[TestRule]
@@ -257,6 +263,12 @@ final class ArchitectureRuleSet
                     $this->exception(),
                 ],
             ],
+            'validatorExceptionFormatter' => [
+                'wraps' => ['exceptionFormatter'],
+                'deps' => [
+                    Selector::inNamespace('Symfony\Component\Validator'),
+                ],
+            ],
             'exceptionFormatter' => [
                 'deps' => [
                     Selector::classname(MatchedException::class),
@@ -354,6 +366,15 @@ final class ArchitectureRuleSet
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter'),
+            Selector::Not($this->validatorExceptionFormatter()),
+            Selector::Not($this->bundle()),
+        );
+    }
+
+    public function validatorExceptionFormatter(): AllOfSelectorModifier
+    {
+        return Selector::AllOf(
+            Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Integrated\Validator'),
             Selector::Not($this->bundle()),
         );
     }
@@ -364,6 +385,7 @@ final class ArchitectureRuleSet
             Selector::AllOf(
                 Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception'),
                 Selector::Not($this->exceptionFormatter()),
+                Selector::Not($this->validatorExceptionFormatter()),
                 Selector::Not($this->bundle()),
             ),
             Selector::classname(MatchedExceptionFormatter::class),
