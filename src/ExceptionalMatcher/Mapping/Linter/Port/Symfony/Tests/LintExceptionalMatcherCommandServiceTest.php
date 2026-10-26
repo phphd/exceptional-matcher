@@ -10,7 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Command\LazyCommand;
 
 /**
- * @coversNothing
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
  *
  * @internal
  */

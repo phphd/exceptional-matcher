@@ -25,7 +25,8 @@ use function krsort;
 use function property_exists;
 
 /**
- * @coversNothing
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
  *
  * @internal
  */

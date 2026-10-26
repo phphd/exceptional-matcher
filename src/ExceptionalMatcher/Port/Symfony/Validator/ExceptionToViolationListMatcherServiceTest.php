@@ -11,7 +11,8 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\VarExporter\LazyObjectInterface;
 
 /**
- * @coversNothing
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
  *
  * @internal
  */

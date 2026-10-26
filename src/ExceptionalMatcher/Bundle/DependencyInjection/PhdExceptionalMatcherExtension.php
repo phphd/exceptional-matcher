@@ -121,6 +121,7 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
         return $this->lazyProxy($interface);
     }
 
+    /** @codeCoverageIgnore - pre-PHP8.4 path's covered by CI */
     public function lazyProxy(string $interface): bool|string
     {
         if (!$this->nativeProxiesAllowed) {

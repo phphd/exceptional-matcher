@@ -10,7 +10,8 @@ use PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\Excepti
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 /**
- * @coversNothing
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
  *
  * @internal
  */
