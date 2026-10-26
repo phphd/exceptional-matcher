@@ -16,7 +16,7 @@ parameters:
         -
             message: '#^Access to an undefined property Symfony\\Component\\Uid\\Exception\\InvalidArgumentException\:\:\$invalidValue\.$#'
             identifier: property.notFound
-            path: src/ExceptionalMatcher/Mapping/Object/Property/Catch_/Condition/Qualified/Integration/Uid/InvalidUidExceptionMatchCondition.php
+            path: src/ExceptionalMatcher/Mapping/Object/Property/Catch_/Condition/Qualified/Integrated/Uid/InvalidUidExceptionMatchCondition.php
             reportUnmatched: false
         -
             message: '#^Removing parent param type is forbidden$#'
