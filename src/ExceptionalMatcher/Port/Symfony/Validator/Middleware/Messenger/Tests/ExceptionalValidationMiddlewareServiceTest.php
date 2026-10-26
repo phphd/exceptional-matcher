@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger\Tests;
+namespace PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
-use PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger\ExceptionalValidationMiddleware;
+use PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationMiddleware;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 /**

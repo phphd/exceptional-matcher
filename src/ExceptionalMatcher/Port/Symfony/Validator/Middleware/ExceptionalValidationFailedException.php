@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Integration\Validator\Middleware;
+namespace PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware;
 
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Throwable;

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger\Tests;
+namespace PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
-use PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\ExceptionalValidationFailedException;
-use PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger\ExceptionalValidationMiddleware;
+use PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\ExceptionalValidationFailedException;
+use PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationMiddleware;
 use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
@@ -24,8 +24,8 @@ use Throwable;
 
 /**
  * @covers \PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle
- * @covers \PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger\ExceptionalValidationMiddleware
- * @covers \PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger\ExceptionalValidationFailedMessengerException
+ * @covers \PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationMiddleware
+ * @covers \PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationFailedMessengerException
  *
  * @internal
  */
@@ -52,6 +52,12 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
 
         $this->nextMiddleware = $this->createMock(MiddlewareInterface::class);
         $this->stack = new StackMiddleware([$this->middleware, $this->nextMiddleware]);
+    }
+
+    /** @return list<CompilerPassInterface> */
+    protected static function compilerPasses(): array
+    {
+        return [new PublicServiceCompilerPass('phd_exceptional_validation')];
     }
 
     public function testReturnsResultEnvelopeWhenNoException(): void
@@ -87,12 +93,10 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
 
         $this->willThrow($messengerException);
 
-        try {
-            $this->middleware->handle($envelope, $this->stack);
-
-            self::fail('The exception must be thrown.');
-        } catch (ExceptionalValidationFailedException $e) {
-        }
+        $e = self::catchException(
+            fn (): Envelope => $this->middleware->handle($envelope, $this->stack),
+            ExceptionalValidationFailedException::class,
+        );
 
         self::assertSame(
             'Message of type "PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub" has failed exceptional validation.',
@@ -135,12 +139,6 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
         $this->expectExceptionObject($exception);
 
         $this->middleware->handle($envelope, $this->stack);
-    }
-
-    /** @return list<CompilerPassInterface> */
-    protected static function compilerPasses(): array
-    {
-        return [new PublicServiceCompilerPass('phd_exceptional_validation')];
     }
 
     private function willThrow(Throwable $exception): void

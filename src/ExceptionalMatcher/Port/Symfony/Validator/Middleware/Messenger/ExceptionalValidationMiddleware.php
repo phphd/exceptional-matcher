@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger;
+namespace PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger;
 
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\ExceptionalValidationFailedException;
+use PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\ExceptionalValidationFailedException;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;

@@ -405,7 +405,7 @@ final class ArchitectureRuleSet
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher'),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping')),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator')),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Upgrade')),
             Selector::Not($this->bundle()),
         );
@@ -414,22 +414,22 @@ final class ArchitectureRuleSet
     public function validatorMatcher(): AllOfSelectorModifier
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator'),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator\Middleware')),
+            Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator'),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware')),
         );
     }
 
     public function validatorMiddleware(): AllOfSelectorModifier
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator\Middleware'),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger')),
+            Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware'),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger')),
         );
     }
 
     /** @psalm-suppress UnusedMethod */
     public function messengerValidatorMiddleware(): ClassNamespace
     {
-        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger');
+        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger');
     }
 }

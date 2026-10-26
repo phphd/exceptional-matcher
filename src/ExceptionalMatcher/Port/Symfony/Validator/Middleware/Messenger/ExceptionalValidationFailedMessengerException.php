@@ -5,10 +5,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\Messenger;
+namespace PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger;
 
 use Exception;
-use PhPhD\ExceptionalMatcher\Integration\Validator\Middleware\ExceptionalValidationFailedException;
+use PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\ExceptionalValidationFailedException;
 use Symfony\Component\Messenger\Exception\ValidationFailedException as ValidationFailedMessengerException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Throwable;
@@ -28,7 +28,7 @@ final class ExceptionalValidationFailedMessengerException extends ValidationFail
         Exception::__construct(sprintf('Message of type "%s" has failed exceptional validation.', $violatingMessage::class), previous: $previous);
     }
 
-    /** Declaring the return type to be compatible with the interface */
+    /** Overriding to declare a return type compatible with the interface */
     public function getViolatingMessage(): object
     {
         return parent::getViolatingMessage();

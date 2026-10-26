@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Integration\Validator;
+namespace PhPhD\ExceptionalMatcher\Port\Symfony\Validator;
 
 use Closure;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
