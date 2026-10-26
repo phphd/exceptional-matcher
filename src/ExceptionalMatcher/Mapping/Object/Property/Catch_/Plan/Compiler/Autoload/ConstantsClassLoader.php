@@ -30,7 +30,7 @@ final class ConstantsClassLoader
         $this->classNames = [];
     }
 
-    /** @codeCoverageIgnore */
+    /** @codeCoverageIgnore - Psalm is the guarantee */
     public static function loadFiles(string $basePath, int $depth = 8): void
     {
         $prefixes = array_map(
