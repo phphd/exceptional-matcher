@@ -6,8 +6,10 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Form
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\ViolationsEmbeddedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload\ConstantsClassLoader;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload\ConstantsAutoloadingCompilerPass
@@ -15,19 +17,28 @@ use PHPUnit\Framework\TestCase;
  *
  * @internal
  */
-final class MatchedExceptionFormatterConstantsAutoloadingUnitTest extends TestCase
+final class ViolationsEmbeddedExceptionFormatterConstantAutoloadingUnitTest extends TestCase
 {
-    public function testMatchedExceptionFormattersAreHandedToTheConstantsClassLoader(): void
+    private ContainerBuilder $container;
+
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $container = (new PhdExceptionalMatcherExtension())->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->compile();
+        $this->container = $container;
+    }
+
+    public function testMatchedExceptionFormatterIsRecordedForTheConstantsAutoloading(): void
+    {
+        $this->container->compile();
 
         /** @var list<class-string> $classNames */
-        $classNames = $container->getDefinition(ConstantsClassLoader::class)
+        $classNames = $this->container->getDefinition(ConstantsClassLoader::class)
             ->getArgument(0)
         ;
 

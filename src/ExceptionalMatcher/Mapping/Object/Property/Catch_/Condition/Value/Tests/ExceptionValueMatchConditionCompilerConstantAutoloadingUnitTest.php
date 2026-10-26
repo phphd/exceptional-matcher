@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\Autoload;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\ExceptionValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload\ConstantsClassLoader;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload\ConstantsAutoloadingCompilerPass
@@ -15,21 +16,29 @@ use PHPUnit\Framework\TestCase;
  *
  * @internal
  */
-final class MatchConditionConstantsAutoloadingUnitTest extends TestCase
+final class ExceptionValueMatchConditionCompilerConstantAutoloadingUnitTest extends TestCase
 {
-    public function testMatchConditionCompilersAreHandedToTheConstantsClassLoader(): void
+    private ContainerBuilder $container;
+
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $container = (new PhdExceptionalMatcherExtension())->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->compile();
+        $this->container = $container;
+    }
+
+    public function testMatchConditionCompilerIsRecordedForTheConstantsAutoloading(): void
+    {
+        $this->container->compile();
 
         /** @var list<class-string> $classNames */
-        $classNames = $container->getDefinition(ConstantsClassLoader::class)
-            ->getArgument(0)
-        ;
+        $classNames = $this->container->getDefinition(ConstantsClassLoader::class)
+            ->getArgument(0);
 
         self::assertContains(ExceptionValueMatchConditionCompiler::class, $classNames);
     }
