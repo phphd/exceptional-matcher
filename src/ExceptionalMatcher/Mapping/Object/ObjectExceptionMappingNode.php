@@ -31,6 +31,7 @@ final class ObjectExceptionMappingNode implements ExceptionMappingNode
         return false;
     }
 
+    /** @codeCoverageIgnore - not used */
     public function getOwner(): ?ExceptionMappingNode
     {
         return $this->parentProperty;

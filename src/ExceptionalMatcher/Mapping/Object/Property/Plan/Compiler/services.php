@@ -34,7 +34,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
         ->lazy($hintLazy(ExceptionMappingPlanCompiler::class))
     ;
 
-    // Making property lazy, lest it creates circular reference:
+    // Making the property lazy, lest it creates a circular reference:
     $services
         ->set(
             PropertyExceptionMappingPlanCompiler::class.'::$planRegistry',

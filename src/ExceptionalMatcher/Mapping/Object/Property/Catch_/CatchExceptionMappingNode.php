@@ -35,6 +35,7 @@ final class CatchExceptionMappingNode implements ExceptionMappingNode, MatchCond
         return $reciprocal->match($this);
     }
 
+    /** @codeCoverageIgnore - not used */
     public function getOwner(): ExceptionMappingNode
     {
         return $this->property;

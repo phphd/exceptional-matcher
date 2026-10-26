@@ -36,6 +36,7 @@ final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode
         return $this->objectNode->match($reciprocal);
     }
 
+    /** @codeCoverageIgnore - not used */
     public function getOwner(): ExceptionMappingNode
     {
         return $this->propertyNode;
