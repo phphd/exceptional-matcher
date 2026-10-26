@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload\ConstantsAutoloadingCompilerPass
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Autoload\MatchedExceptionFormatterConstantsAutoloadingClassDiscovery
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Autoload\MatchedExceptionFormatterClassDiscovery
  *
  * @internal
  */

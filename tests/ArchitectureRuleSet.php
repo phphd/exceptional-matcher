@@ -22,7 +22,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\M
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\ReusableIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\ValueException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ValueException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Matcher\ExceptionMatcher;
@@ -178,7 +178,7 @@ final class ArchitectureRuleSet
             'bundle' => [
                 'deps' => [
                     Selector::inNamespace('PhPhD\ExceptionToolkit'),
-                    // Class discovery
+
                     Selector::classname(ConstantsClassLoader::class),
                     Selector::classname(MatchConditionCompiler::class),
                     Selector::classname(MatchedExceptionFormatter::class),
@@ -294,13 +294,10 @@ final class ArchitectureRuleSet
         return Selector::AnyOf(
             Selector::classname(ExceptionMatcher::class),
             Selector::implements(ExceptionMatcher::class),
-
             Selector::classname(ExceptionMappingNode::class),
             Selector::implements(ExceptionMappingNode::class),
-
             Selector::classname(ExceptionMatcherAggregate::class),
             Selector::implements(ExceptionMatcherAggregate::class),
-
             Selector::classname(PropertyPath::class),
         );
     }
@@ -343,7 +340,7 @@ final class ArchitectureRuleSet
             Selector::classname(MatchConditionPlan::class),
             Selector::AllOf(
                 Selector::implements(MatchConditionPlan::class),
-                Selector::Not($this->matchConditionCompiler())
+                Selector::Not($this->matchConditionCompiler()),
             ),
             // Contract
             Selector::classname(ValueException::class),

@@ -48,7 +48,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Class\ExceptionClassMatchCondition
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Class\ExceptionClassMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\PreCompiledMatchConditionPlan
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Specified\SpecifiedMatchConditionCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\QualifiedMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchCondition
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionPlan

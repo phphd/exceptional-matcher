@@ -9,15 +9,15 @@ use LogicException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests\Stub\MessageContainingException;
 use PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Main\Tests\Stub\ObjectPropertyMatchedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\Tests\Stub\SomeValueException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\Tests\Stub\SomeValueException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\validated_value;
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\exception_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Integration\Validator\validated_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\exception_value;
 
 /**
  * @psalm-suppress InvalidAttribute ("Attribute Catch_ is not repeatable")

@@ -82,7 +82,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\validated_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Integration\Validator\validated_value;
 use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]

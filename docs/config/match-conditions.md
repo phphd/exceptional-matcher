@@ -205,7 +205,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\uid_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Integration\Uid\uid_value;
 
 #[Try_]
 class TransferMoneyCommand
@@ -239,7 +239,7 @@ Thus, it's possible to avoid much of the boilerplate code, keeping it clean:
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\exception_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\exception_value;
 
 #[Try_]
 class TransferMoneyCommand
@@ -258,7 +258,7 @@ depending on the value of `cardId` from the exception.
 And `CardDeactivatedException` must implement `ValueException` interface:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\ValueException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ValueException;
 
 class CardDeactivatedException extends RuntimeException implements ValueException
 {
@@ -287,7 +287,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\validated_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Integration\Validator\validated_value;
 use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
@@ -310,7 +310,7 @@ Specify `enum_value` match condition to compare property's value against the inv
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\enum_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Enum\enum_value;
 
 #[Try_]
 class ImportScheduleCommand

@@ -19,7 +19,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\TryWithNoCatchAttributesM
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\TryWithNonMatchableObjectMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\UnregisteredFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\UnregisteredFormatterMessage;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchAttributeInstantiationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\Tests\Stub\RootObject;
@@ -114,7 +114,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertSame([
             '#[Try_] on an abstract class has no effect: the attribute is not inherited by the subclasses.',
-             'Class '.AbstractTryMessage::class.' exception mapping compilation has failed.'
+            'Class '.AbstractTryMessage::class.' exception mapping compilation has failed.',
         ], $defect->getMessages());
     }
 
@@ -193,7 +193,7 @@ final class MappingLinterUnitTest extends TestCase
         ], $defect->getMessages());
     }
 
-    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Specified\SpecifiedMatchConditionCompiler */
+    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\QualifiedMatchConditionCompiler */
     public function testLazilyCompiledBrokenMatchConditionIsReported(): void
     {
         [$classReport] = $this->linter->lint([LazilyDiscoveredUnknownMatchConditionMessage::class])->getClassReports();

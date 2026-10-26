@@ -332,10 +332,10 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\enum_value;
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\uid_value;
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\validated_value;
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\exception_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Enum\enum_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Integration\Uid\uid_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Integration\Validator\validated_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\exception_value;
 use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
 
 #[Try_]
