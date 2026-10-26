@@ -39,7 +39,12 @@ final class MatchedExceptionList implements Countable
         return array_merge(...$results);
     }
 
-    /** @return list<MatchedException<Throwable>> */
+    /**
+     * @internal
+     * @codeCoverageIgnore
+     *
+     * @return list<MatchedException<Throwable>>
+     */
     public function toArray(): array
     {
         return $this->matchedExceptions;

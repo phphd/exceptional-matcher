@@ -35,7 +35,6 @@ use function rtrim;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Formatter\Array\Json\JsonLintReportFormatter
  */
 final class LintExceptionalMatcherCommandUnitTest extends TestCase
 {
@@ -136,7 +135,7 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
         yield ['path-string', self::filePathOf(...)];
     }
 
-    public function testRendersOutputAsJson(): void
+    public function testRendersOutputAtDesiredFormat(): void
     {
         $exitCode = $this->commandTester->execute([
             '--output-format' => 'json',
