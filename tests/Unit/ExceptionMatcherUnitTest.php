@@ -28,7 +28,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Try_
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_
  * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
- * @covers \PhPhD\ExceptionalMatcher\MainExceptionMatcher
+ * @covers \PhPhD\ExceptionalMatcher\Port\MainExceptionMatcher
  * @covers \PhPhD\ExceptionalMatcher\Port\Symfony\Validator\ExceptionToViolationListMatcher
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\ItemOfIterableExceptionMappingNode

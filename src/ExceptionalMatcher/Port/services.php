@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher;
+namespace PhPhD\ExceptionalMatcher\Port;
 
 use Closure;
+use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
