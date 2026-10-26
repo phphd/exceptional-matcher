@@ -44,13 +44,27 @@ final class QualifiedMatchedExceptionFormatter implements MatchedExceptionFormat
             throw new LogicException('No MatchedExceptionFormatter provided and no default one configured.');
         }
 
+        return $this->getFormatter($formatterId)->format($matchedException);
+    }
+
+    /**
+     * @noinspection PhpUnhandledExceptionInspection
+     *
+     * @return MatchedExceptionFormatter<Throwable,mixed>
+     *
+     * @internal
+     *
+     * @phpstan-param class-string<MatchedExceptionFormatter<Throwable,mixed>> $formatterId
+     *
+     * @psalm-param class-string<MatchedExceptionFormatter> $formatterId
+     */
+    public function getFormatter(string $formatterId): MatchedExceptionFormatter
+    {
         if (!$this->formatterRegistry->has($formatterId)) {
-            throw new LogicException('MatchedExceptionFormatter not found: '.$formatterId);
+            throw new UnregisteredExceptionFormatterException($formatterId);
         }
 
-        $exceptionFormatter = $this->formatterRegistry->get($formatterId);
-
-        /** @psalm-var MatchedExceptionFormatter<Throwable,mixed> $exceptionFormatter */
-        return $exceptionFormatter->format($matchedException);
+        /** @psalm-var MatchedExceptionFormatter<Throwable,mixed> */
+        return $this->formatterRegistry->get($formatterId);
     }
 }

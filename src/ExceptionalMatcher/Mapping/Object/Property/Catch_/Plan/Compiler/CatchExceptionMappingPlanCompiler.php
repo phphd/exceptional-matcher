@@ -8,10 +8,10 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\QualifiedMatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\CatchExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchAttributeInstantiationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\UnregisteredExceptionFormatterException;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -134,10 +134,9 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
             return null;
         }
 
-        /** Duplicates {@see \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\QualifiedMatchedExceptionFormatter} */
-        if (!$this->exceptionFormatterRegistry->has($formatterId)) {
-            throw new UnregisteredExceptionFormatterException($formatterId);
-        }
+        $formatter = new QualifiedMatchedExceptionFormatter($this->exceptionFormatterRegistry);
+
+        $formatter->getFormatter($formatterId);
 
         return $formatterId;
     }
