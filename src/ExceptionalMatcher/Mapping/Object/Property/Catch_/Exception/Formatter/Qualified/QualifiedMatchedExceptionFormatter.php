@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Delegating;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified;
 
 use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
@@ -15,7 +15,7 @@ use Throwable;
  *
  * @implements MatchedExceptionFormatter<Throwable,mixed>
  */
-final class DelegatingMatchedExceptionFormatter implements MatchedExceptionFormatter
+final class QualifiedMatchedExceptionFormatter implements MatchedExceptionFormatter
 {
     /**
      * @api

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Autoload;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Autoload;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload\ConstantsAutoloadingClassDiscovery;
@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use function array_keys;
 
 /** @internal */
-final class MatchedExceptionFormatterClassDiscovery implements ConstantsAutoloadingClassDiscovery
+final class QualifiedMatchedExceptionFormatterClassDiscovery implements ConstantsAutoloadingClassDiscovery
 {
     /** @return array<class-string,true> */
     public function getClassNames(ContainerBuilder $container): array

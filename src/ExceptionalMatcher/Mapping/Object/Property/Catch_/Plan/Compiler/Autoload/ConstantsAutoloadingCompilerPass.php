@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Autoload;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Autoload\QualifiedMatchConditionClassDiscovery;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Autoload\MatchedExceptionFormatterClassDiscovery;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Autoload\QualifiedMatchedExceptionFormatterClassDiscovery;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -25,7 +25,7 @@ final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
     {
         $this->discovery = [
             new QualifiedMatchConditionClassDiscovery(),
-            new MatchedExceptionFormatterClassDiscovery(),
+            new QualifiedMatchedExceptionFormatterClassDiscovery(),
         ];
     }
 

@@ -134,7 +134,7 @@ final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCom
             return null;
         }
 
-        /** Duplicates {@see \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Delegating\DelegatingMatchedExceptionFormatter} */
+        /** Duplicates {@see \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\QualifiedMatchedExceptionFormatter} */
         if (!$this->exceptionFormatterRegistry->has($formatterId)) {
             throw new UnregisteredExceptionFormatterException($formatterId);
         }
