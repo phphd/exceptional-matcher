@@ -19,7 +19,7 @@ use Throwable;
  *
  * @implements IteratorAggregate<TKey,TValue>
  */
-final class ReusableIteratorAggregate implements IteratorAggregate
+final class MemoizingIteratorAggregate implements IteratorAggregate
 {
     /** @var CachingIterator<TKey,TValue,Iterator<TKey,TValue>> */
     private readonly CachingIterator $iterator;

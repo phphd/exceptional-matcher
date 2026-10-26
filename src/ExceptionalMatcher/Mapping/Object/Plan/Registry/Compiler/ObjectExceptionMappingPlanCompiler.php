@@ -8,7 +8,7 @@ use Generator;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\ReusableIteratorAggregate;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
@@ -74,7 +74,7 @@ final class ObjectExceptionMappingPlanCompiler implements ExceptionMappingPlanCo
 
         $mappingPlan = new ObjectExceptionMappingPlan(
             $reflectionClass->getName(),
-            new ReusableIteratorAggregate($this->compilePropertyPlans($reflectionClass)),
+            new MemoizingIteratorAggregate($this->compilePropertyPlans($reflectionClass)),
         );
 
         if (!$mappingPlan->hasPropertyPlans()) {

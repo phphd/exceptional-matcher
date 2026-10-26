@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler;
 use Generator;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\ReusableIteratorAggregate;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\CatchExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
@@ -66,7 +66,7 @@ final class PropertyExceptionMappingPlanCompiler implements ExceptionMappingPlan
 
     private function compile(ReflectionProperty $reflectionProperty): ?PropertyExceptionMappingPlan
     {
-        $catchPlans = new ReusableIteratorAggregate($this->compileCatchPlans($reflectionProperty));
+        $catchPlans = new MemoizingIteratorAggregate($this->compileCatchPlans($reflectionProperty));
 
         $propertyMappingPlan = new PropertyExceptionMappingPlan($reflectionProperty, $catchPlans, $this->planRegistry);
 

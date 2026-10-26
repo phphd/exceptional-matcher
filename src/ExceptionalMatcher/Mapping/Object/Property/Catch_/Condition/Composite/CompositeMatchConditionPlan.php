@@ -25,7 +25,7 @@ final class CompositeMatchConditionPlan implements MatchConditionPlan
 
     public function bind(ExceptionMappingNode $node): CompositeMatchCondition
     {
-        return new CompositeMatchCondition(new ReusableIteratorAggregate($this->conditions($node)));
+        return new CompositeMatchCondition(new MemoizingIteratorAggregate($this->conditions($node)));
     }
 
     /** @return iterable<MatchConditionPlan<Throwable>> */

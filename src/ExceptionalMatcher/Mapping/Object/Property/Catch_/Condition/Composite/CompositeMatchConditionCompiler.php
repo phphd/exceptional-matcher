@@ -29,7 +29,7 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
     /** @return CompositeMatchConditionPlan|PreCompiledMatchConditionPlan<Throwable> */
     public function compile(Catch_ $catch): CompositeMatchConditionPlan|PreCompiledMatchConditionPlan
     {
-        $plan = new CompositeMatchConditionPlan(new ReusableIteratorAggregate($this->conditionPlans($catch)));
+        $plan = new CompositeMatchConditionPlan(new MemoizingIteratorAggregate($this->conditionPlans($catch)));
 
         if (!$plan->hasPlans()) {
             return new PreCompiledMatchConditionPlan(new FalseCondition());

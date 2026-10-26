@@ -9,7 +9,7 @@ use InvalidArgumentException;
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\ReusableIteratorAggregate;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
 
 use Webmozart\Assert\Assert;
@@ -39,7 +39,7 @@ final class ObjectExceptionMappingPlan
         /** @var AppendIterator<int,ExceptionMappingNode,Iterator<int,ExceptionMappingNode>> $properties */
         $properties = new AppendIterator();
 
-        $objectNode = new ObjectExceptionMappingNode($object, $parentProperty, new ReusableIteratorAggregate($properties));
+        $objectNode = new ObjectExceptionMappingNode($object, $parentProperty, new MemoizingIteratorAggregate($properties));
 
         $properties->append($this->bindPropertyPlans($objectNode));
 
