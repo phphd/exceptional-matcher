@@ -7,8 +7,8 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Comp
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Class\ExceptionClassMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Closure\SimpleIfClosureMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Delegating\DelegatingMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Origin\ExceptionOriginMatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Specified\SpecifiedMatchConditionCompiler;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Throwable;
 
@@ -23,7 +23,7 @@ return static function (ContainerConfigurator $configurator): void {
         ->arg('$compilers', [
             inline_service(ExceptionClassMatchConditionCompiler::class),
             inline_service(ExceptionOriginMatchConditionCompiler::class),
-            inline_service(DelegatingMatchConditionCompiler::class)
+            inline_service(SpecifiedMatchConditionCompiler::class)
                 ->args([
                     tagged_locator(MatchConditionCompiler::class, 'id'),
                 ]),

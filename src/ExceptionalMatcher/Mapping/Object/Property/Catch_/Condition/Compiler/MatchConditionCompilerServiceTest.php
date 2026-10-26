@@ -6,13 +6,13 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Comp
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Delegating\DelegatingMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\EnumValueMatchCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Enum\EnumValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\InvalidUidExceptionMatchCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Uid\InvalidUidExceptionMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\ValidationFailedExceptionMatchCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Integration\Validator\ValidationFailedExceptionMatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Specified\SpecifiedMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\ExceptionValueMatchCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Value\ExceptionValueMatchConditionCompiler;
 use Psr\Container\ContainerInterface;
@@ -58,18 +58,18 @@ final class MatchConditionCompilerServiceTest extends BundleTestCase
 
     private function getConditionCompilerRegistry(CompositeMatchConditionCompiler $compiler): ?ContainerInterface // @phpstan-ignore missingType.generics
     {
-        $factory = $this->getDelegatingMatchConditionCompiler($compiler);
+        $factory = $this->getSpecifiedMatchConditionCompiler($compiler);
 
         /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */
         return (static fn (): ContainerInterface => $factory->matchConditionCompilerRegistry) // @phpstan-ignore-line
-            ->bindTo(newThis: null, newScope: DelegatingMatchConditionCompiler::class)->__invoke()
+            ->bindTo(newThis: null, newScope: SpecifiedMatchConditionCompiler::class)->__invoke()
         ;
     }
 
-    private function getDelegatingMatchConditionCompiler(CompositeMatchConditionCompiler $compiler): DelegatingMatchConditionCompiler
+    private function getSpecifiedMatchConditionCompiler(CompositeMatchConditionCompiler $compiler): SpecifiedMatchConditionCompiler
     {
         /** @psalm-suppress InternalProperty, InaccessibleProperty, InvalidArrayAccess, PossiblyNullFunctionCall, PossiblyNullReference */
-        return (static fn (): DelegatingMatchConditionCompiler => $compiler->compilers[2]) // @phpstan-ignore-line
+        return (static fn (): SpecifiedMatchConditionCompiler => $compiler->compilers[2]) // @phpstan-ignore-line
             ->bindTo(newThis: null, newScope: CompositeMatchConditionCompiler::class)->__invoke()
         ;
     }

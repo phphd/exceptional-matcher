@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Delegating;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Specified;
 
 use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
@@ -17,7 +17,7 @@ use Throwable;
  *
  * @implements MatchConditionCompiler<Throwable>
  */
-final class DelegatingMatchConditionCompiler implements MatchConditionCompiler
+final class SpecifiedMatchConditionCompiler implements MatchConditionCompiler
 {
     /**
      * @api

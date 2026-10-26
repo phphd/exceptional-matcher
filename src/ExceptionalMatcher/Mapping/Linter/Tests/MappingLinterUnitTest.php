@@ -193,7 +193,7 @@ final class MappingLinterUnitTest extends TestCase
         ], $defect->getMessages());
     }
 
-    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Delegating\DelegatingMatchConditionCompiler */
+    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Specified\SpecifiedMatchConditionCompiler */
     public function testLazilyCompiledBrokenMatchConditionIsReported(): void
     {
         [$classReport] = $this->linter->lint([LazilyDiscoveredUnknownMatchConditionMessage::class])->getClassReports();
