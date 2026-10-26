@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Enum;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum;
 
 use BackedEnum;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;

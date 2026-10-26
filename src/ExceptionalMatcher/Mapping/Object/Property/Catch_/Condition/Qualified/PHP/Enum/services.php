@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Enum;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;

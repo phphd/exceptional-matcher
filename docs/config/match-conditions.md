@@ -310,7 +310,7 @@ Specify `enum_value` match condition to compare property's value against the inv
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Enum\enum_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\enum_value;
 
 #[Try_]
 class ImportScheduleCommand
