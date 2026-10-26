@@ -374,7 +374,7 @@ final class ArchitectureRuleSet
     public function validatorExceptionFormatter(): AllOfSelectorModifier
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Integrated\Validator'),
+            Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator'),
             Selector::Not($this->bundle()),
         );
     }

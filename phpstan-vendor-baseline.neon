@@ -11,12 +11,12 @@ parameters:
         -
             message: '#^Parameter \#9 \$constraint of class Symfony\\Component\\Validator\\ConstraintViolation constructor expects Symfony\\Component\\Validator\\Constraint\|null, mixed given\.$#'
             identifier: argument.type
-            path: src/ExceptionalMatcher/Mapping/Object/Property/Catch_/Exception/Formatter/Qualified/Integrated/Validator/Embedded/ViolationsEmbeddedExceptionFormatter.php
+            path: src/ExceptionalMatcher/Mapping/Object/Property/Catch_/Exception/Formatter/Qualified/Symfony/Validator/Embedded/ViolationsEmbeddedExceptionFormatter.php
             reportUnmatched: false
         -
             message: '#^Access to an undefined property Symfony\\Component\\Uid\\Exception\\InvalidArgumentException\:\:\$invalidValue\.$#'
             identifier: property.notFound
-            path: src/ExceptionalMatcher/Mapping/Object/Property/Catch_/Condition/Qualified/Integrated/Uid/InvalidUidExceptionMatchCondition.php
+            path: src/ExceptionalMatcher/Mapping/Object/Property/Catch_/Condition/Qualified/Symfony/Uid/InvalidUidExceptionMatchCondition.php
             reportUnmatched: false
         -
             message: '#^Removing parent param type is forbidden$#'
