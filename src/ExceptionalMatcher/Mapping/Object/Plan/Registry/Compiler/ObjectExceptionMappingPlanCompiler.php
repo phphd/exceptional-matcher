@@ -92,13 +92,9 @@ final class ObjectExceptionMappingPlanCompiler implements ExceptionMappingPlanCo
     private function compilePropertyPlans(ReflectionClass $reflectionClass): Generator
     {
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            $propertyPlan = $this->propertyMappingPlanCompiler->compilePlan($reflectionProperty);
-
-            if (null === $propertyPlan) {
-                continue;
+            if (null !== $propertyPlan = $this->propertyMappingPlanCompiler->compilePlan($reflectionProperty)) {
+                yield $propertyPlan;
             }
-
-            yield $propertyPlan;
         }
     }
 }
