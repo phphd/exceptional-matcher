@@ -35,6 +35,9 @@ use function var_export;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\EnumValueMatchConditionPlan
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\QualifiedMatchConditionCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\PropertyExceptionMappingPlanCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException::getRootException
  *
  * @internal
  */
@@ -62,7 +65,6 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $this->matcher = $matcher;
     }
 
-    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException::getRootException */
     public function testThrowsWhenMatchConditionUsesNonEnumExceptionClass(): void
     {
         $message = new NonEnumExceptionClassMessage();
@@ -81,7 +83,6 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         throw $compilationException->getRootException();
     }
 
-    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException::getRootException */
     public function testThrowsWhenFromClauseIsMissing(): void
     {
         $message = new MissingEnumFromConditionMessage();
@@ -100,7 +101,6 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         throw $compilationException->getRootException();
     }
 
-    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException::getRootException */
     public function testThrowsWhenFromClassIsNotBackedEnum(): void
     {
         $message = new NonBackedEnumConditionMessage();
@@ -122,7 +122,6 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         throw $compilationException->getRootException();
     }
 
-    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException::getRootException */
     public function testThrowsWhenFromMethodIsNotEnumFrom(): void
     {
         $message = new InvalidEnumFromMethodConditionMessage();

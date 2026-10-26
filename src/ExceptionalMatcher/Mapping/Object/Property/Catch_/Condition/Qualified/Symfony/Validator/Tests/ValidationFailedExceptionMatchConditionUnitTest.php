@@ -53,7 +53,11 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
         $this->matcher = $matcher;
     }
 
-    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException::getRootException */
+    /**
+     * @covers \PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompilationFailedException::getRootException
+     * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\PropertyExceptionMappingPlanCompiler
+     * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException
+     */
     public function testThrowsWhenMatchConditionUsesNonValidationFailedExceptionClass(): void
     {
         $message = new NonValidationFailedExceptionClassMessage();
