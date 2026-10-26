@@ -31,6 +31,7 @@ trait AssertCompilationFailedFor // @phpstan-ignore requireExtends.duplicate
 
         $propertyFailure = $exception->getPrevious();
         self::assertInstanceOf(PropertyExceptionMappingPlanCompilationFailedException::class, $propertyFailure);
+        self::assertSame($className, $propertyFailure->getClassName());
         self::assertSame($propertyName, $propertyFailure->getPropertyName());
 
         self::assertInstanceOf(CatchExceptionMappingPlanCompilationFailedException::class, $propertyFailure->getPrevious());
