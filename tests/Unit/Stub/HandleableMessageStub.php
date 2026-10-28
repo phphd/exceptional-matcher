@@ -35,7 +35,7 @@ final class HandleableMessageStub
     #[Catch_(StaticPropertyMatchedException::class, message: 'oops')]
     private static string $staticProperty = 'foo';
 
-    private NestedHandleableMessage $nestedObject;
+    private \stdClass|NestedHandleableMessage $nestedObject;
 
     private array $nestedArrayItems; // @phpstan-ignore missingType.iterableValue
 
