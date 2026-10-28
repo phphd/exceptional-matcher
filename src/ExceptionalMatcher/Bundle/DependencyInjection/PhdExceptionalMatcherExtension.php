@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Bundle\DependencyInjection;
 use Composer\InstalledVersions;
 use Exception;
 use LogicException;
-use PhPhD\ExceptionalMatcher\Rule\Object\Assembler\Autoload\ConstantsAutoloadingCompilerPass;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingCompilerPass;
 use PhPhD\ExceptionToolkit\Bundle\DependencyInjection\PhdExceptionToolkitExtension;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
@@ -31,24 +31,29 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
 {
     public const ALIAS = 'phd_exceptional_matcher';
 
-    private readonly bool $nativeProxiesSupported;
+    public const LOGGER_CHANNEL = 'phd_exceptional_matcher';
+
+    private readonly bool $nativeProxiesAllowed;
 
     public function __construct(
-        private readonly bool $allowGeneratedProxies = false,
+        /** Pass true if proxies are dumped. */
+        private readonly bool $generatedProxiesAllowed = false,
+        bool $nativeProxiesAllowed = true,
     ) {
-        $this->nativeProxiesSupported = self::nativeProxiesAreSupported();
+        $this->nativeProxiesAllowed = $nativeProxiesAllowed && self::nativeProxiesAreSupported();
     }
 
     /**
      * @param array<string,mixed> $parameters required by {@see \Symfony\Component\DependencyInjection\Extension\ExtensionTrait::executeConfiguratorCallback()}:
      *                                        - kernel.environment
      *                                        - kernel.build_dir
+     *                                        - kernel.debug: false makes broken mappings to be reported to the `logger` service instead of thrown
      */
     public function getContainer(array $parameters): ContainerBuilder
     {
         $container = new ContainerBuilder();
 
-        $container->setResourceTracking(false);
+        $container->setResourceTracking(track: false);
         $container->getCompilerPassConfig()->setBeforeOptimizationPasses([]);
         $container->getCompilerPassConfig()->setOptimizationPasses([]);
         $container->getCompilerPassConfig()->setRemovingPasses([]);
@@ -83,13 +88,13 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
      */
     public function loadExtension(array $config, ContainerConfigurator $configurator, ContainerBuilder $container): void
     {
-        $container->set('phd_exceptional_matcher.lazy_proxy', $this->lazyProxy(...));
+        $container->set('phd_exceptional_matcher.hint_lazy_proxy', $this->hintLazy(...));
         $container->setParameter('phd_exceptional_matcher.validator_available', interface_exists(ValidatorInterface::class));
         $container->setParameter('phd_exceptional_matcher.messenger_available', interface_exists(MessengerMiddlewareInterface::class));
 
         $configurator->import(__DIR__.'/../../**/services.php');
 
-        $container->set('phd_exceptional_matcher.lazy_proxy', null);
+        $container->set('phd_exceptional_matcher.hint_lazy_proxy', null);
         $container->setParameter('phd_exceptional_matcher.validator_available', null);
         $container->setParameter('phd_exceptional_matcher.messenger_available', null);
     }
@@ -102,23 +107,29 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
 
     public function process(ContainerBuilder $container): void
     {
-        $this->checkTranslatorDependency($container);
+        $this->wireTranslatorDependency($container);
         $this->failOnUnresolvedBackwardCompatibilityBreaks($container);
     }
 
-    public function lazyProxy(string $interface): bool|string
+    /** For those services, which are better to be lazy. */
+    public function hintLazy(string $interface): bool|string
     {
-        if ($this->nativeProxiesSupported) {
-            // this will make sure that sf uses native proxy if available
-
-            return true;
-        }
-
-        if (!$this->allowGeneratedProxies) {
+        if (!$this->generatedProxiesAllowed && !$this->nativeProxiesAllowed) {
             return false;
         }
 
-        return $interface;
+        return $this->lazyProxy($interface);
+    }
+
+    /** @codeCoverageIgnore - pre-PHP8.4 path's covered by CI */
+    public function lazyProxy(string $interface): bool|string
+    {
+        if (!$this->nativeProxiesAllowed) {
+            return $interface; // Interface-Proxying the services requiring laziness.
+        }
+
+        // Not returning interface so that Symfony uses native proxy
+        return true;
     }
 
     /** @internal */
@@ -132,7 +143,7 @@ final class PhdExceptionalMatcherExtension extends AbstractExtension implements 
             );
     }
 
-    private function checkTranslatorDependency(ContainerBuilder $container): void
+    private function wireTranslatorDependency(ContainerBuilder $container): void
     {
         if ($container->has('translator')) {
             return;

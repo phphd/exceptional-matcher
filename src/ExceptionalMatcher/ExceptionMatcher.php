@@ -17,5 +17,5 @@ use Throwable;
 interface ExceptionMatcher
 {
     /** @return ?T */
-    public function match(Throwable $exception, object $message): mixed;
+    public function match(Throwable $exception, object $object): mixed;
 }

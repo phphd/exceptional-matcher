@@ -1,0 +1,151 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\Tests;
+
+use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
+use PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\ExceptionalValidationFailedException;
+use PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationMiddleware;
+use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
+use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
+use PHPUnit\Framework\MockObject\MockObject;
+use RuntimeException;
+use stdClass;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
+use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
+use Symfony\Component\Messenger\Middleware\StackMiddleware;
+use Throwable;
+
+/**
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle
+ * @covers \PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationMiddleware
+ * @covers \PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationFailedMessengerException
+ *
+ * @internal
+ */
+final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCase
+{
+    use CatchException;
+
+    private ExceptionalValidationMiddleware $middleware;
+
+    private MockObject $nextMiddleware;
+
+    private StackMiddleware $stack;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $container = self::getContainer();
+
+        /** @var ExceptionalValidationMiddleware $middleware */
+        $middleware = $container->get('phd_exceptional_validation');
+
+        $this->middleware = $middleware;
+
+        $this->nextMiddleware = $this->createMock(MiddlewareInterface::class);
+        $this->stack = new StackMiddleware([$this->middleware, $this->nextMiddleware]);
+    }
+
+    /** @return list<CompilerPassInterface> */
+    protected static function compilerPasses(): array
+    {
+        return [new PublicServiceCompilerPass('phd_exceptional_validation')];
+    }
+
+    public function testReturnsResultEnvelopeWhenNoException(): void
+    {
+        $envelope = Envelope::wrap(HandleableMessageStub::create());
+        $resultEnvelope = Envelope::wrap(new stdClass());
+
+        $this->nextMiddleware
+            ->expects(self::atLeastOnce())
+            ->method('handle')
+            ->willReturnMap([[$envelope, $this->stack, $resultEnvelope]])
+        ;
+
+        $result = $this->middleware->handle($envelope, $this->stack);
+
+        self::assertSame($resultEnvelope, $result);
+    }
+
+    public function testHandlesWrappedExceptionsOfHandlerFailedException(): void
+    {
+        $envelope = Envelope::wrap(HandleableMessageStub::create());
+
+        $handlerException1 = new AnException();
+        $handlerException2 = new StaticPropertyMatchedException();
+
+        $messengerException = new HandlerFailedException(
+            $envelope,
+            [$handlerException1, new HandlerFailedException(
+                $envelope,
+                [$handlerException2],
+            )],
+        );
+
+        $this->willThrow($messengerException);
+
+        $e = self::catchException(
+            fn (): Envelope => $this->middleware->handle($envelope, $this->stack),
+            ExceptionalValidationFailedException::class,
+        );
+
+        self::assertSame(
+            'Message of type "PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub" has failed exceptional validation.',
+            $e->getMessage(),
+        );
+        self::assertSame($messengerException, $e->getPrevious());
+        self::assertSame($envelope->getMessage(), $e->getViolatingMessage());
+
+        $violations = $e->getViolations();
+        self::assertCount(2, $violations);
+
+        self::assertSame('property', $violations->get(0)->getPropertyPath());
+        self::assertSame('staticProperty', $violations->get(1)->getPropertyPath());
+    }
+
+    public function testHandlesNotWrappedException(): void
+    {
+        $envelope = Envelope::wrap(HandleableMessageStub::create());
+
+        $handlerException = new AnException();
+
+        $this->willThrow($handlerException);
+
+        $e = self::catchException(
+            fn (): Envelope => $this->middleware->handle($envelope, $this->stack),
+            ExceptionalValidationFailedException::class,
+        );
+
+        self::assertSame($handlerException, $e->getPrevious());
+    }
+
+    public function testRethrowsUnhandledException(): void
+    {
+        $envelope = Envelope::wrap(HandleableMessageStub::create());
+
+        $exception = new RuntimeException();
+
+        $this->willThrow($exception);
+
+        $this->expectExceptionObject($exception);
+
+        $this->middleware->handle($envelope, $this->stack);
+    }
+
+    private function willThrow(Throwable $exception): void
+    {
+        $this->nextMiddleware
+            ->method('handle')
+            ->willThrowException($exception)
+        ;
+    }
+}
