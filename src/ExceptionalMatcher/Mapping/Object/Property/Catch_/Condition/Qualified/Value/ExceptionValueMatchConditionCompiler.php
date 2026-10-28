@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qual
 
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
 use Webmozart\Assert\Assert;
 
 /** @api */
@@ -17,14 +17,14 @@ const exception_value = ExceptionValueMatchCondition::class;
  * @internal
  *
  * @implements MatchConditionCompiler<ValueException>
- * @implements MatchConditionPlan<ValueException>
+ * @implements MatchConditionBlueprint<ValueException>
  */
-final class ExceptionValueMatchConditionCompiler implements MatchConditionCompiler, MatchConditionPlan
+final class ExceptionValueMatchConditionCompiler implements MatchConditionCompiler, MatchConditionBlueprint
 {
     public const TYPE_GUARANTEE_MESSAGE = 'ExceptionValueMatchCondition can only be used for exception classes that implement ValueException';
 
-    /** @return MatchConditionPlan<ValueException> */
-    public function compile(Catch_ $catch): MatchConditionPlan
+    /** @return MatchConditionBlueprint<ValueException> */
+    public function compile(Catch_ $catch): MatchConditionBlueprint
     {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         Assert::isAOf($catch->getExceptionClass(), ValueException::class, self::TYPE_GUARANTEE_MESSAGE);

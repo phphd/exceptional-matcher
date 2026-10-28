@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Closure;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
 use Throwable;
 use Webmozart\Assert\Assert;
 
@@ -16,7 +16,7 @@ use Webmozart\Assert\Assert;
  */
 final class SimpleIfClosureMatchConditionCompiler implements MatchConditionCompiler
 {
-    public function compile(Catch_ $catch): ?SimpleIfClosureMatchConditionPlan
+    public function compile(Catch_ $catch): ?SimpleIfClosureMatchConditionBlueprint
     {
         $if = $catch->getIf();
 
@@ -26,6 +26,6 @@ final class SimpleIfClosureMatchConditionCompiler implements MatchConditionCompi
 
         Assert::count($if, 2);
 
-        return new SimpleIfClosureMatchConditionPlan($if);
+        return new SimpleIfClosureMatchConditionBlueprint($if);
     }
 }

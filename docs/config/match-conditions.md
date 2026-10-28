@@ -374,7 +374,7 @@ A custom condition requires three pieces:
 | Piece     | Interface                | Responsibility                                                                                  |
 |-----------|--------------------------|-------------------------------------------------------------------------------------------------|
 | Condition | `MatchCondition`         | decides whether the exception matches:<br> `matches($exception): bool`                          |
-| Plan      | `MatchConditionPlan`     | a compiled blueprint of the condition;<br> applying it to the property produces the Condition   |
+| Plan      | `MatchConditionBlueprint`     | a compiled blueprint of the condition;<br> applying it to the property produces the Condition   |
 | Compiler  | `MatchConditionCompiler` | compiles the `#[Catch_]` declaration into a blueprint,<br> validating the declaration meanwhile |
 
 So, in our example, the condition itself:
@@ -405,25 +405,20 @@ final class DisqualifiedRolesMatchCondition implements MatchCondition
 Then the compiler and the blueprint to create the condition (both implemented in one class, as the blueprint is stateless):
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /** Configuration value for `match: disqualified_roles` */
 const disqualified_roles = DisqualifiedRolesMatchCondition::class;
 
 /**
  * @implements MatchConditionCompiler<ConflictingRolesException>
- * @implements MatchConditionPlan<ConflictingRolesException>
+ * @implements MatchConditionBlueprint<ConflictingRolesException>
  */
 #[AutoconfigureTag(MatchConditionCompiler::class, ['id' => disqualified_roles])]
-final class DisqualifiedRolesMatchConditionCompiler implements MatchConditionCompiler, MatchConditionPlan
+final class DisqualifiedRolesMatchConditionCompiler implements MatchConditionCompiler, MatchConditionBlueprint
 {
-    /** @return MatchConditionPlan<ConflictingRolesException> */
-    public function compile(Catch_ $catch): MatchConditionPlan
+    /** @return MatchConditionBlueprint<ConflictingRolesException> */
+    public function compile(Catch_ $catch): MatchConditionBlueprint
     {
         if (!is_a($catch->getExceptionClass(), ConflictingRolesException::class, true)) {
             throw new LogicException('DisqualifiedRolesMatchCondition can only be used for '.ConflictingRolesException::class);

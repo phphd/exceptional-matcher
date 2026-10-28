@@ -13,6 +13,7 @@ use PHPat\Selector\SelectorInterface;
 use PHPat\Test\Attributes\TestRule;
 use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\PHPat;
+use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcherAggregate;
@@ -22,8 +23,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingClassDiscovery;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsClassLoader;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\CatchExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ValueException;
@@ -317,7 +318,8 @@ final class ArchitectureRuleSet
     public function blueprint(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
-            Selector::classname('/ExceptionMappingBlueprint$/', regex: true),
+            Selector::classname(ExceptionMappingBlueprint::class),
+            Selector::implements(ExceptionMappingBlueprint::class),
             Selector::classname(ObjectExceptionMappingBlueprintRegistry::class),
         );
     }
@@ -349,9 +351,9 @@ final class ArchitectureRuleSet
         return Selector::AnyOf(
             Selector::classname(MatchCondition::class),
             Selector::implements(MatchCondition::class),
-            Selector::classname(MatchConditionPlan::class),
+            Selector::classname(MatchConditionBlueprint::class),
             Selector::AllOf(
-                Selector::implements(MatchConditionPlan::class),
+                Selector::implements(MatchConditionBlueprint::class),
                 Selector::Not($this->matchConditionCompiler()),
             ),
             // Contract

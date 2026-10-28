@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use Throwable;
@@ -17,7 +17,7 @@ interface MatchConditionCompiler
     /**
      * @param Catch_<T,T> $catch
      *
-     * @return ?MatchConditionPlan<T>
+     * @return ?MatchConditionBlueprint<T>
      */
-    public function compile(Catch_ $catch): ?MatchConditionPlan;
+    public function compile(Catch_ $catch): ?MatchConditionBlueprint;
 }

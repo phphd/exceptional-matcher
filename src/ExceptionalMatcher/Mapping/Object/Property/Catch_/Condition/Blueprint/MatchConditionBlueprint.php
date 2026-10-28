@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint;
 
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
@@ -13,7 +13,7 @@ use Throwable;
  *
  * @template T of Throwable
  */
-interface MatchConditionPlan
+interface MatchConditionBlueprint
 {
     /** @return MatchCondition<T> */
     public function bind(ExceptionMappingNode $node): MatchCondition;

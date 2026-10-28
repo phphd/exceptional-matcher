@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qual
 use BackedEnum;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
 use ReflectionEnum;
 use ValueError;
 use Webmozart\Assert\Assert;
@@ -28,7 +28,7 @@ final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
 {
     public const TYPE_GUARANTEE_MESSAGE = 'EnumValueMatchCondition can only be used for '.ValueError::class;
 
-    public function compile(Catch_ $catch): EnumValueMatchConditionPlan
+    public function compile(Catch_ $catch): EnumValueMatchConditionBlueprint
     {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         Assert::isAOf($catch->getExceptionClass(), ValueError::class, self::TYPE_GUARANTEE_MESSAGE);
@@ -38,7 +38,7 @@ final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
         self::assertEnumClass($enumClassName);
         self::assertEnumFromMethod($enumClassName, $fromMethod);
 
-        return new EnumValueMatchConditionPlan($enumClassName);
+        return new EnumValueMatchConditionBlueprint($enumClassName);
     }
 
     /** @phpstan-assert class-string<BackedEnum> $className */

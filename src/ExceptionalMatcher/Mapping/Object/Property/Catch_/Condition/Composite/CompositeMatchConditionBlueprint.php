@@ -6,19 +6,19 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Comp
 
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
 use Throwable;
 
 /**
  * @internal
  *
- * @implements MatchConditionPlan<Throwable>
+ * @implements MatchConditionBlueprint<Throwable>
  */
-final class CompositeMatchConditionPlan implements MatchConditionPlan
+final class CompositeMatchConditionBlueprint implements MatchConditionBlueprint
 {
     public function __construct(
-        /** @var iterable<MatchConditionPlan<Throwable>> */
+        /** @var iterable<MatchConditionBlueprint<Throwable>> */
         private readonly iterable $plans,
     ) {
     }
@@ -28,7 +28,7 @@ final class CompositeMatchConditionPlan implements MatchConditionPlan
         return new CompositeMatchCondition(new MemoizingIteratorAggregate($this->conditions($node)));
     }
 
-    /** @return iterable<MatchConditionPlan<Throwable>> */
+    /** @return iterable<MatchConditionBlueprint<Throwable>> */
     public function getPlans(): iterable
     {
         return $this->plans;

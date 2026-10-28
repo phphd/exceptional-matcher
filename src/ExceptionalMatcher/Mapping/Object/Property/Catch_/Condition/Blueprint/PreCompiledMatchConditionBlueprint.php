@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler;
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint;
 
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
@@ -13,9 +13,9 @@ use Throwable;
  *
  * @template T of Throwable
  *
- * @implements MatchConditionPlan<T>
+ * @implements MatchConditionBlueprint<T>
  */
-final class PreCompiledMatchConditionPlan implements MatchConditionPlan
+final class PreCompiledMatchConditionBlueprint implements MatchConditionBlueprint
 {
     public function __construct(
         /** @var MatchCondition<T> */

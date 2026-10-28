@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Orig
 
 use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\PreCompiledMatchConditionPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\PreCompiledMatchConditionBlueprint;
 use ReflectionMethod;
 use ReflectionProperty;
 use Throwable;
@@ -28,8 +28,8 @@ use function substr;
  */
 final class ExceptionOriginMatchConditionCompiler implements MatchConditionCompiler
 {
-    /** @return ?PreCompiledMatchConditionPlan<Throwable> */
-    public function compile(Catch_ $catch): ?PreCompiledMatchConditionPlan
+    /** @return ?PreCompiledMatchConditionBlueprint<Throwable> */
+    public function compile(Catch_ $catch): ?PreCompiledMatchConditionBlueprint
     {
         /** @var ?non-empty-list<?string> $origin */
         $origin = $catch->getFrom();
@@ -55,7 +55,7 @@ final class ExceptionOriginMatchConditionCompiler implements MatchConditionCompi
         /** @psalm-var ?non-empty-string $originFunctionName */
         $condition = new ExceptionOriginMatchCondition($originClassName, $originFunctionName);
 
-        return new PreCompiledMatchConditionPlan($condition);
+        return new PreCompiledMatchConditionBlueprint($condition);
     }
 
     /**

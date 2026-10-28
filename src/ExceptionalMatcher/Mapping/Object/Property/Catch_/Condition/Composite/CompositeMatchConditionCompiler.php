@@ -6,10 +6,10 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Comp
 
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\PreCompiledMatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\PreCompiledMatchConditionPlan;
 use Throwable;
 
 /**
@@ -26,13 +26,13 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
     ) {
     }
 
-    /** @return CompositeMatchConditionPlan|PreCompiledMatchConditionPlan<Throwable> */
-    public function compile(Catch_ $catch): CompositeMatchConditionPlan|PreCompiledMatchConditionPlan
+    /** @return CompositeMatchConditionBlueprint|PreCompiledMatchConditionBlueprint<Throwable> */
+    public function compile(Catch_ $catch): CompositeMatchConditionBlueprint|PreCompiledMatchConditionBlueprint
     {
-        $plan = new CompositeMatchConditionPlan(new MemoizingIteratorAggregate($this->conditionPlans($catch)));
+        $plan = new CompositeMatchConditionBlueprint(new MemoizingIteratorAggregate($this->conditionPlans($catch)));
 
         if (!$plan->hasPlans()) {
-            return new PreCompiledMatchConditionPlan(new FalseCondition());
+            return new PreCompiledMatchConditionBlueprint(new FalseCondition());
         }
 
         return $plan;
@@ -41,7 +41,7 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
     /**
      * @param Catch_<Throwable,Throwable> $catch
      *
-     * @return Iterator<MatchConditionPlan<Throwable>>
+     * @return Iterator<MatchConditionBlueprint<Throwable>>
      */
     private function conditionPlans(Catch_ $catch): Iterator
     {

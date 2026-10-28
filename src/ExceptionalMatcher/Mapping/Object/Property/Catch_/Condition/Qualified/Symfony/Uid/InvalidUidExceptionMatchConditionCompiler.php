@@ -6,9 +6,9 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qual
 
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
 use Stringable;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
@@ -21,14 +21,14 @@ const uid_value = InvalidUidExceptionMatchCondition::class;
  * @internal
  *
  * @implements MatchConditionCompiler<InvalidUidException>
- * @implements MatchConditionPlan<InvalidUidException>
+ * @implements MatchConditionBlueprint<InvalidUidException>
  */
-final class InvalidUidExceptionMatchConditionCompiler implements MatchConditionCompiler, MatchConditionPlan
+final class InvalidUidExceptionMatchConditionCompiler implements MatchConditionCompiler, MatchConditionBlueprint
 {
     public const TYPE_GUARANTEE_MESSAGE = 'InvalidUidExceptionMatchCondition can only be used for '.InvalidUidException::class;
 
-    /** @return MatchConditionPlan<InvalidUidException> */
-    public function compile(Catch_ $catch): MatchConditionPlan
+    /** @return MatchConditionBlueprint<InvalidUidException> */
+    public function compile(Catch_ $catch): MatchConditionBlueprint
     {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         Assert::isAOf($catch->getExceptionClass(), InvalidUidException::class, self::TYPE_GUARANTEE_MESSAGE);

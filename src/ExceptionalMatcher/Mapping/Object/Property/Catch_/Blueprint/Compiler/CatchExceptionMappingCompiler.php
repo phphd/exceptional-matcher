@@ -9,8 +9,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Exception\CatchAttributeInstantiationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Exception\CatchExceptionMappingPrintCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\QualifiedMatchedExceptionFormatter;
 use Psr\Container\ContainerInterface;
@@ -108,9 +108,9 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     /**
      * @param Catch_<Throwable,Throwable> $catch
      *
-     * @return MatchConditionPlan<Throwable>
+     * @return MatchConditionBlueprint<Throwable>
      */
-    private function compileMatchConditionPlan(Catch_ $catch): MatchConditionPlan
+    private function compileMatchConditionPlan(Catch_ $catch): MatchConditionBlueprint
     {
         $conditionPlan = $this->matchConditionCompiler->compile($catch);
 

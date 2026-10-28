@@ -15,8 +15,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingBlue
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use ReflectionClass;
 use ReflectionProperty;
@@ -218,13 +218,13 @@ final class ClassMappingLinter implements MappingLinter
     }
 
     /**
-     * @param MatchConditionPlan<Throwable> $matchConditionPlan
+     * @param MatchConditionBlueprint<Throwable> $matchConditionPlan
      *
      * @return Generator<MappingDefect>
      */
-    private function traverseMatchConditionPlan(PropertyExceptionMappingBlueprint $propertyPlan, MatchConditionPlan $matchConditionPlan): Generator
+    private function traverseMatchConditionPlan(PropertyExceptionMappingBlueprint $propertyPlan, MatchConditionBlueprint $matchConditionPlan): Generator
     {
-        if (!$matchConditionPlan instanceof CompositeMatchConditionPlan) {
+        if (!$matchConditionPlan instanceof CompositeMatchConditionBlueprint) {
             return false;
         }
 
