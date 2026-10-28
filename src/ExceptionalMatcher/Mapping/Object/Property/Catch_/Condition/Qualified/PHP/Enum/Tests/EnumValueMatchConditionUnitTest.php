@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\Exception\ObjectExceptionMappingPrintCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\Exception\Tests\Trait\AssertCompilationFailedFor;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\EnumValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\Invalid\InvalidEnumFromMethodConditionMessage;
@@ -36,8 +36,8 @@ use function var_export;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\QualifiedMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\PropertyExceptionMappingCompiler
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingPlanCompilationFailedException::getRootException
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPrintCompilationFailedException
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingPrintCompilationFailedException::getRootException
  *
  * @internal
  */
@@ -75,7 +75,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
         $compilationException = self::catchException(
             fn () => $this->matcher->match($exception, $message),
-            ObjectExceptionMappingPlanCompilationFailedException::class,
+            ObjectExceptionMappingPrintCompilationFailedException::class,
         );
 
         self::assertCompilationFailedFor($compilationException, NonEnumExceptionClassMessage::class, 'weekDay');
@@ -93,7 +93,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
         $compilationException = self::catchException(
             fn () => $this->matcher->match($exception, $message),
-            ObjectExceptionMappingPlanCompilationFailedException::class,
+            ObjectExceptionMappingPrintCompilationFailedException::class,
         );
 
         self::assertCompilationFailedFor($compilationException, MissingEnumFromConditionMessage::class, 'weekDay');
@@ -114,7 +114,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
         $compilationException = self::catchException(
             fn () => $this->matcher->match($exception, $message),
-            ObjectExceptionMappingPlanCompilationFailedException::class,
+            ObjectExceptionMappingPrintCompilationFailedException::class,
         );
 
         self::assertCompilationFailedFor($compilationException, NonBackedEnumConditionMessage::class, 'status');
@@ -132,7 +132,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
         $compilationException = self::catchException(
             fn () => $this->matcher->match($exception, $message),
-            ObjectExceptionMappingPlanCompilationFailedException::class,
+            ObjectExceptionMappingPrintCompilationFailedException::class,
         );
 
         self::assertCompilationFailedFor($compilationException, InvalidEnumFromMethodConditionMessage::class, 'weekDay');

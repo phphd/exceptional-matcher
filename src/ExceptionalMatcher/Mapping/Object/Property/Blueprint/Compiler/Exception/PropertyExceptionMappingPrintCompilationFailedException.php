@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception;
 
-use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingPrintCompilationFailedException;
 use Throwable;
 
 use function sprintf;
 
 /** @internal */
-final class PropertyExceptionMappingPlanCompilationFailedException extends ExceptionMappingPlanCompilationFailedException
+final class PropertyExceptionMappingPrintCompilationFailedException extends ExceptionMappingPrintCompilationFailedException
 {
     public function __construct(
         /** @var class-string */

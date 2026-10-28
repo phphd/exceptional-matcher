@@ -6,11 +6,11 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler;
 
 use Generator;
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPrintCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
@@ -21,15 +21,15 @@ use Throwable;
 /**
  * @internal
  *
- * @implements ExceptionMappingCompiler<ReflectionProperty,PropertyExceptionMappingPlan>
+ * @implements ExceptionMappingCompiler<ReflectionProperty,PropertyExceptionMappingBlueprint>
  */
 final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
 {
     public function __construct(
-        /** @var ExceptionMappingCompiler<ReflectionAttribute<Catch_<Throwable,Throwable>>,CatchExceptionMappingPlan<Throwable>> */
-        private readonly ExceptionMappingCompiler $catchPlanCompiler,
-        /** @var ObjectExceptionMappingPlanRegistry<object> */
-        private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
+        /** @var ExceptionMappingCompiler<ReflectionAttribute<Catch_<Throwable,Throwable>>,CatchExceptionMappingBlueprint<Throwable>> */
+        private readonly ExceptionMappingCompiler $catchCompiler,
+        /** @var ObjectExceptionMappingBlueprintRegistry<object> */
+        private readonly ObjectExceptionMappingBlueprintRegistry $printRegistry,
         private readonly ?LoggerInterface $errorReporter = null,
     ) {
     }
@@ -37,16 +37,16 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
     /** @noinspection PhpUnnecessaryStaticReferenceInspection */
     public function reportingTo(LoggerInterface $reporter): static
     {
-        return new self($this->catchPlanCompiler->reportingTo($reporter), $this->planRegistry, $reporter);
+        return new self($this->catchCompiler->reportingTo($reporter), $this->printRegistry, $reporter);
     }
 
     /** @param ReflectionProperty $reflector */
-    public function compilePlan(Reflector $reflector): ?PropertyExceptionMappingPlan
+    public function compilePrint(Reflector $reflector): ?PropertyExceptionMappingBlueprint
     {
         try {
             return $this->compile($reflector);
         } catch (Throwable $exception) {
-            $e = new PropertyExceptionMappingPlanCompilationFailedException(
+            $e = new PropertyExceptionMappingPrintCompilationFailedException(
                 $reflector->getDeclaringClass()
                     ->getName(),
                 $reflector->getName(),
@@ -64,34 +64,34 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
         }
     }
 
-    private function compile(ReflectionProperty $reflectionProperty): ?PropertyExceptionMappingPlan
+    private function compile(ReflectionProperty $reflectionProperty): ?PropertyExceptionMappingBlueprint
     {
         $catchPlans = new MemoizingIteratorAggregate($this->compileCatchPlans($reflectionProperty));
 
-        $propertyMappingPlan = new PropertyExceptionMappingPlan($reflectionProperty, $catchPlans, $this->planRegistry);
+        $mappingPrint = new PropertyExceptionMappingBlueprint($reflectionProperty, $catchPlans, $this->printRegistry);
 
-        if (!$propertyMappingPlan->hasCatchPlans()) {
+        if (!$mappingPrint->hasCatchPrints()) {
             $type = new PropertyTypeAnalyser($reflectionProperty->getType());
 
-            if (!$type->allowsMatchableObjects($this->planRegistry)) {
+            if (!$type->allowsMatchableObjects($this->printRegistry)) {
                 return null;
             }
         }
 
-        return $propertyMappingPlan;
+        return $mappingPrint;
     }
 
     /**
      * @psalm-suppress UnnecessaryVarAnnotation
      *
-     * @return Generator<int,CatchExceptionMappingPlan<Throwable>>
+     * @return Generator<int,CatchExceptionMappingBlueprint<Throwable>>
      */
     private function compileCatchPlans(ReflectionProperty $property): Generator
     {
         /** @phpstan-var ReflectionAttribute<Catch_<Throwable,Throwable>> $catchAttribute */
         foreach ($property->getAttributes(Catch_::class) as $catchAttribute) {
             /** @psalm-suppress TooManyArguments */
-            if (null !== $catchPlan = $this->catchPlanCompiler->compilePlan($catchAttribute, $property)) { // @phpstan-ignore arguments.count
+            if (null !== $catchPlan = $this->catchCompiler->compilePrint($catchAttribute, $property)) { // @phpstan-ignore arguments.count
                 yield $catchPlan;
             }
         }

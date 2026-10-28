@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Exception;
 
-use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingPrintCompilationFailedException;
 use Throwable;
 
 /** @internal */
-final class CatchExceptionMappingPlanCompilationFailedException extends ExceptionMappingPlanCompilationFailedException
+final class CatchExceptionMappingPrintCompilationFailedException extends ExceptionMappingPrintCompilationFailedException
 {
     public function __construct(
         /** @var class-string */

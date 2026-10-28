@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable;
 
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcherAggregate;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
 
 use function is_object;
@@ -16,8 +16,8 @@ final class IterablePropertyExceptionMatcherAggregate implements ExceptionMatche
 {
     public function __construct(
         private readonly PropertyExceptionMappingNode $property,
-        /** @var ObjectExceptionMappingPlanRegistry<object> */
-        private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
+        /** @var ObjectExceptionMappingBlueprintRegistry<object> */
+        private readonly ObjectExceptionMappingBlueprintRegistry $planRegistry,
     ) {
     }
 
@@ -31,7 +31,7 @@ final class IterablePropertyExceptionMatcherAggregate implements ExceptionMatche
                 continue;
             }
 
-            $itemPlan = $this->planRegistry->getPlan($item::class);
+            $itemPlan = $this->planRegistry->getMappingBlueprint($item::class);
 
             if (null === $itemPlan) {
                 continue;

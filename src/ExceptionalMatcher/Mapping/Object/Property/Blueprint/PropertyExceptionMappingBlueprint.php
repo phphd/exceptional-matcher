@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint;
 
 use ArrayIterator;
+use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcherAggregateAdapter;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\CatchAttributesExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\IterablePropertyExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
@@ -21,14 +22,14 @@ use function is_iterable;
 use function is_object;
 
 /** @internal */
-final class PropertyExceptionMappingPlan
+final class PropertyExceptionMappingBlueprint implements ExceptionMappingBlueprint
 {
     public function __construct(
         private readonly ReflectionProperty $property,
-        /** @var iterable<CatchExceptionMappingPlan<Throwable>> */
-        private readonly iterable $catchPlans,
-        /** @var ObjectExceptionMappingPlanRegistry<object> */
-        private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
+        /** @var iterable<CatchExceptionMappingBlueprint<Throwable>> */
+        private readonly iterable $catchPrints,
+        /** @var ObjectExceptionMappingBlueprintRegistry<object> */
+        private readonly ObjectExceptionMappingBlueprintRegistry $planRegistry,
     ) {
     }
 
@@ -68,18 +69,18 @@ final class PropertyExceptionMappingPlan
     /**
      * @api the seam for the mapping linter: forcing this iterable compiles every `#[Catch_]` of the property
      *
-     * @return iterable<CatchExceptionMappingPlan<Throwable>>
+     * @return iterable<CatchExceptionMappingBlueprint<Throwable>>
      */
-    public function getCatchPlans(): iterable
+    public function getCatchPrints(): iterable
     {
-        return $this->catchPlans;
+        return $this->catchPrints;
     }
 
     /** @psalm-suppress UnusedForeachValue */
-    public function hasCatchPlans(): bool
+    public function hasCatchPrints(): bool
     {
         /** @noinspection PhpLoopNeverIteratesInspection */
-        foreach ($this->catchPlans as $catchPlan) {
+        foreach ($this->catchPrints as $catchPlan) {
             return true;
         }
 
@@ -97,11 +98,11 @@ final class PropertyExceptionMappingPlan
 
     private function catchAttributesMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcherAggregate
     {
-        if (!$this->hasCatchPlans()) {
+        if (!$this->hasCatchPrints()) {
             return null;
         }
 
-        return new CatchAttributesExceptionMatcherAggregate($property, $this->catchPlans);
+        return new CatchAttributesExceptionMatcherAggregate($property, $this->catchPrints);
     }
 
     private function nestedObjectMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcher
@@ -112,7 +113,7 @@ final class PropertyExceptionMappingPlan
             return null;
         }
 
-        $nestedPlan = $this->planRegistry->getPlan($value::class);
+        $nestedPlan = $this->planRegistry->getMappingBlueprint($value::class);
 
         /** @noinspection PhpNullSafeOperatorCanBeUsedInspection */
         if (null === $nestedPlan) {

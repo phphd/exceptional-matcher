@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable;
 
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Path\PropertyPath;
 
@@ -20,13 +20,13 @@ final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode
 
     /**
      * @param T $value
-     * @param ObjectExceptionMappingPlan<T> $matchingPlan
+     * @param ObjectExceptionMappingBlueprint<T> $matchingPlan
      */
     public function __construct(
         private readonly ExceptionMappingNode $propertyNode,
         private readonly int|string $key,
         private readonly object $value,
-        ObjectExceptionMappingPlan $matchingPlan,
+        ObjectExceptionMappingBlueprint $matchingPlan,
     ) {
         $this->objectNode = $matchingPlan->bind($this->value, $this);
     }

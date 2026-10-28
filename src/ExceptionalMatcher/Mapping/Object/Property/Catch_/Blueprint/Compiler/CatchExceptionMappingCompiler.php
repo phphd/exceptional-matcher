@@ -6,9 +6,9 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Comp
 
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Exception\CatchAttributeInstantiationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Exception\CatchExceptionMappingPlanCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Exception\CatchExceptionMappingPrintCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
@@ -24,7 +24,7 @@ use Webmozart\Assert\Assert;
 /**
  * @internal
  *
- * @implements ExceptionMappingCompiler<ReflectionAttribute<Catch_<Throwable,Throwable>>,CatchExceptionMappingPlan<Throwable>>
+ * @implements ExceptionMappingCompiler<ReflectionAttribute<Catch_<Throwable,Throwable>>,CatchExceptionMappingBlueprint<Throwable>>
  */
 final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
 {
@@ -50,7 +50,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     }
 
     /** @param ReflectionAttribute<Catch_<Throwable,Throwable>> $reflector */
-    public function compilePlan(Reflector $reflector, ?ReflectionProperty $property = null): ?CatchExceptionMappingPlan
+    public function compilePrint(Reflector $reflector, ?ReflectionProperty $property = null): ?CatchExceptionMappingBlueprint
     {
         Assert::notNull($property);
 
@@ -59,7 +59,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
 
             return $this->compile($catch);
         } catch (Throwable $exception) {
-            $e = new CatchExceptionMappingPlanCompilationFailedException(
+            $e = new CatchExceptionMappingPrintCompilationFailedException(
                 $property->getDeclaringClass()
                     ->getName(),
                 $property->getName(),
@@ -94,11 +94,11 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     /**
      * @param Catch_<Throwable,Throwable> $catch
      *
-     * @return CatchExceptionMappingPlan<Throwable>
+     * @return CatchExceptionMappingBlueprint<Throwable>
      */
-    private function compile(Catch_ $catch): CatchExceptionMappingPlan
+    private function compile(Catch_ $catch): CatchExceptionMappingBlueprint
     {
-        return new CatchExceptionMappingPlan(
+        return new CatchExceptionMappingBlueprint(
             $this->compileMatchConditionPlan($catch),
             $this->compileExceptionFormatter($catch),
             $catch->getMessage(),

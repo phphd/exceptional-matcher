@@ -6,9 +6,9 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler;
 
 use Closure;
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
 use ReflectionAttribute;
 use ReflectionProperty;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -24,14 +24,14 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
 
     $services
         ->set(
-            ExceptionMappingCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingPlan::class.'>',
+            ExceptionMappingCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingBlueprint::class.'>',
             PropertyExceptionMappingCompiler::class,
         )->args([
-            service(ExceptionMappingCompiler::class.'<'.ReflectionAttribute::class.','.CatchExceptionMappingPlan::class.'>'),
+            service(ExceptionMappingCompiler::class.'<'.ReflectionAttribute::class.','.CatchExceptionMappingBlueprint::class.'>'),
             // #[Autowire(lazy: ObjectExceptionMappingPlanRegistry::class)]
             service(PropertyExceptionMappingCompiler::class.'::$planRegistry'),
         ])
-        // Better if lazy, since ObjectPlanCompiler doesn't always reach it.
+        // Better when lazy, since ObjectExceptionMappingCompiler doesn't always reach it.
         ->lazy($hintLazy(ExceptionMappingCompiler::class))
     ;
 
@@ -39,8 +39,8 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
     $services
         ->set(
             PropertyExceptionMappingCompiler::class.'::$planRegistry',
-            ObjectExceptionMappingPlanRegistry::class
+            ObjectExceptionMappingBlueprintRegistry::class
         )->lazy()
         ->factory('current')
-        ->args([[service(ObjectExceptionMappingPlanRegistry::class)]]);
+        ->args([[service(ObjectExceptionMappingBlueprintRegistry::class)]]);
 };

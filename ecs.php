@@ -12,7 +12,7 @@ return ECSConfig::configure()
         Symplify\CodingStandard\Fixer\ArrayNotation\ArrayOpenerAndCloserNewlineFixer::class => [
             __DIR__.'/**/services.php',
             // Single-line PSR-3 log context reads better than an exploded array
-            __DIR__.'/src/*/*ExceptionMappingPlanCompiler.php',
+            __DIR__.'/src/*/*ExceptionMappingCompiler.php',
         ],
         PhpCsFixer\Fixer\Import\FullyQualifiedStrictTypesFixer::class => [ // Conflicts with rector's removeUnusedImports()
             __DIR__.'/src/ExceptionalMatcher/Bundle/DependencyInjection/PhdExceptionalMatcherExtension.php',

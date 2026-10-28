@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler;
 
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use ReflectionClass;
 use ReflectionIntersectionType;
 use ReflectionNamedType;
@@ -26,23 +26,23 @@ final class PropertyTypeAnalyser
     ) {
     }
 
-    /** @param ObjectExceptionMappingPlanRegistry<object> $planRegistry */
-    public function allowsMatchableObjects(ObjectExceptionMappingPlanRegistry $planRegistry): bool
+    /** @param ObjectExceptionMappingBlueprintRegistry<object> $printRegistry */
+    public function allowsMatchableObjects(ObjectExceptionMappingBlueprintRegistry $printRegistry): bool
     {
-        return $this->canNamedTypeValueMatch($planRegistry)
-            ?? $this->canCompositeTypeMatch($planRegistry)
+        return $this->canNamedTypeValueMatch($printRegistry)
+            ?? $this->canCompositeTypeMatch($printRegistry)
             ?? true; // untyped property - the value may be anything
     }
 
-    /** @param ObjectExceptionMappingPlanRegistry<object> $planRegistry */
-    private function canCompositeTypeMatch(ObjectExceptionMappingPlanRegistry $planRegistry): ?bool
+    /** @param ObjectExceptionMappingBlueprintRegistry<object> $printRegistry */
+    private function canCompositeTypeMatch(ObjectExceptionMappingBlueprintRegistry $printRegistry): ?bool
     {
         if (!$this->type instanceof ReflectionUnionType && !$this->type instanceof ReflectionIntersectionType) {
             return null;
         }
 
         foreach ($this->type->getTypes() as $reflectionType) {
-            if ((new self($reflectionType))->allowsMatchableObjects($planRegistry)) {
+            if ((new self($reflectionType))->allowsMatchableObjects($printRegistry)) {
                 return true;
             }
         }
@@ -50,8 +50,8 @@ final class PropertyTypeAnalyser
         return false;
     }
 
-    /** @param ObjectExceptionMappingPlanRegistry<object> $planRegistry */
-    private function canNamedTypeValueMatch(ObjectExceptionMappingPlanRegistry $planRegistry): ?bool
+    /** @param ObjectExceptionMappingBlueprintRegistry<object> $planRegistry */
+    private function canNamedTypeValueMatch(ObjectExceptionMappingBlueprintRegistry $planRegistry): ?bool
     {
         if (!$this->type instanceof ReflectionNamedType) {
             return null;
@@ -89,6 +89,6 @@ final class PropertyTypeAnalyser
             return true;
         }
 
-        return null !== $planRegistry->getPlan($className);
+        return null !== $planRegistry->getMappingBlueprint($className);
     }
 }

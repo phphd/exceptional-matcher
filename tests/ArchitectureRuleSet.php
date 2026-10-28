@@ -16,8 +16,8 @@ use PHPat\Test\PHPat;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcherAggregate;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingBlueprintRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingClassDiscovery;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsClassLoader;
@@ -47,15 +47,15 @@ use Webmozart\Assert\Assert;
 final class ArchitectureRuleSet
 {
     #[TestRule]
-    public function testPlanCompilerDependencies(): BuildStep
+    public function testCompilerDependencies(): BuildStep
     {
-        return $this->layerRule('planCompiler');
+        return $this->layerRule('compiler');
     }
 
     #[TestRule]
-    public function testPlanDependencies(): BuildStep
+    public function testBlueprintDependencies(): BuildStep
     {
-        return $this->layerRule('plan');
+        return $this->layerRule('blueprint');
     }
 
     #[TestRule]
@@ -196,8 +196,8 @@ final class ArchitectureRuleSet
             ],
             'linter' => [
                 'deps' => [
-                    $this->plan(),
-                    $this->planCompiler(),
+                    $this->blueprint(),
+                    $this->compiler(),
                     $this->matchCondition(),
                     Selector::inNamespace('Psr'),
                     Selector::inNamespace('Composer\ClassMapGenerator'),
@@ -225,27 +225,27 @@ final class ArchitectureRuleSet
             ],
             'matcher' => [
                 'deps' => [
-                    $this->plan(),
+                    $this->blueprint(),
                     $this->node(),
                     $this->exception(),
                     Selector::classname(ExceptionUnwrapper::class),
                 ],
             ],
-            'planCompiler' => [
-                'wraps' => ['plan', 'node'],
+            'compiler' => [
+                'wraps' => ['blueprint', 'node'],
                 'deps' => [
                     $this->matchConditionCompiler(),
                     $this->exceptionFormatter(),
                     Selector::inNamespace('Psr'),
                 ],
             ],
-            'plan' => [
+            'blueprint' => [
                 'wraps' => ['node'],
                 'deps' => [],
             ],
             'node' => [
                 'deps' => [
-                    $this->plan(),
+                    $this->blueprint(),
                     $this->exception(),
                     $this->matchCondition(),
                 ],
@@ -314,22 +314,22 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function plan(): AnyOfSelectorModifier
+    public function blueprint(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
-            Selector::classname('/ExceptionMappingPlan$/', regex: true),
-            Selector::classname(ObjectExceptionMappingPlanRegistry::class),
+            Selector::classname('/ExceptionMappingBlueprint$/', regex: true),
+            Selector::classname(ObjectExceptionMappingBlueprintRegistry::class),
         );
     }
 
-    public function planCompiler(): AllOfSelectorModifier
+    public function compiler(): AllOfSelectorModifier
     {
         return Selector::AllOf(
             Selector::AnyOf(
                 Selector::inNamespace('/\\\Blueprint\\\(Registry\\\)?Compiler/', regex: true),
                 Selector::classname(Try_::class),
                 Selector::classname(Catch_::class),
-                Selector::classname(CompilingObjectExceptionMappingPlanRegistry::class),
+                Selector::classname(CompilingObjectExceptionMappingBlueprintRegistry::class),
             ),
             Selector::Not($this->bundle()),
         );

@@ -6,20 +6,20 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Memory\Test
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Memory\MemoizingObjectExceptionMappingPlanRegistry
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Memory\MemoizingObjectExceptionMappingBlueprintRegistry
  *
  * @internal
  */
 final class MemoizingObjectExceptionMappingPlanRegistryUnitTest extends TestCase
 {
-    /** @var ObjectExceptionMappingPlanRegistry<object> */
-    private ObjectExceptionMappingPlanRegistry $planRegistry;
+    /** @var ObjectExceptionMappingBlueprintRegistry<object> */
+    private ObjectExceptionMappingBlueprintRegistry $planRegistry;
 
     protected function setUp(): void
     {
@@ -30,24 +30,24 @@ final class MemoizingObjectExceptionMappingPlanRegistryUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->addCompilerPass(new PublicServiceCompilerPass(ObjectExceptionMappingPlanRegistry::class));
+        $container->addCompilerPass(new PublicServiceCompilerPass(ObjectExceptionMappingBlueprintRegistry::class));
 
         $container->compile();
 
-        /** @var ObjectExceptionMappingPlanRegistry<object> $planRegistry */
-        $planRegistry = $container->get(ObjectExceptionMappingPlanRegistry::class);
+        /** @var ObjectExceptionMappingBlueprintRegistry<object> $planRegistry */
+        $planRegistry = $container->get(ObjectExceptionMappingBlueprintRegistry::class);
         $this->planRegistry = $planRegistry;
     }
 
     public function testPlansAreMemoized(): void
     {
         self::assertSame(
-            $this->planRegistry->getPlan(HandleableMessageStub::class),
-            $this->planRegistry->getPlan(HandleableMessageStub::class),
+            $this->planRegistry->getMappingBlueprint(HandleableMessageStub::class),
+            $this->planRegistry->getMappingBlueprint(HandleableMessageStub::class),
         );
         self::assertInstanceOf(
-            ObjectExceptionMappingPlan::class,
-            $this->planRegistry->getPlan(HandleableMessageStub::class),
+            ObjectExceptionMappingBlueprint::class,
+            $this->planRegistry->getMappingBlueprint(HandleableMessageStub::class),
         );
     }
 }

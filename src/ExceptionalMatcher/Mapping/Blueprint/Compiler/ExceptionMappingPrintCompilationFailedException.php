@@ -8,7 +8,7 @@ use RuntimeException;
 use Throwable;
 
 /** @internal */
-abstract class ExceptionMappingPlanCompilationFailedException extends RuntimeException
+abstract class ExceptionMappingPrintCompilationFailedException extends RuntimeException
 {
     public function getRootException(): Throwable
     {

@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Port;
 
 use Closure;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -24,7 +24,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
         ->set(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>', MainExceptionMatcher::class)
         ->public()
         ->args([
-            service(ObjectExceptionMappingPlanRegistry::class),
+            service(ObjectExceptionMappingBlueprintRegistry::class),
             service('phd_exceptional_matcher.exception_unwrapper'),
         ])
         ->lazy($hintLazy(ExceptionMatcher::class))

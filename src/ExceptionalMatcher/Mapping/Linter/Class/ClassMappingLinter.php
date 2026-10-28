@@ -11,9 +11,9 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location\DefectLocation;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionPlan;
@@ -33,10 +33,10 @@ final class ClassMappingLinter implements MappingLinter
 {
     /** @api */
     public function __construct(
-        /** @var ObjectExceptionMappingPlanRegistry<object> */
-        private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
-        /** @var ExceptionMappingCompiler<ReflectionProperty,PropertyExceptionMappingPlan> */
-        private readonly ExceptionMappingCompiler $propertyMappingPlanCompiler,
+        /** @var ObjectExceptionMappingBlueprintRegistry<object> */
+        private readonly ObjectExceptionMappingBlueprintRegistry $planRegistry,
+        /** @var ExceptionMappingCompiler<ReflectionProperty,PropertyExceptionMappingBlueprint> */
+        private readonly ExceptionMappingCompiler $propertyMappingCompiler,
         private readonly CompilationDefectCollector $compilationDefectCollector,
     ) {
     }
@@ -105,11 +105,11 @@ final class ClassMappingLinter implements MappingLinter
      */
     private function lintClassPlan(ReflectionClass $reflectionClass): iterable
     {
-        if (null !== $plan = $this->planRegistry->getPlan($reflectionClass->getName())) {
-            return yield from $this->lintPlan($plan);
+        if (null !== $print = $this->planRegistry->getMappingBlueprint($reflectionClass->getName())) {
+            return yield from $this->lintObjectMappingPrint($print);
         }
 
-        // If no plan, it possibly has failed compilation:
+        // If no print, it possibly has failed compilation:
         if ([] !== $compilationDefects = $this->compilationDefectCollector->flushDefects()) {
             return yield from $compilationDefects;
         }
@@ -129,7 +129,7 @@ final class ClassMappingLinter implements MappingLinter
         $missingTryDefects = [];
 
         foreach ($reflectionClass->getProperties() as $property) {
-            if (true !== $this->propertyMappingPlanCompiler->compilePlan($property)?->hasCatchPlans()) {
+            if (true !== $this->propertyMappingCompiler->compilePrint($property)?->hasCatchPrints()) {
                 continue;
             }
 
@@ -194,22 +194,22 @@ final class ClassMappingLinter implements MappingLinter
     }
 
     /**
-     * @param ObjectExceptionMappingPlan<object> $plan
+     * @param ObjectExceptionMappingBlueprint<object> $objectPrint
      *
      * @return Generator<MappingDefect>
      */
-    private function lintPlan(ObjectExceptionMappingPlan $plan): Generator
+    private function lintObjectMappingPrint(ObjectExceptionMappingBlueprint $objectPrint): Generator
     {
         // Compilation is done lazily through traversal
-        foreach ($plan->getPropertyPlans() as $propertyPlan) {
-            foreach ($propertyPlan->getCatchPlans() as $catchPlan) {
-                if (true === yield from $this->traverseMatchConditionPlan($propertyPlan, $catchPlan->getConditionPlan())) {
+        foreach ($objectPrint->getPropertyPrints() as $propertyPrint) {
+            foreach ($propertyPrint->getCatchPrints() as $catchPrint) {
+                if (true === yield from $this->traverseMatchConditionPlan($propertyPrint, $catchPrint->getConditionPlan())) {
                     continue;
                 }
 
                 yield MappingDefect::notice(
                     '#[Catch_] condition plan is not composite, so it cannot be linted.',
-                    DefectLocation::ofProperty($propertyPlan->getProperty()),
+                    DefectLocation::ofProperty($propertyPrint->getProperty()),
                 );
             }
         }
@@ -222,7 +222,7 @@ final class ClassMappingLinter implements MappingLinter
      *
      * @return Generator<MappingDefect>
      */
-    private function traverseMatchConditionPlan(PropertyExceptionMappingPlan $propertyPlan, MatchConditionPlan $matchConditionPlan): Generator
+    private function traverseMatchConditionPlan(PropertyExceptionMappingBlueprint $propertyPlan, MatchConditionPlan $matchConditionPlan): Generator
     {
         if (!$matchConditionPlan instanceof CompositeMatchConditionPlan) {
             return false;

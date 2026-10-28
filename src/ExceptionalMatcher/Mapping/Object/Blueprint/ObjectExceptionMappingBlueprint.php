@@ -6,9 +6,10 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint;
 
 use AppendIterator;
 use Iterator;
+use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
 use Webmozart\Assert\Assert;
 
@@ -17,13 +18,13 @@ use Webmozart\Assert\Assert;
  *
  * @template T of object
  */
-final class ObjectExceptionMappingPlan
+final class ObjectExceptionMappingBlueprint implements ExceptionMappingBlueprint
 {
     public function __construct(
         /** @var class-string<T> */
         private readonly string $className,
-        /** @var iterable<PropertyExceptionMappingPlan> */
-        private readonly iterable $propertyPlans,
+        /** @var iterable<PropertyExceptionMappingBlueprint> */
+        private readonly iterable $propertyPrints,
     ) {
     }
 
@@ -37,22 +38,22 @@ final class ObjectExceptionMappingPlan
 
         $objectNode = new ObjectExceptionMappingNode($object, $parentProperty, new MemoizingIteratorAggregate($properties));
 
-        $properties->append($this->bindPropertyPlans($objectNode));
+        $properties->append($this->bindProperties($objectNode));
 
         return $objectNode;
     }
 
-    /** @return iterable<PropertyExceptionMappingPlan> */
-    public function getPropertyPlans(): iterable
+    /** @return iterable<PropertyExceptionMappingBlueprint> */
+    public function getPropertyPrints(): iterable
     {
-        return $this->propertyPlans;
+        return $this->propertyPrints;
     }
 
     /** @psalm-suppress UnusedForeachValue */
-    public function hasPropertyPlans(): bool
+    public function hasPropertyPrints(): bool
     {
         /** @noinspection PhpLoopNeverIteratesInspection */
-        foreach ($this->propertyPlans as $propertyPlan) {
+        foreach ($this->propertyPrints as $print) {
             return true;
         }
 
@@ -60,10 +61,10 @@ final class ObjectExceptionMappingPlan
     }
 
     /** @return Iterator<int,ExceptionMappingNode> */
-    private function bindPropertyPlans(ObjectExceptionMappingNode $objectNode): Iterator
+    private function bindProperties(ObjectExceptionMappingNode $objectNode): Iterator
     {
-        foreach ($this->propertyPlans as $propertyPlan) {
-            yield $propertyPlan->bind($objectNode);
+        foreach ($this->propertyPrints as $propertyPrint) {
+            yield $propertyPrint->bind($objectNode);
         }
     }
 }

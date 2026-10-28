@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint;
 
+use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\CatchExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\MatchConditionPlan;
@@ -15,7 +16,7 @@ use Throwable;
  *
  * @template TException of Throwable
  */
-final class CatchExceptionMappingPlan
+final class CatchExceptionMappingBlueprint implements ExceptionMappingBlueprint
 {
     public function __construct(
         /** @var MatchConditionPlan<TException> */

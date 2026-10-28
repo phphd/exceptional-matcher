@@ -14,17 +14,17 @@ use Reflector;
  *
  * @template TReflector of Reflector
  *
- * @template-covariant TPlan of object
+ * @template-covariant TPrint of object
  */
 interface ExceptionMappingCompiler
 {
-    /** @return static<TReflector,TPlan> */
+    /** @return static<TReflector,TPrint> */
     public function reportingTo(LoggerInterface $reporter): static;
 
     /**
      * @param TReflector $reflector
      *
-     * @return null|TPlan
+     * @return null|TPrint
      */
-    public function compilePlan(Reflector $reflector): ?object;
+    public function compilePrint(Reflector $reflector): ?object;
 }

@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 
 use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcherAggregate;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
 use Throwable;
 
@@ -15,7 +15,7 @@ final class CatchAttributesExceptionMatcherAggregate implements ExceptionMatcher
 {
     public function __construct(
         private readonly PropertyExceptionMappingNode $property,
-        /** @var iterable<CatchExceptionMappingPlan<Throwable>> */
+        /** @var iterable<CatchExceptionMappingBlueprint<Throwable>> */
         private readonly iterable $catchPlans,
     ) {
     }

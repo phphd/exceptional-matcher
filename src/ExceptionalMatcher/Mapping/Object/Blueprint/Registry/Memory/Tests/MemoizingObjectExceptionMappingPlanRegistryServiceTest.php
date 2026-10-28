@@ -6,20 +6,20 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Memory\Test
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Memory\MemoizingObjectExceptionMappingPlanRegistry::clear
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Memory\MemoizingObjectExceptionMappingBlueprintRegistry::clear
  *
  * @internal
  */
 final class MemoizingObjectExceptionMappingPlanRegistryServiceTest extends BundleTestCase
 {
-    /** @var ObjectExceptionMappingPlanRegistry<object> */
-    private ObjectExceptionMappingPlanRegistry $planRegistry;
+    /** @var ObjectExceptionMappingBlueprintRegistry<object> */
+    private ObjectExceptionMappingBlueprintRegistry $planRegistry;
 
     private ResetInterface $servicesResetter;
 
@@ -29,8 +29,8 @@ final class MemoizingObjectExceptionMappingPlanRegistryServiceTest extends Bundl
 
         $container = self::getContainer();
 
-        /** @var ObjectExceptionMappingPlanRegistry<object> $planRegistry */
-        $planRegistry = $container->get(ObjectExceptionMappingPlanRegistry::class);
+        /** @var ObjectExceptionMappingBlueprintRegistry<object> $planRegistry */
+        $planRegistry = $container->get(ObjectExceptionMappingBlueprintRegistry::class);
         $this->planRegistry = $planRegistry;
 
         /** @var ResetInterface $servicesResetter */
@@ -41,16 +41,16 @@ final class MemoizingObjectExceptionMappingPlanRegistryServiceTest extends Bundl
     /** @return list<CompilerPassInterface> */
     protected static function compilerPasses(): array
     {
-        return [new PublicServiceCompilerPass(ObjectExceptionMappingPlanRegistry::class)];
+        return [new PublicServiceCompilerPass(ObjectExceptionMappingBlueprintRegistry::class)];
     }
 
     public function testMemoizedPlansAreDroppedOnServicesReset(): void
     {
-        $memoizedPlan = $this->planRegistry->getPlan(HandleableMessageStub::class);
+        $memoizedPlan = $this->planRegistry->getMappingBlueprint(HandleableMessageStub::class);
 
         $this->servicesResetter->reset();
 
-        $freshPlan = $this->planRegistry->getPlan(HandleableMessageStub::class);
+        $freshPlan = $this->planRegistry->getMappingBlueprint(HandleableMessageStub::class);
 
         self::assertNotSame($memoizedPlan, $freshPlan);
     }
