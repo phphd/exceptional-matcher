@@ -50,8 +50,8 @@ final class PropertyTypeAnalyser
         return false;
     }
 
-    /** @param ObjectExceptionMappingBlueprintRegistry<object> $planRegistry */
-    private function canNamedTypeValueMatch(ObjectExceptionMappingBlueprintRegistry $planRegistry): ?bool
+    /** @param ObjectExceptionMappingBlueprintRegistry<object> $printRegistry */
+    private function canNamedTypeValueMatch(ObjectExceptionMappingBlueprintRegistry $printRegistry): ?bool
     {
         if (!$this->type instanceof ReflectionNamedType) {
             return null;
@@ -85,10 +85,10 @@ final class PropertyTypeAnalyser
         }
 
         if (!$reflectionClass->isFinal()) {
-            // #[Try_] is not inherited, yet a plan-bearing subclass may still be assigned at runtime
+            // #[Try_] is not inherited, yet a print-bearing subclass may still be assigned at runtime
             return true;
         }
 
-        return null !== $planRegistry->getMappingBlueprint($className);
+        return null !== $printRegistry->getMappingBlueprint($className);
     }
 }

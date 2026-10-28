@@ -99,7 +99,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     private function compile(Catch_ $catch): CatchExceptionMappingBlueprint
     {
         return new CatchExceptionMappingBlueprint(
-            $this->compileMatchConditionPlan($catch),
+            $this->compileMatchConditionPrint($catch),
             $this->compileExceptionFormatter($catch),
             $catch->getMessage(),
         );
@@ -110,13 +110,13 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
      *
      * @return MatchConditionBlueprint<Throwable>
      */
-    private function compileMatchConditionPlan(Catch_ $catch): MatchConditionBlueprint
+    private function compileMatchConditionPrint(Catch_ $catch): MatchConditionBlueprint
     {
-        $conditionPlan = $this->matchConditionCompiler->compile($catch);
+        $conditionPrint = $this->matchConditionCompiler->compile($catch);
 
-        Assert::notNull($conditionPlan, 'Condition compiler must produce a plan.');
+        Assert::notNull($conditionPrint, 'Condition compiler must produce a blueprint.');
 
-        return $conditionPlan;
+        return $conditionPrint;
     }
 
     /**

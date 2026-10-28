@@ -20,15 +20,15 @@ final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode
 
     /**
      * @param T $value
-     * @param ObjectExceptionMappingBlueprint<T> $matchingPlan
+     * @param ObjectExceptionMappingBlueprint<T> $print
      */
     public function __construct(
         private readonly ExceptionMappingNode $propertyNode,
         private readonly int|string $key,
         private readonly object $value,
-        ObjectExceptionMappingBlueprint $matchingPlan,
+        ObjectExceptionMappingBlueprint $print,
     ) {
-        $this->objectNode = $matchingPlan->bind($this, $this->value);
+        $this->objectNode = $print->bind($this, $this->value);
     }
 
     public function match(ExceptionReciprocal $reciprocal): bool

@@ -21,20 +21,20 @@ final class MainExceptionMatcher implements ExceptionMatcher
     /** @api */
     public function __construct(
         /** @var ObjectExceptionMappingBlueprintRegistry<object> */
-        private readonly ObjectExceptionMappingBlueprintRegistry $planRegistry,
+        private readonly ObjectExceptionMappingBlueprintRegistry $printRegistry,
         private readonly ExceptionUnwrapper $exceptionUnwrapper,
     ) {
     }
 
     public function match(Throwable $exception, object $object): ?MatchedExceptionList
     {
-        $plan = $this->planRegistry->getMappingBlueprint($object::class);
+        $print = $this->printRegistry->getMappingBlueprint($object::class);
 
-        if (null === $plan) {
+        if (null === $print) {
             return null;
         }
 
-        $matcher = $plan->bind(object: $object);
+        $matcher = $print->bind(object: $object);
 
         $exceptions = $this->exceptionUnwrapper->unwrap($exception);
         $reciprocal = new ExceptionReciprocal($exceptions);

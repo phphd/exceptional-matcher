@@ -119,7 +119,7 @@ final class MappingLinterUnitTest extends TestCase
         ], $defect->getMessages());
     }
 
-    public function testReportsTryClassWhoseNestedObjectCannotCarryAPlan(): void
+    public function testReportsTryClassWhoseNestedObjectCannotCarryABlueprint(): void
     {
         [$classReport] = $this->linter->lint([TryWithNonMatchableObjectMessage::class])->getClassReports();
 
@@ -156,7 +156,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame(UnregisteredFormatterMessage::class.'::$divisor', $defect->getLocation()->toReference());
         self::assertSame([
             'Exception Formatter is not registered: "'.UnregisteredFormatter::class.'"',
-            'CatchExceptionMappingPlan compilation failed.',
+            'CatchExceptionMappingBlueprint compilation failed.',
         ], $defect->getMessages());
     }
 
@@ -170,7 +170,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame(MissingEnumFromConditionMessage::class.'::$weekDay', $defect->getLocation()->toReference());
         self::assertSame([
             'EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: NULL',
-            'CatchExceptionMappingPlan compilation failed.',
+            'CatchExceptionMappingBlueprint compilation failed.',
         ], $defect->getMessages());
     }
 
@@ -190,7 +190,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame([
             'Undefined constant "PhPhD\\ExceptionalMatcher\\Mapping\\Object\\Property\\Catch_\\Condition\\Undefined\\undefined_condition"',
             '#[Catch_] attribute instantiation failed.',
-            'CatchExceptionMappingPlan compilation failed.',
+            'CatchExceptionMappingBlueprint compilation failed.',
         ], $defect->getMessages());
     }
 

@@ -48,8 +48,8 @@ final class ObjectExceptionMappingCompilerUnitTest extends TestCase
         /** @var ExceptionMappingCompiler<ReflectionClass<object>,ObjectExceptionMappingBlueprint<object>> $compiler */
         $compiler = $container->get(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingBlueprint::class.'>');
 
-        $plan = $compiler->compilePrint(new ReflectionClass(TryWithNoCatchAttributesMessage::class));
-        self::assertNull($plan);
+        $print = $compiler->compilePrint(new ReflectionClass(TryWithNoCatchAttributesMessage::class));
+        self::assertNull($print);
 
         $records = $spyLogger->flush();
         self::assertCount(1, $records);

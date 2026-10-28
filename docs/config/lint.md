@@ -21,7 +21,7 @@ bin/console lint:exceptional-matcher src/
  152 classes scanned: 1 errors, 1 warnings.
 ```
 
-There is **no duplicated validation**: the linter forces the compilation of every property's catch plans —
+There is **no duplicated validation**: the linter forces the compilation of every property's catch blueprints —
 the very same compilation the matcher runs in production — and turns the failures into the report. On top
 of that, it adds the structural observations the runtime deliberately ignores:
 

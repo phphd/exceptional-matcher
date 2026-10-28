@@ -16,10 +16,10 @@ use PHPUnit\Framework\TestCase;
  *
  * @internal
  */
-final class MemoizingObjectExceptionMappingPlanRegistryUnitTest extends TestCase
+final class MemoizingObjectExceptionMappingBlueprintRegistryUnitTest extends TestCase
 {
     /** @var ObjectExceptionMappingBlueprintRegistry<object> */
-    private ObjectExceptionMappingBlueprintRegistry $planRegistry;
+    private ObjectExceptionMappingBlueprintRegistry $printRegistry;
 
     protected function setUp(): void
     {
@@ -34,20 +34,20 @@ final class MemoizingObjectExceptionMappingPlanRegistryUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ObjectExceptionMappingBlueprintRegistry<object> $planRegistry */
-        $planRegistry = $container->get(ObjectExceptionMappingBlueprintRegistry::class);
-        $this->planRegistry = $planRegistry;
+        /** @var ObjectExceptionMappingBlueprintRegistry<object> $printRegistry */
+        $printRegistry = $container->get(ObjectExceptionMappingBlueprintRegistry::class);
+        $this->printRegistry = $printRegistry;
     }
 
-    public function testPlansAreMemoized(): void
+    public function testBlueprintsAreMemoized(): void
     {
         self::assertSame(
-            $this->planRegistry->getMappingBlueprint(HandleableMessageStub::class),
-            $this->planRegistry->getMappingBlueprint(HandleableMessageStub::class),
+            $this->printRegistry->getMappingBlueprint(HandleableMessageStub::class),
+            $this->printRegistry->getMappingBlueprint(HandleableMessageStub::class),
         );
         self::assertInstanceOf(
             ObjectExceptionMappingBlueprint::class,
-            $this->planRegistry->getMappingBlueprint(HandleableMessageStub::class),
+            $this->printRegistry->getMappingBlueprint(HandleableMessageStub::class),
         );
     }
 }

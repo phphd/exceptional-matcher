@@ -66,9 +66,9 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
 
     private function compile(ReflectionProperty $reflectionProperty): ?PropertyExceptionMappingBlueprint
     {
-        $catchPlans = new MemoizingIteratorAggregate($this->compileCatchPlans($reflectionProperty));
+        $catchPrints = new MemoizingIteratorAggregate($this->compileCatchPrints($reflectionProperty));
 
-        $mappingPrint = new PropertyExceptionMappingBlueprint($reflectionProperty, $catchPlans, $this->printRegistry);
+        $mappingPrint = new PropertyExceptionMappingBlueprint($reflectionProperty, $catchPrints, $this->printRegistry);
 
         if (!$mappingPrint->hasCatchPrints()) {
             $type = new PropertyTypeAnalyser($reflectionProperty->getType());
@@ -86,13 +86,13 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
      *
      * @return Generator<int,CatchExceptionMappingBlueprint<Throwable>>
      */
-    private function compileCatchPlans(ReflectionProperty $property): Generator
+    private function compileCatchPrints(ReflectionProperty $property): Generator
     {
         /** @phpstan-var ReflectionAttribute<Catch_<Throwable,Throwable>> $catchAttribute */
         foreach ($property->getAttributes(Catch_::class) as $catchAttribute) {
             /** @psalm-suppress TooManyArguments */
-            if (null !== $catchPlan = $this->catchCompiler->compilePrint($catchAttribute, $property)) { // @phpstan-ignore arguments.count
-                yield $catchPlan;
+            if (null !== $catchPrint = $this->catchCompiler->compilePrint($catchAttribute, $property)) { // @phpstan-ignore arguments.count
+                yield $catchPrint;
             }
         }
     }

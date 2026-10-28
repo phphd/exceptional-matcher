@@ -34,7 +34,7 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
         /** @var iterable<CatchExceptionMappingBlueprint<Throwable>> */
         private readonly iterable $catchPrints,
         /** @var ObjectExceptionMappingBlueprintRegistry<object> */
-        private readonly ObjectExceptionMappingBlueprintRegistry $planRegistry,
+        private readonly ObjectExceptionMappingBlueprintRegistry $printRegistry,
     ) {
     }
 
@@ -86,7 +86,7 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
     public function hasCatchPrints(): bool
     {
         /** @noinspection PhpLoopNeverIteratesInspection */
-        foreach ($this->catchPrints as $catchPlan) {
+        foreach ($this->catchPrints as $catchPrint) {
             return true;
         }
 
@@ -117,14 +117,14 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
             return null;
         }
 
-        $innerPlan = $this->planRegistry->getMappingBlueprint($object::class);
+        $innerObjectPrint = $this->printRegistry->getMappingBlueprint($object::class);
 
         /** @noinspection PhpNullSafeOperatorCanBeUsedInspection */
-        if (null === $innerPlan) {
+        if (null === $innerObjectPrint) {
             return null;
         }
 
-        return $innerPlan->bind($property, $object);
+        return $innerObjectPrint->bind($property, $object);
     }
 
     private function innerObjectsIterableMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcherAggregate
@@ -135,6 +135,6 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
             return null;
         }
 
-        return new IterablePropertyExceptionMatcherAggregate($property, $this->planRegistry);
+        return new IterablePropertyExceptionMatcherAggregate($property, $this->printRegistry);
     }
 }

@@ -19,7 +19,7 @@ final class CompositeMatchConditionBlueprint implements MatchConditionBlueprint
 {
     public function __construct(
         /** @var iterable<MatchConditionBlueprint<Throwable>> */
-        private readonly iterable $plans,
+        private readonly iterable $prints,
     ) {
     }
 
@@ -29,16 +29,16 @@ final class CompositeMatchConditionBlueprint implements MatchConditionBlueprint
     }
 
     /** @return iterable<MatchConditionBlueprint<Throwable>> */
-    public function getPlans(): iterable
+    public function getPrints(): iterable
     {
-        return $this->plans;
+        return $this->prints;
     }
 
     /** @psalm-suppress UnusedForeachValue */
-    public function hasPlans(): bool
+    public function hasPrints(): bool
     {
         /** @noinspection PhpLoopNeverIteratesInspection */
-        foreach ($this->plans as $plan) {
+        foreach ($this->prints as $print) {
             return true;
         }
 
@@ -48,8 +48,8 @@ final class CompositeMatchConditionBlueprint implements MatchConditionBlueprint
     /** @return Iterator<MatchCondition<Throwable>> */
     private function conditions(ExceptionMappingNode $node): Iterator
     {
-        foreach ($this->plans as $plan) {
-            yield $plan->bind($node);
+        foreach ($this->prints as $print) {
+            yield $print->bind($node);
         }
     }
 }

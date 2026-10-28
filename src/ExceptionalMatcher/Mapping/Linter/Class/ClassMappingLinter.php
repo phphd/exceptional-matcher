@@ -34,7 +34,7 @@ final class ClassMappingLinter implements MappingLinter
     /** @api */
     public function __construct(
         /** @var ObjectExceptionMappingBlueprintRegistry<object> */
-        private readonly ObjectExceptionMappingBlueprintRegistry $planRegistry,
+        private readonly ObjectExceptionMappingBlueprintRegistry $printRegistry,
         /** @var ExceptionMappingCompiler<ReflectionProperty,PropertyExceptionMappingBlueprint> */
         private readonly ExceptionMappingCompiler $propertyMappingCompiler,
         private readonly CompilationDefectCollector $compilationDefectCollector,
@@ -93,7 +93,7 @@ final class ClassMappingLinter implements MappingLinter
 
         yield from $this->lintStructure($reflectionClass);
 
-        yield from $this->lintClassPlan($reflectionClass);
+        yield from $this->lintClassBlueprint($reflectionClass);
     }
 
     /**
@@ -103,9 +103,9 @@ final class ClassMappingLinter implements MappingLinter
      *
      * @return iterable<MappingDefect>
      */
-    private function lintClassPlan(ReflectionClass $reflectionClass): iterable
+    private function lintClassBlueprint(ReflectionClass $reflectionClass): iterable
     {
-        if (null !== $print = $this->planRegistry->getMappingBlueprint($reflectionClass->getName())) {
+        if (null !== $print = $this->printRegistry->getMappingBlueprint($reflectionClass->getName())) {
             return yield from $this->lintObjectMappingPrint($print);
         }
 
@@ -125,7 +125,7 @@ final class ClassMappingLinter implements MappingLinter
      */
     private function possiblyMissingTryAttribute(ReflectionClass $reflectionClass): array
     {
-        // The class plan is null, but it might be so due to a missing #[Try_] attribute
+        // The class print is null, but it might be so due to a missing #[Try_] attribute
         $missingTryDefects = [];
 
         foreach ($reflectionClass->getProperties() as $property) {
@@ -133,8 +133,8 @@ final class ClassMappingLinter implements MappingLinter
                 continue;
             }
 
-            // If class's property has a catch plan,
-            // but the class itself has no plan, that's a defect
+            // If class's property has a catch print,
+            // but the class itself has no print, that's a defect
             $missingTryDefects[] = MappingDefect::warning(
                 'Properties declare #[Catch_] mappings, but the class is not marked with #[Try_], so it never matches anything.',
                 DefectLocation::ofProperty($property),
@@ -203,12 +203,12 @@ final class ClassMappingLinter implements MappingLinter
         // Compilation is done lazily through traversal
         foreach ($objectPrint->getPropertyPrints() as $propertyPrint) {
             foreach ($propertyPrint->getCatchPrints() as $catchPrint) {
-                if (true === yield from $this->traverseMatchConditionPlan($propertyPrint, $catchPrint->getConditionPlan())) {
+                if (true === yield from $this->traverseMatchConditionPrint($propertyPrint, $catchPrint->getConditionPrint())) {
                     continue;
                 }
 
                 yield MappingDefect::notice(
-                    '#[Catch_] condition plan is not composite, so it cannot be linted.',
+                    '#[Catch_] condition print is not composite, so it cannot be linted.',
                     DefectLocation::ofProperty($propertyPrint->getProperty()),
                 );
             }
@@ -218,24 +218,24 @@ final class ClassMappingLinter implements MappingLinter
     }
 
     /**
-     * @param MatchConditionBlueprint<Throwable> $matchConditionPlan
+     * @param MatchConditionBlueprint<Throwable> $matchConditionPrint
      *
      * @return Generator<MappingDefect>
      */
-    private function traverseMatchConditionPlan(PropertyExceptionMappingBlueprint $propertyPlan, MatchConditionBlueprint $matchConditionPlan): Generator
+    private function traverseMatchConditionPrint(PropertyExceptionMappingBlueprint $propertyPrint, MatchConditionBlueprint $matchConditionPrint): Generator
     {
-        if (!$matchConditionPlan instanceof CompositeMatchConditionBlueprint) {
+        if (!$matchConditionPrint instanceof CompositeMatchConditionBlueprint) {
             return false;
         }
 
         try {
-            // Traversal compiles the match conditions' plans
-            foreach ($matchConditionPlan->getPlans() as $subPlan) {
-                yield from $this->traverseMatchConditionPlan($propertyPlan, $subPlan); // recurse
+            // Traversal compiles the match conditions' prints
+            foreach ($matchConditionPrint->getPrints() as $subPrint) {
+                yield from $this->traverseMatchConditionPrint($propertyPrint, $subPrint); // recurse
             }
         } catch (Throwable $e) {
             yield MappingDefect::error(
-                DefectLocation::ofProperty($propertyPlan->getProperty()),
+                DefectLocation::ofProperty($propertyPrint->getProperty()),
                 $e,
             );
         }

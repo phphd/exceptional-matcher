@@ -16,10 +16,10 @@ use Symfony\Contracts\Service\ResetInterface;
  *
  * @internal
  */
-final class MemoizingObjectExceptionMappingPlanRegistryServiceTest extends BundleTestCase
+final class MemoizingObjectExceptionMappingBlueprintRegistryServiceTest extends BundleTestCase
 {
     /** @var ObjectExceptionMappingBlueprintRegistry<object> */
-    private ObjectExceptionMappingBlueprintRegistry $planRegistry;
+    private ObjectExceptionMappingBlueprintRegistry $printRegistry;
 
     private ResetInterface $servicesResetter;
 
@@ -29,9 +29,9 @@ final class MemoizingObjectExceptionMappingPlanRegistryServiceTest extends Bundl
 
         $container = self::getContainer();
 
-        /** @var ObjectExceptionMappingBlueprintRegistry<object> $planRegistry */
-        $planRegistry = $container->get(ObjectExceptionMappingBlueprintRegistry::class);
-        $this->planRegistry = $planRegistry;
+        /** @var ObjectExceptionMappingBlueprintRegistry<object> $printRegistry */
+        $printRegistry = $container->get(ObjectExceptionMappingBlueprintRegistry::class);
+        $this->printRegistry = $printRegistry;
 
         /** @var ResetInterface $servicesResetter */
         $servicesResetter = $container->get('services_resetter');
@@ -44,14 +44,14 @@ final class MemoizingObjectExceptionMappingPlanRegistryServiceTest extends Bundl
         return [new PublicServiceCompilerPass(ObjectExceptionMappingBlueprintRegistry::class)];
     }
 
-    public function testMemoizedPlansAreDroppedOnServicesReset(): void
+    public function testMemoizedBlueprintsAreDroppedOnServicesReset(): void
     {
-        $memoizedPlan = $this->planRegistry->getMappingBlueprint(HandleableMessageStub::class);
+        $memoizedPrint = $this->printRegistry->getMappingBlueprint(HandleableMessageStub::class);
 
         $this->servicesResetter->reset();
 
-        $freshPlan = $this->planRegistry->getMappingBlueprint(HandleableMessageStub::class);
+        $freshPrint = $this->printRegistry->getMappingBlueprint(HandleableMessageStub::class);
 
-        self::assertNotSame($memoizedPlan, $freshPlan);
+        self::assertNotSame($memoizedPrint, $freshPrint);
     }
 }

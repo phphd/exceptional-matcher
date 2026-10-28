@@ -92,8 +92,8 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
     private function compilePropertyPrints(ReflectionClass $reflectionClass): Generator
     {
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            if (null !== $propertyPlan = $this->propertyMappingCompiler->compilePrint($reflectionProperty)) {
-                yield $propertyPlan;
+            if (null !== $propertyPrint = $this->propertyMappingCompiler->compilePrint($reflectionProperty)) {
+                yield $propertyPrint;
             }
         }
     }

@@ -29,13 +29,13 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
     /** @return CompositeMatchConditionBlueprint|PreCompiledMatchConditionBlueprint<Throwable> */
     public function compile(Catch_ $catch): CompositeMatchConditionBlueprint|PreCompiledMatchConditionBlueprint
     {
-        $plan = new CompositeMatchConditionBlueprint(new MemoizingIteratorAggregate($this->conditionPlans($catch)));
+        $print = new CompositeMatchConditionBlueprint(new MemoizingIteratorAggregate($this->conditionPrints($catch)));
 
-        if (!$plan->hasPlans()) {
+        if (!$print->hasPrints()) {
             return new PreCompiledMatchConditionBlueprint(new FalseCondition());
         }
 
-        return $plan;
+        return $print;
     }
 
     /**
@@ -43,13 +43,13 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
      *
      * @return Iterator<MatchConditionBlueprint<Throwable>>
      */
-    private function conditionPlans(Catch_ $catch): Iterator
+    private function conditionPrints(Catch_ $catch): Iterator
     {
         foreach ($this->compilers as $compiler) {
-            $plan = $compiler->compile($catch);
+            $print = $compiler->compile($catch);
 
-            if (null !== $plan) {
-                yield $plan;
+            if (null !== $print) {
+                yield $print;
             }
         }
     }

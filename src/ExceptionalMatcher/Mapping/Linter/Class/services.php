@@ -24,7 +24,7 @@ return static function (ContainerConfigurator $configurator): void {
 
     $services
         ->set(MappingLinter::class.'<class-string,'.LintReport::class.'>', ClassMappingLinter::class)
-        ->arg('$planRegistry',
+        ->arg('$printRegistry',
             inline_service(CompilingObjectExceptionMappingBlueprintRegistry::class)
                 ->arg('$compiler',
                     // Lint-mode compiler - it collects and reports mapping problems

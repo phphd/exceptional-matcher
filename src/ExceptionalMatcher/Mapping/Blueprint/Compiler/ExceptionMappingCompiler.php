@@ -10,7 +10,7 @@ use Psr\Log\LoggerInterface;
 use Reflector;
 
 /**
- * Compiles the mapping declared on a single reflection element into an exception-matching plan.
+ * Compiles the mapping declared on a single reflection element into an exception-matching print.
  *
  * @internal
  *

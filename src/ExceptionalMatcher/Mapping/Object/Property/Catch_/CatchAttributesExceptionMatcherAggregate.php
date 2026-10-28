@@ -16,14 +16,14 @@ final class CatchAttributesExceptionMatcherAggregate implements ExceptionMatcher
     public function __construct(
         private readonly PropertyExceptionMappingNode $property,
         /** @var iterable<CatchExceptionMappingBlueprint<Throwable>> */
-        private readonly iterable $catchPlans,
+        private readonly iterable $catchPrints,
     ) {
     }
 
     public function getExceptionMatchers(): Iterator
     {
-        foreach ($this->catchPlans as $catchPlan) {
-            yield $catchPlan->bind($this->property);
+        foreach ($this->catchPrints as $catchPrint) {
+            yield $catchPrint->bind($this->property);
         }
     }
 }

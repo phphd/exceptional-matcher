@@ -19,7 +19,7 @@ use function array_key_exists;
 final class MemoizingObjectExceptionMappingBlueprintRegistry implements ObjectExceptionMappingBlueprintRegistry
 {
     /** @var array<class-string<T>,null|ObjectExceptionMappingBlueprint<T>> */
-    private array $plans = [];
+    private array $prints = [];
 
     /** @api */
     public function __construct(
@@ -35,16 +35,16 @@ final class MemoizingObjectExceptionMappingBlueprintRegistry implements ObjectEx
      */
     public function getMappingBlueprint(string $className): ?ObjectExceptionMappingBlueprint
     {
-        if (array_key_exists($className, $this->plans)) {
-            return $this->plans[$className];
+        if (array_key_exists($className, $this->prints)) {
+            return $this->prints[$className];
         }
 
-        return $this->plans[$className] = $this->registry->getMappingBlueprint($className);
+        return $this->prints[$className] = $this->registry->getMappingBlueprint($className);
     }
 
     /** @api */
     public function clear(): void
     {
-        $this->plans = [];
+        $this->prints = [];
     }
 }

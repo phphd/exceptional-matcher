@@ -28,8 +28,8 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
             PropertyExceptionMappingCompiler::class,
         )->args([
             service(ExceptionMappingCompiler::class.'<'.ReflectionAttribute::class.','.CatchExceptionMappingBlueprint::class.'>'),
-            // #[Autowire(lazy: ObjectExceptionMappingPlanRegistry::class)]
-            service(PropertyExceptionMappingCompiler::class.'::$planRegistry'),
+            // #[Autowire(lazy: ObjectExceptionMappingBlueprintRegistry::class)]
+            service(PropertyExceptionMappingCompiler::class.'::$printRegistry'),
         ])
         // Better when lazy, since ObjectExceptionMappingCompiler doesn't always reach it.
         ->lazy($hintLazy(ExceptionMappingCompiler::class))
@@ -38,7 +38,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
     // Making the property lazy, lest it creates a circular reference:
     $services
         ->set(
-            PropertyExceptionMappingCompiler::class.'::$planRegistry',
+            PropertyExceptionMappingCompiler::class.'::$printRegistry',
             ObjectExceptionMappingBlueprintRegistry::class
         )->lazy()
         ->factory('current')

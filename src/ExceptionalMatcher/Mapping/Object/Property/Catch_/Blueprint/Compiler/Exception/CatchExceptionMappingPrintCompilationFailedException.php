@@ -17,7 +17,7 @@ final class CatchExceptionMappingPrintCompilationFailedException extends Excepti
         Throwable $previous,
     ) {
         parent::__construct(
-            'CatchExceptionMappingPlan compilation failed.',
+            'CatchExceptionMappingBlueprint compilation failed.',
             previous: $previous,
         );
     }

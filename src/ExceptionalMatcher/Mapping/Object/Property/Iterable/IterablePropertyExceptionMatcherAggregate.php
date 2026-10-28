@@ -17,7 +17,7 @@ final class IterablePropertyExceptionMatcherAggregate implements ExceptionMatche
     public function __construct(
         private readonly PropertyExceptionMappingNode $property,
         /** @var ObjectExceptionMappingBlueprintRegistry<object> */
-        private readonly ObjectExceptionMappingBlueprintRegistry $planRegistry,
+        private readonly ObjectExceptionMappingBlueprintRegistry $printRegistry,
     ) {
     }
 
@@ -31,13 +31,13 @@ final class IterablePropertyExceptionMatcherAggregate implements ExceptionMatche
                 continue;
             }
 
-            $itemPlan = $this->planRegistry->getMappingBlueprint($item::class);
+            $itemPrint = $this->printRegistry->getMappingBlueprint($item::class);
 
-            if (null === $itemPlan) {
+            if (null === $itemPrint) {
                 continue;
             }
 
-            yield new ItemOfIterableExceptionMappingNode($this->property, $key, $item, $itemPlan);
+            yield new ItemOfIterableExceptionMappingNode($this->property, $key, $item, $itemPrint);
         }
     }
 }

@@ -23,7 +23,7 @@ final class CatchExceptionMappingBlueprint implements ExceptionMappingBlueprint
 {
     public function __construct(
         /** @var MatchConditionBlueprint<TException> */
-        private readonly MatchConditionBlueprint $conditionPlan,
+        private readonly MatchConditionBlueprint $conditionPrint,
         /** @var ?class-string<MatchedExceptionFormatter<TException,mixed>> */
         private readonly ?string $formatterId,
         private readonly ?string $messageTemplate,
@@ -39,15 +39,15 @@ final class CatchExceptionMappingBlueprint implements ExceptionMappingBlueprint
     {
         return new CatchExceptionMappingNode(
             $embracingNode,
-            $this->conditionPlan->bind($embracingNode),
+            $this->conditionPrint->bind($embracingNode),
             $this->formatterId,
             $this->messageTemplate,
         );
     }
 
     /** @return MatchConditionBlueprint<TException> */
-    public function getConditionPlan(): MatchConditionBlueprint
+    public function getConditionPrint(): MatchConditionBlueprint
     {
-        return $this->conditionPlan;
+        return $this->conditionPrint;
     }
 }
