@@ -47,10 +47,10 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
             $matchers->append(new ExceptionMatcherAggregateAdapter($catchMatcher));
         }
 
-        if (null !== $nestedObjectMatcher = $this->nestedObjectMatcher($propertyNode)) {
-            $matchers->append($nestedObjectMatcher);
-        } elseif (null !== $nestedIterableMatcher = $this->nestedObjectsOfIterableMatcher($propertyNode)) {
-            $matchers->append(new ExceptionMatcherAggregateAdapter($nestedIterableMatcher));
+        if (null !== $innerObjectMatcher = $this->innerObjectMatcher($propertyNode)) {
+            $matchers->append($innerObjectMatcher);
+        } elseif (null !== $innerObjectsIterableMatcher = $this->innerObjectsIterableMatcher($propertyNode)) {
+            $matchers->append(new ExceptionMatcherAggregateAdapter($innerObjectsIterableMatcher));
         }
 
         return $propertyNode;
@@ -105,25 +105,23 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
         return new CatchAttributesExceptionMatcherAggregate($property, $this->catchPrints);
     }
 
-    private function nestedObjectMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcher
+    private function innerObjectMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcher
     {
-        $value = $property->getValue();
-
-        if (!is_object($value)) {
+        if (!is_object($object = $property->getValue())) {
             return null;
         }
 
-        $nestedPlan = $this->planRegistry->getMappingBlueprint($value::class);
+        $innerPlan = $this->planRegistry->getMappingBlueprint($object::class);
 
         /** @noinspection PhpNullSafeOperatorCanBeUsedInspection */
-        if (null === $nestedPlan) {
+        if (null === $innerPlan) {
             return null;
         }
 
-        return $nestedPlan->bind($value, $property);
+        return $innerPlan->bind($property, $object);
     }
 
-    private function nestedObjectsOfIterableMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcherAggregate
+    private function innerObjectsIterableMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcherAggregate
     {
         $value = $property->getValue();
 

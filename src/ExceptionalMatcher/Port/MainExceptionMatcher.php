@@ -26,15 +26,15 @@ final class MainExceptionMatcher implements ExceptionMatcher
     ) {
     }
 
-    public function match(Throwable $exception, object $message): ?MatchedExceptionList
+    public function match(Throwable $exception, object $object): ?MatchedExceptionList
     {
-        $plan = $this->planRegistry->getMappingBlueprint($message::class);
+        $plan = $this->planRegistry->getMappingBlueprint($object::class);
 
         if (null === $plan) {
             return null;
         }
 
-        $matcher = $plan->bind($message);
+        $matcher = $plan->bind(object: $object);
 
         $exceptions = $this->exceptionUnwrapper->unwrap($exception);
         $reciprocal = new ExceptionReciprocal($exceptions);

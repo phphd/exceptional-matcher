@@ -28,7 +28,7 @@ final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode
         private readonly object $value,
         ObjectExceptionMappingBlueprint $matchingPlan,
     ) {
-        $this->objectNode = $matchingPlan->bind($this->value, $this);
+        $this->objectNode = $matchingPlan->bind($this, $this->value);
     }
 
     public function match(ExceptionReciprocal $reciprocal): bool
