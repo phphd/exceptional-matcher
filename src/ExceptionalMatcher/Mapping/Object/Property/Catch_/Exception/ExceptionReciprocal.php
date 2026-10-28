@@ -31,13 +31,11 @@ final class ExceptionReciprocal
     public function match(CatchExceptionMappingNode $catch): bool
     {
         foreach ($this->remainingExceptions as $exceptionIndex => $exception) {
-            if (!$catch->matches($exception)) {
-                continue;
+            if ($catch->matches($exception)) {
+                $this->reciprocateException($catch, $exceptionIndex);
+
+                break;
             }
-
-            $this->reciprocateException($catch, $exceptionIndex);
-
-            break;
         }
 
         return $this->isReciprocated();
