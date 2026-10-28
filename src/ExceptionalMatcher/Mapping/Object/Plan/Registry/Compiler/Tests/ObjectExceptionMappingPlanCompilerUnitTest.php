@@ -9,7 +9,7 @@ use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\TryWithNoCatchAttributesMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\ObjectExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\Log\SpyLogger;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
@@ -17,7 +17,7 @@ use ReflectionClass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\ObjectExceptionMappingPlanCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\ObjectExceptionMappingCompiler
  *
  * @internal
  */
@@ -28,8 +28,8 @@ final class ObjectExceptionMappingPlanCompilerUnitTest extends TestCase
         $container = $this->getContainer();
         $container->compile();
 
-        /** @var ExceptionMappingPlanCompiler<ReflectionClass<object>,ObjectExceptionMappingPlan<object>> $compiler */
-        $compiler = $container->get(ExceptionMappingPlanCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>');
+        /** @var ExceptionMappingCompiler<ReflectionClass<object>,ObjectExceptionMappingPlan<object>> $compiler */
+        $compiler = $container->get(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>');
 
         $this->expectException(ObjectExceptionMappingPlanCompilationFailedException::class);
 
@@ -44,8 +44,8 @@ final class ObjectExceptionMappingPlanCompilerUnitTest extends TestCase
         $container->set('logger', $spyLogger);
         $container->compile();
 
-        /** @var ExceptionMappingPlanCompiler<ReflectionClass<object>,ObjectExceptionMappingPlan<object>> $compiler */
-        $compiler = $container->get(ExceptionMappingPlanCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>');
+        /** @var ExceptionMappingCompiler<ReflectionClass<object>,ObjectExceptionMappingPlan<object>> $compiler */
+        $compiler = $container->get(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>');
 
         $plan = $compiler->compilePlan(new ReflectionClass(TryWithNoCatchAttributesMessage::class));
         self::assertNull($plan);
@@ -74,7 +74,7 @@ final class ObjectExceptionMappingPlanCompilerUnitTest extends TestCase
             'kernel.debug' => false,
         ]);
 
-        $container->addCompilerPass(new PublicServiceCompilerPass(ExceptionMappingPlanCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>'));
+        $container->addCompilerPass(new PublicServiceCompilerPass(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>'));
 
         return $container;
     }

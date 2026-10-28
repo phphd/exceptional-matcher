@@ -10,7 +10,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\CompilingObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\Log\SpyLogger;
 use ReflectionClass;
 use ReflectionProperty;
@@ -28,16 +28,16 @@ return static function (ContainerConfigurator $configurator): void {
             inline_service(CompilingObjectExceptionMappingPlanRegistry::class)
                 ->arg('$planCompiler',
                     // Lint-mode compiler - it collects and reports mapping problems
-                    inline_service(ExceptionMappingPlanCompiler::class)
+                    inline_service(ExceptionMappingCompiler::class)
                         ->factory([
-                            service(ExceptionMappingPlanCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>'),
+                            service(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingPlan::class.'>'),
                             'reportingTo',
                         ])->args([service(CompilationDefectCollector::class.'::$compilationLogger')]),
                 ),
         )->arg('$propertyMappingPlanCompiler',
-            inline_service(ExceptionMappingPlanCompiler::class)
+            inline_service(ExceptionMappingCompiler::class)
                 ->factory([
-                    service(ExceptionMappingPlanCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingPlan::class.'>'),
+                    service(ExceptionMappingCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingPlan::class.'>'),
                     'reportingTo',
                 ])->args([service(CompilationDefectCollector::class.'::$compilationLogger')])
         )->arg('$compilationDefectCollector', service(CompilationDefectCollector::class))

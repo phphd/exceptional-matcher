@@ -8,7 +8,7 @@ use Closure;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\CatchExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingCompiler;
 use ReflectionAttribute;
 use ReflectionProperty;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,21 +23,21 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
 
     $services
         ->set(
-            ExceptionMappingPlanCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingPlan::class.'>',
-            PropertyExceptionMappingPlanCompiler::class,
+            ExceptionMappingCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingPlan::class.'>',
+            PropertyExceptionMappingCompiler::class,
         )->args([
-            service(ExceptionMappingPlanCompiler::class.'<'.ReflectionAttribute::class.','.CatchExceptionMappingPlan::class.'>'),
+            service(ExceptionMappingCompiler::class.'<'.ReflectionAttribute::class.','.CatchExceptionMappingPlan::class.'>'),
             // #[Autowire(lazy: ObjectExceptionMappingPlanRegistry::class)]
-            service(PropertyExceptionMappingPlanCompiler::class.'::$planRegistry'),
+            service(PropertyExceptionMappingCompiler::class.'::$planRegistry'),
         ])
         // Better if lazy, since ObjectPlanCompiler doesn't always reach it.
-        ->lazy($hintLazy(ExceptionMappingPlanCompiler::class))
+        ->lazy($hintLazy(ExceptionMappingCompiler::class))
     ;
 
     // Making the property lazy, lest it creates a circular reference:
     $services
         ->set(
-            PropertyExceptionMappingPlanCompiler::class.'::$planRegistry',
+            PropertyExceptionMappingCompiler::class.'::$planRegistry',
             ObjectExceptionMappingPlanRegistry::class
         )->lazy()
         ->factory('current')

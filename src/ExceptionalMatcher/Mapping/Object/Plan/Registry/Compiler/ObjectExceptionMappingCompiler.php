@@ -11,7 +11,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\Exception\Obj
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
-use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingCompiler;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionProperty;
@@ -21,13 +21,13 @@ use Throwable;
 /**
  * @internal
  *
- * @implements ExceptionMappingPlanCompiler<ReflectionClass<object>,ObjectExceptionMappingPlan<object>>
+ * @implements ExceptionMappingCompiler<ReflectionClass<object>,ObjectExceptionMappingPlan<object>>
  */
-final class ObjectExceptionMappingPlanCompiler implements ExceptionMappingPlanCompiler
+final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
 {
     public function __construct(
-        /** @var ExceptionMappingPlanCompiler<ReflectionProperty,PropertyExceptionMappingPlan> */
-        private readonly ExceptionMappingPlanCompiler $propertyMappingPlanCompiler,
+        /** @var ExceptionMappingCompiler<ReflectionProperty,PropertyExceptionMappingPlan> */
+        private readonly ExceptionMappingCompiler $propertyMappingPlanCompiler,
         private readonly ?LoggerInterface $errorReporter = null,
     ) {
     }

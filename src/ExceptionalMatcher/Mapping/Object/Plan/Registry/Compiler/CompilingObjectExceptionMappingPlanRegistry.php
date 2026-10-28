@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\ObjectExceptionMappingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingCompiler;
 use ReflectionClass;
 use ReflectionException;
 
@@ -21,8 +21,8 @@ final class CompilingObjectExceptionMappingPlanRegistry implements ObjectExcepti
 {
     /** @api */
     public function __construct(
-        /** @var ExceptionMappingPlanCompiler<ReflectionClass<T>,ObjectExceptionMappingPlan<T>> */
-        private readonly ExceptionMappingPlanCompiler $planCompiler,
+        /** @var ExceptionMappingCompiler<ReflectionClass<T>,ObjectExceptionMappingPlan<T>> */
+        private readonly ExceptionMappingCompiler $planCompiler,
     ) {
     }
 

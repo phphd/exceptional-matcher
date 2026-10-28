@@ -12,7 +12,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\CatchExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchAttributeInstantiationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\Compiler\Exception\CatchExceptionMappingPlanCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingCompiler;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
@@ -24,9 +24,9 @@ use Webmozart\Assert\Assert;
 /**
  * @internal
  *
- * @implements ExceptionMappingPlanCompiler<ReflectionAttribute<Catch_<Throwable,Throwable>>,CatchExceptionMappingPlan<Throwable>>
+ * @implements ExceptionMappingCompiler<ReflectionAttribute<Catch_<Throwable,Throwable>>,CatchExceptionMappingPlan<Throwable>>
  */
-final class CatchExceptionMappingPlanCompiler implements ExceptionMappingPlanCompiler
+final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
 {
     /**
      * @template T of MatchedExceptionFormatter

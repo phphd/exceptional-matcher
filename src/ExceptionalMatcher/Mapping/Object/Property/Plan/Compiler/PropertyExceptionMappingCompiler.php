@@ -11,7 +11,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Plan\CatchExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\Compiler\Exception\PropertyExceptionMappingPlanCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingCompiler;
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
 use ReflectionProperty;
@@ -21,13 +21,13 @@ use Throwable;
 /**
  * @internal
  *
- * @implements ExceptionMappingPlanCompiler<ReflectionProperty,PropertyExceptionMappingPlan>
+ * @implements ExceptionMappingCompiler<ReflectionProperty,PropertyExceptionMappingPlan>
  */
-final class PropertyExceptionMappingPlanCompiler implements ExceptionMappingPlanCompiler
+final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
 {
     public function __construct(
-        /** @var ExceptionMappingPlanCompiler<ReflectionAttribute<Catch_<Throwable,Throwable>>,CatchExceptionMappingPlan<Throwable>> */
-        private readonly ExceptionMappingPlanCompiler $catchPlanCompiler,
+        /** @var ExceptionMappingCompiler<ReflectionAttribute<Catch_<Throwable,Throwable>>,CatchExceptionMappingPlan<Throwable>> */
+        private readonly ExceptionMappingCompiler $catchPlanCompiler,
         /** @var ObjectExceptionMappingPlanRegistry<object> */
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
         private readonly ?LoggerInterface $errorReporter = null,

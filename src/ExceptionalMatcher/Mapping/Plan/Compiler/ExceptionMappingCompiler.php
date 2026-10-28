@@ -16,7 +16,7 @@ use Reflector;
  *
  * @template-covariant TPlan of object
  */
-interface ExceptionMappingPlanCompiler
+interface ExceptionMappingCompiler
 {
     /** @return static<TReflector,TPlan> */
     public function reportingTo(LoggerInterface $reporter): static;

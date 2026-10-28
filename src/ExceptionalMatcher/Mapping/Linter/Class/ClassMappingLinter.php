@@ -18,7 +18,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Compiler\M
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
-use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingPlanCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingCompiler;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
@@ -36,8 +36,8 @@ final class ClassMappingLinter implements MappingLinter
     public function __construct(
         /** @var ObjectExceptionMappingPlanRegistry<object> */
         private readonly ObjectExceptionMappingPlanRegistry $planRegistry,
-        /** @var ExceptionMappingPlanCompiler<ReflectionProperty,PropertyExceptionMappingPlan> */
-        private readonly ExceptionMappingPlanCompiler $propertyMappingPlanCompiler,
+        /** @var ExceptionMappingCompiler<ReflectionProperty,PropertyExceptionMappingPlan> */
+        private readonly ExceptionMappingCompiler $propertyMappingPlanCompiler,
         private readonly CompilationDefectCollector $compilationDefectCollector,
     ) {
     }
