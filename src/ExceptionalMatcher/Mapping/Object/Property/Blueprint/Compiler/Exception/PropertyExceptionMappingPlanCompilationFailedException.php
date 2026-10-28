@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception;
+
+use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingPlanCompilationFailedException;
+use Throwable;
+
+use function sprintf;
+
+/** @internal */
+final class PropertyExceptionMappingPlanCompilationFailedException extends ExceptionMappingPlanCompilationFailedException
+{
+    public function __construct(
+        /** @var class-string */
+        private readonly string $className,
+        private readonly string $propertyName,
+        Throwable $previous,
+    ) {
+        parent::__construct(
+            sprintf(
+                'Property %s::$%s exception mapping compilation has failed.',
+                $this->className,
+                $this->propertyName,
+            ),
+            previous: $previous,
+        );
+    }
+
+    /** @return class-string */
+    public function getClassName(): string
+    {
+        return $this->className;
+    }
+
+    public function getPropertyName(): string
+    {
+        return $this->propertyName;
+    }
+}

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter;
 
+use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\Log\SpyLogger;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\ClassMappingLinter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\CompilationDefectCollector;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\LintReport;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\ObjectExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Plan\Registry\Compiler\CompilingObjectExceptionMappingPlanRegistry;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Plan\PropertyExceptionMappingPlan;
-use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\ExceptionMappingCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Plan\Compiler\Log\SpyLogger;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingPlan;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingPlanRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingPlan;
 use ReflectionClass;
 use ReflectionProperty;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
