@@ -14,7 +14,7 @@ final class ObjectExceptionMappingNode implements ExceptionMappingNode
 {
     public function __construct(
         private readonly object $object,
-        private readonly ?ExceptionMappingNode $parentProperty,
+        private readonly ?ExceptionMappingNode $embracingNode,
         /** @var iterable<ExceptionMatcher> */
         private readonly iterable $properties,
     ) {
@@ -34,12 +34,12 @@ final class ObjectExceptionMappingNode implements ExceptionMappingNode
     /** @codeCoverageIgnore - not used */
     public function getOwner(): ?ExceptionMappingNode
     {
-        return $this->parentProperty;
+        return $this->embracingNode;
     }
 
     public function getPropertyPath(): PropertyPath
     {
-        return $this->parentProperty?->getPropertyPath()
+        return $this->embracingNode?->getPropertyPath()
             ?? PropertyPath::empty();
     }
 
@@ -50,7 +50,7 @@ final class ObjectExceptionMappingNode implements ExceptionMappingNode
 
     public function getRootObject(): object
     {
-        return $this->parentProperty?->getRootObject()
+        return $this->embracingNode?->getRootObject()
             ?? $this->object;
     }
 

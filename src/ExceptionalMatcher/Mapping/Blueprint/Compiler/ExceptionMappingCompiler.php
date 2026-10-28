@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler;
 
+use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use Psr\Log\LoggerInterface;
 use Reflector;
 
@@ -14,7 +16,7 @@ use Reflector;
  *
  * @template TReflector of Reflector
  *
- * @template-covariant TPrint of object
+ * @template-covariant TPrint of ExceptionMappingBlueprint
  */
 interface ExceptionMappingCompiler
 {
@@ -26,5 +28,5 @@ interface ExceptionMappingCompiler
      *
      * @return null|TPrint
      */
-    public function compilePrint(Reflector $reflector): ?object;
+    public function compilePrint(Reflector $reflector): ?ExceptionMappingBlueprint;
 }

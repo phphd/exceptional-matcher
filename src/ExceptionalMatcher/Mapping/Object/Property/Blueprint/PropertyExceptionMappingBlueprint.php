@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint;
 
 use ArrayIterator;
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcherAggregateAdapter;
@@ -21,7 +22,11 @@ use Throwable;
 use function is_iterable;
 use function is_object;
 
-/** @internal */
+/**
+ * @internal
+ *
+ * @implements ExceptionMappingBlueprint<ObjectExceptionMappingNode,PropertyExceptionMappingNode>
+ */
 final class PropertyExceptionMappingBlueprint implements ExceptionMappingBlueprint
 {
     public function __construct(
@@ -33,15 +38,16 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
     ) {
     }
 
-    public function bind(ObjectExceptionMappingNode $objectNode): PropertyExceptionMappingNode
+    /** @param ObjectExceptionMappingNode $embracingNode */
+    public function bind(ExceptionMappingNode $embracingNode): PropertyExceptionMappingNode
     {
         $name = $this->getName();
-        $value = $this->getPropertyValue($objectNode->getObject());
+        $value = $this->getPropertyValue($embracingNode->getObject());
 
         /** @var ArrayIterator<int,ExceptionMatcher> $matchers */
         $matchers = new ArrayIterator();
 
-        $propertyNode = new PropertyExceptionMappingNode($objectNode, $name, $value, $matchers);
+        $propertyNode = new PropertyExceptionMappingNode($embracingNode, $name, $value, $matchers);
 
         if (null !== $catchMatcher = $this->catchAttributesMatcher($propertyNode)) {
             $matchers->append(new ExceptionMatcherAggregateAdapter($catchMatcher));

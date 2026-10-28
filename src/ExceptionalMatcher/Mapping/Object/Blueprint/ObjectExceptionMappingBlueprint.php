@@ -17,6 +17,8 @@ use Webmozart\Assert\Assert;
  * @internal
  *
  * @template T of object
+ *
+ * @implements ExceptionMappingBlueprint<ExceptionMappingNode,ObjectExceptionMappingNode>
  */
 final class ObjectExceptionMappingBlueprint implements ExceptionMappingBlueprint
 {
@@ -29,7 +31,7 @@ final class ObjectExceptionMappingBlueprint implements ExceptionMappingBlueprint
     }
 
     /** @param ?T $object */
-    public function bind(?ExceptionMappingNode $owner = null, object $object = null): ObjectExceptionMappingNode
+    public function bind(?ExceptionMappingNode $embracingNode = null, ?object $object = null): ObjectExceptionMappingNode
     {
         Assert::notNull($object);
         Assert::isInstanceOf($object, $this->className);
@@ -37,7 +39,7 @@ final class ObjectExceptionMappingBlueprint implements ExceptionMappingBlueprint
         /** @var AppendIterator<int,ExceptionMappingNode,Iterator<int,ExceptionMappingNode>> $properties */
         $properties = new AppendIterator();
 
-        $objectNode = new ObjectExceptionMappingNode($object, $owner, new MemoizingIteratorAggregate($properties));
+        $objectNode = new ObjectExceptionMappingNode($object, $embracingNode, new MemoizingIteratorAggregate($properties));
 
         $properties->append($this->bindProperties($objectNode));
 
