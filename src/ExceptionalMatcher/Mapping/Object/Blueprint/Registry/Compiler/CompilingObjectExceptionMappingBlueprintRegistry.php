@@ -35,6 +35,6 @@ final class CompilingObjectExceptionMappingBlueprintRegistry implements ObjectEx
      */
     public function getMappingBlueprint(string $className): ?ObjectExceptionMappingBlueprint
     {
-        return $this->compiler->compilePrint(new ReflectionClass($className));
+        return $this->compiler->compileBlueprint(new ReflectionClass($className));
     }
 }

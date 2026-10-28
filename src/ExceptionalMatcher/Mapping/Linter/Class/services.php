@@ -34,7 +34,7 @@ return static function (ContainerConfigurator $configurator): void {
                             'reportingTo',
                         ])->args([service(CompilationDefectCollector::class.'::$compilationLogger')]),
                 ),
-        )->arg('$propertyMappingCompiler',
+        )->arg('$propertyCompiler',
             inline_service(ExceptionMappingCompiler::class)
                 ->factory([
                     service(ExceptionMappingCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingBlueprint::class.'>'),

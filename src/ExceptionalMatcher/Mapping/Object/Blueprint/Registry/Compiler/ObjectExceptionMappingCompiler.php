@@ -27,7 +27,7 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
 {
     public function __construct(
         /** @var ExceptionMappingCompiler<ReflectionProperty,PropertyExceptionMappingBlueprint> */
-        private readonly ExceptionMappingCompiler $propertyMappingCompiler,
+        private readonly ExceptionMappingCompiler $propertyCompiler,
         private readonly ?LoggerInterface $errorReporter = null,
     ) {
     }
@@ -35,11 +35,11 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
     /** @noinspection PhpUnnecessaryStaticReferenceInspection */
     public function reportingTo(LoggerInterface $reporter): static
     {
-        return new self($this->propertyMappingCompiler->reportingTo($reporter), $reporter);
+        return new self($this->propertyCompiler->reportingTo($reporter), $reporter);
     }
 
     /** @param ReflectionClass<object> $reflector */
-    public function compilePrint(Reflector $reflector): ?ObjectExceptionMappingBlueprint
+    public function compileBlueprint(Reflector $reflector): ?ObjectExceptionMappingBlueprint
     {
         try {
             return $this->compile($reflector);
@@ -92,7 +92,7 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
     private function compilePropertyPrints(ReflectionClass $reflectionClass): Generator
     {
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            if (null !== $propertyPrint = $this->propertyMappingCompiler->compilePrint($reflectionProperty)) {
+            if (null !== $propertyPrint = $this->propertyCompiler->compileBlueprint($reflectionProperty)) {
                 yield $propertyPrint;
             }
         }

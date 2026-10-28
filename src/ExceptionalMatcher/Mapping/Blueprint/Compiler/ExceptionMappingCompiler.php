@@ -28,5 +28,5 @@ interface ExceptionMappingCompiler
      *
      * @return null|TPrint
      */
-    public function compilePrint(Reflector $reflector): ?ExceptionMappingBlueprint;
+    public function compileBlueprint(Reflector $reflector): ?ExceptionMappingBlueprint;
 }

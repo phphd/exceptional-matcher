@@ -41,7 +41,7 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
     }
 
     /** @param ReflectionProperty $reflector */
-    public function compilePrint(Reflector $reflector): ?PropertyExceptionMappingBlueprint
+    public function compileBlueprint(Reflector $reflector): ?PropertyExceptionMappingBlueprint
     {
         try {
             return $this->compile($reflector);
@@ -91,7 +91,7 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
         /** @phpstan-var ReflectionAttribute<Catch_<Throwable,Throwable>> $catchAttribute */
         foreach ($property->getAttributes(Catch_::class) as $catchAttribute) {
             /** @psalm-suppress TooManyArguments */
-            if (null !== $catchPrint = $this->catchCompiler->compilePrint($catchAttribute, $property)) { // @phpstan-ignore arguments.count
+            if (null !== $catchPrint = $this->catchCompiler->compileBlueprint($catchAttribute, $property)) { // @phpstan-ignore arguments.count
                 yield $catchPrint;
             }
         }

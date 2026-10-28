@@ -36,7 +36,7 @@ final class ClassMappingLinter implements MappingLinter
         /** @var ObjectExceptionMappingBlueprintRegistry<object> */
         private readonly ObjectExceptionMappingBlueprintRegistry $printRegistry,
         /** @var ExceptionMappingCompiler<ReflectionProperty,PropertyExceptionMappingBlueprint> */
-        private readonly ExceptionMappingCompiler $propertyMappingCompiler,
+        private readonly ExceptionMappingCompiler $propertyCompiler,
         private readonly CompilationDefectCollector $compilationDefectCollector,
     ) {
     }
@@ -129,7 +129,7 @@ final class ClassMappingLinter implements MappingLinter
         $missingTryDefects = [];
 
         foreach ($reflectionClass->getProperties() as $property) {
-            if (true !== $this->propertyMappingCompiler->compilePrint($property)?->hasCatchPrints()) {
+            if (true !== $this->propertyCompiler->compileBlueprint($property)?->hasCatchPrints()) {
                 continue;
             }
 

@@ -53,7 +53,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     }
 
     /** @param ReflectionAttribute<Catch_<Throwable,Throwable>> $reflector */
-    public function compilePrint(Reflector $reflector, ?ReflectionProperty $property = null): ?CatchExceptionMappingBlueprint
+    public function compileBlueprint(Reflector $reflector, ?ReflectionProperty $property = null): ?CatchExceptionMappingBlueprint
     {
         Assert::notNull($property);
 
