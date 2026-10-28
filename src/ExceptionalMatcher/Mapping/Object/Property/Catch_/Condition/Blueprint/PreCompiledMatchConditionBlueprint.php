@@ -24,7 +24,7 @@ final class PreCompiledMatchConditionBlueprint implements MatchConditionBlueprin
     }
 
     /** @return MatchCondition<T> */
-    public function bind(ExceptionMappingNode $node): MatchCondition
+    public function bind(?ExceptionMappingNode $node = null): MatchCondition
     {
         return $this->condition;
     }

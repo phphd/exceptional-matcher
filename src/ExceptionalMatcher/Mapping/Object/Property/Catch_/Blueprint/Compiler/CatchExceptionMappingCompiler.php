@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler;
 
+use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
@@ -11,6 +12,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\E
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Exception\CatchExceptionMappingPrintCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\PreCompiledMatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\QualifiedMatchedExceptionFormatter;
 use Psr\Container\ContainerInterface;
@@ -115,6 +118,10 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
         $conditionPrint = $this->matchConditionCompiler->compile($catch);
 
         Assert::notNull($conditionPrint, 'Condition compiler must produce a blueprint.');
+
+        if ($conditionPrint instanceof PreCompiledMatchConditionBlueprint && $conditionPrint->bind() instanceof FalseCondition) {
+            throw new LogicException('#[Catch_] match condition is pre-compiled to false, so it never matches anything.');
+        }
 
         return $conditionPrint;
     }

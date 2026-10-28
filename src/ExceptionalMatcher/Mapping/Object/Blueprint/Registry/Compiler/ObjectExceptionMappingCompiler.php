@@ -72,16 +72,16 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
             throw new LogicException('#[Try_] on an abstract class has no effect: the attribute is not inherited by the subclasses.');
         }
 
-        $mappingPrint = new ObjectExceptionMappingBlueprint(
+        $objectPrint = new ObjectExceptionMappingBlueprint(
             $reflectionClass->getName(),
             new MemoizingIteratorAggregate($this->compilePropertyPrints($reflectionClass)),
         );
 
-        if (!$mappingPrint->hasPropertyPrints()) {
+        if (!$objectPrint->hasPropertyPrints()) {
             throw new LogicException('#[Try_] class does not define any #[Catch_] mappings and no nested matchable properties, so it never matches anything.');
         }
 
-        return $mappingPrint;
+        return $objectPrint;
     }
 
     /**

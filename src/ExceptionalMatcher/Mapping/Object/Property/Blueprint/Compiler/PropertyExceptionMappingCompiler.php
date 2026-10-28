@@ -68,9 +68,9 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
     {
         $catchPrints = new MemoizingIteratorAggregate($this->compileCatchPrints($reflectionProperty));
 
-        $mappingPrint = new PropertyExceptionMappingBlueprint($reflectionProperty, $catchPrints, $this->printRegistry);
+        $propertyPrint = new PropertyExceptionMappingBlueprint($reflectionProperty, $catchPrints, $this->printRegistry);
 
-        if (!$mappingPrint->hasCatchPrints()) {
+        if (!$propertyPrint->hasCatchPrints()) {
             $type = new PropertyTypeAnalyser($reflectionProperty->getType());
 
             if (!$type->allowsMatchableObjects($this->printRegistry)) {
@@ -78,7 +78,7 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
             }
         }
 
-        return $mappingPrint;
+        return $propertyPrint;
     }
 
     /**
