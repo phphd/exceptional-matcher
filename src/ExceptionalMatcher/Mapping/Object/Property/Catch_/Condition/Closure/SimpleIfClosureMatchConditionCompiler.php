@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Clos
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
+use ReflectionProperty;
 use Throwable;
 use Webmozart\Assert\Assert;
 
@@ -16,7 +17,7 @@ use Webmozart\Assert\Assert;
  */
 final class SimpleIfClosureMatchConditionCompiler implements MatchConditionCompiler
 {
-    public function compile(Catch_ $catch): ?SimpleIfClosureMatchConditionBlueprint
+    public function compile(ReflectionProperty $property, Catch_ $catch): ?SimpleIfClosureMatchConditionBlueprint
     {
         $if = $catch->getIf();
 

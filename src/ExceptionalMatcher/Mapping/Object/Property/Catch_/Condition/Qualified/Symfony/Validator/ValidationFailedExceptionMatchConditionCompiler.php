@@ -8,6 +8,7 @@ use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
+use ReflectionProperty;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Webmozart\Assert\Assert;
 
@@ -25,7 +26,7 @@ final class ValidationFailedExceptionMatchConditionCompiler implements MatchCond
     public const TYPE_GUARANTEE_MESSAGE = 'ValidationFailedExceptionMatchCondition can only be used for ValidationFailedException';
 
     /** @return MatchConditionBlueprint<ValidationFailedException> */
-    public function compile(Catch_ $catch): MatchConditionBlueprint
+    public function compile(ReflectionProperty $property, Catch_ $catch): MatchConditionBlueprint
     {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         Assert::isAOf($catch->getExceptionClass(), ValidationFailedException::class, self::TYPE_GUARANTEE_MESSAGE);

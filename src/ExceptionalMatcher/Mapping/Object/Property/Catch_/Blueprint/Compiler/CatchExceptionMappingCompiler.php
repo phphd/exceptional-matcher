@@ -60,7 +60,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
         try {
             $catch = $this->instantiateCatch($reflector);
 
-            return $this->compile($catch);
+            return $this->compile($property, $catch);
         } catch (Throwable $exception) {
             $e = new CatchExceptionMappingPrintCompilationFailedException(
                 $property->getDeclaringClass()
@@ -99,10 +99,10 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
      *
      * @return CatchExceptionMappingBlueprint<Throwable>
      */
-    private function compile(Catch_ $catch): CatchExceptionMappingBlueprint
+    private function compile(ReflectionProperty $property, Catch_ $catch): CatchExceptionMappingBlueprint
     {
         return new CatchExceptionMappingBlueprint(
-            $this->compileMatchConditionPrint($catch),
+            $this->compileMatchConditionPrint($property, $catch),
             $this->compileExceptionFormatter($catch),
             $catch->getMessage(),
         );
@@ -113,9 +113,9 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
      *
      * @return MatchConditionBlueprint<Throwable>
      */
-    private function compileMatchConditionPrint(Catch_ $catch): MatchConditionBlueprint
+    private function compileMatchConditionPrint(ReflectionProperty $property, Catch_ $catch): MatchConditionBlueprint
     {
-        $conditionPrint = $this->matchConditionCompiler->compile($catch);
+        $conditionPrint = $this->matchConditionCompiler->compile($property, $catch);
 
         Assert::notNull($conditionPrint, 'Condition compiler must produce a blueprint.');
 

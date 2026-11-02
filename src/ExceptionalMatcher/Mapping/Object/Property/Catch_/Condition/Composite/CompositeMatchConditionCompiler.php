@@ -10,6 +10,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\PreCompiledMatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
+use ReflectionProperty;
 use Throwable;
 
 /**
@@ -27,9 +28,9 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
     }
 
     /** @return CompositeMatchConditionBlueprint|PreCompiledMatchConditionBlueprint<Throwable> */
-    public function compile(Catch_ $catch): CompositeMatchConditionBlueprint|PreCompiledMatchConditionBlueprint
+    public function compile(ReflectionProperty $property, Catch_ $catch): CompositeMatchConditionBlueprint|PreCompiledMatchConditionBlueprint
     {
-        $print = new CompositeMatchConditionBlueprint(new MemoizingIteratorAggregate($this->conditionPrints($catch)));
+        $print = new CompositeMatchConditionBlueprint(new MemoizingIteratorAggregate($this->conditionPrints($property, $catch)));
 
         if (!$print->hasPrints()) {
             return new PreCompiledMatchConditionBlueprint(new FalseCondition());
@@ -43,10 +44,10 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
      *
      * @return Iterator<MatchConditionBlueprint<Throwable>>
      */
-    private function conditionPrints(Catch_ $catch): Iterator
+    private function conditionPrints(ReflectionProperty $property, Catch_ $catch): Iterator
     {
         foreach ($this->compilers as $compiler) {
-            $print = $compiler->compile($catch);
+            $print = $compiler->compile($property, $catch);
 
             if (null !== $print) {
                 yield $print;

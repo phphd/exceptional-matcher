@@ -10,6 +10,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
 use Psr\Container\ContainerInterface;
+use ReflectionProperty;
 use Throwable;
 
 /**
@@ -31,7 +32,7 @@ final class QualifiedMatchConditionCompiler implements MatchConditionCompiler
     ) {
     }
 
-    public function compile(Catch_ $catch): ?MatchConditionBlueprint
+    public function compile(ReflectionProperty $property, Catch_ $catch): ?MatchConditionBlueprint
     {
         $compilerId = $catch->getMatch();
 
@@ -46,6 +47,6 @@ final class QualifiedMatchConditionCompiler implements MatchConditionCompiler
         $matchConditionCompiler = $this->matchConditionCompilerRegistry->get($compilerId);
 
         /** @var MatchConditionCompiler<Throwable> $matchConditionCompiler */
-        return $matchConditionCompiler->compile($catch);
+        return $matchConditionCompiler->compile($property, $catch);
     }
 }

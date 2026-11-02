@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Clas
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\PreCompiledMatchConditionBlueprint;
+use ReflectionProperty;
 use Throwable;
 use Webmozart\Assert\Assert;
 
@@ -20,7 +21,7 @@ final class ExceptionClassMatchConditionCompiler implements MatchConditionCompil
     public const TYPE_GUARANTEE_MESSAGE = 'Exception matching can only be done for classes implementing Throwable';
 
     /** @return PreCompiledMatchConditionBlueprint<Throwable> */
-    public function compile(Catch_ $catch): PreCompiledMatchConditionBlueprint
+    public function compile(ReflectionProperty $property, Catch_ $catch): PreCompiledMatchConditionBlueprint
     {
         Assert::isAOf($exceptionClass = $catch->getExceptionClass(), Throwable::class, self::TYPE_GUARANTEE_MESSAGE);
 

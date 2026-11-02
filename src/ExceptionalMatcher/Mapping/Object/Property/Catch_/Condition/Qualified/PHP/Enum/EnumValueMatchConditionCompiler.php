@@ -9,6 +9,7 @@ use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
 use ReflectionEnum;
+use ReflectionProperty;
 use ValueError;
 use Webmozart\Assert\Assert;
 
@@ -28,7 +29,7 @@ final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
 {
     public const TYPE_GUARANTEE_MESSAGE = 'EnumValueMatchCondition can only be used for '.ValueError::class;
 
-    public function compile(Catch_ $catch): EnumValueMatchConditionBlueprint
+    public function compile(ReflectionProperty $property, Catch_ $catch): EnumValueMatchConditionBlueprint
     {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         Assert::isAOf($catch->getExceptionClass(), ValueError::class, self::TYPE_GUARANTEE_MESSAGE);

@@ -10,6 +10,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
+use ReflectionProperty;
 use Stringable;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 use Webmozart\Assert\Assert;
@@ -28,7 +29,7 @@ final class InvalidUidExceptionMatchConditionCompiler implements MatchConditionC
     public const TYPE_GUARANTEE_MESSAGE = 'InvalidUidExceptionMatchCondition can only be used for '.InvalidUidException::class;
 
     /** @return MatchConditionBlueprint<InvalidUidException> */
-    public function compile(Catch_ $catch): MatchConditionBlueprint
+    public function compile(ReflectionProperty $property, Catch_ $catch): MatchConditionBlueprint
     {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         Assert::isAOf($catch->getExceptionClass(), InvalidUidException::class, self::TYPE_GUARANTEE_MESSAGE);

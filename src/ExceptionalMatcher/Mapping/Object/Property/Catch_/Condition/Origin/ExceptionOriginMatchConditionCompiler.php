@@ -29,7 +29,7 @@ use function substr;
 final class ExceptionOriginMatchConditionCompiler implements MatchConditionCompiler
 {
     /** @return ?PreCompiledMatchConditionBlueprint<Throwable> */
-    public function compile(Catch_ $catch): ?PreCompiledMatchConditionBlueprint
+    public function compile(ReflectionProperty $property, Catch_ $catch): ?PreCompiledMatchConditionBlueprint
     {
         /** @var ?non-empty-list<?string> $origin */
         $origin = $catch->getFrom();
