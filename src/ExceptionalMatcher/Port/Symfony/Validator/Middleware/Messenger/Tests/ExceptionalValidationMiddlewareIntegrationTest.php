@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\T
 
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
-use PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\ExceptionalValidationFailedException;
+use PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Exception\ExceptionalValidationFailedException;
 use PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationMiddleware;
 use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
@@ -25,7 +25,7 @@ use Throwable;
 /**
  * @covers \PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle
  * @covers \PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationMiddleware
- * @covers \PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationFailedMessengerException
+ * @covers \PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\Exception\ExceptionalValidationFailedMessengerException
  *
  * @internal
  */
