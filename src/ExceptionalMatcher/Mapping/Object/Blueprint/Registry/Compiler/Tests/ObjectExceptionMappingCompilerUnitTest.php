@@ -72,7 +72,7 @@ final class ObjectExceptionMappingCompilerUnitTest extends TestCase
 
         self::assertSame(LogLevel::ERROR, $errorRecord['level']);
         self::assertSame(
-            'Class '.TryWithNoCatchAttributesMessage::class.' exception mapping compilation has failed.',
+            'Class exception mapping compilation has failed.',
             $errorRecord['message'],
         );
         self::assertInstanceOf(

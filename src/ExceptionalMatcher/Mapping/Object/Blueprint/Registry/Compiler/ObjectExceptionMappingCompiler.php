@@ -44,7 +44,7 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
         try {
             return $this->compile($reflector);
         } catch (Throwable $exception) {
-            $e = new ObjectExceptionMappingPrintCompilationFailedException($reflector->getName(), $exception);
+            $e = new ObjectExceptionMappingPrintCompilationFailedException($reflector, $exception);
 
             if (null !== $this->errorReporter) {
                 // One broken class mapping won't spoil the whole situation.

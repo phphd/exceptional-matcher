@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception;
 
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingPrintCompilationFailedException;
+use ReflectionProperty;
 use Throwable;
 
 use function sprintf;
@@ -13,17 +14,11 @@ use function sprintf;
 final class PropertyExceptionMappingPrintCompilationFailedException extends ExceptionMappingPrintCompilationFailedException
 {
     public function __construct(
-        /** @var class-string */
-        private readonly string $className,
-        private readonly string $propertyName,
+        private readonly ReflectionProperty $property,
         Throwable $previous,
     ) {
         parent::__construct(
-            sprintf(
-                'Property %s::$%s exception mapping compilation has failed.',
-                $this->className,
-                $this->propertyName,
-            ),
+            'Property exception mapping compilation failed.',
             previous: $previous,
         );
     }
@@ -31,11 +26,12 @@ final class PropertyExceptionMappingPrintCompilationFailedException extends Exce
     /** @return class-string */
     public function getClassName(): string
     {
-        return $this->className;
+        return $this->property->getDeclaringClass()
+            ->getName();
     }
 
     public function getPropertyName(): string
     {
-        return $this->propertyName;
+        return $this->property->getName();
     }
 }

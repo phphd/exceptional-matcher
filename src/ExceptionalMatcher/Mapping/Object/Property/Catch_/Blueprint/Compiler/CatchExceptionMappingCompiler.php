@@ -62,12 +62,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
 
             return $this->compile($property, $catch);
         } catch (Throwable $exception) {
-            $e = new CatchExceptionMappingPrintCompilationFailedException(
-                $property->getDeclaringClass()
-                    ->getName(),
-                $property->getName(),
-                $exception,
-            );
+            $e = new CatchExceptionMappingPrintCompilationFailedException($property, $exception);
 
             if (null !== $this->errorReporter) {
                 // One broken #[Catch_] won't spoil the whole match tree.

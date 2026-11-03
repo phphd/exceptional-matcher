@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\Exception;
 
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingPrintCompilationFailedException;
+use ReflectionClass;
 use Throwable;
 
 use function sprintf;
@@ -12,13 +13,13 @@ use function sprintf;
 /** @internal */
 final class ObjectExceptionMappingPrintCompilationFailedException extends ExceptionMappingPrintCompilationFailedException
 {
-    /** @param class-string $className */
     public function __construct(
-        private readonly string $className,
+        /** @var ReflectionClass<object> */
+        private readonly ReflectionClass $class,
         Throwable $previous,
     ) {
         parent::__construct(
-            sprintf('Class %s exception mapping compilation has failed.', $className),
+            'Class exception mapping compilation has failed.',
             previous: $previous,
         );
     }
@@ -26,6 +27,6 @@ final class ObjectExceptionMappingPrintCompilationFailedException extends Except
     /** @return class-string */
     public function getClassName(): string
     {
-        return $this->className;
+        return $this->class->getName();
     }
 }

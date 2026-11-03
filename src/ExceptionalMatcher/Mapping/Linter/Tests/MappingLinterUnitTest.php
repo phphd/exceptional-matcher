@@ -87,7 +87,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame(TryWithNoCatchAttributesMessage::class, $defect->getLocation()->toReference());
         self::assertSame([
             '#[Try_] class does not define any #[Catch_] mappings and no nested matchable properties, so it never matches anything.',
-            'Class '.TryWithNoCatchAttributesMessage::class.' exception mapping compilation has failed.',
+            'Class exception mapping compilation has failed.',
         ], $defect->getMessages());
     }
 
@@ -114,7 +114,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertSame([
             '#[Try_] on an abstract class has no effect: the attribute is not inherited by the subclasses.',
-            'Class '.AbstractTryMessage::class.' exception mapping compilation has failed.',
+            'Class exception mapping compilation has failed.',
         ], $defect->getMessages());
     }
 
@@ -128,7 +128,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame(TryWithNonMatchableObjectMessage::class, $defect->getLocation()->toReference());
         self::assertSame([
             '#[Try_] class does not define any #[Catch_] mappings and no nested matchable properties, so it never matches anything.',
-            'Class '.TryWithNonMatchableObjectMessage::class.' exception mapping compilation has failed.',
+            'Class exception mapping compilation has failed.',
         ], $defect->getMessages());
     }
 
@@ -155,7 +155,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame(UnregisteredFormatterMessage::class.'::$divisor', $defect->getLocation()->toReference());
         self::assertSame([
             'Exception Formatter is not registered: "'.UnregisteredFormatter::class.'"',
-            'CatchExceptionMappingBlueprint compilation failed.',
+            '#[Catch_] exception mapping compilation failed.',
         ], $defect->getMessages());
     }
 
@@ -169,7 +169,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame(MissingEnumFromConditionMessage::class.'::$weekDay', $defect->getLocation()->toReference());
         self::assertSame([
             'EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: NULL',
-            'CatchExceptionMappingBlueprint compilation failed.',
+            '#[Catch_] exception mapping compilation failed.',
         ], $defect->getMessages());
     }
 
@@ -189,7 +189,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame([
             'Undefined constant "PhPhD\\ExceptionalMatcher\\Mapping\\Object\\Property\\Catch_\\Condition\\Undefined\\undefined_condition"',
             '#[Catch_] attribute instantiation failed.',
-            'CatchExceptionMappingBlueprint compilation failed.',
+            '#[Catch_] exception mapping compilation failed.',
         ], $defect->getMessages());
     }
 

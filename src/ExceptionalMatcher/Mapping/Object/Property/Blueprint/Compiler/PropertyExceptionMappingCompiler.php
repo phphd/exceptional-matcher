@@ -51,12 +51,7 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
         try {
             return $this->compile($reflector);
         } catch (Throwable $exception) {
-            $e = new PropertyExceptionMappingPrintCompilationFailedException(
-                $reflector->getDeclaringClass()
-                    ->getName(),
-                $reflector->getName(),
-                $exception,
-            );
+            $e = new PropertyExceptionMappingPrintCompilationFailedException($reflector, $exception);
 
             if (null !== $this->errorReporter) {
                 // One broken property won't spoil the whole match tree.
