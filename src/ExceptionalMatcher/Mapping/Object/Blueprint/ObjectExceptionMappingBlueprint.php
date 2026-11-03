@@ -34,7 +34,7 @@ final class ObjectExceptionMappingBlueprint implements ExceptionMappingBlueprint
     public function bind(?ExceptionMappingNode $embracingNode = null, ?object $object = null): ObjectExceptionMappingNode
     {
         Assert::notNull($object);
-        Assert::isInstanceOf($object, $this->className);
+        Assert::isInstanceOf($object, $this->className); // @phpstan-ignore staticMethod.alreadyNarrowedType
 
         /** @var AppendIterator<int,ExceptionMappingNode,Iterator<int,ExceptionMappingNode>> $properties */
         $properties = new AppendIterator();

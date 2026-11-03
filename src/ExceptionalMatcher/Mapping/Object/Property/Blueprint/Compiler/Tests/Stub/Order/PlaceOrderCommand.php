@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order;
 
 use DateTimeImmutable;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\InclusionRule;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\ProbeOf;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\PropertyInclusionRule;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Customer\Customer;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Line\OrderLines;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Payment\PaymentMethod;
@@ -14,60 +13,61 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\St
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Pricing\LoyaltyReward;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Shipping\ShippingAddress;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Shipping\ShippingMethod;
+use PhPhD\ExceptionalMatcher\Tests\Probe\ProbeOf;
 use Stringable;
 use Traversable;
 
 final class PlaceOrderCommand
 {
-    #[ProbeOf(InclusionRule::NonFinalClassTypedPropertyIsIncluded, 'concrete class')]
+    #[ProbeOf(PropertyInclusionRule::NonFinalClassTypedPropertyIsIncluded, 'concrete class')]
     private Customer $customer;
 
     /** @psalm-suppress MissingPropertyType Left untyped, as legacy properties are */
-    #[ProbeOf(InclusionRule::LooselyTypedPropertyIsIncluded)] // @phpstan-ignore typeCoverage.propertyTypeCoverage
+    #[ProbeOf(PropertyInclusionRule::LooselyTypedPropertyIsIncluded)] // @phpstan-ignore typeCoverage.propertyTypeCoverage
     private $customerNote; // @phpstan-ignore missingType.property
 
-    #[ProbeOf(InclusionRule::IterableTypedPropertyIsIncluded)]
+    #[ProbeOf(PropertyInclusionRule::IterableTypedPropertyIsIncluded)]
     private OrderLines $lines;
 
-    #[ProbeOf(InclusionRule::NonFinalClassTypedPropertyIsIncluded, 'abstract class')]
+    #[ProbeOf(PropertyInclusionRule::NonFinalClassTypedPropertyIsIncluded, 'abstract class')]
     private Discount $discount;
 
     /** @var list<string> */
-    #[ProbeOf(InclusionRule::IterableTypedPropertyIsIncluded)]
+    #[ProbeOf(PropertyInclusionRule::IterableTypedPropertyIsIncluded)]
     private array $couponCodes;
 
     /** @var iterable<string> */
-    #[ProbeOf(InclusionRule::IterableTypedPropertyIsIncluded)]
+    #[ProbeOf(PropertyInclusionRule::IterableTypedPropertyIsIncluded)]
     private iterable $giftCardCodes;
 
     /** @var Traversable<int,LoyaltyReward> */
-    #[ProbeOf(InclusionRule::IterableTypedPropertyIsIncluded)]
+    #[ProbeOf(PropertyInclusionRule::IterableTypedPropertyIsIncluded)]
     private Traversable $loyaltyRewards;
 
-    #[ProbeOf(InclusionRule::ScalarTypedPropertyIsSkipped)]
+    #[ProbeOf(PropertyInclusionRule::ScalarTypedPropertyIsSkipped)]
     private int $loyaltyPointsToSpend;
 
-    #[ProbeOf(InclusionRule::InterfaceTypedPropertyIsIncluded)]
+    #[ProbeOf(PropertyInclusionRule::InterfaceTypedPropertyIsIncluded)]
     private PaymentMethod $paymentMethod;
 
-    #[ProbeOf(InclusionRule::LooselyTypedPropertyIsIncluded)]
+    #[ProbeOf(PropertyInclusionRule::LooselyTypedPropertyIsIncluded)]
     private object $gatewayPayload;
 
-    #[ProbeOf(InclusionRule::FinalExceptionMappedClassTypedPropertyIsIncluded)]
+    #[ProbeOf(PropertyInclusionRule::FinalExceptionMappedClassTypedPropertyIsIncluded)]
     private ShippingAddress $shippingAddress;
 
-    #[ProbeOf(InclusionRule::EnumTypedPropertyIsSkipped)]
+    #[ProbeOf(PropertyInclusionRule::EnumTypedPropertyIsSkipped)]
     private ShippingMethod $shippingMethod;
 
-    #[ProbeOf(InclusionRule::BuiltInClassTypedPropertyIsSkipped, 'class')]
+    #[ProbeOf(PropertyInclusionRule::BuiltInClassTypedPropertyIsSkipped, 'class')]
     private DateTimeImmutable $requestedDeliveryDate;
 
-    #[ProbeOf(InclusionRule::BuiltInClassTypedPropertyIsSkipped, 'interface')]
+    #[ProbeOf(PropertyInclusionRule::BuiltInClassTypedPropertyIsSkipped, 'interface')]
     private Stringable $recipientPhone;
 
-    #[ProbeOf(InclusionRule::FinalNonExceptionMappedClassTypedPropertyIsSkipped)]
+    #[ProbeOf(PropertyInclusionRule::FinalNonExceptionMappedClassTypedPropertyIsSkipped)]
     private Money $courierTip;
 
-    #[ProbeOf(InclusionRule::LooselyTypedPropertyIsIncluded)]
+    #[ProbeOf(PropertyInclusionRule::LooselyTypedPropertyIsIncluded)]
     private mixed $metadata;
 }
