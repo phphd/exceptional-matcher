@@ -37,6 +37,12 @@
                 <directory name="**/Tests/Stub"/>
             </errorLevel>
         </PropertyNotSetInConstructor>
+        <MismatchingDocblockPropertyType>
+            <errorLevel type="suppress">
+                <!-- Psalm resolves the trait's self and parent against the using class -->
+                <file name="src/ExceptionalMatcher/Mapping/Object/Property/Blueprint/Compiler/Tests/Stub/Category/CategoryHierarchy.php"/>
+            </errorLevel>
+        </MismatchingDocblockPropertyType>
         <MissingOverrideAttribute>
             <errorLevel type="suppress">
                 <directory name="src"/>

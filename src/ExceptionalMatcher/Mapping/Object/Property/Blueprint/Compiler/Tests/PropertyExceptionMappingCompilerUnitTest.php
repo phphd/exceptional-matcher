@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Te
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Category\Subcategory;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\PlaceOrderCommand;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Shipping\ShippingAddress;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
@@ -170,6 +171,24 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
         yield 'class' => [PlaceOrderCommand::class, 'requestedDeliveryDate'];
 
         yield 'interface' => [PlaceOrderCommand::class, 'recipientPhone'];
+    }
+
+    /**
+     * @param class-string $className
+     *
+     * @dataProvider relativeClassTypedPropertyDataProvider
+     */
+    public function testRelativeClassTypedPropertyIsIncluded(string $className, string $propertyName): void
+    {
+        $this->assertIncluded(new ReflectionProperty($className, $propertyName));
+    }
+
+    /** @return iterable<array{class-string,string}> */
+    public static function relativeClassTypedPropertyDataProvider(): iterable
+    {
+        yield [Subcategory::class, 'parentSubcategory'];
+
+        yield [Subcategory::class, 'rootCategory'];
     }
 
     private function compile(ReflectionProperty $property): ?PropertyExceptionMappingBlueprint
