@@ -30,13 +30,13 @@ parameters:
         - stubs/SymfonyUidInvalidArgumentException.php
     ignoreErrors:
         - identifier: property.unused
-          message: '/^Property PhPhD\\[\w\\]+\\Stub\\\w+::\$\w+ is unused\.$/'
+          message: '/^Property PhPhD\\[\w\\]+\\Stub\\[\w\\]+::\$\w+ is unused\.$/'
         - identifier: property.onlyWritten
-          message: '/^(Static )?(Property|property) PhPhD\\[\w\\]+\\Stub\\\w+::\$\w+ is never read, only written\.$/'
+          message: '/^(Static )?(Property|property) PhPhD\\[\w\\]+\\Stub\\[\w\\]+::\$\w+ is never read, only written\.$/'
         - identifier: property.unusedType
-          message: '/^Property PhPhD\\[\w\\]+\\Stub\\\w+::\$\w+ \(.+\) is never assigned .+ so it can be removed from the property type\.$/'
+          message: '/^Property PhPhD\\[\w\\]+\\Stub\\[\w\\]+::\$\w+ \(.+\) is never assigned .+ so it can be removed from the property type\.$/'
         - identifier: missingType.iterableValue
-          message: '/^(Static )?(Method|Property|property) PhPhD\\[\w\\]+\\Stub\\\w+::[\$\w\(\)]+ .* no value type specified (in )?iterable type array\.$/'
+          message: '/^(Static )?(Method|Property|property) PhPhD\\[\w\\]+\\Stub\\[\w\\]+::[\$\w\(\)]+ .* no value type specified (in )?iterable type array\.$/'
     type_coverage:
         return: 100
         param: 100
