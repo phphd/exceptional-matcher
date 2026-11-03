@@ -119,6 +119,59 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
         $this->assertIncluded(new ReflectionProperty(PlaceOrderCommand::class, 'shippingAddress'));
     }
 
+    public function testFinalNonExceptionMappedClassTypedPropertyIsSkipped(): void
+    {
+        $courierTip = new ReflectionProperty(PlaceOrderCommand::class, 'courierTip');
+
+        self::assertNull(
+            $this->compile($courierTip),
+            self::nameOf($courierTip).' must be skipped from the blueprint.',
+        );
+    }
+
+    public function testScalarTypedPropertyIsSkipped(): void
+    {
+        $loyaltyPointsToSpend = new ReflectionProperty(PlaceOrderCommand::class, 'loyaltyPointsToSpend');
+
+        self::assertNull(
+            $this->compile($loyaltyPointsToSpend),
+            self::nameOf($loyaltyPointsToSpend).' must be skipped from the blueprint.',
+        );
+    }
+
+    public function testEnumTypedPropertyIsSkipped(): void
+    {
+        $shippingMethod = new ReflectionProperty(PlaceOrderCommand::class, 'shippingMethod');
+
+        self::assertNull(
+            $this->compile($shippingMethod),
+            self::nameOf($shippingMethod).' must be skipped from the blueprint.',
+        );
+    }
+
+    /**
+     * @param class-string $className
+     *
+     * @dataProvider builtInClassTypedPropertyDataProvider
+     */
+    public function testBuiltInClassTypedPropertyIsSkipped(string $className, string $propertyName): void
+    {
+        $property = new ReflectionProperty($className, $propertyName);
+
+        self::assertNull(
+            $this->compile($property),
+            self::nameOf($property).' must be skipped from the blueprint.',
+        );
+    }
+
+    /** @return iterable<string,array{class-string,string}> */
+    public static function builtInClassTypedPropertyDataProvider(): iterable
+    {
+        yield 'class' => [PlaceOrderCommand::class, 'requestedDeliveryDate'];
+
+        yield 'interface' => [PlaceOrderCommand::class, 'recipientPhone'];
+    }
+
     private function compile(ReflectionProperty $property): ?PropertyExceptionMappingBlueprint
     {
         return $this->compiler->compileBlueprint($property);

@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order;
 
+use DateTimeImmutable;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Customer\Customer;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Line\OrderLines;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Payment\PaymentMethod;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Pricing\Discount;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Pricing\LoyaltyReward;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Shipping\ShippingAddress;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Shipping\ShippingMethod;
+use Stringable;
 use Traversable;
 
 final class PlaceOrderCommand
@@ -32,11 +35,21 @@ final class PlaceOrderCommand
     /** @var Traversable<int,LoyaltyReward> */
     private Traversable $loyaltyRewards;
 
+    private int $loyaltyPointsToSpend;
+
     private PaymentMethod $paymentMethod;
 
     private object $gatewayPayload;
 
     private ShippingAddress $shippingAddress;
+
+    private ShippingMethod $shippingMethod;
+
+    private DateTimeImmutable $requestedDeliveryDate;
+
+    private Stringable $recipientPhone;
+
+    private Money $courierTip;
 
     private mixed $metadata;
 }
