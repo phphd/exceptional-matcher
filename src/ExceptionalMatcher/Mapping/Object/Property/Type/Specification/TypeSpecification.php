@@ -1,0 +1,13 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification;
+
+use ReflectionNamedType;
+
+/** @internal */
+interface TypeSpecification
+{
+    public function isSatisfiedBy(ReflectionNamedType $type): bool;
+}

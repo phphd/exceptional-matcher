@@ -8,10 +8,12 @@ use Generator;
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPrintCompilationFailedException;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Type\PossiblyExceptionMappedType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyTypeAnalyser;
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
 use ReflectionProperty;
@@ -25,6 +27,8 @@ use Throwable;
  */
 final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
 {
+    private PossiblyExceptionMappedType $possiblyExceptionMappedType;
+
     public function __construct(
         /** @var ExceptionMappingCompiler<ReflectionAttribute<Catch_<Throwable,Throwable>>,CatchExceptionMappingBlueprint<Throwable>> */
         private readonly ExceptionMappingCompiler $catchCompiler,
@@ -32,6 +36,7 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
         private readonly ObjectExceptionMappingBlueprintRegistry $printRegistry,
         private readonly ?LoggerInterface $errorReporter = null,
     ) {
+        $this->possiblyExceptionMappedType = new PossiblyExceptionMappedType($this->printRegistry);
     }
 
     /** @noinspection PhpUnnecessaryStaticReferenceInspection */
@@ -73,7 +78,7 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
         if (!$propertyPrint->hasCatchPrints()) {
             $type = new PropertyTypeAnalyser($reflectionProperty->getType());
 
-            if (!$type->allowsMatchableObjects($this->printRegistry)) {
+            if (!$type->covers($this->possiblyExceptionMappedType)) {
                 return null;
             }
         }

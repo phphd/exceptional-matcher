@@ -131,6 +131,12 @@ final class ArchitectureRuleSet
         return $this->layerRule('bundle');
     }
 
+    #[TestRule]
+    public function testPropertyTypeAnalyserDependencies(): BuildStep
+    {
+        return $this->layerRule('propertyTypeAnalyser');
+    }
+
     public function layerRule(string $name): BuildStep
     {
         $layers = $this->layers();
@@ -235,6 +241,7 @@ final class ArchitectureRuleSet
             'compiler' => [
                 'wraps' => ['blueprint', 'node'],
                 'deps' => [
+                    $this->propertyTypeAnalyser(),
                     $this->matchConditionCompiler(),
                     $this->exceptionFormatter(),
                     Selector::inNamespace('Psr'),
@@ -250,7 +257,11 @@ final class ArchitectureRuleSet
                     $this->exception(),
                     $this->matchCondition(),
                 ],
-                'description' => 'Mapping nodes are the residual model layer: a class that no other layer claims lands here, and must depend on almost nothing',
+                'description' => 'Mapping nodes are the core model layer and must depend on almost nothing',
+            ],
+            'propertyTypeAnalyser' => [
+                'deps' => [],
+                'description' => 'Property type analysis must be independent',
             ],
             'matchConditionCompiler' => [
                 'wraps' => ['matchCondition'],
@@ -301,7 +312,6 @@ final class ArchitectureRuleSet
         );
     }
 
-    /** The residual model layer: everything under `Mapping` that no other layer claims. */
     public function node(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
@@ -427,6 +437,11 @@ final class ArchitectureRuleSet
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware'),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger')),
         );
+    }
+
+    public function propertyTypeAnalyser(): ClassNamespace
+    {
+        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type');
     }
 
     /** @psalm-suppress UnusedMethod */

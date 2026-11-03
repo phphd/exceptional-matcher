@@ -145,7 +145,7 @@ final class ExceptionMatcherUnitTest extends TestCase
         self::assertNull($violationList);
     }
 
-    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\PropertyTypeAnalyser::canCompositeTypeMatch */
+    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyTypeAnalyser::compoundTypeCovers */
     public function testCaptureNestedObjectPropertyException(): void
     {
         $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());

@@ -18,7 +18,8 @@
         "webmozart/assert": "^1.12.1",
         "phphd/exception-toolkit": "^1.2",
         "psr/log": "^1|^2|^3",
-        "composer-runtime-api": "^2.0"
+        "composer-runtime-api": "^2.0",
+        "symfony/polyfill-php84": "^1.43"
     },
     "conflict": {
         "symfony/validator": "<6.0 || >8.4",
