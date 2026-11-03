@@ -91,6 +91,29 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
         yield [PlaceOrderCommand::class, 'lines'];
     }
 
+    public function testInterfaceTypedPropertyIsIncluded(): void
+    {
+        $this->assertIncluded(new ReflectionProperty(PlaceOrderCommand::class, 'paymentMethod'));
+    }
+
+    /**
+     * @param class-string $className
+     *
+     * @dataProvider nonFinalClassTypedPropertyDataProvider
+     */
+    public function testNonFinalClassTypedPropertyIsIncluded(string $className, string $propertyName): void
+    {
+        $this->assertIncluded(new ReflectionProperty($className, $propertyName));
+    }
+
+    /** @return iterable<string,array{class-string,string}> */
+    public static function nonFinalClassTypedPropertyDataProvider(): iterable
+    {
+        yield 'abstract class' => [PlaceOrderCommand::class, 'discount'];
+
+        yield 'concrete class' => [PlaceOrderCommand::class, 'customer'];
+    }
+
     public function testFinalExceptionMappedClassTypedPropertyIsIncluded(): void
     {
         $this->assertIncluded(new ReflectionProperty(PlaceOrderCommand::class, 'shippingAddress'));

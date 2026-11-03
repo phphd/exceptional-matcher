@@ -4,17 +4,24 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order;
 
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Customer\Customer;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Line\OrderLines;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Payment\PaymentMethod;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Pricing\Discount;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Pricing\LoyaltyReward;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Shipping\ShippingAddress;
 use Traversable;
 
 final class PlaceOrderCommand
 {
+    private Customer $customer;
+
     /** @psalm-suppress MissingPropertyType Left untyped, as legacy properties are */
     private $customerNote; // @phpstan-ignore missingType.property, typeCoverage.propertyTypeCoverage
 
     private OrderLines $lines;
+
+    private Discount $discount;
 
     /** @var list<string> */
     private array $couponCodes;
@@ -24,6 +31,8 @@ final class PlaceOrderCommand
 
     /** @var Traversable<int,LoyaltyReward> */
     private Traversable $loyaltyRewards;
+
+    private PaymentMethod $paymentMethod;
 
     private object $gatewayPayload;
 
