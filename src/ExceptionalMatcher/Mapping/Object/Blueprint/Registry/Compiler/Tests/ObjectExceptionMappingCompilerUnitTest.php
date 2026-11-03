@@ -24,13 +24,29 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 final class ObjectExceptionMappingCompilerUnitTest extends TestCase
 {
+    private ContainerBuilder $container;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $container = (new PhdExceptionalMatcherExtension())->getContainer([
+            'kernel.environment' => 'test',
+            'kernel.build_dir' => __DIR__.'/var',
+            'kernel.debug' => false,
+        ]);
+
+        $container->addCompilerPass(new PublicServiceCompilerPass(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingBlueprint::class.'>'));
+
+        $this->container = $container;
+    }
+
     public function testErrorReporterIsNotSetUpWhenLoggerIsNotAvailableRegardlessOfDebugMode(): void
     {
-        $container = $this->getContainer();
-        $container->compile();
+        $this->container->compile();
 
         /** @var ExceptionMappingCompiler<ReflectionClass<object>,ObjectExceptionMappingBlueprint<object>> $compiler */
-        $compiler = $container->get(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingBlueprint::class.'>');
+        $compiler = $this->container->get(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingBlueprint::class.'>');
 
         $this->expectException(ObjectExceptionMappingPrintCompilationFailedException::class);
 
@@ -39,14 +55,12 @@ final class ObjectExceptionMappingCompilerUnitTest extends TestCase
 
     public function testLoggerIsUsedAsErrorReporterIsInNoDebugMode(): void
     {
-        $container = $this->getContainer();
-
         $spyLogger = new SpyLogger();
-        $container->set('logger', $spyLogger);
-        $container->compile();
+        $this->container->set('logger', $spyLogger);
+        $this->container->compile();
 
         /** @var ExceptionMappingCompiler<ReflectionClass<object>,ObjectExceptionMappingBlueprint<object>> $compiler */
-        $compiler = $container->get(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingBlueprint::class.'>');
+        $compiler = $this->container->get(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingBlueprint::class.'>');
 
         $print = $compiler->compileBlueprint(new ReflectionClass(TryWithNoCatchAttributesMessage::class));
         self::assertNull($print);
@@ -65,18 +79,5 @@ final class ObjectExceptionMappingCompilerUnitTest extends TestCase
             ObjectExceptionMappingPrintCompilationFailedException::class,
             $errorRecord['context']['exception'],
         );
-    }
-
-    private function getContainer(): ContainerBuilder
-    {
-        $container = (new PhdExceptionalMatcherExtension())->getContainer([
-            'kernel.environment' => 'test',
-            'kernel.build_dir' => __DIR__.'/var',
-            'kernel.debug' => false,
-        ]);
-
-        $container->addCompilerPass(new PublicServiceCompilerPass(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingBlueprint::class.'>'));
-
-        return $container;
     }
 }
