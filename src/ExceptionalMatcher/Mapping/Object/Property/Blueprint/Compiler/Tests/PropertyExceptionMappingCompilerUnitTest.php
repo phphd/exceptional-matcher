@@ -34,20 +34,18 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $compilerId = ExceptionMappingCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingBlueprint::class.'>';
-
-        $container->addCompilerPass(new PublicServiceCompilerPass($compilerId));
+        $container->addCompilerPass(new PublicServiceCompilerPass(ExceptionMappingCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingBlueprint::class.'>'));
 
         $container->compile();
 
         /** @var ExceptionMappingCompiler<ReflectionProperty,PropertyExceptionMappingBlueprint> $compiler */
-        $compiler = $container->get($compilerId);
+        $compiler = $container->get(ExceptionMappingCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingBlueprint::class.'>');
         $this->compiler = $compiler;
     }
 
     public function testCatchAttributedPropertyIsIncludedRegardlessOfType(): void
     {
-        $this->assertIncluded(new ReflectionProperty(ShippingAddress::class, 'postalCode'));
+        $this->assertIsIncluded(new ReflectionProperty(ShippingAddress::class, 'postalCode'));
     }
 
     /**
@@ -57,7 +55,7 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
      */
     public function testLooselyTypedPropertyIsIncluded(string $className, string $propertyName): void
     {
-        $this->assertIncluded(new ReflectionProperty($className, $propertyName));
+        $this->assertIsIncluded(new ReflectionProperty($className, $propertyName));
     }
 
     /** @return iterable<array{class-string,string}> */
@@ -77,7 +75,7 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
      */
     public function testIterableTypedPropertyIsIncluded(string $className, string $propertyName): void
     {
-        $this->assertIncluded(new ReflectionProperty($className, $propertyName));
+        $this->assertIsIncluded(new ReflectionProperty($className, $propertyName));
     }
 
     /** @return iterable<array{class-string,string}> */
@@ -94,7 +92,7 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
 
     public function testInterfaceTypedPropertyIsIncluded(): void
     {
-        $this->assertIncluded(new ReflectionProperty(PlaceOrderCommand::class, 'paymentMethod'));
+        $this->assertIsIncluded(new ReflectionProperty(PlaceOrderCommand::class, 'paymentMethod'));
     }
 
     /**
@@ -104,7 +102,7 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
      */
     public function testNonFinalClassTypedPropertyIsIncluded(string $className, string $propertyName): void
     {
-        $this->assertIncluded(new ReflectionProperty($className, $propertyName));
+        $this->assertIsIncluded(new ReflectionProperty($className, $propertyName));
     }
 
     /** @return iterable<string,array{class-string,string}> */
@@ -117,7 +115,7 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
 
     public function testFinalExceptionMappedClassTypedPropertyIsIncluded(): void
     {
-        $this->assertIncluded(new ReflectionProperty(PlaceOrderCommand::class, 'shippingAddress'));
+        $this->assertIsIncluded(new ReflectionProperty(PlaceOrderCommand::class, 'shippingAddress'));
     }
 
     public function testFinalNonExceptionMappedClassTypedPropertyIsSkipped(): void
@@ -180,7 +178,7 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
      */
     public function testRelativeClassTypedPropertyIsIncluded(string $className, string $propertyName): void
     {
-        $this->assertIncluded(new ReflectionProperty($className, $propertyName));
+        $this->assertIsIncluded(new ReflectionProperty($className, $propertyName));
     }
 
     /** @return iterable<array{class-string,string}> */
@@ -196,7 +194,7 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
         return $this->compiler->compileBlueprint($property);
     }
 
-    private function assertIncluded(ReflectionProperty $property): void
+    private function assertIsIncluded(ReflectionProperty $property): void
     {
         $blueprint = $this->compile($property);
 
