@@ -9,11 +9,10 @@ use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
-use Stringable;
 use ValueError;
-use Webmozart\Assert\Assert;
 
 use function is_int;
+use function is_string;
 
 /**
  * @internal
@@ -33,29 +32,11 @@ final class EnumValueMatchConditionBlueprint implements MatchConditionBlueprint
     {
         $value = $node->getValue();
 
-        if (null === $value) {
+        if (!is_int($value) && !is_string($value)) {
             /** @psalm-var FalseCondition<ValueError> */
             return new FalseCondition();
         }
 
-        return new EnumValueMatchCondition(
-            $this->enumClassName,
-            $this->intOrString($value),
-        );
-    }
-
-    private function intOrString(mixed $value): int|string
-    {
-        if (is_int($value)) {
-            return $value;
-        }
-
-        if ($value instanceof Stringable) {
-            return (string)$value;
-        }
-
-        Assert::string($value, 'EnumValueMatchCondition requires an int|string value, got: %s.');
-
-        return $value;
+        return new EnumValueMatchCondition($this->enumClassName, $value);
     }
 }
