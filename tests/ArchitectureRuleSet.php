@@ -266,6 +266,7 @@ final class ArchitectureRuleSet
             'matchConditionCompiler' => [
                 'wraps' => ['matchCondition'],
                 'deps' => [
+                    $this->propertyTypeAnalyser(),
                     Selector::inNamespace('Psr'),
                 ],
             ],

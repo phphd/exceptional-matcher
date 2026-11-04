@@ -15,7 +15,7 @@ final class MessageWithInvalidUidCondition
 {
     public function __construct(
         #[Catch_(InvalidUidException::class, match: uid_value)]
-        public mixed $uid,
+        public int|string|null $id,
     ) {
     }
 }

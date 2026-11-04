@@ -4,16 +4,24 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid;
 
+use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyTypeAnalyser;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\AnyType;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedType;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\StringType;
 use ReflectionProperty;
-use Stringable;
+use ReflectionType;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 use Webmozart\Assert\Assert;
+
+use function is_string;
+use function sprintf;
 
 /** @api */
 const uid_value = InvalidUidExceptionMatchCondition::class;
@@ -34,6 +42,8 @@ final class InvalidUidExceptionMatchConditionCompiler implements MatchConditionC
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         Assert::isAOf($catch->getExceptionClass(), InvalidUidException::class, self::TYPE_GUARANTEE_MESSAGE);
 
+        self::assertTypeCoversString($property->getType());
+
         return $this;
     }
 
@@ -42,22 +52,20 @@ final class InvalidUidExceptionMatchConditionCompiler implements MatchConditionC
     {
         $value = $node->getValue();
 
-        if (null === $value) {
+        if (!is_string($value)) {
             /** @psalm-var FalseCondition<InvalidUidException> */
             return new FalseCondition();
         }
 
-        return new InvalidUidExceptionMatchCondition($this->string($value));
+        return new InvalidUidExceptionMatchCondition($value);
     }
 
-    private function string(mixed $value): string
+    private static function assertTypeCoversString(?ReflectionType $type): void
     {
-        if ($value instanceof Stringable) {
-            return (string)$value;
+        $stringOrMixed = new AnyType([new StringType(), new MixedType()]);
+
+        if (!(new PropertyTypeAnalyser($type))->covers($stringOrMixed)) {
+            throw new LogicException(sprintf('InvalidUidExceptionMatchCondition requires a string property, got: %s', (string)$type));
         }
-
-        Assert::string($value, 'InvalidUidExceptionMatchCondition requires a stringable value, got: %s.');
-
-        return $value;
     }
 }
