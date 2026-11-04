@@ -11,15 +11,15 @@ use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\Exception\ObjectExceptionMappingPrintCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\Exception\Tests\Trait\AssertCompilationFailedFor;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\EnumValueMatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\ChooseDeliveryMethodCommand;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\Invalid\InvalidEnumFromMethodConditionMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\Invalid\NonBackedEnumConditionMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\Invalid\NonEnumExceptionClassMessage;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\Invalid\NotBacked\NonBackedEnumConditionMessage;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\Invalid\NotBacked\NonBackedStatus;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\WeekDay\WeekDay;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\WeekDay\WeekDayConditionMessage;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\WeekDayNumber\WeekDayNumber;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\WeekDayNumber\WeekDayNumberConditionMessage;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\Issue\DeliveryIssue;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\Method\DeliveryMethod;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\Priority\DeliveryPriority;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\SetDeliveryPriorityCommand;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
@@ -78,7 +78,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             ObjectExceptionMappingPrintCompilationFailedException::class,
         );
 
-        self::assertCompilationFailedFor($compilationException, NonEnumExceptionClassMessage::class, 'weekDay');
+        self::assertCompilationFailedFor($compilationException, NonEnumExceptionClassMessage::class, 'deliveryMethod');
 
         throw $compilationException->getRootException();
     }
@@ -86,7 +86,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
     public function testThrowsWhenFromClauseIsMissing(): void
     {
         $message = new MissingEnumFromConditionMessage();
-        $exception = $this->weekDayEnumError('mon');
+        $exception = $this->deliveryMethodError('lockr');
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: NULL');
@@ -96,7 +96,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             ObjectExceptionMappingPrintCompilationFailedException::class,
         );
 
-        self::assertCompilationFailedFor($compilationException, MissingEnumFromConditionMessage::class, 'weekDay');
+        self::assertCompilationFailedFor($compilationException, MissingEnumFromConditionMessage::class, 'deliveryMethod');
 
         throw $compilationException->getRootException();
     }
@@ -104,12 +104,12 @@ final class EnumValueMatchConditionUnitTest extends TestCase
     public function testThrowsWhenFromClassIsNotBackedEnum(): void
     {
         $message = new NonBackedEnumConditionMessage();
-        $exception = $this->weekDayEnumError('mon');
+        $exception = $this->deliveryMethodError('lockr');
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(sprintf(
             'EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: %s',
-            var_export(NonBackedStatus::class, return: true),
+            var_export(DeliveryIssue::class, return: true),
         ));
 
         $compilationException = self::catchException(
@@ -117,7 +117,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
             ObjectExceptionMappingPrintCompilationFailedException::class,
         );
 
-        self::assertCompilationFailedFor($compilationException, NonBackedEnumConditionMessage::class, 'status');
+        self::assertCompilationFailedFor($compilationException, NonBackedEnumConditionMessage::class, 'issue');
 
         throw $compilationException->getRootException();
     }
@@ -125,25 +125,25 @@ final class EnumValueMatchConditionUnitTest extends TestCase
     public function testThrowsWhenFromMethodIsNotEnumFrom(): void
     {
         $message = new InvalidEnumFromMethodConditionMessage();
-        $exception = $this->weekDayEnumError('tue');
+        $exception = $this->deliveryMethodError('lockr');
 
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage("EnumValueMatchCondition must specify `from: [WeekDay::class, 'from']`, got: `from: [WeekDay::class, 'tryFrom']`.");
+        $this->expectExceptionMessage("EnumValueMatchCondition must specify `from: [DeliveryMethod::class, 'from']`, got: `from: [DeliveryMethod::class, 'tryFrom']`.");
 
         $compilationException = self::catchException(
             fn () => $this->matcher->match($exception, $message),
             ObjectExceptionMappingPrintCompilationFailedException::class,
         );
 
-        self::assertCompilationFailedFor($compilationException, InvalidEnumFromMethodConditionMessage::class, 'weekDay');
+        self::assertCompilationFailedFor($compilationException, InvalidEnumFromMethodConditionMessage::class, 'deliveryMethod');
 
         throw $compilationException->getRootException();
     }
 
     public function testDoesNotCaptureStringEnumErrorWhenRuleValueIsNull(): void
     {
-        $message = new WeekDayConditionMessage(weekDay: null);
-        $originalException = $this->weekDayEnumError('');
+        $message = new ChooseDeliveryMethodCommand(deliveryMethod: null);
+        $originalException = $this->deliveryMethodError('lockr');
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -152,8 +152,8 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
     public function testDoesNotCaptureStringEnumErrorWhenValueDiffers(): void
     {
-        $message = new WeekDayConditionMessage('monday');
-        $originalException = $this->weekDayEnumError('mon');
+        $message = new ChooseDeliveryMethodCommand('courier');
+        $originalException = $this->deliveryMethodError('courrier');
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -162,8 +162,8 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
     public function testCapturesStringEnumErrorWhenValueIsSame(): void
     {
-        $message = new WeekDayConditionMessage('tue');
-        $originalException = $this->weekDayEnumError('tue');
+        $message = new ChooseDeliveryMethodCommand('lockr');
+        $originalException = $this->deliveryMethodError('lockr');
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -172,8 +172,8 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
     public function testDoesNotCaptureIntEnumErrorWhenRuleValueIsNull(): void
     {
-        $message = new WeekDayNumberConditionMessage(weekDayNumber: null);
-        $originalException = $this->weekDayNumberEnumError(0);
+        $message = new SetDeliveryPriorityCommand(priority: null);
+        $originalException = $this->deliveryPriorityError(4);
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -182,8 +182,8 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
     public function testDoesNotCaptureIntEnumErrorWhenValueDiffers(): void
     {
-        $message = new WeekDayNumberConditionMessage(7);
-        $originalException = $this->weekDayNumberEnumError(8);
+        $message = new SetDeliveryPriorityCommand(3);
+        $originalException = $this->deliveryPriorityError(4);
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
@@ -192,21 +192,21 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
     public function testCapturesIntEnumErrorWhenValueIsSame(): void
     {
-        $message = new WeekDayNumberConditionMessage(8);
-        $originalException = $this->weekDayNumberEnumError(8);
+        $message = new SetDeliveryPriorityCommand(4);
+        $originalException = $this->deliveryPriorityError(4);
 
         $matchedExceptionList = $this->matcher->match($originalException, $message);
 
         self::assertNotNull($matchedExceptionList);
     }
 
-    private function weekDayEnumError(string $value): ValueError
+    private function deliveryMethodError(string $value): ValueError
     {
-        return self::catchException(static fn () => WeekDay::from($value), ValueError::class);
+        return self::catchException(static fn () => DeliveryMethod::from($value), ValueError::class);
     }
 
-    private function weekDayNumberEnumError(int $value): ValueError
+    private function deliveryPriorityError(int $value): ValueError
     {
-        return self::catchException(static fn () => WeekDayNumber::from($value), ValueError::class);
+        return self::catchException(static fn () => DeliveryPriority::from($value), ValueError::class);
     }
 }

@@ -166,7 +166,7 @@ final class MappingLinterUnitTest extends TestCase
         [$defect] = $classReport->getDefects();
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
-        self::assertSame(MissingEnumFromConditionMessage::class.'::$weekDay', $defect->getLocation()->toReference());
+        self::assertSame(MissingEnumFromConditionMessage::class.'::$deliveryMethod', $defect->getLocation()->toReference());
         self::assertSame([
             'EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: NULL',
             '#[Catch_] exception mapping compilation failed.',

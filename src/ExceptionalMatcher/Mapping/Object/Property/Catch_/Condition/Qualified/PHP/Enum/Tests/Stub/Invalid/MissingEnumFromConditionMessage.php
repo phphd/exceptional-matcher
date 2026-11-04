@@ -14,5 +14,5 @@ use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qual
 final class MissingEnumFromConditionMessage
 {
     #[Catch_(ValueError::class, match: enum_value)]
-    public mixed $weekDay;
+    public mixed $deliveryMethod;
 }
