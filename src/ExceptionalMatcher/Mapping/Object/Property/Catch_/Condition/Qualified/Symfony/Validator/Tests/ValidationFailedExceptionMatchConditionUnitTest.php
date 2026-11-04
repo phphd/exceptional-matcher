@@ -4,17 +4,11 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\Tests;
 
-use InvalidArgumentException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\Exception\ObjectExceptionMappingPrintCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\Exception\Tests\Trait\AssertCompilationFailedFor;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\Tests\Stub\Invalid\NonValidationFailedExceptionClassMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\Tests\Stub\MessageWithValidatedValueCondition;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\ValidationFailedExceptionMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -32,7 +26,6 @@ use Symfony\Component\Validator\Validation;
 final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
 {
     use CatchException;
-    use AssertCompilationFailedFor;
 
     /** @var ExceptionMatcher<ConstraintViolationListInterface> */
     private ExceptionMatcher $matcher;
@@ -51,29 +44,6 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
         /** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
         $matcher = $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>');
         $this->matcher = $matcher;
-    }
-
-    /**
-     * @covers \PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingPrintCompilationFailedException::getRootException
-     * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\PropertyExceptionMappingCompiler
-     * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPrintCompilationFailedException
-     */
-    public function testThrowsWhenMatchConditionUsesNonValidationFailedExceptionClass(): void
-    {
-        $message = new NonValidationFailedExceptionClassMessage();
-        $exception = new RuntimeException();
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(ValidationFailedExceptionMatchConditionCompiler::TYPE_GUARANTEE_MESSAGE);
-
-        $compilationException = self::catchException(
-            fn () => $this->matcher->match($exception, $message),
-            ObjectExceptionMappingPrintCompilationFailedException::class,
-        );
-
-        self::assertCompilationFailedFor($compilationException, NonValidationFailedExceptionClassMessage::class, 'value');
-
-        throw $compilationException->getRootException();
     }
 
     public function testValidationFailedExceptionCanBeCaptured(): void

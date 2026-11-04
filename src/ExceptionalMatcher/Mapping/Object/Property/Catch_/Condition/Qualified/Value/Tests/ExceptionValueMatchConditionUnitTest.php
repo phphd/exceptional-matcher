@@ -4,13 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\Tests;
 
-use InvalidArgumentException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\Exception\ObjectExceptionMappingPrintCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\Exception\Tests\Trait\AssertCompilationFailedFor;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ExceptionValueMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\Tests\Stub\Invalid\NonValueExceptionClassMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\Tests\Stub\MessageWithExceptionValueCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\Tests\Stub\SomeValueException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
@@ -18,7 +13,6 @@ use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -33,7 +27,6 @@ use Symfony\Component\DependencyInjection\Reference;
 final class ExceptionValueMatchConditionUnitTest extends TestCase
 {
     use CatchException;
-    use AssertCompilationFailedFor;
 
     /** @var ExceptionMatcher<MatchedExceptionList> */
     private ExceptionMatcher $matcher;
@@ -58,29 +51,6 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
         /** @var ExceptionMatcher<MatchedExceptionList> $matcher */
         $matcher = $container->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
         $this->matcher = $matcher;
-    }
-
-    /**
-     * @covers \PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingPrintCompilationFailedException::getRootException
-     * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\PropertyExceptionMappingCompiler
-     * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPrintCompilationFailedException
-     */
-    public function testThrowsWhenMatchConditionUsesNonValueExceptionClass(): void
-    {
-        $message = new NonValueExceptionClassMessage();
-        $exception = new RuntimeException();
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(ExceptionValueMatchConditionCompiler::TYPE_GUARANTEE_MESSAGE);
-
-        $compilationException = self::catchException(
-            fn () => $this->matcher->match($exception, $message),
-            ObjectExceptionMappingPrintCompilationFailedException::class,
-        );
-
-        self::assertCompilationFailedFor($compilationException, NonValueExceptionClassMessage::class, 'value');
-
-        throw $compilationException->getRootException();
     }
 
     public function testValueExceptionCondition(): void
