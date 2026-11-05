@@ -25,6 +25,7 @@ use function sprintf;
 
 /**
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\UidValueMatchConditionCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyType
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\StringType
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\PropertyExceptionMappingCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPrintCompilationFailedException
@@ -32,7 +33,7 @@ use function sprintf;
  *
  * @internal
  */
-final class InvalidUidExceptionMatchConditionCompilerUnitTest extends TestCase
+final class UidValueMatchConditionCompilerUnitTest extends TestCase
 {
     use CatchException;
     use AssertPropertyCompilationFailedOn;
@@ -96,7 +97,7 @@ final class InvalidUidExceptionMatchConditionCompilerUnitTest extends TestCase
         throw $compilationException->getRootException();
     }
 
-    public function testCompilesWhenPropertyTypeCoversString(): void
+    public function testCompilesWhenPropertyTypeIncludesString(): void
     {
         $property = new ReflectionProperty(CancelOrderCommand::class, 'orderId');
 

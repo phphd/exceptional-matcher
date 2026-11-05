@@ -16,11 +16,11 @@ use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qual
 
 final class ReportDeliveryIssueCommand
 {
-    /** @see EnumValueMatchConditionCompilerUnitTest::testCompilesWhenPropertyTypeCoversIntOrString() */
+    /** @see EnumValueMatchConditionCompilerUnitTest::testCompilesWhenPropertyTypeIncludesIntOrString() */
     #[Catch_(ValueError::class, from: DeliveryPriority::class, match: enum_value)]
     private int|string $reshipmentPriority;
 
-    /** @see EnumValueMatchConditionCompilerUnitTest::testThrowsWhenPropertyTypeDoesNotCoverIntOrString() */
+    /** @see EnumValueMatchConditionCompilerUnitTest::testThrowsWhenPropertyTypeDoesNotIncludeIntOrString() */
     #[Catch_(ValueError::class, from: DeliveryMethod::class, match: enum_value)] // an already hydrated enum
     private DeliveryMethod $reshipmentMethod;
 

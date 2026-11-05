@@ -25,6 +25,7 @@ use function var_export;
 
 /**
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\EnumValueMatchConditionCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyType
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\IntType
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\PropertyExceptionMappingCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPrintCompilationFailedException
@@ -129,7 +130,7 @@ final class EnumValueMatchConditionCompilerUnitTest extends TestCase
         throw $compilationException->getRootException();
     }
 
-    public function testThrowsWhenPropertyTypeDoesNotCoverIntOrString(): void
+    public function testThrowsWhenPropertyTypeDoesNotIncludeIntOrString(): void
     {
         $property = new ReflectionProperty(ReportDeliveryIssueCommand::class, 'reshipmentMethod');
 
@@ -146,7 +147,7 @@ final class EnumValueMatchConditionCompilerUnitTest extends TestCase
         throw $compilationException->getRootException();
     }
 
-    public function testCompilesWhenPropertyTypeCoversIntOrString(): void
+    public function testCompilesWhenPropertyTypeIncludesIntOrString(): void
     {
         $property = new ReflectionProperty(ReportDeliveryIssueCommand::class, 'reshipmentPriority');
 
@@ -159,6 +160,6 @@ final class EnumValueMatchConditionCompilerUnitTest extends TestCase
 
         self::assertNotNull($blueprint);
 
-        $this->compiler->forceCompilationCompletion($blueprint);
+        $this->compiler->forceFullCompilation($blueprint);
     }
 }

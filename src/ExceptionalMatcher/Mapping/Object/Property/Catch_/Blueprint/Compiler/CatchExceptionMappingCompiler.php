@@ -70,7 +70,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     }
 
     /** @param CatchExceptionMappingBlueprint<Throwable> $blueprint */
-    public function forceCompilationCompletion(ExceptionMappingBlueprint $blueprint, ?ReflectionProperty $property = null): void
+    public function forceFullCompilation(ExceptionMappingBlueprint $blueprint, ?ReflectionProperty $property = null): void
     {
         Assert::notNull($property);
 
@@ -171,7 +171,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
             $e = new CatchExceptionMappingPrintCompilationFailedException($property, $exception);
 
             if (null !== $this->errorReporter) {
-                // One broken #[Catch_] won't spoil the whole match tree.
+                // One broken #[Catch_] won't spoil the whole match model.
                 $this->errorReporter->error($e->getMessage(), ['exception' => $e]);
 
                 return null;

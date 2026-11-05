@@ -135,6 +135,7 @@ final class ExceptionMatcherUnitTest extends TestCase
         self::assertSame('foo', $violation->getInvalidValue());
     }
 
+    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedObjectType */
     public function testNestedObjectIsNotCapturedWhenPropertyIsNotInitialized(): void
     {
         $message = HandleableMessageStub::create();
@@ -145,7 +146,7 @@ final class ExceptionMatcherUnitTest extends TestCase
         self::assertNull($violationList);
     }
 
-    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyType::compoundTypeCovers */
+    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyType::compoundTypeIncludes */
     public function testCaptureNestedObjectPropertyException(): void
     {
         $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());

@@ -43,7 +43,7 @@ final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         Assert::isAOf($catch->getExceptionClass(), ValueError::class, self::EXCEPTION_TYPE_GUARANTEE_MESSAGE);
 
-        $this->propertyType($property)->assertCovers(self::intOrStringOrMixed(), self::PROPERTY_TYPE_GUARANTEE_MESSAGE);
+        $this->propertyType($property)->assertIncludes(self::intOrStringOrMixed(), self::PROPERTY_TYPE_GUARANTEE_MESSAGE);
 
         @[$enumClassName, $fromMethod] = $catch->getFrom(); // @phpstan-ignore offsetAccess.nonArray
 

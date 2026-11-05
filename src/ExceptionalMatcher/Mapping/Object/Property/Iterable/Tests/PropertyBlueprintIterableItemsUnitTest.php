@@ -20,6 +20,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\IterablePropertyExceptionMatcherAggregate
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\ItemOfIterableExceptionMappingNode
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedIterableType
  */
 final class PropertyBlueprintIterableItemsUnitTest extends TestCase
 {

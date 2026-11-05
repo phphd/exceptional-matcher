@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qual
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\Tests\Stub\MessageWithInvalidUidCondition;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\UidValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
@@ -18,6 +19,7 @@ use function property_exists;
 
 /**
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\UidValueMatchCondition
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\UidValueMatchConditionBlueprint
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\UidValueMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition
@@ -25,7 +27,7 @@ use function property_exists;
  *
  * @internal
  */
-final class InvalidUidExceptionMatchConditionUnitTest extends TestCase
+final class UidValueMatchConditionUnitTest extends TestCase
 {
     use CatchException;
 

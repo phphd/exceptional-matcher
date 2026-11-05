@@ -116,7 +116,7 @@ final class ClassMappingLinter implements MappingLinter
     private function lintClassBlueprint(ReflectionClass $reflectionClass): iterable
     {
         if (null !== $print = $this->printRegistry->getMappingBlueprint($reflectionClass->getName())) {
-            $this->objectCompiler->forceCompilationCompletion($print);
+            $this->objectCompiler->forceFullCompilation($print);
 
             return yield from $this->compilationDefectCollector->flushDefects();
         }

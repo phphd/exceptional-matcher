@@ -56,12 +56,12 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
     }
 
     /** @param PropertyExceptionMappingBlueprint $blueprint */
-    public function forceCompilationCompletion(ExceptionMappingBlueprint $blueprint): void
+    public function forceFullCompilation(ExceptionMappingBlueprint $blueprint): void
     {
         $this->except(function (ReflectionProperty $property) use ($blueprint) {
             /** @psalm-suppress TooManyArguments */
             foreach ($blueprint->getCatchPrints() as $catchPrint) {
-                $this->catchCompiler->forceCompilationCompletion($catchPrint, $property); // @phpstan-ignore arguments.count
+                $this->catchCompiler->forceFullCompilation($catchPrint, $property); // @phpstan-ignore arguments.count
             }
         }, $blueprint->getProperty());
     }
@@ -73,7 +73,7 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
         $propertyPrint = new PropertyExceptionMappingBlueprint($property, $catchPrints, $this->printRegistry);
 
         if (!$propertyPrint->hasCatchPrints()
-            && !$this->propertyType($property)->covers($this->possiblyExceptionMappedType)) {
+            && !$this->propertyType($property)->includes($this->possiblyExceptionMappedType)) {
             return null;
         }
 
@@ -116,7 +116,7 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
             $e = new PropertyExceptionMappingPrintCompilationFailedException($property, $exception);
 
             if (null !== $this->errorReporter) {
-                // One broken property won't spoil the whole match tree.
+                // One broken property won't spoil the whole match model.
                 $this->errorReporter->error($e->getMessage(), ['exception' => $e]);
 
                 return null;

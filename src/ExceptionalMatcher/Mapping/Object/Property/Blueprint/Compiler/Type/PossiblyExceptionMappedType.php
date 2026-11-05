@@ -23,6 +23,7 @@ final class PossiblyExceptionMappedType implements TypeSpecification
     ) {
     }
 
+    /** @codeCoverageIgnore */
     public function __invoke(mixed $value): bool
     {
         if (PropertyExceptionMappingBlueprint::isIterable()($value)) {

@@ -18,7 +18,7 @@ use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidExcept
  *
  * @internal
  */
-final class InvalidUidExceptionMatchConditionCompilerConstantAutoloadingUnitTest extends TestCase
+final class UidValueMatchConditionCompilerConstantAutoloadingUnitTest extends TestCase
 {
     private ContainerBuilder $container;
 

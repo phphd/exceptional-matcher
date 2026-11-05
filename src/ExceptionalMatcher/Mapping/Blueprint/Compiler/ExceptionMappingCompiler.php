@@ -32,5 +32,5 @@ interface ExceptionMappingCompiler
     public function compile(Reflector $reflector): ?ExceptionMappingBlueprint;
 
     /** @param TPrint $blueprint */
-    public function forceCompilationCompletion(ExceptionMappingBlueprint $blueprint): void;
+    public function forceFullCompilation(ExceptionMappingBlueprint $blueprint): void;
 }

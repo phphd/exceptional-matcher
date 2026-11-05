@@ -19,17 +19,17 @@ final class PropertyType
     ) {
     }
 
-    public function assertCovers(TypeSpecification $specification, string $message): void
+    public function assertIncludes(TypeSpecification $specification, string $message): void
     {
-        if (!$this->covers($specification)) {
+        if (!$this->includes($specification)) {
             throw new LogicException(sprintf($message, (string)$this->type ?: 'mixed')); // @phpstan-ignore ternary.shortNotAllowed
         }
     }
 
-    public function covers(TypeSpecification $specification): bool
+    public function includes(TypeSpecification $specification): bool
     {
         return $this->namedTypeCovers($specification)
-            ?? $this->compoundTypeCovers($specification)
+            ?? $this->compoundTypeIncludes($specification)
             ?? $this->isMixed();
     }
 
@@ -42,14 +42,14 @@ final class PropertyType
         return $specification->isSatisfiedBy($this->type);
     }
 
-    private function compoundTypeCovers(TypeSpecification $specification): ?bool
+    private function compoundTypeIncludes(TypeSpecification $specification): ?bool
     {
         if (!$this->type instanceof ReflectionUnionType && !$this->type instanceof ReflectionIntersectionType) {
             return null;
         }
 
         foreach ($this->type->getTypes() as $reflectionType) {
-            if ((new self($reflectionType))->covers($specification)) {
+            if ((new self($reflectionType))->includes($specification)) {
                 return true;
             }
         }
