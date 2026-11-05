@@ -8,8 +8,6 @@ use Iterator;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\PreCompiledMatchConditionBlueprint;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
 use ReflectionProperty;
 use Throwable;
 
@@ -27,13 +25,12 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
     ) {
     }
 
-    /** @return CompositeMatchConditionBlueprint|PreCompiledMatchConditionBlueprint<Throwable> */
-    public function compile(ReflectionProperty $property, Catch_ $catch): CompositeMatchConditionBlueprint|PreCompiledMatchConditionBlueprint
+    public function compile(ReflectionProperty $property, Catch_ $catch): ?CompositeMatchConditionBlueprint
     {
         $print = new CompositeMatchConditionBlueprint(new MemoizingIteratorAggregate($this->conditionPrints($property, $catch)));
 
         if (!$print->hasPrints()) {
-            return new PreCompiledMatchConditionBlueprint(new FalseCondition());
+            return null;
         }
 
         return $print;

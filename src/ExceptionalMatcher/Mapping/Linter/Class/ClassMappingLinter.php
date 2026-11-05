@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class;
 
+use Exception;
 use Generator;
+use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport;
@@ -15,6 +17,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingBlue
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
@@ -22,6 +25,11 @@ use ReflectionClass;
 use ReflectionProperty;
 use Throwable;
 
+use WeakMap;
+
+use Webmozart\Assert\Assert;
+
+use function iterator_count;
 use function sprintf;
 
 /**
@@ -35,6 +43,8 @@ final class ClassMappingLinter implements MappingLinter
     public function __construct(
         /** @var ObjectExceptionMappingBlueprintRegistry<object> */
         private readonly ObjectExceptionMappingBlueprintRegistry $printRegistry,
+        /** @var ExceptionMappingCompiler<ReflectionClass<object>,ObjectExceptionMappingBlueprint<object>> */
+        private readonly ExceptionMappingCompiler $objectCompiler,
         /** @var ExceptionMappingCompiler<ReflectionProperty,PropertyExceptionMappingBlueprint> */
         private readonly ExceptionMappingCompiler $propertyCompiler,
         private readonly CompilationDefectCollector $compilationDefectCollector,
@@ -106,7 +116,9 @@ final class ClassMappingLinter implements MappingLinter
     private function lintClassBlueprint(ReflectionClass $reflectionClass): iterable
     {
         if (null !== $print = $this->printRegistry->getMappingBlueprint($reflectionClass->getName())) {
-            return yield from $this->lintObjectMappingPrint($print);
+            $this->objectCompiler->forceCompilationCompletion($print);
+
+            return yield from $this->compilationDefectCollector->flushDefects();
         }
 
         // If no print, it possibly has failed compilation:
@@ -129,7 +141,7 @@ final class ClassMappingLinter implements MappingLinter
         $missingTryDefects = [];
 
         foreach ($reflectionClass->getProperties() as $property) {
-            if (true !== $this->propertyCompiler->compileBlueprint($property)?->hasCatchPrints()) {
+            if (true !== $this->propertyCompiler->compile($property)?->hasCatchPrints()) {
                 continue;
             }
 
@@ -191,55 +203,5 @@ final class ClassMappingLinter implements MappingLinter
     private function hasCatchAttributes(ReflectionProperty $reflectionProperty): bool
     {
         return [] !== $reflectionProperty->getAttributes(Catch_::class);
-    }
-
-    /**
-     * @param ObjectExceptionMappingBlueprint<object> $objectPrint
-     *
-     * @return Generator<MappingDefect>
-     */
-    private function lintObjectMappingPrint(ObjectExceptionMappingBlueprint $objectPrint): Generator
-    {
-        // Compilation is done lazily through traversal
-        foreach ($objectPrint->getPropertyPrints() as $propertyPrint) {
-            foreach ($propertyPrint->getCatchPrints() as $catchPrint) {
-                if (true === yield from $this->traverseMatchConditionPrint($propertyPrint, $catchPrint->getConditionPrint())) {
-                    continue;
-                }
-
-                yield MappingDefect::notice(
-                    '#[Catch_] condition print is not composite, so it cannot be linted.',
-                    DefectLocation::ofProperty($propertyPrint->getProperty()),
-                );
-            }
-        }
-
-        yield from $this->compilationDefectCollector->flushDefects();
-    }
-
-    /**
-     * @param MatchConditionBlueprint<Throwable> $matchConditionPrint
-     *
-     * @return Generator<MappingDefect>
-     */
-    private function traverseMatchConditionPrint(PropertyExceptionMappingBlueprint $propertyPrint, MatchConditionBlueprint $matchConditionPrint): Generator
-    {
-        if (!$matchConditionPrint instanceof CompositeMatchConditionBlueprint) {
-            return false;
-        }
-
-        try {
-            // Traversal compiles the match conditions' prints
-            foreach ($matchConditionPrint->getPrints() as $subPrint) {
-                yield from $this->traverseMatchConditionPrint($propertyPrint, $subPrint); // recurse
-            }
-        } catch (Throwable $e) {
-            yield MappingDefect::error(
-                DefectLocation::ofProperty($propertyPrint->getProperty()),
-                $e,
-            );
-        }
-
-        return true;
     }
 }

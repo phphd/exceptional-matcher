@@ -50,7 +50,7 @@ final class ObjectExceptionMappingCompilerUnitTest extends TestCase
 
         $this->expectException(ObjectExceptionMappingPrintCompilationFailedException::class);
 
-        $compiler->compileBlueprint(new ReflectionClass(TryWithNoCatchAttributesMessage::class));
+        $compiler->compile(new ReflectionClass(TryWithNoCatchAttributesMessage::class));
     }
 
     public function testLoggerIsUsedAsErrorReporterIsInNoDebugMode(): void
@@ -62,7 +62,7 @@ final class ObjectExceptionMappingCompilerUnitTest extends TestCase
         /** @var ExceptionMappingCompiler<ReflectionClass<object>,ObjectExceptionMappingBlueprint<object>> $compiler */
         $compiler = $this->container->get(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingBlueprint::class.'>');
 
-        $print = $compiler->compileBlueprint(new ReflectionClass(TryWithNoCatchAttributesMessage::class));
+        $print = $compiler->compile(new ReflectionClass(TryWithNoCatchAttributesMessage::class));
         self::assertNull($print);
 
         $records = $spyLogger->flush();

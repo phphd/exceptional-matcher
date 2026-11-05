@@ -32,11 +32,6 @@ final class MappingDefect
         return new self(DefectSeverity::Warning, [$message], $location, cause: null);
     }
 
-    public static function notice(string $message, DefectLocation $location): self
-    {
-        return new self(DefectSeverity::Notice, [$message], $location, cause: null);
-    }
-
     public function getSeverity(): DefectSeverity
     {
         return $this->severity;

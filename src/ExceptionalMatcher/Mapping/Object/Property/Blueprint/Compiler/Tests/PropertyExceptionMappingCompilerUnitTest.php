@@ -161,7 +161,7 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
 
     private function compile(ReflectionProperty $property): ?PropertyExceptionMappingBlueprint
     {
-        return $this->compiler->compileBlueprint($property);
+        return $this->compiler->compile($property);
     }
 
     private function assertIsIncluded(ReflectionProperty $property): void

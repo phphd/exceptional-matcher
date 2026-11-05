@@ -69,7 +69,7 @@ final class InvalidUidExceptionMatchConditionCompilerUnitTest extends TestCase
         $this->expectExceptionMessage(InvalidUidExceptionMatchConditionCompiler::TYPE_GUARANTEE_MESSAGE);
 
         $compilationException = self::catchException(
-            fn () => $this->compiler->compileBlueprint($property),
+            fn () => $this->compiler->compile($property),
             PropertyExceptionMappingPrintCompilationFailedException::class,
         );
 
@@ -86,7 +86,7 @@ final class InvalidUidExceptionMatchConditionCompilerUnitTest extends TestCase
         $this->expectExceptionMessage('InvalidUidExceptionMatchCondition requires a string property, got: int');
 
         $compilationException = self::catchException(
-            fn () => $this->compiler->compileBlueprint($property),
+            fn () => $this->compiler->compile($property),
             PropertyExceptionMappingPrintCompilationFailedException::class,
         );
 
@@ -99,7 +99,7 @@ final class InvalidUidExceptionMatchConditionCompilerUnitTest extends TestCase
     {
         $property = new ReflectionProperty(CancelOrderCommand::class, 'orderId');
 
-        $blueprint = $this->compiler->compileBlueprint($property);
+        $blueprint = $this->compiler->compile($property);
 
         self::assertInstanceOf(PropertyExceptionMappingBlueprint::class, $blueprint);
     }

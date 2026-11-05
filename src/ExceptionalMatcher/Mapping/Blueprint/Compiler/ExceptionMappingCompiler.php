@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler;
 
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingBlueprint;
 use Psr\Log\LoggerInterface;
 use Reflector;
 
@@ -16,7 +17,7 @@ use Reflector;
  *
  * @template TReflector of Reflector
  *
- * @template-covariant TPrint of ExceptionMappingBlueprint
+ * @template TPrint of ExceptionMappingBlueprint
  */
 interface ExceptionMappingCompiler
 {
@@ -28,5 +29,8 @@ interface ExceptionMappingCompiler
      *
      * @return null|TPrint
      */
-    public function compileBlueprint(Reflector $reflector): ?ExceptionMappingBlueprint;
+    public function compile(Reflector $reflector): ?ExceptionMappingBlueprint;
+
+    /** @param TPrint $blueprint */
+    public function forceCompilationCompletion(ExceptionMappingBlueprint $blueprint): void;
 }

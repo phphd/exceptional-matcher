@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Tests;
 
-use LogicException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
@@ -202,9 +201,10 @@ final class MappingLinterUnitTest extends TestCase
 
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertSame(LazilyDiscoveredUnknownMatchConditionMessage::class.'::$divisor', $defect->getLocation()->toReference());
-        self::assertInstanceOf(LogicException::class, $defect->getCause());
+        self::assertInstanceOf(CatchExceptionMappingPrintCompilationFailedException::class, $defect->getCause());
         self::assertSame([
             'Match condition compiler not found for: unknown_condition',
+            '#[Catch_] exception mapping compilation failed.',
         ], $defect->getMessages());
     }
 

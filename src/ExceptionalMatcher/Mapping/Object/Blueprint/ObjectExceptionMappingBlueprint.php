@@ -46,6 +46,12 @@ final class ObjectExceptionMappingBlueprint implements ExceptionMappingBlueprint
         return $objectNode;
     }
 
+    /** @return class-string<T> */
+    public function getClassName(): string
+    {
+        return $this->className;
+    }
+
     /** @return iterable<PropertyExceptionMappingBlueprint> */
     public function getPropertyPrints(): iterable
     {

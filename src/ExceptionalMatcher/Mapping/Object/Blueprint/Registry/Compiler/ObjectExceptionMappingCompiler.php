@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler;
 
+use Closure;
 use Generator;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\Exception\ObjectExceptionMappingPrintCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use Psr\Log\LoggerInterface;
@@ -17,6 +21,7 @@ use ReflectionClass;
 use ReflectionProperty;
 use Reflector;
 use Throwable;
+use WeakMap;
 
 /**
  * @internal
@@ -39,22 +44,22 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
     }
 
     /** @param ReflectionClass<object> $reflector */
-    public function compileBlueprint(Reflector $reflector): ?ObjectExceptionMappingBlueprint
+    public function compile(Reflector $reflector): ?ObjectExceptionMappingBlueprint
     {
-        try {
-            return $this->compile($reflector);
-        } catch (Throwable $exception) {
-            $e = new ObjectExceptionMappingPrintCompilationFailedException($reflector, $exception);
+        return $this->except($this->doCompile(...), $reflector);
+    }
 
-            if (null !== $this->errorReporter) {
-                // One broken class mapping won't spoil the whole situation.
-                $this->errorReporter->error($e->getMessage(), ['exception' => $e]);
-
-                return null;
-            }
-
-            throw $e;
-        }
+    /** @param ObjectExceptionMappingBlueprint<object> $blueprint */
+    public function forceCompilationCompletion(ExceptionMappingBlueprint $blueprint): void
+    {
+        $this->except(
+            function () use ($blueprint) {
+                foreach ($blueprint->getPropertyPrints() as $propertyPrint) {
+                    $this->propertyCompiler->forceCompilationCompletion($propertyPrint);
+                }
+            },
+            new ReflectionClass($blueprint->getClassName()),
+        );
     }
 
     /**
@@ -62,7 +67,7 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
      *
      * @return ?ObjectExceptionMappingBlueprint<object>
      */
-    private function compile(ReflectionClass $reflectionClass): ?ObjectExceptionMappingBlueprint
+    private function doCompile(ReflectionClass $reflectionClass): ?ObjectExceptionMappingBlueprint
     {
         if ([] === $reflectionClass->getAttributes(Try_::class)) {
             return null;
@@ -92,9 +97,35 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
     private function compilePropertyPrints(ReflectionClass $reflectionClass): Generator
     {
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-            if (null !== $propertyPrint = $this->propertyCompiler->compileBlueprint($reflectionProperty)) {
+            if (null !== $propertyPrint = $this->propertyCompiler->compile($reflectionProperty)) {
                 yield $propertyPrint;
             }
+        }
+    }
+
+    /**
+     * @template T
+     *
+     * @param Closure(ReflectionClass<object>):T $closure
+     * @param ReflectionClass<object> $class
+     *
+     * @return ?T
+     */
+    private function except(Closure $closure, ReflectionClass $class): mixed
+    {
+        try {
+            return $closure($class);
+        } catch (Throwable $exception) {
+            $e = new ObjectExceptionMappingPrintCompilationFailedException($class, $exception);
+
+            if (null !== $this->errorReporter) {
+                // One broken class mapping won't spoil the whole situation.
+                $this->errorReporter->error($e->getMessage(), ['exception' => $e]);
+
+                return null;
+            }
+
+            throw $e;
         }
     }
 }

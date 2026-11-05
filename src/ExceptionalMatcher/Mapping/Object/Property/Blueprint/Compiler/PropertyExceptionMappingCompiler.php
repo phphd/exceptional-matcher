@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler;
 
+use Closure;
 use Generator;
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPrintCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Type\PossiblyExceptionMappedType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyTypeAnalyser;
 use Psr\Log\LoggerInterface;
@@ -19,6 +22,7 @@ use ReflectionAttribute;
 use ReflectionProperty;
 use Reflector;
 use Throwable;
+use WeakMap;
 
 /**
  * @internal
@@ -46,25 +50,23 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
     }
 
     /** @param ReflectionProperty $reflector */
-    public function compileBlueprint(Reflector $reflector): ?PropertyExceptionMappingBlueprint
+    public function compile(Reflector $reflector): ?PropertyExceptionMappingBlueprint
     {
-        try {
-            return $this->compile($reflector);
-        } catch (Throwable $exception) {
-            $e = new PropertyExceptionMappingPrintCompilationFailedException($reflector, $exception);
-
-            if (null !== $this->errorReporter) {
-                // One broken property won't spoil the whole match tree.
-                $this->errorReporter->error($e->getMessage(), ['exception' => $e]);
-
-                return null;
-            }
-
-            throw $e;
-        }
+        return $this->except($this->doCompile(...), $reflector);
     }
 
-    private function compile(ReflectionProperty $reflectionProperty): ?PropertyExceptionMappingBlueprint
+    /** @param PropertyExceptionMappingBlueprint $blueprint */
+    public function forceCompilationCompletion(ExceptionMappingBlueprint $blueprint): void
+    {
+        $this->except(function (ReflectionProperty $property) use ($blueprint) {
+            /** @psalm-suppress TooManyArguments */
+            foreach ($blueprint->getCatchPrints() as $catchPrint) {
+                $this->catchCompiler->forceCompilationCompletion($catchPrint, $property); // @phpstan-ignore arguments.count
+            }
+        }, $blueprint->getProperty());
+    }
+
+    private function doCompile(ReflectionProperty $reflectionProperty): ?PropertyExceptionMappingBlueprint
     {
         $catchPrints = new MemoizingIteratorAggregate($this->compileCatchPrints($reflectionProperty));
 
@@ -91,9 +93,34 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
         /** @phpstan-var ReflectionAttribute<Catch_<Throwable,Throwable>> $catchAttribute */
         foreach ($property->getAttributes(Catch_::class) as $catchAttribute) {
             /** @psalm-suppress TooManyArguments */
-            if (null !== $catchPrint = $this->catchCompiler->compileBlueprint($catchAttribute, $property)) { // @phpstan-ignore arguments.count
+            if (null !== $catchPrint = $this->catchCompiler->compile($catchAttribute, $property)) { // @phpstan-ignore arguments.count
                 yield $catchPrint;
             }
+        }
+    }
+
+    /**
+     * @template T
+     *
+     * @param Closure(ReflectionProperty):T $closure
+     *
+     * @return ?T
+     */
+    private function except(Closure $closure, ReflectionProperty $property): mixed
+    {
+        try {
+            return $closure($property);
+        } catch (Throwable $exception) {
+            $e = new PropertyExceptionMappingPrintCompilationFailedException($property, $exception);
+
+            if (null !== $this->errorReporter) {
+                // One broken property won't spoil the whole match tree.
+                $this->errorReporter->error($e->getMessage(), ['exception' => $e]);
+
+                return null;
+            }
+
+            throw $e;
         }
     }
 }

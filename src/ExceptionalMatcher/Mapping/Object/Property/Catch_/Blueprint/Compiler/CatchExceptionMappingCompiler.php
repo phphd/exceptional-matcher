@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler;
 
+use Closure;
+use Generator;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Exception\CatchAttributeInstantiationFailedException;
@@ -14,6 +17,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\PreCompiledMatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\QualifiedMatchedExceptionFormatter;
 use Psr\Container\ContainerInterface;
@@ -22,6 +26,7 @@ use ReflectionAttribute;
 use ReflectionProperty;
 use Reflector;
 use Throwable;
+use WeakMap;
 use Webmozart\Assert\Assert;
 
 /**
@@ -53,26 +58,34 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     }
 
     /** @param ReflectionAttribute<Catch_<Throwable,Throwable>> $reflector */
-    public function compileBlueprint(Reflector $reflector, ?ReflectionProperty $property = null): ?CatchExceptionMappingBlueprint
+    public function compile(Reflector $reflector, ?ReflectionProperty $property = null): ?CatchExceptionMappingBlueprint
     {
         Assert::notNull($property);
 
-        try {
+        return $this->except(function (ReflectionProperty $property) use ($reflector) {
             $catch = $this->instantiateCatch($reflector);
 
-            return $this->compile($property, $catch);
-        } catch (Throwable $exception) {
-            $e = new CatchExceptionMappingPrintCompilationFailedException($property, $exception);
+            return $this->doCompile($property, $catch);
+        }, $property);
+    }
 
-            if (null !== $this->errorReporter) {
-                // One broken #[Catch_] won't spoil the whole match tree.
-                $this->errorReporter->error($e->getMessage(), ['exception' => $e]);
+    /** @param CatchExceptionMappingBlueprint<Throwable> $blueprint */
+    public function forceCompilationCompletion(ExceptionMappingBlueprint $blueprint, ?ReflectionProperty $property = null): void
+    {
+        Assert::notNull($property);
 
-                return null;
+        $this->except(function () use ($blueprint) {
+            $conditionPrint = $blueprint->getConditionPrint();
+
+            if (!$conditionPrint instanceof CompositeMatchConditionBlueprint) {
+                throw new LogicException('#[Catch_] condition print is not composite, so it cannot be pre-compiled');
             }
+            $conditionsCount = $conditionPrint->forceCompleteCompilation();
 
-            throw $e;
-        }
+            if (0 === $conditionsCount) {
+                throw new LogicException('#[Catch_] condition is compiled to an empty condition, so it matches any exception');
+            }
+        }, $property);
     }
 
     /**
@@ -94,7 +107,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
      *
      * @return CatchExceptionMappingBlueprint<Throwable>
      */
-    private function compile(ReflectionProperty $property, Catch_ $catch): CatchExceptionMappingBlueprint
+    private function doCompile(ReflectionProperty $property, Catch_ $catch): CatchExceptionMappingBlueprint
     {
         return new CatchExceptionMappingBlueprint(
             $this->compileMatchConditionPrint($property, $catch),
@@ -141,5 +154,30 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
         $formatter->getFormatter($formatterId);
 
         return $formatterId;
+    }
+
+    /**
+     * @template T
+     *
+     * @param Closure(ReflectionProperty):T $closure
+     *
+     * @return ?T
+     */
+    private function except(Closure $closure, ReflectionProperty $property): mixed
+    {
+        try {
+            return $closure($property);
+        } catch (Throwable $exception) {
+            $e = new CatchExceptionMappingPrintCompilationFailedException($property, $exception);
+
+            if (null !== $this->errorReporter) {
+                // One broken #[Catch_] won't spoil the whole match tree.
+                $this->errorReporter->error($e->getMessage(), ['exception' => $e]);
+
+                return null;
+            }
+
+            throw $e;
+        }
     }
 }

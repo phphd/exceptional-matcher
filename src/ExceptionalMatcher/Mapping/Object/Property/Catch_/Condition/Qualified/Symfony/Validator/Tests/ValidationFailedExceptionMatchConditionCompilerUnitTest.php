@@ -63,7 +63,7 @@ final class ValidationFailedExceptionMatchConditionCompilerUnitTest extends Test
         $this->expectExceptionMessage(ValidationFailedExceptionMatchConditionCompiler::TYPE_GUARANTEE_MESSAGE);
 
         $compilationException = self::catchException(
-            fn () => $this->compiler->compileBlueprint($property),
+            fn () => $this->compiler->compile($property),
             PropertyExceptionMappingPrintCompilationFailedException::class,
         );
 

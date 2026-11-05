@@ -28,12 +28,6 @@ final class CompositeMatchConditionBlueprint implements MatchConditionBlueprint
         return new CompositeMatchCondition(new MemoizingIteratorAggregate($this->conditions($node)));
     }
 
-    /** @return iterable<MatchConditionBlueprint<Throwable>> */
-    public function getPrints(): iterable
-    {
-        return $this->prints;
-    }
-
     /** @psalm-suppress UnusedForeachValue */
     public function hasPrints(): bool
     {
@@ -43,6 +37,23 @@ final class CompositeMatchConditionBlueprint implements MatchConditionBlueprint
         }
 
         return false;
+    }
+
+    public function forceCompleteCompilation(): int
+    {
+        return iterator_count($this->getLeafPrintsDFS());
+    }
+
+    /** @return Iterator<MatchConditionBlueprint<Throwable>> */
+    private function getLeafPrintsDFS(): Iterator
+    {
+        foreach ($this->prints as $print) {
+            if ($print instanceof self) {
+                yield from $print->getLeafPrintsDFS();
+            } else {
+                yield $print;
+            }
+        }
     }
 
     /** @return Iterator<MatchCondition<Throwable>> */

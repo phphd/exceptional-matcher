@@ -26,15 +26,9 @@ return static function (ContainerConfigurator $configurator): void {
         ->set(MappingLinter::class.'<class-string,'.LintReport::class.'>', ClassMappingLinter::class)
         ->arg('$printRegistry',
             inline_service(CompilingObjectExceptionMappingBlueprintRegistry::class)
-                ->arg('$compiler',
-                    // Lint-mode compiler - it collects and reports mapping problems
-                    inline_service(ExceptionMappingCompiler::class)
-                        ->factory([
-                            service(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingBlueprint::class.'>'),
-                            'reportingTo',
-                        ])->args([service(CompilationDefectCollector::class.'::$compilationLogger')]),
-                ),
-        )->arg('$propertyCompiler',
+                ->arg('$compiler', service(ClassMappingLinter::class.'::$objectCompiler')),
+        )->arg('$objectCompiler', service(ClassMappingLinter::class.'::$objectCompiler'))
+        ->arg('$propertyCompiler',
             inline_service(ExceptionMappingCompiler::class)
                 ->factory([
                     service(ExceptionMappingCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingBlueprint::class.'>'),
@@ -42,6 +36,13 @@ return static function (ContainerConfigurator $configurator): void {
                 ])->args([service(CompilationDefectCollector::class.'::$compilationLogger')])
         )->arg('$compilationDefectCollector', service(CompilationDefectCollector::class))
         ->tag(MappingLinter::class, ['id' => 'class-string']);
+
+    $services // Lint-mode compiler - collects and reports mapping problems
+        ->set(ClassMappingLinter::class.'::$objectCompiler', ExceptionMappingCompiler::class)
+        ->factory([
+            service(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingBlueprint::class.'>'),
+            'reportingTo',
+        ])->args([service(CompilationDefectCollector::class.'::$compilationLogger')]);
 
     $services
         ->set($id = CompilationDefectCollector::class, $id)
