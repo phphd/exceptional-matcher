@@ -9,6 +9,11 @@ use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\AnyType;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\IntType;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedType;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\StringType;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\TypeSpecification;
 use ValueError;
 
 use function is_int;
@@ -32,11 +37,25 @@ final class EnumValueMatchConditionBlueprint implements MatchConditionBlueprint
     {
         $value = $node->getValue();
 
-        if (!is_int($value) && !is_string($value)) {
+        if (!self::isInt()($value) && !self::isString()($value)) {
             /** @psalm-var FalseCondition<ValueError> */
             return new FalseCondition();
         }
 
         return new EnumValueMatchCondition($this->enumClassName, $value);
+    }
+
+    public static function isInt(): IntType
+    {
+        /** @phpstan-var IntType $intType */
+        static $intType = new IntType();
+        return $intType;
+    }
+
+    public static function isString(): StringType
+    {
+        /** @phpstan-var StringType $stringType */
+        static $stringType = new StringType();
+        return $stringType;
     }
 }

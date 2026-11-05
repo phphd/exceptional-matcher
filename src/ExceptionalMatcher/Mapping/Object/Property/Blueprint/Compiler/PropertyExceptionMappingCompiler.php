@@ -16,7 +16,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyTypeAnalyser;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyType;
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
 use ReflectionProperty;
@@ -66,18 +66,15 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
         }, $blueprint->getProperty());
     }
 
-    private function doCompile(ReflectionProperty $reflectionProperty): ?PropertyExceptionMappingBlueprint
+    private function doCompile(ReflectionProperty $property): ?PropertyExceptionMappingBlueprint
     {
-        $catchPrints = new MemoizingIteratorAggregate($this->compileCatchPrints($reflectionProperty));
+        $catchPrints = new MemoizingIteratorAggregate($this->compileCatchPrints($property));
 
-        $propertyPrint = new PropertyExceptionMappingBlueprint($reflectionProperty, $catchPrints, $this->printRegistry);
+        $propertyPrint = new PropertyExceptionMappingBlueprint($property, $catchPrints, $this->printRegistry);
 
-        if (!$propertyPrint->hasCatchPrints()) {
-            $type = new PropertyTypeAnalyser($reflectionProperty->getType());
-
-            if (!$type->covers($this->possiblyExceptionMappedType)) {
-                return null;
-            }
+        if (!$propertyPrint->hasCatchPrints()
+            && !$this->propertyType($property)->covers($this->possiblyExceptionMappedType)) {
+            return null;
         }
 
         return $propertyPrint;
@@ -97,6 +94,11 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
                 yield $catchPrint;
             }
         }
+    }
+
+    private function propertyType(ReflectionProperty $property): PropertyType
+    {
+        return new PropertyType($property->getType());
     }
 
     /**

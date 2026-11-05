@@ -23,13 +23,13 @@ const validated_value = ValidationFailedExceptionMatchCondition::class;
  */
 final class ValidationFailedExceptionMatchConditionCompiler implements MatchConditionCompiler, MatchConditionBlueprint
 {
-    public const TYPE_GUARANTEE_MESSAGE = 'ValidationFailedExceptionMatchCondition can only be used for ValidationFailedException';
+    public const EXCEPTION_TYPE_GUARANTEE_MESSAGE = 'ValidationFailedExceptionMatchCondition can only be used for ValidationFailedException';
 
     /** @return MatchConditionBlueprint<ValidationFailedException> */
     public function compile(ReflectionProperty $property, Catch_ $catch): MatchConditionBlueprint
     {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
-        Assert::isAOf($catch->getExceptionClass(), ValidationFailedException::class, self::TYPE_GUARANTEE_MESSAGE);
+        Assert::isAOf($catch->getExceptionClass(), ValidationFailedException::class, self::EXCEPTION_TYPE_GUARANTEE_MESSAGE);
 
         return $this;
     }

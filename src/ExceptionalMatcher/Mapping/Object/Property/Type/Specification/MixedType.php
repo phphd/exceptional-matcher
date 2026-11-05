@@ -12,6 +12,11 @@ final class MixedType implements TypeSpecification
 {
     private const TYPE_MIXED = 'mixed';
 
+    public function __invoke(mixed $value): bool
+    {
+        return true;
+    }
+
     public function isSatisfiedBy(?ReflectionType $type): bool
     {
         if (null === $type) {

@@ -13,7 +13,7 @@ use Throwable;
  *
  * @implements MatchCondition<InvalidUidException>
  */
-final class InvalidUidExceptionMatchCondition implements MatchCondition
+final class UidValueMatchCondition implements MatchCondition
 {
     public function __construct(
         private readonly string $propertyValue,

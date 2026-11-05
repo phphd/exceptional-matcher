@@ -63,7 +63,7 @@ final class EnumValueMatchConditionCompilerUnitTest extends TestCase
         $property = new ReflectionProperty(ReportDeliveryIssueCommand::class, 'returnMethod');
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(EnumValueMatchConditionCompiler::TYPE_GUARANTEE_MESSAGE);
+        $this->expectExceptionMessage(EnumValueMatchConditionCompiler::EXCEPTION_TYPE_GUARANTEE_MESSAGE);
 
         $compilationException = self::catchException(
             fn () => $this->compile($property),
@@ -134,7 +134,7 @@ final class EnumValueMatchConditionCompilerUnitTest extends TestCase
         $property = new ReflectionProperty(ReportDeliveryIssueCommand::class, 'reshipmentMethod');
 
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('EnumValueMatchCondition requires an int|string property, got: '.DeliveryMethod::class);
+        $this->expectExceptionMessage(sprintf(EnumValueMatchConditionCompiler::PROPERTY_TYPE_GUARANTEE_MESSAGE, DeliveryMethod::class));
 
         $compilationException = self::catchException(
             fn () => $this->compile($property),
@@ -156,6 +156,7 @@ final class EnumValueMatchConditionCompilerUnitTest extends TestCase
     private function compile(ReflectionProperty $property): void
     {
         $blueprint = $this->compiler->compile($property);
+
         self::assertNotNull($blueprint);
 
         $this->compiler->forceCompilationCompletion($blueprint);

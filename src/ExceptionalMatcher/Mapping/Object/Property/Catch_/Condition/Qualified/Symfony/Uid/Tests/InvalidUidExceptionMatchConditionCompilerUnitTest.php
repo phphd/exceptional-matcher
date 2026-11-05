@@ -12,8 +12,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPrintCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\Tests\Trait\AssertPropertyCompilationFailedOn;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\InvalidUidExceptionMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\Tests\Stub\CancelOrderCommand;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\UidValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
@@ -21,9 +21,10 @@ use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidExcept
 
 use function class_exists;
 use function property_exists;
+use function sprintf;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\InvalidUidExceptionMatchConditionCompiler
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\UidValueMatchConditionCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\StringType
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\PropertyExceptionMappingCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPrintCompilationFailedException
@@ -66,7 +67,7 @@ final class InvalidUidExceptionMatchConditionCompilerUnitTest extends TestCase
         $property = new ReflectionProperty(CancelOrderCommand::class, 'customerId');
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(InvalidUidExceptionMatchConditionCompiler::TYPE_GUARANTEE_MESSAGE);
+        $this->expectExceptionMessage(UidValueMatchConditionCompiler::EXCEPTION_TYPE_GUARANTEE_MESSAGE);
 
         $compilationException = self::catchException(
             fn () => $this->compiler->compile($property),
@@ -83,7 +84,7 @@ final class InvalidUidExceptionMatchConditionCompilerUnitTest extends TestCase
         $property = new ReflectionProperty(CancelOrderCommand::class, 'legacyOrderId');
 
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('InvalidUidExceptionMatchCondition requires a string property, got: int');
+        $this->expectExceptionMessage(sprintf(UidValueMatchConditionCompiler::PROPERTY_TYPE_GUARANTEE_MESSAGE, 'int'));
 
         $compilationException = self::catchException(
             fn () => $this->compiler->compile($property),

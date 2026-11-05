@@ -22,13 +22,13 @@ const exception_value = ExceptionValueMatchCondition::class;
  */
 final class ExceptionValueMatchConditionCompiler implements MatchConditionCompiler, MatchConditionBlueprint
 {
-    public const TYPE_GUARANTEE_MESSAGE = 'ExceptionValueMatchCondition can only be used for exception classes that implement ValueException';
+    public const EXCEPTION_TYPE_GUARANTEE_MESSAGE = 'ExceptionValueMatchCondition can only be used for exception classes that implement ValueException';
 
     /** @return MatchConditionBlueprint<ValueException> */
     public function compile(ReflectionProperty $property, Catch_ $catch): MatchConditionBlueprint
     {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
-        Assert::isAOf($catch->getExceptionClass(), ValueException::class, self::TYPE_GUARANTEE_MESSAGE);
+        Assert::isAOf($catch->getExceptionClass(), ValueException::class, self::EXCEPTION_TYPE_GUARANTEE_MESSAGE);
 
         return $this;
     }

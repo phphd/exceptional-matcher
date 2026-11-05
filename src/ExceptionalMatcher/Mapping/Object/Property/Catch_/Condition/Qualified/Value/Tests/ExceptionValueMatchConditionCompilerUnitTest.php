@@ -60,7 +60,7 @@ final class ExceptionValueMatchConditionCompilerUnitTest extends TestCase
     public function testThrowsWhenMatchConditionUsesNonValueExceptionClass(ReflectionProperty $property): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(ExceptionValueMatchConditionCompiler::TYPE_GUARANTEE_MESSAGE);
+        $this->expectExceptionMessage(ExceptionValueMatchConditionCompiler::EXCEPTION_TYPE_GUARANTEE_MESSAGE);
 
         $compilationException = self::catchException(
             fn () => $this->compiler->compile($property),

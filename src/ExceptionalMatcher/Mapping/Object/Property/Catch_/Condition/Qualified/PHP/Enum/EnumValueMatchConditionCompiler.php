@@ -8,11 +8,12 @@ use BackedEnum;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyTypeAnalyser;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\AnyType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\IntType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\StringType;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\TypeSpecification;
 use ReflectionEnum;
 use ReflectionProperty;
 use ReflectionType;
@@ -20,6 +21,7 @@ use ValueError;
 use Webmozart\Assert\Assert;
 
 use function is_a;
+use function PHPUnit\Framework\returnArgument;
 use function sprintf;
 use function var_export;
 
@@ -33,14 +35,15 @@ const enum_value = EnumValueMatchCondition::class;
  */
 final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
 {
-    public const TYPE_GUARANTEE_MESSAGE = 'EnumValueMatchCondition can only be used for '.ValueError::class;
+    public const EXCEPTION_TYPE_GUARANTEE_MESSAGE = 'EnumValueMatchCondition can only be used for '.ValueError::class;
+    public const PROPERTY_TYPE_GUARANTEE_MESSAGE = 'EnumValueMatchCondition requires an int|string property, got: %s';
 
     public function compile(ReflectionProperty $property, Catch_ $catch): EnumValueMatchConditionBlueprint
     {
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
-        Assert::isAOf($catch->getExceptionClass(), ValueError::class, self::TYPE_GUARANTEE_MESSAGE);
+        Assert::isAOf($catch->getExceptionClass(), ValueError::class, self::EXCEPTION_TYPE_GUARANTEE_MESSAGE);
 
-        self::assertTypeCoversIntOrString($property->getType());
+        $this->propertyType($property)->assertCovers(self::intOrStringOrMixed(), self::PROPERTY_TYPE_GUARANTEE_MESSAGE);
 
         @[$enumClassName, $fromMethod] = $catch->getFrom(); // @phpstan-ignore offsetAccess.nonArray
 
@@ -50,13 +53,20 @@ final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
         return new EnumValueMatchConditionBlueprint($enumClassName);
     }
 
-    private static function assertTypeCoversIntOrString(?ReflectionType $type): void
+    private function propertyType(ReflectionProperty $property): PropertyType
     {
-        $intOrStringOrMixed = new AnyType([new IntType(), new StringType(), new MixedType()]);
+        return new PropertyType($property->getType());
+    }
 
-        if (!(new PropertyTypeAnalyser($type))->covers($intOrStringOrMixed)) {
-            throw new LogicException(sprintf('EnumValueMatchCondition requires an int|string property, got: %s', (string)$type));
-        }
+    private static function intOrStringOrMixed(): AnyType
+    {
+        /** @phpstan-var ?AnyType $intOrStringOrMixed */
+        static $intOrStringOrMixed;
+        return $intOrStringOrMixed ??= new AnyType([
+            EnumValueMatchConditionBlueprint::isInt(),
+            EnumValueMatchConditionBlueprint::isString(),
+            new MixedType(),
+        ]);
     }
 
     /** @phpstan-assert class-string<BackedEnum> $className */

@@ -16,6 +16,9 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExcep
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\CatchAttributesExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\IterablePropertyExceptionMatcherAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedIterableType;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedObjectType;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\TypeSpecification;
 use ReflectionProperty;
 use Throwable;
 
@@ -72,11 +75,7 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
         return $this->property;
     }
 
-    /**
-     * @api the seam for the mapping linter: forcing this iterable compiles every `#[Catch_]` of the property
-     *
-     * @return iterable<CatchExceptionMappingBlueprint<Throwable>>
-     */
+    /** @return iterable<CatchExceptionMappingBlueprint<Throwable>> */
     public function getCatchPrints(): iterable
     {
         return $this->catchPrints;
@@ -113,7 +112,7 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
 
     private function innerObjectMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcher
     {
-        if (!is_object($object = $property->getValue())) {
+        if (!self::isObject()($object = $property->getValue())) {
             return null;
         }
 
@@ -127,14 +126,29 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
         return $innerObjectPrint->bind($property, $object);
     }
 
+    public static function isObject(): MixedObjectType
+    {
+        /** @phpstan-var MixedObjectType $isObject */
+        static $isObject = new MixedObjectType();
+        return $isObject;
+    }
+
     private function innerObjectsIterableMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcherAggregate
     {
         $value = $property->getValue();
 
-        if (!is_iterable($value) || [] === $value) {
+        if ([] === $value || !self::isIterable()($value)) {
             return null;
         }
 
         return new IterablePropertyExceptionMatcherAggregate($property, $this->printRegistry);
+    }
+
+    /** Iterable might contain #[Try_] objects */
+    public static function isIterable(): MixedIterableType
+    {
+        /** @phpstan-var MixedIterableType $isIterable */
+        static $isIterable = new MixedIterableType();
+        return $isIterable;
     }
 }

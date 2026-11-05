@@ -18,7 +18,7 @@ use ReflectionProperty;
 /**
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\PropertyExceptionMappingCompiler
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Type\PossiblyExceptionMappedType
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyTypeAnalyser
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyType
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\AnyType
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedType
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedObjectType

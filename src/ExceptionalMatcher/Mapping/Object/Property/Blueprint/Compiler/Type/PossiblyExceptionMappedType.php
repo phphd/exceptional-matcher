@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Type;
 
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\AnyType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedIterableType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedObjectType;
@@ -16,22 +17,28 @@ use ReflectionNamedType;
 /** @internal */
 final class PossiblyExceptionMappedType implements TypeSpecification
 {
-    private AnyType $mixedTypesSpecification;
-
     public function __construct(
         /** @var ObjectExceptionMappingBlueprintRegistry<object> */
         private readonly ObjectExceptionMappingBlueprintRegistry $blueprintRegistry,
     ) {
-        $this->mixedTypesSpecification = new AnyType([
-            new MixedType(),
-            new MixedObjectType(),
-            new MixedIterableType(),
-        ]);
+    }
+
+    public function __invoke(mixed $value): bool
+    {
+        if (PropertyExceptionMappingBlueprint::isIterable()($value)) {
+            return true;
+        }
+
+        if (PropertyExceptionMappingBlueprint::isObject()($value)) {
+            return null !== $this->blueprintRegistry->getMappingBlueprint($value::class);
+        }
+
+        return false;
     }
 
     public function isSatisfiedBy(ReflectionNamedType $type): bool
     {
-        if ($this->mixedTypesSpecification->isSatisfiedBy($type)) {
+        if (self::isObjectOrIterableOrMixed()->isSatisfiedBy($type)) {
             return true;
         }
 
@@ -59,5 +66,17 @@ final class PossiblyExceptionMappedType implements TypeSpecification
             !$reflectionClass->isFinal() => true,
             default => null !== $this->blueprintRegistry->getMappingBlueprint($className)
         };
+    }
+
+    private static function isObjectOrIterableOrMixed(): TypeSpecification
+    {
+        /** @phpstan-var ?AnyType $mixedTypesSpecification */
+        static $mixedTypesSpecification;
+
+        return $mixedTypesSpecification ??= new AnyType([
+            PropertyExceptionMappingBlueprint::isObject(),
+            PropertyExceptionMappingBlueprint::isIterable(),
+            new MixedType(),
+        ]);
     }
 }

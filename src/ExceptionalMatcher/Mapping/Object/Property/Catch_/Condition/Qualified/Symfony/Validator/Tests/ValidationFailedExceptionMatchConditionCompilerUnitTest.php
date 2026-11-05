@@ -60,7 +60,7 @@ final class ValidationFailedExceptionMatchConditionCompilerUnitTest extends Test
     public function testThrowsWhenMatchConditionUsesNonValidationFailedExceptionClass(ReflectionProperty $property): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(ValidationFailedExceptionMatchConditionCompiler::TYPE_GUARANTEE_MESSAGE);
+        $this->expectExceptionMessage(ValidationFailedExceptionMatchConditionCompiler::EXCEPTION_TYPE_GUARANTEE_MESSAGE);
 
         $compilationException = self::catchException(
             fn () => $this->compiler->compile($property),

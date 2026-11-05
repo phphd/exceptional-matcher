@@ -9,8 +9,8 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\EnumValueMatchCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\EnumValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\QualifiedMatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\InvalidUidExceptionMatchCondition;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\InvalidUidExceptionMatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\UidValueMatchCondition;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\UidValueMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\ValidationFailedExceptionMatchCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\ValidationFailedExceptionMatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ExceptionValueMatchCondition;
@@ -46,12 +46,12 @@ final class MatchConditionCompilerServiceTest extends BundleTestCase
         $expected = [
             ExceptionValueMatchCondition::class => ExceptionValueMatchConditionCompiler::class,
             ValidationFailedExceptionMatchCondition::class => ValidationFailedExceptionMatchConditionCompiler::class,
-            InvalidUidExceptionMatchCondition::class => InvalidUidExceptionMatchConditionCompiler::class,
+            UidValueMatchCondition::class => UidValueMatchConditionCompiler::class,
             EnumValueMatchCondition::class => EnumValueMatchConditionCompiler::class,
         ];
 
         if (!class_exists(InvalidUidException::class) || !property_exists(InvalidUidException::class, 'invalidValue')) {
-            unset($expected[InvalidUidExceptionMatchCondition::class]);
+            unset($expected[UidValueMatchCondition::class]);
         }
 
         self::assertSame($expected, $providedServices);

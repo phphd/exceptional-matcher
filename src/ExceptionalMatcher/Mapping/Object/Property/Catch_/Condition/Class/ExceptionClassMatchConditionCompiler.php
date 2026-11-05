@@ -18,12 +18,12 @@ use Webmozart\Assert\Assert;
  */
 final class ExceptionClassMatchConditionCompiler implements MatchConditionCompiler
 {
-    public const TYPE_GUARANTEE_MESSAGE = 'Exception matching can only be done for classes implementing Throwable';
+    public const EXCEPTION_TYPE_GUARANTEE_MESSAGE = 'Exception matching can only be done for classes implementing Throwable';
 
     /** @return PreCompiledMatchConditionBlueprint<Throwable> */
     public function compile(ReflectionProperty $property, Catch_ $catch): PreCompiledMatchConditionBlueprint
     {
-        Assert::isAOf($exceptionClass = $catch->getExceptionClass(), Throwable::class, self::TYPE_GUARANTEE_MESSAGE);
+        Assert::isAOf($exceptionClass = $catch->getExceptionClass(), Throwable::class, self::EXCEPTION_TYPE_GUARANTEE_MESSAGE);
 
         /** @psalm-suppress ImplicitToStringCast */
         $condition = new ExceptionClassMatchCondition($exceptionClass);

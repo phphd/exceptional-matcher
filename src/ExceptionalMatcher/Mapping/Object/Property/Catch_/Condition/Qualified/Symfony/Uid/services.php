@@ -19,7 +19,7 @@ return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
 
     $services
-        ->set(MatchConditionCompiler::class.'<'.InvalidUidException::class.'>', InvalidUidExceptionMatchConditionCompiler::class)
-        ->tag(MatchConditionCompiler::class, ['id' => InvalidUidExceptionMatchCondition::class])
+        ->set(MatchConditionCompiler::class.'<'.InvalidUidException::class.'>', UidValueMatchConditionCompiler::class)
+        ->tag(MatchConditionCompiler::class, ['id' => UidValueMatchCondition::class])
     ;
 };

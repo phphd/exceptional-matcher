@@ -9,5 +9,7 @@ use ReflectionNamedType;
 /** @internal */
 interface TypeSpecification
 {
+    public function __invoke(mixed $value): bool;
+
     public function isSatisfiedBy(ReflectionNamedType $type): bool;
 }

@@ -72,6 +72,12 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
+    public function testMatchConditionBlueprintDependencies(): BuildStep
+    {
+        return $this->layerRule('matchConditionBlueprint');
+    }
+
+    #[TestRule]
     public function testMatchConditionCompilerDependencies(): BuildStep
     {
         return $this->layerRule('matchConditionCompiler');
@@ -132,9 +138,9 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
-    public function testPropertyTypeAnalyserDependencies(): BuildStep
+    public function testPropertyTypeDependencies(): BuildStep
     {
-        return $this->layerRule('propertyTypeAnalyser');
+        return $this->layerRule('propertyType');
     }
 
     public function layerRule(string $name): BuildStep
@@ -203,8 +209,9 @@ final class ArchitectureRuleSet
             ],
             'linter' => [
                 'deps' => [
-                    $this->blueprint(),
                     $this->compiler(),
+                    $this->blueprint(),
+                    $this->matchConditionBlueprint(),
                     $this->matchCondition(),
                     Selector::inNamespace('Psr'),
                     Selector::inNamespace('Composer\ClassMapGenerator'),
@@ -241,7 +248,7 @@ final class ArchitectureRuleSet
             'compiler' => [
                 'wraps' => ['blueprint', 'node'],
                 'deps' => [
-                    $this->propertyTypeAnalyser(),
+                    $this->propertyType(),
                     $this->matchConditionCompiler(),
                     $this->exceptionFormatter(),
                     Selector::inNamespace('Psr'),
@@ -249,7 +256,10 @@ final class ArchitectureRuleSet
             ],
             'blueprint' => [
                 'wraps' => ['node'],
-                'deps' => [],
+                'deps' => [
+                    $this->propertyType(),
+                    $this->matchConditionBlueprint(),
+                ],
             ],
             'node' => [
                 'deps' => [
@@ -259,15 +269,21 @@ final class ArchitectureRuleSet
                 ],
                 'description' => 'Mapping nodes are the core model layer and must depend on almost nothing',
             ],
-            'propertyTypeAnalyser' => [
+            'propertyType' => [
                 'deps' => [],
                 'description' => 'Property type analysis must be independent',
             ],
             'matchConditionCompiler' => [
+                'wraps' => ['matchConditionBlueprint', 'matchCondition'],
+                'deps' => [
+                    $this->propertyType(),
+                    Selector::inNamespace('Psr'),
+                ],
+            ],
+            'matchConditionBlueprint' => [
                 'wraps' => ['matchCondition'],
                 'deps' => [
-                    $this->propertyTypeAnalyser(),
-                    Selector::inNamespace('Psr'),
+                    $this->propertyType(),
                 ],
             ],
             'matchCondition' => [
@@ -362,16 +378,22 @@ final class ArchitectureRuleSet
         return Selector::AnyOf(
             Selector::classname(MatchCondition::class),
             Selector::implements(MatchCondition::class),
-            Selector::classname(MatchConditionBlueprint::class),
-            Selector::AllOf(
-                Selector::implements(MatchConditionBlueprint::class),
-                Selector::Not($this->matchConditionCompiler()),
-            ),
             // Contract
             Selector::classname(ValueException::class),
             // Third-party
             Selector::classname(ValidationFailedException::class),
             Selector::classname(InvalidUidException::class),
+        );
+    }
+
+    public function matchConditionBlueprint(): AnyOfSelectorModifier
+    {
+        return Selector::AnyOf(
+            Selector::classname(MatchConditionBlueprint::class),
+            Selector::AllOf(
+                Selector::implements(MatchConditionBlueprint::class),
+                Selector::Not($this->matchConditionCompiler()),
+            ),
         );
     }
 
@@ -440,7 +462,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function propertyTypeAnalyser(): ClassNamespace
+    public function propertyType(): ClassNamespace
     {
         return Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type');
     }
