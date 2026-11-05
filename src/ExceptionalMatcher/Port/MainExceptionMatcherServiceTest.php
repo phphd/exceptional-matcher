@@ -1,0 +1,43 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionalMatcher\Port;
+
+use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
+use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
+use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
+use PhPhD\ExceptionToolkit\Unwrapper\Messenger\MessengerExceptionUnwrapper;
+use Symfony\Component\VarExporter\LazyObjectInterface;
+
+/**
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle
+ * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
+ *
+ * @internal
+ */
+final class MainExceptionMatcherServiceTest extends BundleTestCase
+{
+    public function testExceptionMatcherService(): void
+    {
+        $exceptionMatcher = self::getContainer()->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
+        self::assertInstanceOf(ExceptionMatcher::class, $exceptionMatcher);
+
+        if (PhdExceptionalMatcherExtension::nativeProxiesAreSupported()) {
+            self::assertInstanceOf(MainExceptionMatcher::class, $exceptionMatcher);
+        } else {
+            self::assertNotInstanceOf(MainExceptionMatcher::class, $exceptionMatcher);
+            self::assertInstanceOf(LazyObjectInterface::class, $exceptionMatcher);
+            self::assertInstanceOf(MainExceptionMatcher::class, $exceptionMatcher->initializeLazyObject());
+        }
+    }
+
+    public function testExceptionUnwrapper(): void
+    {
+        $exceptionUnwrapper = self::getContainer()->get('phd_exceptional_matcher.exception_unwrapper');
+        self::assertInstanceOf(LazyObjectInterface::class, $exceptionUnwrapper);
+        self::assertFalse($exceptionUnwrapper->isLazyObjectInitialized());
+        self::assertInstanceOf(MessengerExceptionUnwrapper::class, $exceptionUnwrapper->initializeLazyObject());
+    }
+}

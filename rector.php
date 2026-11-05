@@ -3,10 +3,11 @@
 declare(strict_types=1);
 
 use PhPhD\CodingStandard\ValueObject\Set\PhdSetList;
-use Rector\CodeQuality\Rector\ClassMethod\LocallyCalledStaticMethodToNonStaticRector;
-use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
+use Rector\CodeQuality\Rector\Attribute\ExplicitAttributeNamedArgsRector;
+use Rector\CodeQuality\Rector\CallLike\AddNameToNullArgumentRector;
 use Rector\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector;
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector\Class_\RemoveParentDelegatingClassMethodRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector;
 use Rector\DeadCode\Rector\If_\ReduceAlwaysFalseIfOrRector;
 use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
@@ -17,42 +18,44 @@ use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\ValueObject\PhpVersion;
 
 return RectorConfig::configure()
+    ->withPhpVersion(PhpVersion::PHP_81)
     ->withPaths([__DIR__.'/src', __DIR__.'/tests', __DIR__.'/upgrade'])
     ->withSets([PhdSetList::rector()->getPath()])
-    ->withPhpVersion(PhpVersion::PHP_81)
     ->withSkip([
-        ...stubExclusions(),
-        SimplifyIfElseToTernaryRector::class,
         ArrayToFirstClassCallableRector::class => [
             __DIR__.'/src/*/services.php',
             __DIR__.'/src/*/*CompilerPass.php',
         ],
         ClassPropertyAssignToConstructorPromotionRector::class => [
-            __DIR__.'/src/ExceptionalMatcher/Exception/ExceptionReciprocal.php',
-            __DIR__.'/src/ExceptionalMatcher/Rule/LazyMatchingRule.php',
+            __DIR__.'/'.'src/ExceptionalMatcher/Mapping/Object/Property/Catch_/Exception/ExceptionReciprocal.php',
         ],
         IssetOnPropertyObjectToPropertyExistsRector::class => [
-            __DIR__.'/src/ExceptionalMatcher/Rule/Object/Property/Match/Condition/Origin/ExceptionOriginMatchCondition.php',
+            __DIR__.'/'.'src/ExceptionalMatcher/Mapping/Object/Property/Catch_/Condition/Origin/ExceptionOriginMatchCondition.php',
         ],
-        StringClassNameToClassConstantRector::class => [
-            __DIR__.'/upgrade',
+        RemoveParentDelegatingClassMethodRector::class => [
+            __DIR__.'/'.'src/ExceptionalMatcher/Port/Symfony/Validator/Middleware/Messenger/Exception/ExceptionalValidationFailedMessengerException.php',
         ],
-        ReduceAlwaysFalseIfOrRector::class => [
-            __DIR__.'/upgrade',
+        AddNameToNullArgumentRector::class => [
+            __DIR__.'/'.'src/ExceptionalMatcher/Bundle/DependencyInjection/PhdExceptionalMatcherExtension.php',
         ],
+        ...upgradeExclusions(),
+        ...stubExclusions(),
     ]);
+
+function upgradeExclusions(): array
+{
+    return array_fill_keys([
+        StringClassNameToClassConstantRector::class,
+        ReduceAlwaysFalseIfOrRector::class,
+    ], [__DIR__.'/upgrade']);
+}
 
 function stubExclusions(): array
 {
-    return [
-        RemoveUnusedPrivatePropertyRector::class => [
-            __DIR__ .'/*/Stub/*',
-        ],
-        RemoveUnusedPromotedPropertyRector::class => [
-            __DIR__ .'/*/Stub/*',
-        ],
-        ReadOnlyPropertyRector::class => [
-            __DIR__.'/*/Stub/*',
-        ],
-    ];
+    return array_fill_keys([
+        RemoveUnusedPrivatePropertyRector::class,
+        RemoveUnusedPromotedPropertyRector::class,
+        ReadOnlyPropertyRector::class,
+        ExplicitAttributeNamedArgsRector::class,
+    ], [__DIR__.'/*/Stub/*']);
 }

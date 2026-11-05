@@ -2,7 +2,8 @@
     "require-dev": {
         "php": ">=8.1",
         "vimeo/psalm": "7.0.0-beta13 as dev-master",
-        "psalm/plugin-phpunit": "^0.19.7"
+        "psalm/plugin-phpunit": "^0.19.7",
+        "cweagans/composer-patches": "^2.0"
     },
     "autoload-dev": {
         "files": [
@@ -12,6 +13,25 @@
         ]
     },
     "config": {
-        "bin-dir": ""
+        "bin-dir": "",
+        "allow-plugins": {
+            "cweagans/composer-patches": true
+        }
+    },
+    "extra": {
+        "patches": {
+            "vimeo/psalm": [
+                {
+                    "description": "Fix class-string configuration constants",
+                    "url": "https://patch-diff.githubusercontent.com/raw/vimeo/psalm/pull/12364.diff",
+                    "extra": {
+                        "freeform": {
+                            "executable": "./git-patch-src.sh",
+                            "args": "%3$s %2$s %4$s"
+                        }
+                    }
+                }
+            ]
+        }
     }
 }
