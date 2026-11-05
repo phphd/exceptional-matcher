@@ -159,6 +159,6 @@ final class EnumValueMatchConditionCompilerUnitTest extends TestCase
 
         self::assertNotNull($blueprint);
 
-        $this->compiler->forceCompilationCompletion($blueprint);
+        $this->compiler->forceFullCompilation($blueprint);
     }
 }

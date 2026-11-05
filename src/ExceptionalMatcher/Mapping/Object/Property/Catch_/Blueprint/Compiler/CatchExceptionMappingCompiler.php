@@ -70,7 +70,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     }
 
     /** @param CatchExceptionMappingBlueprint<Throwable> $blueprint */
-    public function forceCompilationCompletion(ExceptionMappingBlueprint $blueprint, ?ReflectionProperty $property = null): void
+    public function forceFullCompilation(ExceptionMappingBlueprint $blueprint, ?ReflectionProperty $property = null): void
     {
         Assert::notNull($property);
 
