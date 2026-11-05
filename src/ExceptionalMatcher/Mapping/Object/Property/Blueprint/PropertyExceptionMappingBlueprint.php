@@ -45,7 +45,7 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
     public function bind(ExceptionMappingNode $embracingNode): PropertyExceptionMappingNode
     {
         $name = $this->getName();
-        $value = $this->getPropertyValue($embracingNode->getObject());
+        $value = $this->getPropertyValue($embracingNode->getLeafObject());
 
         /** @var ArrayIterator<int,ExceptionMatcher> $matchers */
         $matchers = new ArrayIterator();

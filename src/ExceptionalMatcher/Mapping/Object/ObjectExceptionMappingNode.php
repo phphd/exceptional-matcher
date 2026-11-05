@@ -37,21 +37,21 @@ final class ObjectExceptionMappingNode implements ExceptionMappingNode
         return $this->embracingNode;
     }
 
-    public function getPropertyPath(): PropertyPath
-    {
-        return $this->embracingNode?->getPropertyPath()
-            ?? PropertyPath::empty();
-    }
-
-    public function getObject(): object
-    {
-        return $this->object;
-    }
-
     public function getRootObject(): object
     {
         return $this->embracingNode?->getRootObject()
             ?? $this->object;
+    }
+
+    public function getLeafObject(): object
+    {
+        return $this->object;
+    }
+
+    public function getPropertyPath(): PropertyPath
+    {
+        return $this->embracingNode?->getPropertyPath()
+            ?? PropertyPath::empty();
     }
 
     public function getValue(): object

@@ -41,19 +41,19 @@ final class CatchExceptionMappingNode implements ExceptionMappingNode, MatchCond
         return $this->property;
     }
 
-    public function getPropertyPath(): PropertyPath
-    {
-        return $this->property->getPropertyPath();
-    }
-
-    public function getObject(): object
-    {
-        return $this->property->getObject();
-    }
-
     public function getRootObject(): object
     {
         return $this->property->getRootObject();
+    }
+
+    public function getLeafObject(): object
+    {
+        return $this->property->getLeafObject();
+    }
+
+    public function getPropertyPath(): PropertyPath
+    {
+        return $this->property->getPropertyPath();
     }
 
     public function getValue(): mixed

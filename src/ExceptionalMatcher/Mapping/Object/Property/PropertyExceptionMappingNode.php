@@ -38,21 +38,21 @@ final class PropertyExceptionMappingNode implements ExceptionMappingNode
         return $this->object;
     }
 
+    public function getRootObject(): object
+    {
+        return $this->object->getRootObject();
+    }
+
+    public function getLeafObject(): object
+    {
+        return $this->object->getLeafObject();
+    }
+
     public function getPropertyPath(): PropertyPath
     {
         return $this->object->getPropertyPath()
             ->with($this->name)
         ;
-    }
-
-    public function getObject(): object
-    {
-        return $this->object->getObject();
-    }
-
-    public function getRootObject(): object
-    {
-        return $this->object->getRootObject();
     }
 
     public function getValue(): mixed

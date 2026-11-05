@@ -30,8 +30,8 @@ final class CompilingObjectExceptionMappingBlueprintRegistry implements ObjectEx
      * @param class-string<T> $className
      *
      * @throws ReflectionException
-     * @return null|ObjectExceptionMappingBlueprint<T>
      *
+     * @return ?ObjectExceptionMappingBlueprint<T>
      */
     public function getMappingBlueprint(string $className): ?ObjectExceptionMappingBlueprint
     {

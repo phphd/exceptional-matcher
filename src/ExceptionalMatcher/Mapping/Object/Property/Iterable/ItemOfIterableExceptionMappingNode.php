@@ -42,20 +42,20 @@ final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode
         return $this->propertyNode;
     }
 
+    public function getRootObject(): object
+    {
+        return $this->propertyNode->getRootObject();
+    }
+
+    public function getLeafObject(): object
+    {
+        return $this->propertyNode->getLeafObject();
+    }
+
     public function getPropertyPath(): PropertyPath
     {
         return $this->propertyNode->getPropertyPath()
             ->at($this->key);
-    }
-
-    public function getObject(): object
-    {
-        return $this->propertyNode->getObject();
-    }
-
-    public function getRootObject(): object
-    {
-        return $this->propertyNode->getRootObject();
     }
 
     /** @return T */

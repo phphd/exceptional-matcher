@@ -25,7 +25,7 @@ final class SimpleIfClosureMatchConditionBlueprint implements MatchConditionBlue
 
     public function bind(ExceptionMappingNode $node): ClosureMatchCondition
     {
-        $object = $node->getObject();
+        $object = $node->getLeafObject();
 
         if ($this->if[0] === $object::class) {
             $if = [$object, $this->if[1]];

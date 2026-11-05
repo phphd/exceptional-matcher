@@ -12,11 +12,11 @@ interface ExceptionMappingNode extends ExceptionMatcher
 {
     public function getOwner(): ?self;
 
-    public function getPropertyPath(): PropertyPath;
-
-    public function getObject(): object;
-
     public function getRootObject(): object;
+
+    public function getLeafObject(): object;
+
+    public function getPropertyPath(): PropertyPath;
 
     public function getValue(): mixed;
 }
