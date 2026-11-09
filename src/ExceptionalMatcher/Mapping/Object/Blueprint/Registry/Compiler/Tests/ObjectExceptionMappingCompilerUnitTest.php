@@ -11,7 +11,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\Log\SpyLogger;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\TryWithNoCatchAttributesMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\Exception\ObjectExceptionMappingPrintCompilationFailedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\ObjectExceptionMappingCompiler;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use ReflectionClass;

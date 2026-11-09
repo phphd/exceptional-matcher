@@ -9,15 +9,10 @@ use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\AnyType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\IntType;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\StringType;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\TypeSpecification;
 use ValueError;
 
-use function is_int;
-use function is_string;
 
 /**
  * @internal

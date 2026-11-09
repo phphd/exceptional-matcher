@@ -18,12 +18,9 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\IterablePropertyEx
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedIterableType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedObjectType;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\TypeSpecification;
 use ReflectionProperty;
 use Throwable;
 
-use function is_iterable;
-use function is_object;
 
 /**
  * @internal

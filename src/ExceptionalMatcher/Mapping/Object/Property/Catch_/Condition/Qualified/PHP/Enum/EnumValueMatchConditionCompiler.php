@@ -10,18 +10,13 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\AnyType;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\IntType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedType;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\StringType;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\TypeSpecification;
 use ReflectionEnum;
 use ReflectionProperty;
-use ReflectionType;
 use ValueError;
 use Webmozart\Assert\Assert;
 
 use function is_a;
-use function PHPUnit\Framework\returnArgument;
 use function sprintf;
 use function var_export;
 

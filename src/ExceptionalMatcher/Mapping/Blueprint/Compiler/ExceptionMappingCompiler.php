@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler;
 
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
-use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingBlueprint;
 use Psr\Log\LoggerInterface;
 use Reflector;
 

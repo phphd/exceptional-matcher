@@ -21,7 +21,6 @@ use Symfony\Component\Console\Tester\CommandTester;
 use function array_map;
 use function explode;
 use function implode;
-use function json_decode;
 use function rtrim;
 
 /**

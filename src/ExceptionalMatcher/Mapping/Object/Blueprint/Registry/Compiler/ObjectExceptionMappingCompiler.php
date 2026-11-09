@@ -12,8 +12,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\Exception\ObjectExceptionMappingPrintCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use Psr\Log\LoggerInterface;
@@ -21,7 +19,6 @@ use ReflectionClass;
 use ReflectionProperty;
 use Reflector;
 use Throwable;
-use WeakMap;
 
 /**
  * @internal

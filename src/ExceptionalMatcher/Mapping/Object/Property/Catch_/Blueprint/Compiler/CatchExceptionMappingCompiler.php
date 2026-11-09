@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler;
 
 use Closure;
-use Generator;
 use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
@@ -26,7 +25,6 @@ use ReflectionAttribute;
 use ReflectionProperty;
 use Reflector;
 use Throwable;
-use WeakMap;
 use Webmozart\Assert\Assert;
 
 /**

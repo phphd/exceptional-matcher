@@ -7,8 +7,6 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Ty
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\AnyType;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedIterableType;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedObjectType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\TypeSpecification;
 use ReflectionClass;

@@ -8,7 +8,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingPrintCom
 use ReflectionClass;
 use Throwable;
 
-use function sprintf;
 
 /** @internal */
 final class ObjectExceptionMappingPrintCompilationFailedException extends ExceptionMappingPrintCompilationFailedException

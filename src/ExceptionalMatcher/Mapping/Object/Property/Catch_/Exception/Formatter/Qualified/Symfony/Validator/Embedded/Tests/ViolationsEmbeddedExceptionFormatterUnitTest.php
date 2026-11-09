@@ -9,7 +9,6 @@ use PhPhD\ExceptionalMatcher\ExceptionMatcher;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\Tests\Stub\MessageWithEmbeddedViolations;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\Tests\Stub\NestedMessageWithEmbeddedViolations;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\Tests\Stub\ViolationsEmbeddedExampleException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Translator\SymfonyTranslator;
 use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Length;

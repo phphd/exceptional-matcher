@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Class;
 
-use Exception;
 use Generator;
-use LogicException;
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\MappingLinter;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Class\ClassReport;
@@ -17,19 +15,12 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingBlue
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use ReflectionClass;
 use ReflectionProperty;
-use Throwable;
 
-use WeakMap;
 
-use Webmozart\Assert\Assert;
 
-use function iterator_count;
 use function sprintf;
 use function iterator_to_array;
 
