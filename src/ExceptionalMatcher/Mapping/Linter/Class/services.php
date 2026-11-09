@@ -24,11 +24,13 @@ return static function (ContainerConfigurator $configurator): void {
 
     $services
         ->set(MappingLinter::class.'<class-string,'.LintReport::class.'>', ClassMappingLinter::class)
-        ->arg('$printRegistry',
+        ->arg(
+            '$printRegistry',
             inline_service(CompilingObjectExceptionMappingBlueprintRegistry::class)
                 ->arg('$compiler', service(ClassMappingLinter::class.'::$objectCompiler')),
         )->arg('$objectCompiler', service(ClassMappingLinter::class.'::$objectCompiler'))
-        ->arg('$propertyCompiler',
+        ->arg(
+            '$propertyCompiler',
             inline_service(ExceptionMappingCompiler::class)
                 ->factory([
                     service(ExceptionMappingCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingBlueprint::class.'>'),

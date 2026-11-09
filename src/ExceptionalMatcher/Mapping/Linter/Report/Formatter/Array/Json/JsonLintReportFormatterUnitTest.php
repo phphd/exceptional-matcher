@@ -44,7 +44,8 @@ final class JsonLintReportFormatterUnitTest extends TestCase
     {
         [$json] = $this->useCase->lint('class-string', [MessageWithNoTryAttribute::class], 'json');
 
-        self::assertSame(<<<'JSON'
+        self::assertSame(
+            <<<'JSON'
             {
                 "defects": [
                     {
