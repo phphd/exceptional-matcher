@@ -33,9 +33,9 @@ final class UidValueMatchConditionBlueprint implements MatchConditionBlueprint
 
     public static function isString(): StringType
     {
-        /** @phpstan-var StringType $isString */
         static $isString = new StringType();
 
+        /** @phpstan-var StringType */
         return $isString;
     }
 }

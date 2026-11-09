@@ -33,9 +33,9 @@ final class UidValueMatchConditionCompiler implements MatchConditionCompiler
 
         $this->propertyType($property)->assertIncludes(self::stringOrMixed(), self::PROPERTY_TYPE_GUARANTEE_MESSAGE);
 
-        /** @phpstan-var UidValueMatchConditionBlueprint $blueprint */
         static $blueprint = new UidValueMatchConditionBlueprint();
 
+        /** @phpstan-var UidValueMatchConditionBlueprint */
         return $blueprint;
     }
 

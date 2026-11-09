@@ -41,7 +41,7 @@ final class EnumValueMatchConditionBlueprint implements MatchConditionBlueprint
 
     public static function isInt(): IntType
     {
-        /** @phpstan-var IntType $intType */
+        /** @phpstan-var IntType */
         static $intType = new IntType();
 
         return $intType;
@@ -49,9 +49,9 @@ final class EnumValueMatchConditionBlueprint implements MatchConditionBlueprint
 
     public static function isString(): StringType
     {
-        /** @phpstan-var StringType $stringType */
         static $stringType = new StringType();
 
+        /** @phpstan-var StringType */
         return $stringType;
     }
 }
