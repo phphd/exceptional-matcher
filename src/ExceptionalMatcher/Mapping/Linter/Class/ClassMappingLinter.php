@@ -21,8 +21,8 @@ use ReflectionProperty;
 
 
 
-use function sprintf;
 use function iterator_to_array;
+use function sprintf;
 
 /**
  * @internal

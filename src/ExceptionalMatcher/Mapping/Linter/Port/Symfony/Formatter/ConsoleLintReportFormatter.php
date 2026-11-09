@@ -19,16 +19,16 @@ use Symfony\Component\Console\Terminal;
 use function array_shift;
 use function getcwd;
 use function implode;
+use function iterator_to_array;
 use function max;
 use function sprintf;
 use function str_repeat;
 use function str_replace;
 use function str_starts_with;
 use function strlen;
+use function strtoupper;
 use function substr;
 use function wordwrap;
-use function iterator_to_array;
-use function strtoupper;
 
 /**
  * Renders the report as a table of defects per class, the way phpstan lists its errors per file.
