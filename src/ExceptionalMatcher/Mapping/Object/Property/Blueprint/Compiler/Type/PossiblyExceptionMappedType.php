@@ -54,7 +54,6 @@ final class PossiblyExceptionMappedType implements TypeSpecification
         }
 
         /** @var class-string $className */
-
         $reflectionClass = new ReflectionClass($className);
 
         return match(true) {
