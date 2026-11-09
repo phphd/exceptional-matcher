@@ -56,7 +56,7 @@ final class PossiblyExceptionMappedType implements TypeSpecification
         /** @var class-string $className */
         $reflectionClass = new ReflectionClass($className);
 
-        return match(true) {
+        return match (true) {
             // Enums don't allow properties
             $reflectionClass->isEnum(),
             // Built-in classes / interface's implementations go w/o #[Try_]
