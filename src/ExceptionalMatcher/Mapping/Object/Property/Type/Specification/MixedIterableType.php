@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpPluralMixedCanBeReplacedWithArrayInspection */
+<?php
+
+/** @noinspection PhpPluralMixedCanBeReplacedWithArrayInspection */
 
 declare(strict_types=1);
 
