@@ -23,4 +23,6 @@ return ECSConfig::configure()
         ],
         // Import groups (class, function, const) are separated by a blank line
         Symplify\CodingStandard\Fixer\Spacing\NoBlankLineBetweenImportsFixer::class,
+        // PHP 7.2- workaround; flexible heredoc (PHP 7.3+) allows `JSON,`
+        Symplify\CodingStandard\Fixer\Spacing\SpaceAfterCommaHereNowDocFixer::class,
     ]);
