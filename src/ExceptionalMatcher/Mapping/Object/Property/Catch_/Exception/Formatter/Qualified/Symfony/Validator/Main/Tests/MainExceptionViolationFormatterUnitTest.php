@@ -50,7 +50,7 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
             ],
         ];
         $translator->method('trans')
-            ->willReturnCallback(static fn (string $id, array $params, string $domain): string => $translations[$domain][$id] ?? $id)
+            ->willReturnCallback(static fn(string $id, array $params, string $domain): string => $translations[$domain][$id] ?? $id)
         ;
         $container->set('translator', $translator);
         $container->setParameter('validator.translation_domain', 'domain');

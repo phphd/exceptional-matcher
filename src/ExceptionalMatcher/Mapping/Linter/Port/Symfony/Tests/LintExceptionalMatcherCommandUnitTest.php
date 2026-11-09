@@ -129,7 +129,7 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
     /** @return iterable<array{string,Closure(class-string):string}> */
     public static function symbolFormatDataProvider(): iterable
     {
-        yield ['class-string', (static fn (string $className): string => $className)];
+        yield ['class-string', (static fn(string $className): string => $className)];
 
         yield ['path-string', self::filePathOf(...)];
     }

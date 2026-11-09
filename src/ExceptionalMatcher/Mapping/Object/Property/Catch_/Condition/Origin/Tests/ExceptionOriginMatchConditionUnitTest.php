@@ -58,7 +58,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
         $message = new OriginConditionMessage(email: 'non-email');
 
         $emailValidationException = self::catchException(
-            static fn (): string => Email::fromString('non-email')->getEmail(),
+            static fn(): string => Email::fromString('non-email')->getEmail(),
             ValidationFailedException::class,
         );
 
@@ -77,7 +77,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
         $message = new OriginConditionMessage(uid: 'invalid-uuid');
 
         $uidValidationException = self::catchException(
-            static fn (): Uuid => Uuid::fromString('invalid-uuid'),
+            static fn(): Uuid => Uuid::fromString('invalid-uuid'),
             InvalidArgumentException::class,
         );
 
@@ -96,7 +96,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
         $message = new OriginConditionMessage(anotherEmail: 'non-email');
 
         $originValidationException = self::catchException(
-            static fn () => validate_email_string('non-email'),
+            static fn() => validate_email_string('non-email'),
             ValidationFailedException::class,
         );
 
@@ -120,7 +120,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
         $message = new HookOriginConditionMessage('');
 
         $titleValidationException = self::catchException(
-            static fn () => $entity->setTitle(''),
+            static fn() => $entity->setTitle(''),
             ValidationFailedException::class,
         );
 

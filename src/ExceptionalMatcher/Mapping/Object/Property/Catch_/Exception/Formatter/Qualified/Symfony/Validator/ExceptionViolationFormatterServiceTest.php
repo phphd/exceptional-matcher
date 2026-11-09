@@ -60,7 +60,7 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
     private function getFormatterRegistry(QualifiedMatchedExceptionFormatter $violationFormatter): ?ContainerInterface // @phpstan-ignore missingType.generics
     {
         /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */
-        return (static fn (): ContainerInterface => $violationFormatter->formatterRegistry) // @phpstan-ignore-line
+        return (static fn(): ContainerInterface => $violationFormatter->formatterRegistry) // @phpstan-ignore-line
             ->bindTo(newThis: null, newScope: QualifiedMatchedExceptionFormatter::class)->__invoke()
         ;
     }

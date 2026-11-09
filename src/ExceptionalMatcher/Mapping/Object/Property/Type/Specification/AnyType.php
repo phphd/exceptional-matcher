@@ -21,7 +21,7 @@ final class AnyType implements TypeSpecification
     {
         return array_any(
             $this->specifications,
-            static fn (TypeSpecification $specification): bool => $specification->__invoke($value),
+            static fn(TypeSpecification $specification): bool => $specification->__invoke($value),
         );
     }
 
@@ -29,7 +29,7 @@ final class AnyType implements TypeSpecification
     {
         return array_any(
             $this->specifications,
-            static fn (TypeSpecification $specification): bool => $specification->isSatisfiedBy($type),
+            static fn(TypeSpecification $specification): bool => $specification->isSatisfiedBy($type),
         );
     }
 }

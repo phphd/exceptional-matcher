@@ -121,11 +121,11 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
     private function deliveryMethodError(string $value): ValueError
     {
-        return self::catchException(static fn () => DeliveryMethod::from($value), ValueError::class);
+        return self::catchException(static fn() => DeliveryMethod::from($value), ValueError::class);
     }
 
     private function deliveryPriorityError(int $value): ValueError
     {
-        return self::catchException(static fn () => DeliveryPriority::from($value), ValueError::class);
+        return self::catchException(static fn() => DeliveryPriority::from($value), ValueError::class);
     }
 }

@@ -27,7 +27,7 @@ final class MainExceptionViolationFormatter implements ExceptionViolationFormatt
      */
     public function __construct(?Closure $translate = null)
     {
-        $this->translate = $translate ?? static fn (string $messageTemplate): string => $messageTemplate;
+        $this->translate = $translate ?? static fn(string $messageTemplate): string => $messageTemplate;
     }
 
     /** @return array{ConstraintViolation} */

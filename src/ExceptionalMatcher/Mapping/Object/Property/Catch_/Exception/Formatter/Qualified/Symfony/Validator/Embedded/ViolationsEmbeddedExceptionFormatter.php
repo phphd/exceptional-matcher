@@ -62,7 +62,7 @@ final class ViolationsEmbeddedExceptionFormatter implements ExceptionViolationFo
 
         /** @psalm-suppress PossiblyNullFunctionCall */
         return array_map(
-            fn (ConstraintViolationInterface $violation): ConstraintViolation => new ConstraintViolation(
+            fn(ConstraintViolationInterface $violation): ConstraintViolation => new ConstraintViolation(
                 $redoTranslation
                     ? ($this->translate)($violation->getMessageTemplate(), $violation->getParameters())
                     : $violation->getMessage(),

@@ -53,7 +53,7 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
         $validation = Validation::createCallable($constraint = new Length(min: 11));
 
         $validationFailedException = self::catchException(
-            static fn (): mixed => $validation('matched!'),
+            static fn(): mixed => $validation('matched!'),
             ValidationFailedException::class,
         );
 

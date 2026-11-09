@@ -48,7 +48,7 @@ final class ViolationsEmbeddedExceptionFormatterUnitTest extends TestCase
 
         $translator = $this->createMock(TranslatorInterface::class);
         $translator->method('trans')
-            ->willReturnCallback(static fn (
+            ->willReturnCallback(static fn(
                 string $id,
                 array $params,
                 string $domain,
@@ -109,7 +109,7 @@ final class ViolationsEmbeddedExceptionFormatterUnitTest extends TestCase
         $validation = Validation::createCallable(new Length(max: 3));
 
         $originalException = self::catchException(
-            static fn (): mixed => $validation('matched!'),
+            static fn(): mixed => $validation('matched!'),
             ValidationFailedException::class,
         );
 

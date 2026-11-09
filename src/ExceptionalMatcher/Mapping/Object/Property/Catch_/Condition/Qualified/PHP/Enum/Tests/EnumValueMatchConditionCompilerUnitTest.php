@@ -67,7 +67,7 @@ final class EnumValueMatchConditionCompilerUnitTest extends TestCase
         $this->expectExceptionMessage(EnumValueMatchConditionCompiler::EXCEPTION_TYPE_GUARANTEE_MESSAGE);
 
         $compilationException = self::catchException(
-            fn () => $this->compile($property),
+            fn() => $this->compile($property),
             PropertyExceptionMappingPrintCompilationFailedException::class,
         );
 
@@ -84,7 +84,7 @@ final class EnumValueMatchConditionCompilerUnitTest extends TestCase
         $this->expectExceptionMessage('EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: NULL');
 
         $compilationException = self::catchException(
-            fn () => $this->compile($property),
+            fn() => $this->compile($property),
             PropertyExceptionMappingPrintCompilationFailedException::class,
         );
 
@@ -104,7 +104,7 @@ final class EnumValueMatchConditionCompilerUnitTest extends TestCase
         ));
 
         $compilationException = self::catchException(
-            fn () => $this->compile($property),
+            fn() => $this->compile($property),
             PropertyExceptionMappingPrintCompilationFailedException::class,
         );
 
@@ -121,7 +121,7 @@ final class EnumValueMatchConditionCompilerUnitTest extends TestCase
         $this->expectExceptionMessage("EnumValueMatchCondition must specify `from: [DeliveryMethod::class, 'from']`, got: `from: [DeliveryMethod::class, 'tryFrom']`.");
 
         $compilationException = self::catchException(
-            fn () => $this->compile($property),
+            fn() => $this->compile($property),
             PropertyExceptionMappingPrintCompilationFailedException::class,
         );
 
@@ -138,7 +138,7 @@ final class EnumValueMatchConditionCompilerUnitTest extends TestCase
         $this->expectExceptionMessage(sprintf(EnumValueMatchConditionCompiler::PROPERTY_TYPE_GUARANTEE_MESSAGE, DeliveryMethod::class));
 
         $compilationException = self::catchException(
-            fn () => $this->compile($property),
+            fn() => $this->compile($property),
             PropertyExceptionMappingPrintCompilationFailedException::class,
         );
 

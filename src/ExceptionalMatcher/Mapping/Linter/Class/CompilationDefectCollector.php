@@ -41,7 +41,7 @@ final class CompilationDefectCollector
     {
         return array_filter(
             $this->flushLoggedExceptions(),
-            static fn (mixed $exception): bool => $exception instanceof ExceptionMappingPrintCompilationFailedException,
+            static fn(mixed $exception): bool => $exception instanceof ExceptionMappingPrintCompilationFailedException,
         );
     }
 

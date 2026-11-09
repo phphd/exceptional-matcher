@@ -78,7 +78,7 @@ final class ExceptionMatcherUnitTest extends TestCase
             ],
         ];
         $translator->method('trans')
-            ->willReturnCallback(static fn (string $id, array $params, string $domain): string => $translations[$domain][$id] ?? $id)
+            ->willReturnCallback(static fn(string $id, array $params, string $domain): string => $translations[$domain][$id] ?? $id)
         ;
         $container->set('translator', $translator);
 

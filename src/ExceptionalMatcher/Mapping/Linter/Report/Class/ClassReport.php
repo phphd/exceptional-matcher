@@ -60,7 +60,7 @@ final class ClassReport
     {
         return array_values(array_filter(
             $this->defects,
-            static fn (MappingDefect $defect): bool => $defect->getSeverity()
+            static fn(MappingDefect $defect): bool => $defect->getSeverity()
                 ->is($severity),
         ));
     }

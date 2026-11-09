@@ -94,7 +94,7 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
         $this->willThrow($messengerException);
 
         $e = self::catchException(
-            fn (): Envelope => $this->middleware->handle($envelope, $this->stack),
+            fn(): Envelope => $this->middleware->handle($envelope, $this->stack),
             ExceptionalValidationFailedException::class,
         );
 
@@ -121,7 +121,7 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
         $this->willThrow($handlerException);
 
         $e = self::catchException(
-            fn (): Envelope => $this->middleware->handle($envelope, $this->stack),
+            fn(): Envelope => $this->middleware->handle($envelope, $this->stack),
             ExceptionalValidationFailedException::class,
         );
 

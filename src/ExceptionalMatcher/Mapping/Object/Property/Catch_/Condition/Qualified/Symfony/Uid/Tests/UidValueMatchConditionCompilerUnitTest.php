@@ -71,7 +71,7 @@ final class UidValueMatchConditionCompilerUnitTest extends TestCase
         $this->expectExceptionMessage(UidValueMatchConditionCompiler::EXCEPTION_TYPE_GUARANTEE_MESSAGE);
 
         $compilationException = self::catchException(
-            fn () => $this->compiler->compile($property),
+            fn() => $this->compiler->compile($property),
             PropertyExceptionMappingPrintCompilationFailedException::class,
         );
 
@@ -88,7 +88,7 @@ final class UidValueMatchConditionCompilerUnitTest extends TestCase
         $this->expectExceptionMessage(sprintf(UidValueMatchConditionCompiler::PROPERTY_TYPE_GUARANTEE_MESSAGE, 'int'));
 
         $compilationException = self::catchException(
-            fn () => $this->compiler->compile($property),
+            fn() => $this->compiler->compile($property),
             PropertyExceptionMappingPrintCompilationFailedException::class,
         );
 

@@ -41,7 +41,7 @@ final class ConstantsAutoloadingCompilerPass implements CompilerPassInterface
     private function discoverLoadendClassNames(ContainerBuilder $container): array
     {
         return array_keys(array_merge(...array_map(
-            static fn (ConstantsAutoloadingClassDiscovery $discovery): array => $discovery->getClassNames($container),
+            static fn(ConstantsAutoloadingClassDiscovery $discovery): array => $discovery->getClassNames($container),
             $this->discovery,
         )));
     }

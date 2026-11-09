@@ -58,7 +58,7 @@ final class UidValueMatchConditionUnitTest extends TestCase
         $message = new MessageWithInvalidUidCondition(id: null);
 
         $originalException = self::catchException(
-            static fn (): Uuid => Uuid::fromString('just bad'),
+            static fn(): Uuid => Uuid::fromString('just bad'),
             InvalidUidException::class,
         );
 
@@ -72,7 +72,7 @@ final class UidValueMatchConditionUnitTest extends TestCase
         $message = new MessageWithInvalidUidCondition(1189);
 
         $originalException = self::catchException(
-            static fn (): Uuid => Uuid::fromString('1189'),
+            static fn(): Uuid => Uuid::fromString('1189'),
             InvalidUidException::class,
         );
 
@@ -86,7 +86,7 @@ final class UidValueMatchConditionUnitTest extends TestCase
         $message = new MessageWithInvalidUidCondition('way too bad');
 
         $originalException = self::catchException(
-            static fn (): Uuid => Uuid::fromString('just bad'),
+            static fn(): Uuid => Uuid::fromString('just bad'),
             InvalidUidException::class,
         );
 
@@ -100,7 +100,7 @@ final class UidValueMatchConditionUnitTest extends TestCase
         $message = new MessageWithInvalidUidCondition('bad');
 
         $originalException = self::catchException(
-            static fn (): Uuid => Uuid::fromString('bad'),
+            static fn(): Uuid => Uuid::fromString('bad'),
             InvalidUidException::class,
         );
 
