@@ -21,7 +21,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedObj
 use ReflectionProperty;
 use Throwable;
 
-
 /**
  * @internal
  *

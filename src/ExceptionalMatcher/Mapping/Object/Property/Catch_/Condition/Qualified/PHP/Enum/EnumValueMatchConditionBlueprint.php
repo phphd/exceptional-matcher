@@ -13,7 +13,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\IntType;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\StringType;
 use ValueError;
 
-
 /**
  * @internal
  *
