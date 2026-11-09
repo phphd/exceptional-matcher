@@ -140,7 +140,7 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
         $cellWidth = $this->cellWidthOf($defects, $header);
 
         foreach ($defects as $defect) {
-            yield [$this->defect($defect, $cellWidth) . "\n"];
+            yield [$this->defect($defect, $cellWidth)."\n"];
         }
     }
 
