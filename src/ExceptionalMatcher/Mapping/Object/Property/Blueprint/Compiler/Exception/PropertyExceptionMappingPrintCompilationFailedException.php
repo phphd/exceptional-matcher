@@ -25,7 +25,8 @@ final class PropertyExceptionMappingPrintCompilationFailedException extends Exce
     public function getClassName(): string
     {
         return $this->property->getDeclaringClass()
-            ->getName();
+            ->getName()
+        ;
     }
 
     public function getPropertyName(): string

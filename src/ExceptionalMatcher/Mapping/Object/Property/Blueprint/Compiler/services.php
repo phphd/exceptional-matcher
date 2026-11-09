@@ -42,5 +42,6 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
             ObjectExceptionMappingBlueprintRegistry::class
         )->lazy()
         ->factory('current')
-        ->args([[service(ObjectExceptionMappingBlueprintRegistry::class)]]);
+        ->args([[service(ObjectExceptionMappingBlueprintRegistry::class)]])
+    ;
 };

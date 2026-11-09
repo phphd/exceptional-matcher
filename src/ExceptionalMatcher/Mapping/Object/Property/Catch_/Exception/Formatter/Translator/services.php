@@ -24,8 +24,10 @@ return static function (ContainerConfigurator $configurator): void {
                     service('translator'),
                     param('phd_exceptional_matcher.translation_domain'),
                 ]),
-        ]);
+        ])
+    ;
 
     $parameters // removed if @translator is not found
-        ->set('phd_exceptional_matcher.translation_domain', param('validator.translation_domain'));
+        ->set('phd_exceptional_matcher.translation_domain', param('validator.translation_domain'))
+    ;
 };

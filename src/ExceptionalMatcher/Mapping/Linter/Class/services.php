@@ -35,18 +35,21 @@ return static function (ContainerConfigurator $configurator): void {
                     'reportingTo',
                 ])->args([service(CompilationDefectCollector::class.'::$compilationLogger')])
         )->arg('$compilationDefectCollector', service(CompilationDefectCollector::class))
-        ->tag(MappingLinter::class, ['id' => 'class-string']);
+        ->tag(MappingLinter::class, ['id' => 'class-string'])
+    ;
 
     $services // Lint-mode compiler - collects and reports mapping problems
         ->set(ClassMappingLinter::class.'::$objectCompiler', ExceptionMappingCompiler::class)
         ->factory([
             service(ExceptionMappingCompiler::class.'<'.ReflectionClass::class.','.ObjectExceptionMappingBlueprint::class.'>'),
             'reportingTo',
-        ])->args([service(CompilationDefectCollector::class.'::$compilationLogger')]);
+        ])->args([service(CompilationDefectCollector::class.'::$compilationLogger')])
+    ;
 
     $services
         ->set($id = CompilationDefectCollector::class, $id)
-        ->arg('$compilationLogger', service(CompilationDefectCollector::class.'::$compilationLogger'));
+        ->arg('$compilationLogger', service(CompilationDefectCollector::class.'::$compilationLogger'))
+    ;
 
     // Linter's own logger to collect compilation exceptions
     $services->set(CompilationDefectCollector::class.'::$compilationLogger', SpyLogger::class);

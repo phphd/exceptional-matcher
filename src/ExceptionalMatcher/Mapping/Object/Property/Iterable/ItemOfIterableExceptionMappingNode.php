@@ -55,7 +55,8 @@ final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode
     public function getPropertyPath(): PropertyPath
     {
         return $this->propertyNode->getPropertyPath()
-            ->at($this->key);
+            ->at($this->key)
+        ;
     }
 
     /** @return T */
