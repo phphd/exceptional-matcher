@@ -33,7 +33,7 @@ return static function (ContainerConfigurator $configurator): void {
                 ->factory([
                     service(ExceptionMappingCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingBlueprint::class.'>'),
                     'reportingTo',
-                ])->args([service(CompilationDefectCollector::class.'::$compilationLogger')])
+                ])->args([service(CompilationDefectCollector::class.'::$compilationLogger')]),
         )->arg('$compilationDefectCollector', service(CompilationDefectCollector::class))
         ->tag(MappingLinter::class, ['id' => 'class-string'])
     ;

@@ -66,7 +66,7 @@ final class PossiblyExceptionMappedType implements TypeSpecification
             $reflectionClass->isInterface(),
             // Non-final classes might have any extender - including those with #[Try_]
             !$reflectionClass->isFinal() => true,
-            default => null !== $this->blueprintRegistry->getMappingBlueprint($className)
+            default => null !== $this->blueprintRegistry->getMappingBlueprint($className),
         };
     }
 

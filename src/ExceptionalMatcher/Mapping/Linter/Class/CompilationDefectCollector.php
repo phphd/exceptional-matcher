@@ -56,14 +56,14 @@ final class CompilationDefectCollector
         return match (true) {
             $exception instanceof CatchExceptionMappingPrintCompilationFailedException => new DefectLocation(
                 $exception->getClassName(),
-                $exception->getPropertyName()
+                $exception->getPropertyName(),
             ),
             $exception instanceof PropertyExceptionMappingPrintCompilationFailedException => new DefectLocation(
                 $exception->getClassName(),
-                $exception->getPropertyName()
+                $exception->getPropertyName(),
             ),
             $exception instanceof ObjectExceptionMappingPrintCompilationFailedException => new DefectLocation(
-                $exception->getClassName()
+                $exception->getClassName(),
             ),
             default => throw new LogicException('Defect location is not known for: '.$exception::class),
         };

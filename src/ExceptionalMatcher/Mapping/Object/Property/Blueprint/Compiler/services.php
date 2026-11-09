@@ -39,7 +39,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
     $services
         ->set(
             PropertyExceptionMappingCompiler::class.'::$printRegistry',
-            ObjectExceptionMappingBlueprintRegistry::class
+            ObjectExceptionMappingBlueprintRegistry::class,
         )->lazy()
         ->factory('current')
         ->args([[service(ObjectExceptionMappingBlueprintRegistry::class)]])
