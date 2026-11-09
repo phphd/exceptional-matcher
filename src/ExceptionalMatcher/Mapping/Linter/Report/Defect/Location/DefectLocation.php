@@ -8,7 +8,7 @@ use ReflectionProperty;
 
 use function sprintf;
 
- /** @internal */
+/** @internal */
 final class DefectLocation
 {
     public function __construct(
