@@ -126,6 +126,7 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
     {
         /** @phpstan-var MixedObjectType $isObject */
         static $isObject = new MixedObjectType();
+
         return $isObject;
     }
 
@@ -145,6 +146,7 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
     {
         /** @phpstan-var MixedIterableType $isIterable */
         static $isIterable = new MixedIterableType();
+
         return $isIterable;
     }
 }

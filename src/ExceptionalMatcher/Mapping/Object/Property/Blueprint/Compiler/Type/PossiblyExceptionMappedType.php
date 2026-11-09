@@ -44,6 +44,7 @@ final class PossiblyExceptionMappedType implements TypeSpecification
         }
 
         $className = $type->getName();
+
         if (in_array($className, ['self', 'parent'], strict: true)) { // Trait-declared properties
             return true;
         }
