@@ -18,6 +18,7 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\validated_value;
 use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\exception_value;
+use stdClass;
 
 /**
  * @psalm-suppress InvalidAttribute ("Attribute Catch_ is not repeatable")
@@ -35,7 +36,7 @@ final class HandleableMessageStub
     #[Catch_(StaticPropertyMatchedException::class, message: 'oops')]
     private static string $staticProperty = 'foo';
 
-    private \stdClass|NestedHandleableMessage $nestedObject;
+    private stdClass|NestedHandleableMessage $nestedObject;
 
     private array $nestedArrayItems; // @phpstan-ignore missingType.iterableValue
 
