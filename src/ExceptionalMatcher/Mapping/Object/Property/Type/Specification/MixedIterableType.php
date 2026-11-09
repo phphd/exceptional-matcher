@@ -6,6 +6,9 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification;
 
 use ReflectionNamedType;
 use Traversable;
+use function in_array;
+use function is_a;
+use function is_iterable;
 
 /** @internal */
 final class MixedIterableType implements TypeSpecification

@@ -31,6 +31,7 @@ use Webmozart\Assert\Assert;
 
 use function iterator_count;
 use function sprintf;
+use function iterator_to_array;
 
 /**
  * @internal

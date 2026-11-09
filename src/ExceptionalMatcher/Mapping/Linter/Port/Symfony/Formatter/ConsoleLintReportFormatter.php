@@ -27,6 +27,8 @@ use function str_starts_with;
 use function strlen;
 use function substr;
 use function wordwrap;
+use function iterator_to_array;
+use function strtoupper;
 
 /**
  * Renders the report as a table of defects per class, the way phpstan lists its errors per file.

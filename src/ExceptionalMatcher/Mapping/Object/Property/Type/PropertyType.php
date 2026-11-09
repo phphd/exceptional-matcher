@@ -11,6 +11,7 @@ use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionType;
 use ReflectionUnionType;
+use function sprintf;
 
 final class PropertyType
 {

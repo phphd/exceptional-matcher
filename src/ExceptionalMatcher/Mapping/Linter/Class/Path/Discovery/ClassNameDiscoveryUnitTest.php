@@ -8,6 +8,7 @@ use PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Path\ClassPathMappingLinter;
 use PHPUnit\Framework\TestCase;
 
 use function dirname;
+use function rsort;
 
 /**
  * @internal
