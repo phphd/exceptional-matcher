@@ -19,8 +19,6 @@ use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 use ReflectionClass;
 use ReflectionProperty;
 
-
-
 use function iterator_to_array;
 use function sprintf;
 

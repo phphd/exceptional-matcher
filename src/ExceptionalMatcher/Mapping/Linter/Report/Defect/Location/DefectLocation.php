@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Location;
 
 use ReflectionProperty;
+
 use function sprintf;
 
  /** @internal */

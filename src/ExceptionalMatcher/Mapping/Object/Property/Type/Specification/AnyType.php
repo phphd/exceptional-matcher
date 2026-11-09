@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification;
 
 use ReflectionNamedType;
+
 use function array_any;
 
 /** @internal */
