@@ -31,6 +31,7 @@ const enum_value = EnumValueMatchCondition::class;
 final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
 {
     public const EXCEPTION_TYPE_GUARANTEE_MESSAGE = 'EnumValueMatchCondition can only be used for '.ValueError::class;
+
     public const PROPERTY_TYPE_GUARANTEE_MESSAGE = 'EnumValueMatchCondition requires an int|string property, got: %s';
 
     public function compile(ReflectionProperty $property, Catch_ $catch): EnumValueMatchConditionBlueprint
