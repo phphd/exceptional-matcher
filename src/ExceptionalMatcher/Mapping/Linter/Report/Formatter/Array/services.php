@@ -12,5 +12,6 @@ return static function (ContainerConfigurator $configurator): void {
 
     $services
         ->set(LintReportFormatter::class.'<array>', ArrayLintReportFormatter::class)
+        ->tag(LintReportFormatter::class, ['id' => 'array'])
     ;
 };

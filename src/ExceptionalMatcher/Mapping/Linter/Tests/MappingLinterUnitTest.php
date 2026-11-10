@@ -158,7 +158,7 @@ final class MappingLinterUnitTest extends TestCase
         ], $defect->getMessages());
     }
 
-    public function testBrokenMatchConditionMappingIsReported(): void
+    public function testReportsBrokenMatchConditionMapping(): void
     {
         [$classReport] = $this->linter->lint([MissingEnumFromConditionMessage::class])->getClassReports();
 
@@ -193,7 +193,7 @@ final class MappingLinterUnitTest extends TestCase
     }
 
     /** @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\QualifiedMatchConditionCompiler */
-    public function testLazilyCompiledBrokenMatchConditionIsReported(): void
+    public function testReportsLazilyCompiledBrokenMatchCondition(): void
     {
         [$classReport] = $this->linter->lint([LazilyDiscoveredUnknownMatchConditionMessage::class])->getClassReports();
 
@@ -208,14 +208,14 @@ final class MappingLinterUnitTest extends TestCase
         ], $defect->getMessages());
     }
 
-    public function testValidNestedOnlyMappingProducesNoWarning(): void
+    public function testNoWarningIsReportedOnAValidNestedOnlyMapping(): void
     {
         $defects = $this->linter->lint([RootObject::class])->getClassReports();
 
         self::assertSame([], $defects);
     }
 
-    public function testValidMappingsProduceNoErrors(): void
+    public function testNoErrorsAreReportedOnValidMappings(): void
     {
         $report = $this->linter->lint([
             HandleableMessageStub::class,

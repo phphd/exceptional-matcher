@@ -23,9 +23,9 @@ const uid_value = UidValueMatchCondition::class;
  */
 final class UidValueMatchConditionCompiler implements MatchConditionCompiler
 {
-    public const EXCEPTION_TYPE_GUARANTEE_MESSAGE = 'InvalidUidExceptionMatchCondition can only be used for '.InvalidUidException::class;
+    public const EXCEPTION_TYPE_GUARANTEE_MESSAGE = 'UidValueMatchCondition can only be used for '.InvalidUidException::class;
 
-    public const PROPERTY_TYPE_GUARANTEE_MESSAGE = 'InvalidUidExceptionMatchCondition requires a string property, got: %s';
+    public const PROPERTY_TYPE_GUARANTEE_MESSAGE = 'UidValueMatchCondition requires a string property, got: %s';
 
     public function compile(ReflectionProperty $property, Catch_ $catch): UidValueMatchConditionBlueprint
     {

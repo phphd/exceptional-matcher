@@ -15,6 +15,7 @@ return static function (ContainerConfigurator $configurator): void {
 
     $services
         ->set($id = LintMappingUseCase::class, $id)
+        ->public()
         ->args([
             tagged_locator(MappingLinter::class, 'id'),
             tagged_locator(LintReportFormatter::class, 'id'),

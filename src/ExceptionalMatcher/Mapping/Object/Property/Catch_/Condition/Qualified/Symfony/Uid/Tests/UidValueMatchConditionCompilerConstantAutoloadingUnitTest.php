@@ -39,7 +39,7 @@ final class UidValueMatchConditionCompilerConstantAutoloadingUnitTest extends Te
         $this->container->compile();
 
         if (!$this->container->hasDefinition(MatchConditionCompiler::class.'<'.InvalidUidException::class.'>')) {
-            self::markTestSkipped('InvalidUidExceptionMatchConditionCompiler is not registered');
+            self::markTestSkipped('UidValueMatchConditionCompiler is not registered');
         }
 
         /** @var list<class-string> $classNames */

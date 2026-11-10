@@ -12,7 +12,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
 /**
- * @internal
+ * @api
  *
  * @template TSymbol of string
  * @template TFormat
