@@ -50,7 +50,6 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         // FIXME: process these rules, removing them by one:
-        ReadOnlyPropertyRector::class,
     ]);
 
 function upgradeExclusions(): array

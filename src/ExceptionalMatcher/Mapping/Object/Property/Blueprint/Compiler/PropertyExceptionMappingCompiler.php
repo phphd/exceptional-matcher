@@ -29,7 +29,7 @@ use Throwable;
  */
 final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
 {
-    private PossiblyExceptionMappedType $possiblyExceptionMappedType;
+    private readonly PossiblyExceptionMappedType $possiblyExceptionMappedType;
 
     public function __construct(
         /** @var ExceptionMappingCompiler<ReflectionAttribute<Catch_<Throwable,Throwable>>,CatchExceptionMappingBlueprint<Throwable>> */
