@@ -50,7 +50,6 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         // FIXME: process these rules, removing them by one:
-        ClosureReturnTypeRector::class,
         ExplicitAttributeNamedArgsRector::class,
         ForeachToArrayAnyRector::class,
         NewlineAfterStatementRector::class,

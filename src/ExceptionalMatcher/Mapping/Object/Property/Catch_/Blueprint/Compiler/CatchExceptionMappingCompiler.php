@@ -60,7 +60,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     {
         Assert::notNull($property);
 
-        return $this->except(function (ReflectionProperty $property) use ($reflector) {
+        return $this->except(function (ReflectionProperty $property) use ($reflector): CatchExceptionMappingBlueprint {
             $catch = $this->instantiateCatch($reflector);
 
             return $this->doCompile($property, $catch);
