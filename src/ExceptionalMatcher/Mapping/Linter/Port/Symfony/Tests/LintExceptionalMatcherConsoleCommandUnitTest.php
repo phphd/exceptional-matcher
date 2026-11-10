@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\Tests;
 use Closure;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\LintExceptionalMatcherCommand;
+use PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\LintExceptionalMatcherConsoleCommand;
 use PhPhD\ExceptionalMatcher\Mapping\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\MessageWithNoTryAttribute;
@@ -26,7 +26,7 @@ use function rtrim;
 /**
  * @internal
  *
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\LintExceptionalMatcherCommand
+ * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\LintExceptionalMatcherConsoleCommand
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Class\Path\ClassPathMappingLinter
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Port\Symfony\Formatter\ConsoleLintReportFormatter
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Port\LintMappingUseCase
@@ -35,7 +35,7 @@ use function rtrim;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\MappingDefect
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Linter\Report\Defect\Severity\DefectSeverity
  */
-final class LintExceptionalMatcherCommandUnitTest extends TestCase
+final class LintExceptionalMatcherConsoleCommandUnitTest extends TestCase
 {
     private CommandTester $commandTester;
 
@@ -48,12 +48,12 @@ final class LintExceptionalMatcherCommandUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->addCompilerPass(new PublicServiceCompilerPass(LintExceptionalMatcherCommand::class));
+        $container->addCompilerPass(new PublicServiceCompilerPass(LintExceptionalMatcherConsoleCommand::class));
 
         $container->compile();
 
-        /** @var LintExceptionalMatcherCommand $command */
-        $command = $container->get(LintExceptionalMatcherCommand::class);
+        /** @var LintExceptionalMatcherConsoleCommand $command */
+        $command = $container->get(LintExceptionalMatcherConsoleCommand::class);
         $this->commandTester = new CommandTester($command);
     }
 
