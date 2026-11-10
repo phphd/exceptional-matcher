@@ -78,6 +78,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
             if (!$conditionPrint instanceof CompositeMatchConditionBlueprint) {
                 throw new LogicException('#[Catch_] condition print is not composite, so it cannot be pre-compiled');
             }
+
             $conditionsCount = $conditionPrint->forceCompleteCompilation();
 
             if (0 === $conditionsCount) {
