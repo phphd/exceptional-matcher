@@ -56,7 +56,7 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
     /** @param PropertyExceptionMappingBlueprint $blueprint */
     public function forceFullCompilation(ExceptionMappingBlueprint $blueprint): void
     {
-        $this->except(function (ReflectionProperty $property) use ($blueprint) {
+        $this->except(function (ReflectionProperty $property) use ($blueprint): void {
             /** @psalm-suppress TooManyArguments */
             foreach ($blueprint->getCatchPrints() as $catchPrint) {
                 $this->catchCompiler->forceFullCompilation($catchPrint, $property); // @phpstan-ignore arguments.count

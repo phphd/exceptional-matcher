@@ -72,7 +72,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     {
         Assert::notNull($property);
 
-        $this->except(function () use ($blueprint) {
+        $this->except(function () use ($blueprint): void {
             $conditionPrint = $blueprint->getConditionPrint();
 
             if (!$conditionPrint instanceof CompositeMatchConditionBlueprint) {

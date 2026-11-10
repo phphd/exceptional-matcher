@@ -50,7 +50,7 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
     public function forceFullCompilation(ExceptionMappingBlueprint $blueprint): void
     {
         $this->except(
-            function () use ($blueprint) {
+            function () use ($blueprint): void {
                 foreach ($blueprint->getPropertyPrints() as $propertyPrint) {
                     $this->propertyCompiler->forceFullCompilation($propertyPrint);
                 }
