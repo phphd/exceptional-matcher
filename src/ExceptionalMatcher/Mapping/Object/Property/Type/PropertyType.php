@@ -12,6 +12,7 @@ use ReflectionNamedType;
 use ReflectionType;
 use ReflectionUnionType;
 
+use function array_any;
 use function sprintf;
 
 final class PropertyType
@@ -50,13 +51,10 @@ final class PropertyType
             return null;
         }
 
-        foreach ($this->type->getTypes() as $reflectionType) {
-            if ((new self($reflectionType))->includes($specification)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $this->type->getTypes(),
+            fn(ReflectionType $reflectionType): bool => (new self($reflectionType))->includes($specification),
+        );
     }
 
     private function isMixed(): bool

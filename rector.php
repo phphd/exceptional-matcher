@@ -50,7 +50,6 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         // FIXME: process these rules, removing them by one:
-        ForeachToArrayAnyRector::class,
         NewlineAfterStatementRector::class,
         NewlineBetweenClassLikeStmtsRector::class,
         ReadOnlyPropertyRector::class,
