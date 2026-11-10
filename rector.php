@@ -50,7 +50,6 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         // FIXME: process these rules, removing them by one:
-        AddArrowFunctionReturnTypeRector::class,
         AddClosureVoidReturnTypeWhereNoReturnRector::class,
         ClosureReturnTypeRector::class,
         ExplicitAttributeNamedArgsRector::class,

@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionalMatcher\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPrintCompilationFailedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\Compiler\Exception\Tests\Trait\AssertPropertyCompilationFailedOn;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
@@ -63,7 +64,7 @@ final class ExceptionValueMatchConditionCompilerUnitTest extends TestCase
         $this->expectExceptionMessage(ExceptionValueMatchConditionCompiler::EXCEPTION_TYPE_GUARANTEE_MESSAGE);
 
         $compilationException = self::catchException(
-            fn() => $this->compiler->compile($property),
+            fn(): ?ExceptionMappingBlueprint => $this->compiler->compile($property),
             PropertyExceptionMappingPrintCompilationFailedException::class,
         );
 
