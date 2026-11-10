@@ -32,7 +32,9 @@ Install it in either a vanilla PHP project or a Symfony project.
     composer require phphd/exceptional-matcher
     ```
 
-2. \[Symfony\] enable the bundles in the `bundles.php`:
+2. Set up Dependency Injection:
+
+   *\[Symfony\]:* enable the bundles in the `bundles.php`:
 
    ```php
    PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle::class => ['all' => true],
@@ -40,12 +42,11 @@ Install it in either a vanilla PHP project or a Symfony project.
    ```
 
    > Note: `PhdExceptionToolkitBundle` is a required dependency \
-   > that provides exception unwrapping needful for this library.
+   > for exception unwrapping needed for the library.
 
-3. \[Non-Symfony\] configure the container:
+   *\[Standalone\]:* Read [Standalone Usage](#standalone-usage-) to use outside frameworks.
 
-   You can use features of this library outside frameworks. \
-   See [Standalone Usage](#standalone-usage-).
+3. Add a [Mapping Linter](docs/mapping/linter.md) step to CI.
 
 ### 2. Throw and Map 🎯
 
@@ -96,7 +97,7 @@ Here, `LoginAlreadyTakenException` is bound to the `login` property, \
 while `PasswordCompromisedException` is bound to the `password` property.
 
 > You can have additional matching conditions beyond just the exception class name. \
-> See [Match Conditions 🖇️](docs/config/match-conditions.md).
+> See [Match Conditions 🖇️](docs/mapping/match-conditions.md).
 
 The equivalent (very rough) manual logic this library automates:
 
@@ -314,13 +315,12 @@ It's highly recommended to get acquainted with the examples to apprehend the ful
 
 There are two configuration features:
 
-- [Match Conditions 🖇️](docs/config/match-conditions.md) – determine whether a given exception should match the given
+- [Match Conditions 🖇️](docs/mapping/match-conditions.md) – determine whether a given exception should match the given
   property;
-- [Violation Formatters 🎨](docs/config/violation-formatters.md) – represent the exception in a desired format;
-- [Linting Mappings 🔍](docs/config/lint.md) – catch every statically detectable mapping error ahead of time
-  with the `lint:exceptional-matcher` command.
+- [Violation Formatters 🎨](docs/mapping/violation-formatters.md) – represent the exception in a desired format;
+- [Mapping Linter 🕵🏻‍♂️](docs/mapping/linter.md) – catch mapping errors before they arrive in production.
 
-That's really all this library does – matches the exception and formats it (i.e. roasts the fish).
+That's all the library does – it matches the exception and formats it (roasts the fish).
 
 #### Cheat Sheet 📝
 

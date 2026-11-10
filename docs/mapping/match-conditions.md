@@ -298,7 +298,7 @@ class RegisterUserCommand
 }
 ```
 
-> Normally, you should format it with [`embedded_violations`](./violation-formatters.md#validationfailedexception-formatter) to keep all contained violations.
+> Normally, you should format it with [`embedded_violations`](violation-formatters.md#validationfailedexception-formatter) to keep all contained violations.
 
 ## Enum Condition
 
@@ -373,9 +373,9 @@ A custom condition requires three pieces:
 
 | Piece     | Interface                 | Responsibility                                                                                  |
 |-----------|---------------------------|-------------------------------------------------------------------------------------------------|
+| Compiler  | `MatchConditionCompiler`  | validates & compiles the `#[Catch_]` declaration into a Blueprint |
+| Blueprint     | `MatchConditionBlueprint` | represents a compilation of the Condition that<br> can instantiate particular Conditions   |
 | Condition | `MatchCondition`          | decides whether the exception matches:<br> `matches($exception): bool`                          |
-| Print     | `MatchConditionBlueprint` | a compiled blueprint of the condition;<br> applying it to the property produces the Condition   |
-| Compiler  | `MatchConditionCompiler`  | compiles the `#[Catch_]` declaration into a blueprint,<br> validating the declaration meanwhile |
 
 So, in our example, the condition itself:
 
@@ -405,7 +405,12 @@ final class DisqualifiedRolesMatchCondition implements MatchCondition
 Then the compiler and the blueprint to create the condition (both implemented in one class, as the blueprint is stateless):
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /** Configuration value for `match: disqualified_roles` */
 const disqualified_roles = DisqualifiedRolesMatchCondition::class;

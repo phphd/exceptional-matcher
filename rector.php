@@ -15,6 +15,7 @@ use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
 use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
+use Rector\Symfony\Configs\Rector\Closure\FromServicePublicToDefaultsPublicRector;
 use Rector\TypeDeclarationDocblocks\Rector\Property\MergePhpstanDocTagIntoNativeRector;
 use Rector\ValueObject\PhpVersion;
 
@@ -23,6 +24,7 @@ return RectorConfig::configure()
     ->withSets([PhdSetList::rector()->getPath()])
     ->withSkip([
         MergePhpstanDocTagIntoNativeRector::class, // spoils static analysis
+        FromServicePublicToDefaultsPublicRector::class,
         ArrayToFirstClassCallableRector::class => [
             __DIR__.'/src/*/services.php',
             __DIR__.'/src/*/*CompilerPass.php',
