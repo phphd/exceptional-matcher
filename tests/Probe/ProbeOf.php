@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionalMatcher\Tests\Probe;
 use Attribute;
 use UnitEnum;
 
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[Attribute(flags: Attribute::TARGET_PROPERTY)]
 final class ProbeOf
 {
     public function __construct(
