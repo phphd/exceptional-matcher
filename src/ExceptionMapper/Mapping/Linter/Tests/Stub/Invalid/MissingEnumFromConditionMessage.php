@@ -8,7 +8,7 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionMapper\Mapping\Object\Try_;
 use ValueError;
 
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\enum_value;
+use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\PHP\Enum\enum_value;
 
 #[Try_]
 final class MissingEnumFromConditionMessage

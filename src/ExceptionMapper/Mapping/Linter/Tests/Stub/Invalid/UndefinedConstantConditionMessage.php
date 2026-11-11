@@ -8,7 +8,7 @@ use DivisionByZeroError;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionMapper\Mapping\Object\Try_;
 
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Undefined\undefined_condition;
+use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Undefined\undefined_condition;
 
 #[Try_]
 final class UndefinedConstantConditionMessage

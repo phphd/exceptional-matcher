@@ -79,7 +79,7 @@ use PhPhD\ExceptionMapper\Mapping\Object\Try_;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\validated_value;
+use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Validator\validated_value;
 use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 
 #[Try_]

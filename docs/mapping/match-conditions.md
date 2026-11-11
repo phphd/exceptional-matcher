@@ -205,7 +205,7 @@ use PhPhD\ExceptionMapper\Mapping\Object\Try_;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\uid_value;
+use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Uid\uid_value;
 
 #[Try_]
 class TransferMoneyCommand
@@ -239,7 +239,7 @@ Thus, it's possible to avoid much of the boilerplate code, keeping it clean:
 use PhPhD\ExceptionMapper\Mapping\Object\Try_;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\exception_value;
+use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Value\exception_value;
 
 #[Try_]
 class TransferMoneyCommand
@@ -258,7 +258,7 @@ depending on the value of `cardId` from the exception.
 And `CardDeactivatedException` must implement `ValueException` interface:
 
 ```php
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ValueException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Value\ValueException;
 
 class CardDeactivatedException extends RuntimeException implements ValueException
 {
@@ -287,7 +287,7 @@ use PhPhD\ExceptionMapper\Mapping\Object\Try_;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\validated_value;
+use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Validator\validated_value;
 use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 
 #[Try_]
@@ -310,7 +310,7 @@ Specify `enum_value` match condition to compare property's value against the inv
 use PhPhD\ExceptionMapper\Mapping\Object\Try_;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\enum_value;
+use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\PHP\Enum\enum_value;
 
 #[Try_]
 class ImportScheduleCommand
@@ -381,7 +381,7 @@ So, in our example, the condition itself:
 
 ```php
 use App\Identity\Role\Exception\ConflictingRolesException;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\MatchCondition;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\MatchCondition;
 use Throwable;
 
 /** @implements MatchCondition<ConflictingRolesException> */
@@ -407,9 +407,9 @@ Then the compiler and the blueprint to create the condition (both implemented in
 ```php
 use PhPhD\ExceptionMapper\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Blueprint\MatchConditionBlueprint;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Blueprint\MatchConditionCompiler;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Bool\FalseCondition;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /** Configuration value for `match: disqualified_roles` */

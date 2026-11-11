@@ -50,8 +50,8 @@ use PHPUnit\Framework\TestCase;
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Exception\CatchExceptionMappingPrintCompilationFailedException
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\QualifiedExceptionMatchFormatter
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\UnregisteredExceptionMatchFormatterException
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionBlueprint
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Composite\CompositeMatchConditionBlueprint
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Composite\MemoizingIteratorAggregate
  */
 final class MappingLinterUnitTest extends TestCase
 {
@@ -186,13 +186,13 @@ final class MappingLinterUnitTest extends TestCase
         self::assertInstanceOf(CatchAttributeInstantiationFailedException::class, $cause->getPrevious());
 
         self::assertSame([
-            'Undefined constant "PhPhD\\ExceptionMapper\\Mapping\\Object\\Property\\Catch_\\Condition\\Undefined\\undefined_condition"',
+            'Undefined constant "PhPhD\\ExceptionMapper\\Mapping\\Object\\Property\\Catch_\\Match\\Condition\\Undefined\\undefined_condition"',
             '#[Catch_] attribute instantiation failed.',
             '#[Catch_] exception mapping compilation failed.',
         ], $defect->getMessages());
     }
 
-    /** @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\QualifiedMatchConditionCompiler */
+    /** @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\QualifiedMatchConditionCompiler */
     public function testReportsLazilyCompiledBrokenMatchCondition(): void
     {
         [$classReport] = $this->linter->lint([LazilyDiscoveredUnknownMatchConditionMessage::class])->getClassReports();

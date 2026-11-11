@@ -12,7 +12,7 @@ use PhPhD\ExceptionMapper\Mapping\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Mapping\Object\Blueprint\ObjectExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Mapping\Object\Blueprint\Registry\Compiler\Exception\ObjectExceptionMappingPrintCompilationFailedException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Composite\MemoizingIteratorAggregate;
 use PhPhD\ExceptionMapper\Mapping\Object\Try_;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;

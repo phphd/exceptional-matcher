@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property;
 
 use Attribute;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\MatchCondition;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\MatchCondition;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use Throwable;
 

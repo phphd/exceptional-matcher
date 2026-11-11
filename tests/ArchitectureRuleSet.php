@@ -23,11 +23,11 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingClassDiscovery;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsClassLoader;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\CatchExceptionMappingNode;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\MatchCondition;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ValueException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Blueprint\MatchConditionBlueprint;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Blueprint\MatchConditionCompiler;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Composite\MemoizingIteratorAggregate;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\MatchCondition;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Value\ValueException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatch;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Path\PropertyPath;
@@ -418,10 +418,9 @@ final class ArchitectureRuleSet
     {
         return Selector::AnyOf(
             Selector::AllOf(
-                Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match'),
-                Selector::Not($this->exceptionMatchFormatter()),
-                Selector::Not($this->validatorExceptionMatchFormatter()),
-                Selector::Not($this->bundle()),
+                Selector::inNamespace($namespace = 'PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match'),
+                Selector::Not(Selector::inNamespace($namespace.'\Condition')),
+                Selector::Not(Selector::inNamespace($namespace.'\Formatter')),
             ),
             Selector::classname(ExceptionMatchFormatter::class),
         );

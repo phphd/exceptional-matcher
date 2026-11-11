@@ -32,7 +32,7 @@ return RectorConfig::configure()
             __DIR__.'/'.'src/ExceptionMapper/Mapping/Object/Property/Catch_/Match/ExceptionReciprocal.php',
         ],
         IssetOnPropertyObjectToPropertyExistsRector::class => [
-            __DIR__.'/'.'src/ExceptionMapper/Mapping/Object/Property/Catch_/Condition/TraceOrigin/ExceptionTraceOriginMatchCondition.php',
+            __DIR__.'/'.'src/ExceptionMapper/Mapping/Object/Property/Catch_/Match/Condition/TraceOrigin/ExceptionTraceOriginMatchCondition.php',
         ],
         RemoveParentDelegatingClassMethodRector::class => [
             __DIR__.'/'.'src/ExceptionMapper/Port/Symfony/Validator/Middleware/Messenger/Exception/ExceptionalValidationFailedMessengerException.php',

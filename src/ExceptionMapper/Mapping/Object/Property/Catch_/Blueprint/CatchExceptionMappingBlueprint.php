@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint;
 use PhPhD\ExceptionMapper\Mapping\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\CatchExceptionMappingNode;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\PropertyExceptionMappingNode;
 use Throwable;

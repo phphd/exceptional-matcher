@@ -75,7 +75,7 @@ final class LintExceptionMapperConsoleCommandUnitTest extends TestCase
              ---------------------------------------------------------------------------------------------------------------
               ✏️	   PhPhD\ExceptionMapper\Mapping\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage::$divisor
               [ERROR]  Undefined constant
-                       "PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Undefined\undefined_condition"
+                       "PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Undefined\undefined_condition"
                        ↳ #[Catch_] attribute instantiation failed.
                          ↳ #[Catch_] exception mapping compilation failed.
 

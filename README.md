@@ -327,16 +327,7 @@ That's all the library does – it matches the exception and formats it (roasts 
 For a cheat-sheet example of configuration, check the following:
 
 ```php
-use PhPhD\ExceptionMapper\Mapping\Object\Try_;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
-use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
-use Symfony\Component\Validator\Exception\ValidationFailedException;
-
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\enum_value;
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\uid_value;
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\validated_value;
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\exception_value;
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;use PhPhD\ExceptionMapper\Mapping\Object\Try_;use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\PHP\Enum\enum_value;use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Uid\uid_value;use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Validator\validated_value;use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Value\exception_value;use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 
 #[Try_]
 class ImportProductDto

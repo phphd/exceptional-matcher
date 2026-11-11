@@ -45,14 +45,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\CatchAttributesExceptionMatcherAggregate
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\CatchExceptionMappingNode
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Class\ExceptionClassMatchCondition
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Class\ExceptionClassMatchConditionCompiler
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\PreCompiledMatchConditionBlueprint
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\QualifiedMatchConditionCompiler
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchCondition
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionCompiler
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionBlueprint
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Class\ExceptionClassMatchCondition
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Class\ExceptionClassMatchConditionCompiler
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Blueprint\PreCompiledMatchConditionBlueprint
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\QualifiedMatchConditionCompiler
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Composite\CompositeMatchCondition
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Composite\CompositeMatchConditionCompiler
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Composite\CompositeMatchConditionBlueprint
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Composite\MemoizingIteratorAggregate
  *
  * @internal
  */

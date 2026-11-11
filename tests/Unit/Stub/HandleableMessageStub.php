@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionMapper\Tests\Unit\Stub;
 use ArrayObject;
 use LogicException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\Tests\Stub\SomeValueException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Value\Tests\Stub\SomeValueException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Main\Tests\Stub\MessageContainingException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Main\Tests\Stub\ObjectPropertyMatchedException;
 use PhPhD\ExceptionMapper\Mapping\Object\Try_;
@@ -16,8 +16,8 @@ use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\StaticPropertyMatchedExcepti
 use stdClass;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\validated_value;
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\exception_value;
+use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Validator\validated_value;
+use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Value\exception_value;
 use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 
 /**
