@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\Tests\Stub\MessageWithExceptionValueCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\Tests\Stub\SomeValueException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
@@ -28,8 +28,8 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
 {
     use CatchException;
 
-    /** @var ExceptionMatcher<MatchedExceptionList> */
-    private ExceptionMatcher $matcher;
+    /** @var ExceptionMapper<MatchedExceptionList> */
+    private ExceptionMapper $mapper;
 
     protected function setUp(): void
     {
@@ -48,9 +48,9 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMatcher<MatchedExceptionList> $matcher */
-        $matcher = $container->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
-        $this->matcher = $matcher;
+        /** @var ExceptionMapper<MatchedExceptionList> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
+        $this->mapper = $mapper;
     }
 
     public function testValueExceptionCondition(): void
@@ -62,7 +62,7 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
             new SomeValueException('whatever'),
         ]);
 
-        $matchedExceptionList = $this->matcher->match($exceptionAdapter, $message);
+        $matchedExceptionList = $this->mapper->map($exceptionAdapter, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(2, $matchedExceptionList);

@@ -7,15 +7,15 @@ namespace PhPhD\ExceptionalMatcher;
 use Throwable;
 
 /**
- * Exception Matcher returns matched exception objects only if all exceptions were correctly matched.
+ * Exception Mapper returns matched exception objects only if all exceptions were correctly matched.
  * If at least one exception has not been matched to any of the properties, null is returned.
  *
  * @api
  *
  * @template-covariant T of mixed
  */
-interface ExceptionMatcher
+interface ExceptionMapper
 {
     /** @return ?T */
-    public function match(Throwable $exception, object $object): mixed;
+    public function map(Throwable $exception, object $object): mixed;
 }

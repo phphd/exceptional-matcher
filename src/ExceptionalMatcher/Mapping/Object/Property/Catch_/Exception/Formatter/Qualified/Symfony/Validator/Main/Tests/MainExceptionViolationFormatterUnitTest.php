@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Form
 
 use LogicException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Main\Tests\Stub\MessageContainingException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Main\Tests\Stub\ObjectPropertyMatchedException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
@@ -31,8 +31,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class MainExceptionViolationFormatterUnitTest extends TestCase
 {
-    /** @var ExceptionMatcher<ConstraintViolationListInterface> */
-    private ExceptionMatcher $matcher;
+    /** @var ExceptionMapper<ConstraintViolationListInterface> */
+    private ExceptionMapper $mapper;
 
     protected function setUp(): void
     {
@@ -63,9 +63,9 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
-        $matcher = $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>');
-        $this->matcher = $matcher;
+        /** @var ExceptionMapper<ConstraintViolationListInterface> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>');
+        $this->mapper = $mapper;
     }
 
     public function testFormatException(): void
@@ -73,7 +73,7 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
         $message = HandleableMessageStub::create();
         $originalException = new AnException();
 
-        $violationList = $this->matcher->match($originalException, $message);
+        $violationList = $this->mapper->map($originalException, $message);
 
         self::assertNotNull($violationList);
         self::assertCount(1, $violationList);
@@ -94,7 +94,7 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
         $exception = new LogicException();
 
         /** @var ConstraintViolationListInterface $violationList */
-        $violationList = $this->matcher->match($exception, $message);
+        $violationList = $this->mapper->map($exception, $message);
 
         /** @var ConstraintViolationInterface $violation */
         [$violation] = $violationList;
@@ -108,7 +108,7 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
         $originalException = new ObjectPropertyMatchedException();
 
         /** @var ConstraintViolationListInterface $violationList */
-        $violationList = $this->matcher->match($originalException, $message);
+        $violationList = $this->mapper->map($originalException, $message);
 
         /** @var ConstraintViolationInterface $violation */
         [$violation] = $violationList;
@@ -125,7 +125,7 @@ final class MainExceptionViolationFormatterUnitTest extends TestCase
             new MessageContainingException(),
         ]);
 
-        $violationList = $this->matcher->match($exceptionAdapter, $message);
+        $violationList = $this->mapper->map($exceptionAdapter, $message);
 
         self::assertNotNull($violationList);
         self::assertCount(2, $violationList);

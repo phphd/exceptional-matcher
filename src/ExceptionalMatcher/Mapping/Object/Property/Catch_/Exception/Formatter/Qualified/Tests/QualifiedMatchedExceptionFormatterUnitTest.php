@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Form
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\RegisterCustomViolationFormatterCompilerPass;
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Tests\Stub\CustomFormattedException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Tests\Stub\CustomFormattedMessage;
 use PHPUnit\Framework\TestCase;
@@ -21,8 +21,8 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
  */
 final class QualifiedMatchedExceptionFormatterUnitTest extends TestCase
 {
-    /** @var ExceptionMatcher<ConstraintViolationListInterface> */
-    private ExceptionMatcher $matcher;
+    /** @var ExceptionMapper<ConstraintViolationListInterface> */
+    private ExceptionMapper $mapper;
 
     protected function setUp(): void
     {
@@ -37,9 +37,9 @@ final class QualifiedMatchedExceptionFormatterUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
-        $matcher = $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>');
-        $this->matcher = $matcher;
+        /** @var ExceptionMapper<ConstraintViolationListInterface> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>');
+        $this->mapper = $mapper;
     }
 
     public function testCustomViolationFormatter(): void
@@ -47,7 +47,7 @@ final class QualifiedMatchedExceptionFormatterUnitTest extends TestCase
         $message = new CustomFormattedMessage();
         $originalException = new CustomFormattedException();
 
-        $violationList = $this->matcher->match($originalException, $message);
+        $violationList = $this->mapper->map($originalException, $message);
 
         self::assertNotNull($violationList);
         self::assertCount(1, $violationList);

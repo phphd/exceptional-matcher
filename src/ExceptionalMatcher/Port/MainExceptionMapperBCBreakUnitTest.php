@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Definition;
  *
  * @internal
  */
-final class MainExceptionMatcherBCBreakUnitTest extends TestCase
+final class MainExceptionMapperBCBreakUnitTest extends TestCase
 {
     private ContainerBuilder $container;
 

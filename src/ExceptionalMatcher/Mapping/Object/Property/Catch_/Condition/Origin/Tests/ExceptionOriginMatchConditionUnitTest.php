@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Orig
 
 use InvalidArgumentException;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Origin\Tests\Stub\Email;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Origin\Tests\Stub\Hook\HookOriginConditionMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Origin\Tests\Stub\Hook\ProductHookedEntity;
@@ -34,8 +34,8 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 {
     use CatchException;
 
-    /** @var ExceptionMatcher<MatchedExceptionList> */
-    private ExceptionMatcher $matcher;
+    /** @var ExceptionMapper<MatchedExceptionList> */
+    private ExceptionMapper $mapper;
 
     protected function setUp(): void
     {
@@ -48,9 +48,9 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMatcher<MatchedExceptionList> $matcher */
-        $matcher = $container->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
-        $this->matcher = $matcher;
+        /** @var ExceptionMapper<MatchedExceptionList> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
+        $this->mapper = $mapper;
     }
 
     public function testMatchExceptionByOriginClass(): void
@@ -62,7 +62,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
             ValidationFailedException::class,
         );
 
-        $matchedExceptionList = $this->matcher->match($emailValidationException, $message);
+        $matchedExceptionList = $this->mapper->map($emailValidationException, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
@@ -81,7 +81,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
             InvalidArgumentException::class,
         );
 
-        $matchedExceptionList = $this->matcher->match($uidValidationException, $message);
+        $matchedExceptionList = $this->mapper->map($uidValidationException, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
@@ -100,7 +100,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
             ValidationFailedException::class,
         );
 
-        $matchedExceptionList = $this->matcher->match($originValidationException, $message);
+        $matchedExceptionList = $this->mapper->map($originValidationException, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
@@ -124,7 +124,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
             ValidationFailedException::class,
         );
 
-        $matchedExceptionList = $this->matcher->match($titleValidationException, $message);
+        $matchedExceptionList = $this->mapper->map($titleValidationException, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
@@ -150,7 +150,7 @@ final class ExceptionOriginMatchConditionUnitTest extends TestCase
             ValidationFailedException::class,
         );
 
-        $matchedExceptionList = $this->matcher->match($emailValidationException, $message);
+        $matchedExceptionList = $this->mapper->map($emailValidationException, $message);
 
         self::assertNull($matchedExceptionList);
     }

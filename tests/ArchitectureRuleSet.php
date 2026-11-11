@@ -108,15 +108,15 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
-    public function testMatcherDependencies(): BuildStep
+    public function testMapperDependencies(): BuildStep
     {
-        return $this->layerRule('matcher');
+        return $this->layerRule('mapper');
     }
 
     #[TestRule]
-    public function testValidatorMatcherDependencies(): BuildStep
+    public function testValidatorMapperDependencies(): BuildStep
     {
-        return $this->layerRule('validatorMatcher');
+        return $this->layerRule('validatorMapper');
     }
 
     #[TestRule]
@@ -219,7 +219,7 @@ final class ArchitectureRuleSet
                 ],
             ],
             'messengerValidatorMiddleware' => [
-                'wraps' => ['validatorMiddleware', 'validatorMatcher'],
+                'wraps' => ['validatorMiddleware', 'validatorMapper'],
                 'deps' => [
                     Selector::inNamespace('Symfony\Component\Messenger'),
                 ],
@@ -229,15 +229,15 @@ final class ArchitectureRuleSet
                     Selector::inNamespace('Symfony\Component\Validator'),
                 ],
             ],
-            'validatorMatcher' => [
+            'validatorMapper' => [
                 'deps' => [
-                    $this->matcher(),
+                    $this->mapper(),
                     $this->node(),
                     $this->exception(),
                     Selector::inNamespace('Symfony\Component\Validator'),
                 ],
             ],
-            'matcher' => [
+            'mapper' => [
                 'deps' => [
                     $this->blueprint(),
                     $this->node(),
@@ -435,7 +435,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function matcher(): AllOfSelectorModifier
+    public function mapper(): AllOfSelectorModifier
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher'),
@@ -446,7 +446,7 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function validatorMatcher(): AllOfSelectorModifier
+    public function validatorMapper(): AllOfSelectorModifier
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator'),

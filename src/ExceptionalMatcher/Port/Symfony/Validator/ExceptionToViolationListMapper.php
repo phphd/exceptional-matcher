@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Port\Symfony\Validator;
 
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -15,22 +15,22 @@ use Throwable;
 /**
  * @internal
  *
- * @implements ExceptionMatcher<ConstraintViolationListInterface>
+ * @implements ExceptionMapper<ConstraintViolationListInterface>
  */
-final class ExceptionToViolationListMatcher implements ExceptionMatcher
+final class ExceptionToViolationListMapper implements ExceptionMapper
 {
     /** @api */
     public function __construct(
-        /** @var ExceptionMatcher<MatchedExceptionList> */
-        private readonly ExceptionMatcher $matcher,
+        /** @var ExceptionMapper<MatchedExceptionList> */
+        private readonly ExceptionMapper $mapper,
         /** @var MatchedExceptionFormatter<Throwable,ConstraintViolationInterface> */
         private readonly MatchedExceptionFormatter $formatter,
     ) {
     }
 
-    public function match(Throwable $exception, object $object): ?ConstraintViolationListInterface
+    public function map(Throwable $exception, object $object): ?ConstraintViolationListInterface
     {
-        $matchedExceptionList = $this->matcher->match($exception, $object);
+        $matchedExceptionList = $this->mapper->map($exception, $object);
 
         if (null === $matchedExceptionList) {
             return null;

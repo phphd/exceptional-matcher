@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Port;
 
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
@@ -14,9 +14,9 @@ use Throwable;
 /**
  * @internal
  *
- * @implements ExceptionMatcher<MatchedExceptionList>
+ * @implements ExceptionMapper<MatchedExceptionList>
  */
-final class MainExceptionMatcher implements ExceptionMatcher
+final class MainExceptionMapper implements ExceptionMapper
 {
     /** @api */
     public function __construct(
@@ -26,7 +26,7 @@ final class MainExceptionMatcher implements ExceptionMatcher
     ) {
     }
 
-    public function match(Throwable $exception, object $object): ?MatchedExceptionList
+    public function map(Throwable $exception, object $object): ?MatchedExceptionList
     {
         $print = $this->printRegistry->getMappingBlueprint($object::class);
 

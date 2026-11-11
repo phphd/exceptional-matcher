@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\Tests\Stub\MessageWithValidatedValueCondition;
 use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
@@ -27,8 +27,8 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
 {
     use CatchException;
 
-    /** @var ExceptionMatcher<ConstraintViolationListInterface> */
-    private ExceptionMatcher $matcher;
+    /** @var ExceptionMapper<ConstraintViolationListInterface> */
+    private ExceptionMapper $mapper;
 
     protected function setUp(): void
     {
@@ -41,9 +41,9 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
-        $matcher = $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>');
-        $this->matcher = $matcher;
+        /** @var ExceptionMapper<ConstraintViolationListInterface> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>');
+        $this->mapper = $mapper;
     }
 
     public function testValidationFailedExceptionCanBeCaptured(): void
@@ -57,7 +57,7 @@ final class ValidationFailedExceptionMatchConditionUnitTest extends TestCase
             ValidationFailedException::class,
         );
 
-        $violationList = $this->matcher->match($validationFailedException, $message);
+        $violationList = $this->mapper->map($validationFailedException, $message);
 
         self::assertNotNull($violationList);
         self::assertCount(1, $violationList);

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger;
 
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Exception\ExceptionalValidationFailedException;
 use PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\Exception\ExceptionalValidationFailedMessengerException;
 use Symfony\Component\Messenger\Envelope;
@@ -19,8 +19,8 @@ final class ExceptionalValidationMiddleware implements MiddlewareInterface
 {
     /** @api */
     public function __construct(
-        /** @var ExceptionMatcher<ConstraintViolationListInterface> */
-        private readonly ExceptionMatcher $exceptionMatcher,
+        /** @var ExceptionMapper<ConstraintViolationListInterface> */
+        private readonly ExceptionMapper $exceptionMapper,
     ) {
     }
 
@@ -34,7 +34,7 @@ final class ExceptionalValidationMiddleware implements MiddlewareInterface
         } catch (Throwable $exception) {
             $message = $envelope->getMessage();
 
-            $violationList = $this->exceptionMatcher->match($exception, $message);
+            $violationList = $this->exceptionMapper->map($exception, $message);
 
             if (null === $violationList) {
                 throw $exception;

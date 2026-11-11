@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Port;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\Bundle\Tests\BundleTestCase;
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use PhPhD\ExceptionToolkit\Unwrapper\Messenger\MessengerExceptionUnwrapper;
 use Symfony\Component\VarExporter\LazyObjectInterface;
@@ -17,19 +17,19 @@ use Symfony\Component\VarExporter\LazyObjectInterface;
  *
  * @internal
  */
-final class MainExceptionMatcherServiceTest extends BundleTestCase
+final class MainExceptionMapperServiceTest extends BundleTestCase
 {
-    public function testExceptionMatcherService(): void
+    public function testExceptionMapperService(): void
     {
-        $exceptionMatcher = self::getContainer()->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
-        self::assertInstanceOf(ExceptionMatcher::class, $exceptionMatcher);
+        $exceptionMapper = self::getContainer()->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
+        self::assertInstanceOf(ExceptionMapper::class, $exceptionMapper);
 
         if (PhdExceptionalMatcherExtension::nativeProxiesAreSupported()) {
-            self::assertInstanceOf(MainExceptionMatcher::class, $exceptionMatcher);
+            self::assertInstanceOf(MainExceptionMapper::class, $exceptionMapper);
         } else {
-            self::assertNotInstanceOf(MainExceptionMatcher::class, $exceptionMatcher);
-            self::assertInstanceOf(LazyObjectInterface::class, $exceptionMatcher);
-            self::assertInstanceOf(MainExceptionMatcher::class, $exceptionMatcher->initializeLazyObject());
+            self::assertNotInstanceOf(MainExceptionMapper::class, $exceptionMapper);
+            self::assertInstanceOf(LazyObjectInterface::class, $exceptionMapper);
+            self::assertInstanceOf(MainExceptionMapper::class, $exceptionMapper->initializeLazyObject());
         }
     }
 

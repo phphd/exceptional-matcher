@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger;
 
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Reference;
@@ -21,6 +21,6 @@ return static function (ContainerConfigurator $container, ContainerBuilder $buil
 
     $container->services()
         ->set('phd_exceptional_validation', ExceptionalValidationMiddleware::class)
-        ->args([new Reference(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>')])
+        ->args([new Reference(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>')])
     ;
 };

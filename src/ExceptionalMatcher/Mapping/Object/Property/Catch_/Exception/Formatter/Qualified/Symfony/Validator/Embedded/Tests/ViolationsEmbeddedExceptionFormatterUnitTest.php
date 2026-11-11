@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\Tests\Stub\MessageWithEmbeddedViolations;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\Tests\Stub\NestedMessageWithEmbeddedViolations;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\Tests\Stub\ViolationsEmbeddedExampleException;
@@ -34,8 +34,8 @@ final class ViolationsEmbeddedExceptionFormatterUnitTest extends TestCase
 {
     use CatchException;
 
-    /** @var ExceptionMatcher<ConstraintViolationListInterface> */
-    private ExceptionMatcher $matcher;
+    /** @var ExceptionMapper<ConstraintViolationListInterface> */
+    private ExceptionMapper $mapper;
 
     protected function setUp(): void
     {
@@ -59,9 +59,9 @@ final class ViolationsEmbeddedExceptionFormatterUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
-        $matcher = $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>');
-        $this->matcher = $matcher;
+        /** @var ExceptionMapper<ConstraintViolationListInterface> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>');
+        $this->mapper = $mapper;
     }
 
     public function testViolationsEmbeddedExceptionProvidesViolationsList(): void
@@ -143,7 +143,7 @@ final class ViolationsEmbeddedExceptionFormatterUnitTest extends TestCase
 
     private function matchOne(Throwable $originalException, MessageWithEmbeddedViolations $message): ConstraintViolation
     {
-        $violationList = $this->matcher->match($originalException, $message);
+        $violationList = $this->mapper->map($originalException, $message);
 
         self::assertNotNull($violationList);
         self::assertCount(1, $violationList);

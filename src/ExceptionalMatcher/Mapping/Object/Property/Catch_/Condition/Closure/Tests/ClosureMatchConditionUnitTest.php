@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Closure\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Closure\Tests\Stub\ConditionallyCaughtException;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Closure\Tests\Stub\ConditionalMessage;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Closure\Tests\Stub\ConditionalMessageHolder;
@@ -22,8 +22,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class ClosureMatchConditionUnitTest extends TestCase
 {
-    /** @var ExceptionMatcher<MatchedExceptionList> */
-    private ExceptionMatcher $matcher;
+    /** @var ExceptionMapper<MatchedExceptionList> */
+    private ExceptionMapper $mapper;
 
     protected function setUp(): void
     {
@@ -36,9 +36,9 @@ final class ClosureMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMatcher<MatchedExceptionList> $matcher */
-        $matcher = $container->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
-        $this->matcher = $matcher;
+        /** @var ExceptionMapper<MatchedExceptionList> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
+        $this->mapper = $mapper;
     }
 
     public function testDoesntCaptureConditionalExceptionWhenConditionIsNotMet(): void
@@ -46,7 +46,7 @@ final class ClosureMatchConditionUnitTest extends TestCase
         $message = new ConditionalMessageHolder(ConditionalMessage::createWithConditionalProperties(11, 41));
         $originalException = new ConditionallyCaughtException(12);
 
-        $violationList = $this->matcher->match($originalException, $message);
+        $violationList = $this->mapper->map($originalException, $message);
 
         self::assertNull($violationList);
     }
@@ -56,7 +56,7 @@ final class ClosureMatchConditionUnitTest extends TestCase
         $message = new ConditionalMessageHolder(ConditionalMessage::createWithConditionalProperties(11, 41));
         $originalException = new ConditionallyCaughtException(41);
 
-        $matchedExceptionList = $this->matcher->match($originalException, $message);
+        $matchedExceptionList = $this->mapper->map($originalException, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);

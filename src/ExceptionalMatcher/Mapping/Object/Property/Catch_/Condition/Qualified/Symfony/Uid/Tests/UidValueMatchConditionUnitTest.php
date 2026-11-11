@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\Tests;
 
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\Tests\Stub\MessageWithInvalidUidCondition;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use PhPhD\ExceptionalMatcher\Tests\Trait\CatchException;
@@ -30,8 +30,8 @@ final class UidValueMatchConditionUnitTest extends TestCase
 {
     use CatchException;
 
-    /** @var ExceptionMatcher<MatchedExceptionList> */
-    private ExceptionMatcher $matcher;
+    /** @var ExceptionMapper<MatchedExceptionList> */
+    private ExceptionMapper $mapper;
 
     protected function setUp(): void
     {
@@ -48,9 +48,9 @@ final class UidValueMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMatcher<MatchedExceptionList> $matcher */
-        $matcher = $container->get(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>');
-        $this->matcher = $matcher;
+        /** @var ExceptionMapper<MatchedExceptionList> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
+        $this->mapper = $mapper;
     }
 
     public function testInvalidUidExceptionIsNotCapturedWhenValueIsNull(): void
@@ -62,7 +62,7 @@ final class UidValueMatchConditionUnitTest extends TestCase
             InvalidUidException::class,
         );
 
-        $matchedExceptionList = $this->matcher->match($originalException, $message);
+        $matchedExceptionList = $this->mapper->map($originalException, $message);
 
         self::assertNull($matchedExceptionList);
     }
@@ -76,7 +76,7 @@ final class UidValueMatchConditionUnitTest extends TestCase
             InvalidUidException::class,
         );
 
-        $matchedExceptionList = $this->matcher->match($originalException, $message);
+        $matchedExceptionList = $this->mapper->map($originalException, $message);
 
         self::assertNull($matchedExceptionList);
     }
@@ -90,7 +90,7 @@ final class UidValueMatchConditionUnitTest extends TestCase
             InvalidUidException::class,
         );
 
-        $matchedExceptionList = $this->matcher->match($originalException, $message);
+        $matchedExceptionList = $this->mapper->map($originalException, $message);
 
         self::assertNull($matchedExceptionList);
     }
@@ -104,7 +104,7 @@ final class UidValueMatchConditionUnitTest extends TestCase
             InvalidUidException::class,
         );
 
-        $matchedExceptionList = $this->matcher->match($originalException, $message);
+        $matchedExceptionList = $this->mapper->map($originalException, $message);
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);

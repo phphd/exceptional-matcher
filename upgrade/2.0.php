@@ -25,7 +25,7 @@ return static function (RectorConfig $rectorConfig): void {
         'PhPhD\ExceptionalValidation\Handler\Exception\ExceptionalValidationFailedException' => 'PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Exception\ExceptionalValidationFailedException',
         'PhPhD\ExceptionalValidation\Middleware\Messenger\ExceptionalValidationMiddleware' => 'PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationMiddleware',
         'PhPhD\ExceptionalValidation\Mapper\Validator\Middleware\Messenger\ExceptionalValidationFailedMessengerException' => 'PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger\Exception\ExceptionalValidationFailedMessengerException',
-        'PhPhD\ExceptionalValidation\Mapper\ExceptionMapper' => 'PhPhD\ExceptionalMatcher\ExceptionMatcher',
+        'PhPhD\ExceptionalValidation\Mapper\ExceptionMapper' => 'PhPhD\ExceptionalMatcher\ExceptionMapper',
     ]);
     /** @noinspection ClassConstantCanBeUsedInspection */
     $rectorConfig->ruleWithConfiguration(RenameMethodRector::class, [

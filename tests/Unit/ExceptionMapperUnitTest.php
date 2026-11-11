@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionalMatcher\Tests\Unit;
 
 use ArrayObject;
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Main\Tests\Stub\ObjectPropertyMatchedException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeException;
@@ -28,8 +28,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Try_
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_
  * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
- * @covers \PhPhD\ExceptionalMatcher\Port\MainExceptionMatcher
- * @covers \PhPhD\ExceptionalMatcher\Port\Symfony\Validator\ExceptionToViolationListMatcher
+ * @covers \PhPhD\ExceptionalMatcher\Port\MainExceptionMapper
+ * @covers \PhPhD\ExceptionalMatcher\Port\Symfony\Validator\ExceptionToViolationListMapper
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\ItemOfIterableExceptionMappingNode
  * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode
@@ -56,10 +56,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * @internal
  */
-final class ExceptionMatcherUnitTest extends TestCase
+final class ExceptionMapperUnitTest extends TestCase
 {
-    /** @var ExceptionMatcher<ConstraintViolationListInterface> */
-    private ExceptionMatcher $exceptionMatcher;
+    /** @var ExceptionMapper<ConstraintViolationListInterface> */
+    private ExceptionMapper $exceptionMapper;
 
     protected function setUp(): void
     {
@@ -90,9 +90,9 @@ final class ExceptionMatcherUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMatcher<ConstraintViolationListInterface> $matcher */
-        $matcher = $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>');
-        $this->exceptionMatcher = $matcher;
+        /** @var ExceptionMapper<ConstraintViolationListInterface> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>');
+        $this->exceptionMapper = $mapper;
     }
 
     public function testExceptionIsNotCapturedForMessageWithoutExceptionalValidationAttribute(): void
@@ -100,7 +100,7 @@ final class ExceptionMatcherUnitTest extends TestCase
         $message = new MessageWithNoTryAttribute(123);
         $exception = new AnException();
 
-        $violationList = $this->exceptionMatcher->match($exception, $message);
+        $violationList = $this->exceptionMapper->map($exception, $message);
 
         self::assertNull($violationList);
     }
@@ -110,7 +110,7 @@ final class ExceptionMatcherUnitTest extends TestCase
         $message = HandleableMessageStub::create();
         $originalException = new AnException();
 
-        $violationList = $this->exceptionMatcher->match($originalException, $message);
+        $violationList = $this->exceptionMapper->map($originalException, $message);
 
         self::assertNotNull($violationList);
         self::assertCount(1, $violationList);
@@ -126,7 +126,7 @@ final class ExceptionMatcherUnitTest extends TestCase
         $originalException = new StaticPropertyMatchedException();
 
         /** @var ConstraintViolationListInterface $violationList */
-        $violationList = $this->exceptionMatcher->match($originalException, $message);
+        $violationList = $this->exceptionMapper->map($originalException, $message);
 
         /** @var ConstraintViolationInterface $violation */
         [$violation] = $violationList;
@@ -141,7 +141,7 @@ final class ExceptionMatcherUnitTest extends TestCase
         $message = HandleableMessageStub::create();
         $exception = new NestedPropertyMatchedException();
 
-        $violationList = $this->exceptionMatcher->match($exception, $message);
+        $violationList = $this->exceptionMapper->map($exception, $message);
 
         self::assertNull($violationList);
     }
@@ -152,7 +152,7 @@ final class ExceptionMatcherUnitTest extends TestCase
         $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());
         $originalException = new NestedPropertyMatchedException();
 
-        $violationList = $this->exceptionMatcher->match($originalException, $message);
+        $violationList = $this->exceptionMapper->map($originalException, $message);
 
         self::assertNotNull($violationList);
         self::assertCount(1, $violationList);
@@ -180,7 +180,7 @@ final class ExceptionMatcherUnitTest extends TestCase
             new NestedItemMatchedException(code: 3), // not caught
         ]);
 
-        $violationList = $this->exceptionMatcher->match($exceptionAdapter, $message);
+        $violationList = $this->exceptionMapper->map($exceptionAdapter, $message);
 
         self::assertNull($violationList);
     }
@@ -203,7 +203,7 @@ final class ExceptionMatcherUnitTest extends TestCase
             new NestedItemMatchedException(code: 2),
         ]);
 
-        $violationList = $this->exceptionMatcher->match($exceptionAdapter, $message);
+        $violationList = $this->exceptionMapper->map($exceptionAdapter, $message);
 
         self::assertNotNull($violationList);
         self::assertCount(4, $violationList);

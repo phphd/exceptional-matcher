@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionalMatcher\Port;
 
 use Closure;
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
+use PhPhD\ExceptionalMatcher\ExceptionMapper;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
@@ -21,13 +21,13 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
     $hintLazy = $container->get('phd_exceptional_matcher.hint_lazy_proxy');
 
     $services
-        ->set(ExceptionMatcher::class.'<'.MatchedExceptionList::class.'>', MainExceptionMatcher::class)
+        ->set(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>', MainExceptionMapper::class)
         ->public()
         ->args([
             service(ObjectExceptionMappingBlueprintRegistry::class),
             service('phd_exceptional_matcher.exception_unwrapper'),
         ])
-        ->lazy($hintLazy(ExceptionMatcher::class))
+        ->lazy($hintLazy(ExceptionMapper::class))
     ;
 
     $services->alias('phd_exceptional_matcher.exception_unwrapper', ExceptionUnwrapper::class);
