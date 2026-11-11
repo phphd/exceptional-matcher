@@ -105,15 +105,15 @@ You can create custom violation formatter by implementing `ExceptionViolationFor
 
 ```php
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\ExceptionViolationFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
-/** @implements ExceptionViolationFormatter<LoginAlreadyTakenException> */
-final class LoginAlreadyTakenViolationFormatter implements ExceptionViolationFormatter
+/** @implements ExceptionMatchFormatter<LoginAlreadyTakenException,ConstraintViolationInterface> */
+final class LoginAlreadyTakenViolationFormatter implements ExceptionMatchFormatter
 {
     public function __construct(
-        #[Autowire(service: ExceptionViolationFormatter::class.'<Throwable>')]
-        private ExceptionViolationFormatter $formatter,
+        #[Autowire(service: ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>')]
+        private ExceptionMatchFormatter $formatter,
     ) {
     }
 

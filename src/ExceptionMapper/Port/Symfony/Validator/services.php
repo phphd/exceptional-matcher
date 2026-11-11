@@ -12,7 +12,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Throwable;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -31,7 +30,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
         ->public()
         ->args([
             service(ExceptionMapper::class.'<'.ExceptionMatchList::class.'>'),
-            service(ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>'),
+            service(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'>'),
         ])
         ->lazy($hintLazy(ExceptionMapper::class))
     ;

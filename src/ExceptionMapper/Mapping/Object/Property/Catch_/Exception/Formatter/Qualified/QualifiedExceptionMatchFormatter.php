@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpDocMissingThrowsInspection */
+
 declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified;
@@ -13,20 +15,21 @@ use Throwable;
 /**
  * @internal
  *
- * @implements ExceptionMatchFormatter<Throwable,mixed>
+ * @template TException of Throwable
+ *
+ * @template TResult of mixed
+ *
+ * @template TFormatter of ExceptionMatchFormatter<TException,TResult>
+ *
+ * @implements ExceptionMatchFormatter<TException,TResult>
  */
 final class QualifiedExceptionMatchFormatter implements ExceptionMatchFormatter
 {
     /**
      * @api
      *
-     * @template T of ExceptionMatchFormatter
-     *
-     * @phpstan-param ContainerInterface<class-string<T>,T> $formatterRegistry
-     * @phpstan-param ?class-string<ExceptionMatchFormatter<Throwable,mixed>> $defaultFormatter
-     *
-     * @psalm-param ContainerInterface<class-string<ExceptionMatchFormatter>,ExceptionMatchFormatter> $formatterRegistry
-     * @psalm-param ?class-string<ExceptionMatchFormatter> $defaultFormatter
+     * @param ContainerInterface<class-string<TFormatter>,TFormatter> $formatterRegistry
+     * @param ?class-string<TFormatter> $defaultFormatter
      */
     public function __construct(
         private readonly ContainerInterface $formatterRegistry,
@@ -38,6 +41,7 @@ final class QualifiedExceptionMatchFormatter implements ExceptionMatchFormatter
     {
         $catch = $exceptionMatch->getNode();
 
+        /** @var ?class-string<TFormatter> $formatterId */
         $formatterId = $catch->getFormatterId() ?? $this->defaultFormatter;
 
         if (null === $formatterId) {
@@ -48,15 +52,11 @@ final class QualifiedExceptionMatchFormatter implements ExceptionMatchFormatter
     }
 
     /**
-     * @noinspection PhpUnhandledExceptionInspection
-     *
-     * @return ExceptionMatchFormatter<Throwable,mixed>
-     *
      * @internal
      *
-     * @phpstan-param class-string<ExceptionMatchFormatter<Throwable,mixed>> $formatterId
+     * @param class-string<TFormatter> $formatterId
      *
-     * @psalm-param class-string<ExceptionMatchFormatter> $formatterId
+     * @return TFormatter
      */
     public function getFormatter(string $formatterId): ExceptionMatchFormatter
     {
@@ -64,7 +64,7 @@ final class QualifiedExceptionMatchFormatter implements ExceptionMatchFormatter
             throw new UnregisteredExceptionFormatterException($formatterId);
         }
 
-        /** @psalm-var ExceptionMatchFormatter<Throwable,mixed> */
+        /** @psalm-suppress ArgumentTypeCoercion - Psalm degrades class-string<TFormatter> to class-string */
         return $this->formatterRegistry->get($formatterId);
     }
 }

@@ -10,7 +10,6 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qua
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Validator\ConstraintViolationInterface;
-use Throwable;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_locator;
 
@@ -23,7 +22,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
 
     $services
         ->set(
-            ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>',
+            ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'>',
             QualifiedExceptionMatchFormatter::class,
         )->args([
             tagged_locator(ExceptionMatchFormatter::class, 'id'),

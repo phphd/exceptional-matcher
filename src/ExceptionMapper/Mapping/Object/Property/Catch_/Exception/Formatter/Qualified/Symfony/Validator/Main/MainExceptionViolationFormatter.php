@@ -6,16 +6,17 @@ namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatt
 
 use Closure;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\ExceptionViolationFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
 use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Throwable;
 
 /**
  * @internal
  *
- * @implements ExceptionViolationFormatter<Throwable>
+ * @implements ExceptionMatchFormatter<Throwable,ConstraintViolationInterface>
  */
-final class MainExceptionViolationFormatter implements ExceptionViolationFormatter
+final class MainExceptionViolationFormatter implements ExceptionMatchFormatter
 {
     /** @var Closure(string):string */
     private readonly Closure $translate;

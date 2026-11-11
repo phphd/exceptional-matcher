@@ -35,7 +35,7 @@ use Webmozart\Assert\Assert;
 final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
 {
     /**
-     * @template T of ExceptionMatchFormatter
+     * @template T of ExceptionMatchFormatter<Throwable,mixed>
      *
      * @phpstan-param ContainerInterface<class-string<T>,T> $exceptionFormatterRegistry
      *

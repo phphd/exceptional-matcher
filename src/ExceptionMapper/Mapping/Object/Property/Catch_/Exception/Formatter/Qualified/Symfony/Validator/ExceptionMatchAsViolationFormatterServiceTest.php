@@ -25,20 +25,20 @@ use function krsort;
  *
  * @internal
  */
-final class ExceptionViolationFormatterServiceTest extends BundleTestCase
+final class ExceptionMatchAsViolationFormatterServiceTest extends BundleTestCase
 {
     public function testViolationFormatter(): void
     {
-        $violationFormatter = $this->get(ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>');
+        $violationFormatter = $this->get(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'>');
         self::assertInstanceOf(QualifiedExceptionMatchFormatter::class, $violationFormatter);
 
-        $defaultFormatter = $this->get(ExceptionViolationFormatter::class.'<Throwable>');
+        $defaultFormatter = $this->get(ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>');
         self::assertInstanceOf(MainExceptionViolationFormatter::class, $defaultFormatter);
 
-        $violationsEmbeddedExceptionFormatter = $this->get(ExceptionViolationFormatter::class.'<'.ViolationsEmbeddedException::class.'>');
+        $violationsEmbeddedExceptionFormatter = $this->get(ExceptionMatchFormatter::class.'<'.ViolationsEmbeddedException::class.','.ConstraintViolationInterface::class.'>');
         self::assertInstanceOf(ViolationsEmbeddedExceptionFormatter::class, $violationsEmbeddedExceptionFormatter);
 
-        $validationFailedExceptionFormatter = $this->get(ExceptionViolationFormatter::class.'<'.ValidationFailedException::class.'>');
+        $validationFailedExceptionFormatter = $this->get(ExceptionMatchFormatter::class.'<'.ValidationFailedException::class.','.ConstraintViolationInterface::class.'>');
         self::assertInstanceOf(ViolationsEmbeddedExceptionFormatter::class, $validationFailedExceptionFormatter);
 
         self::assertSame($violationsEmbeddedExceptionFormatter, $validationFailedExceptionFormatter);
@@ -57,6 +57,11 @@ final class ExceptionViolationFormatterServiceTest extends BundleTestCase
         self::assertSame($defaultFormatter, $formatterRegistry->get(MainExceptionViolationFormatter::class));
     }
 
+    /**
+     * @phpstan-param QualifiedExceptionMatchFormatter<Throwable,mixed,ExceptionMatchFormatter<Throwable,mixed>> $exceptionMatchFormatter
+     *
+     * @psalm-param QualifiedExceptionMatchFormatter $exceptionMatchFormatter
+     */
     private function getFormatterRegistry(QualifiedExceptionMatchFormatter $exceptionMatchFormatter): ?ContainerInterface // @phpstan-ignore missingType.generics
     {
         /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */

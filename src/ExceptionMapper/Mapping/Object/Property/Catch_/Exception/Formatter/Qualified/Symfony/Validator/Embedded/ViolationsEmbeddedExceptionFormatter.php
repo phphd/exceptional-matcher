@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatt
 use Closure;
 use LogicException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\ExceptionViolationFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
@@ -24,9 +24,9 @@ const embedded_violations = ViolationsEmbeddedExceptionFormatter::class;
 /**
  * @internal - use {@see embedded_violations} constant for a class reference instead
  *
- * @implements ExceptionViolationFormatter<ViolationsEmbeddedException|ValidationFailedException>
+ * @implements ExceptionMatchFormatter<ViolationsEmbeddedException|ValidationFailedException,ConstraintViolationInterface>
  */
-final class ViolationsEmbeddedExceptionFormatter implements ExceptionViolationFormatter
+final class ViolationsEmbeddedExceptionFormatter implements ExceptionMatchFormatter
 {
     /** @api */
     public function __construct(
