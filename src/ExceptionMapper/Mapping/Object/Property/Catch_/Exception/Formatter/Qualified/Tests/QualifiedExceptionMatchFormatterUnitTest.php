@@ -15,11 +15,11 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\QualifiedMatchedExceptionFormatter
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\QualifiedExceptionMatchFormatter
  *
  * @internal
  */
-final class QualifiedMatchedExceptionFormatterUnitTest extends TestCase
+final class QualifiedExceptionMatchFormatterUnitTest extends TestCase
 {
     /** @var ExceptionMapper<ConstraintViolationListInterface> */
     private ExceptionMapper $mapper;

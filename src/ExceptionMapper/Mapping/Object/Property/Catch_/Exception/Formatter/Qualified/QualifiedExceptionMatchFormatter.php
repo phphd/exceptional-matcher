@@ -15,7 +15,7 @@ use Throwable;
  *
  * @implements ExceptionMatchFormatter<Throwable,mixed>
  */
-final class QualifiedMatchedExceptionFormatter implements ExceptionMatchFormatter
+final class QualifiedExceptionMatchFormatter implements ExceptionMatchFormatter
 {
     /**
      * @api

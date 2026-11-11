@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use function array_keys;
 
 /** @internal */
-final class QualifiedMatchedExceptionFormatterClassDiscovery implements ConstantsAutoloadingClassDiscovery
+final class QualifiedExceptionMatchFormatterClassDiscovery implements ConstantsAutoloadingClassDiscovery
 {
     /** @return array<class-string,true> */
     public function getClassNames(ContainerBuilder $container): array
