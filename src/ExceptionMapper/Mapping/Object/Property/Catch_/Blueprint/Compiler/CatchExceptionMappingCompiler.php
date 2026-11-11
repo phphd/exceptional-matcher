@@ -17,7 +17,7 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\Mat
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\PreCompiledMatchConditionBlueprint;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Bool\FalseCondition;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionBlueprint;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\QualifiedMatchedExceptionFormatter;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -35,11 +35,11 @@ use Webmozart\Assert\Assert;
 final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
 {
     /**
-     * @template T of MatchedExceptionFormatter
+     * @template T of ExceptionMatchFormatter
      *
      * @phpstan-param ContainerInterface<class-string<T>,T> $exceptionFormatterRegistry
      *
-     * @psalm-param ContainerInterface<class-string<MatchedExceptionFormatter>,MatchedExceptionFormatter> $exceptionFormatterRegistry
+     * @psalm-param ContainerInterface<class-string<ExceptionMatchFormatter>,ExceptionMatchFormatter> $exceptionFormatterRegistry
      */
     public function __construct(
         /** @var MatchConditionCompiler<Throwable> */
@@ -136,9 +136,9 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     /**
      * @param Catch_<Throwable,Throwable> $catch
      *
-     * @phpstan-return ?class-string<MatchedExceptionFormatter<Throwable,mixed>>
+     * @phpstan-return ?class-string<ExceptionMatchFormatter<Throwable,mixed>>
      *
-     * @psalm-return ?class-string<MatchedExceptionFormatter>
+     * @psalm-return ?class-string<ExceptionMatchFormatter>
      */
     private function compileExceptionFormatter(Catch_ $catch): ?string
     {

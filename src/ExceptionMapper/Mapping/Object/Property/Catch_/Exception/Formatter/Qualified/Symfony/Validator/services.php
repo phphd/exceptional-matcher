@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator;
 
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\QualifiedMatchedExceptionFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Main\MainExceptionViolationFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,10 +23,10 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
 
     $services
         ->set(
-            MatchedExceptionFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>',
+            ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>',
             QualifiedMatchedExceptionFormatter::class,
         )->args([
-            tagged_locator(MatchedExceptionFormatter::class, 'id'),
+            tagged_locator(ExceptionMatchFormatter::class, 'id'),
             MainExceptionViolationFormatter::class,
         ])
     ;

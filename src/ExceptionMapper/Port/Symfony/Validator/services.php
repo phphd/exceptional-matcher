@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionMapper\Port\Symfony\Validator;
 use Closure;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -31,7 +31,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
         ->public()
         ->args([
             service(ExceptionMapper::class.'<'.ExceptionMatchList::class.'>'),
-            service(MatchedExceptionFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>'),
+            service(ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>'),
         ])
         ->lazy($hintLazy(ExceptionMapper::class))
     ;

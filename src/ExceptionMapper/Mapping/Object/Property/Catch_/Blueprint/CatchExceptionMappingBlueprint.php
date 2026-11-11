@@ -8,7 +8,7 @@ use PhPhD\ExceptionMapper\Mapping\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\CatchExceptionMappingNode;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\PropertyExceptionMappingNode;
 use Throwable;
 
@@ -24,7 +24,7 @@ final class CatchExceptionMappingBlueprint implements ExceptionMappingBlueprint
     public function __construct(
         /** @var MatchConditionBlueprint<TException> */
         private readonly MatchConditionBlueprint $conditionPrint,
-        /** @var ?class-string<MatchedExceptionFormatter<TException,mixed>> */
+        /** @var ?class-string<ExceptionMatchFormatter<TException,mixed>> */
         private readonly ?string $formatterId,
         private readonly ?string $messageTemplate,
     ) {

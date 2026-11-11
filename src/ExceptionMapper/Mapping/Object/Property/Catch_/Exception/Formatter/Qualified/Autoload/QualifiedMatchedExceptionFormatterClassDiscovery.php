@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Autoload;
 
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingClassDiscovery;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 use function array_keys;
@@ -17,7 +17,7 @@ final class QualifiedMatchedExceptionFormatterClassDiscovery implements Constant
     public function getClassNames(ContainerBuilder $container): array
     {
         $classNames = [];
-        $taggedServiceIds = array_keys($container->findTaggedServiceIds(MatchedExceptionFormatter::class));
+        $taggedServiceIds = array_keys($container->findTaggedServiceIds(ExceptionMatchFormatter::class));
 
         foreach ($taggedServiceIds as $taggedServiceId) {
             $def = $container->getDefinition($taggedServiceId);

@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionMapper\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\MatchCondition;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Path\PropertyPath;
 use Throwable;
 
@@ -24,7 +24,7 @@ final class CatchExceptionMappingNode implements ExceptionMappingNode, MatchCond
         private readonly ExceptionMappingNode $property,
         /** @var MatchCondition<TException> */
         private readonly MatchCondition $condition,
-        /** @var ?class-string<MatchedExceptionFormatter<TException,mixed>> */
+        /** @var ?class-string<ExceptionMatchFormatter<TException,mixed>> */
         private readonly ?string $formatterId,
         private readonly ?string $messageTemplate,
     ) {
@@ -70,7 +70,7 @@ final class CatchExceptionMappingNode implements ExceptionMappingNode, MatchCond
     /**
      * @internal
      *
-     * @return ?class-string<MatchedExceptionFormatter<TException,mixed>>
+     * @return ?class-string<ExceptionMatchFormatter<TException,mixed>>
      */
     public function getFormatterId(): ?string
     {

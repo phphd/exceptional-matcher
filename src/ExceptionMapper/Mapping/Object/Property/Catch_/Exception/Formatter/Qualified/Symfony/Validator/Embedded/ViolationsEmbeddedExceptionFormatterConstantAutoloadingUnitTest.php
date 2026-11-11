@@ -31,7 +31,7 @@ final class ViolationsEmbeddedExceptionFormatterConstantAutoloadingUnitTest exte
         $this->container = $container;
     }
 
-    public function testMatchedExceptionFormatterIsRecordedForTheConstantsAutoloading(): void
+    public function testExceptionMatchFormatterIsRecordedForTheConstantsAutoloading(): void
     {
         $this->container->compile();
 

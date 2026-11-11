@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionMapper\Port\Symfony\Validator;
 
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -23,8 +23,8 @@ final class ExceptionToViolationListMapper implements ExceptionMapper
     public function __construct(
         /** @var ExceptionMapper<ExceptionMatchList> */
         private readonly ExceptionMapper $mapper,
-        /** @var MatchedExceptionFormatter<Throwable,ConstraintViolationInterface> */
-        private readonly MatchedExceptionFormatter $formatter,
+        /** @var ExceptionMatchFormatter<Throwable,ConstraintViolationInterface> */
+        private readonly ExceptionMatchFormatter $formatter,
     ) {
     }
 

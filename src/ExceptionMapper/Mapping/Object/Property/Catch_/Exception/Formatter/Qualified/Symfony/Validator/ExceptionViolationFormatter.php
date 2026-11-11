@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator;
 
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Throwable;
 
@@ -15,8 +15,8 @@ use Throwable;
  *
  * @psalm-template TException of mixed (psalm doesn't support contravariant templates)
  *
- * @extends MatchedExceptionFormatter<TException,ConstraintViolationInterface>
+ * @extends ExceptionMatchFormatter<TException,ConstraintViolationInterface>
  */
-interface ExceptionViolationFormatter extends MatchedExceptionFormatter
+interface ExceptionViolationFormatter extends ExceptionMatchFormatter
 {
 }

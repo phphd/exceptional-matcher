@@ -29,7 +29,7 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\Mem
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\MatchCondition;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ValueException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Path\PropertyPath;
 use PhPhD\ExceptionMapper\Mapping\Object\Try_;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
@@ -200,7 +200,7 @@ final class ArchitectureRuleSet
 
                     Selector::classname(ConstantsClassLoader::class),
                     Selector::classname(MatchConditionCompiler::class),
-                    Selector::classname(MatchedExceptionFormatter::class),
+                    Selector::classname(ExceptionMatchFormatter::class),
                     // Bundle & Extension
                     Selector::inNamespace('Symfony\Component'),
                     Selector::classname(InstalledVersions::class),
@@ -423,7 +423,7 @@ final class ArchitectureRuleSet
                 Selector::Not($this->validatorExceptionFormatter()),
                 Selector::Not($this->bundle()),
             ),
-            Selector::classname(MatchedExceptionFormatter::class),
+            Selector::classname(ExceptionMatchFormatter::class),
         );
     }
 

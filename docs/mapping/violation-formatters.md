@@ -148,7 +148,7 @@ services:
 ```
 
 > For violation formatter to be recognized by the bundle, \
-> its service must be tagged with `MatchedExceptionFormatter` class-name tag.
+> its service must be tagged with `ExceptionMatchFormatter` class-name tag.
 >
 > If you're using [autoconfiguration](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option),
 > it will be done automatically by the service container.

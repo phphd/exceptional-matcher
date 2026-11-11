@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionMapper\Mapping\Object\Property;
 
 use Attribute;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\MatchCondition;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
 use Throwable;
 
 use function is_array;
@@ -23,10 +23,10 @@ final class Catch_
 {
     /**
      * @phpstan-param ?class-string<MatchCondition<T1>> $match
-     * @phpstan-param ?class-string<MatchedExceptionFormatter<T2,mixed>> $format
+     * @phpstan-param ?class-string<ExceptionMatchFormatter<T2,mixed>> $format
      *
      * @psalm-param ?class-string<MatchCondition> $match
-     * @psalm-param ?class-string<MatchedExceptionFormatter> $format
+     * @psalm-param ?class-string<ExceptionMatchFormatter> $format
      */
     public function __construct(
         /** @var class-string<T1&T2> */
@@ -86,9 +86,9 @@ final class Catch_
     }
 
     /**
-     * @phpstan-return ?class-string<MatchedExceptionFormatter<T2,mixed>>
+     * @phpstan-return ?class-string<ExceptionMatchFormatter<T2,mixed>>
      *
-     * @psalm-return ?class-string<MatchedExceptionFormatter>
+     * @psalm-return ?class-string<ExceptionMatchFormatter>
      */
     public function getFormat(): ?string
     {

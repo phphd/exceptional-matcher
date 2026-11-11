@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception;
 
 use Countable;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
 use Throwable;
 
 use function array_merge;
@@ -23,11 +23,11 @@ final class ExceptionMatchList implements Countable
     /**
      * @template TResult
      *
-     * @param MatchedExceptionFormatter<Throwable,TResult> $formatter
+     * @param ExceptionMatchFormatter<Throwable,TResult> $formatter
      *
      * @return list<TResult>
      */
-    public function format(MatchedExceptionFormatter $formatter): array
+    public function format(ExceptionMatchFormatter $formatter): array
     {
         /** @var list<list<TResult>> $results */
         $results = [];

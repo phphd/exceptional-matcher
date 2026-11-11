@@ -16,7 +16,7 @@ use Throwable;
  *
  * @template-covariant TResult of mixed
  */
-interface MatchedExceptionFormatter
+interface ExceptionMatchFormatter
 {
     /**
      * @param ExceptionMatch<TException&Throwable> $exceptionMatch
