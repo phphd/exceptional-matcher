@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Origin;
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin;
 
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\MatchCondition;
 use Throwable;
@@ -12,7 +12,7 @@ use Throwable;
  *
  * @implements MatchCondition<Throwable>
  */
-final class ExceptionOriginMatchCondition implements MatchCondition
+final class ExceptionTraceOriginMatchCondition implements MatchCondition
 {
     public function __construct(
         /** @var ?class-string */

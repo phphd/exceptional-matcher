@@ -2,27 +2,27 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Origin\Tests;
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\Tests;
 
 use InvalidArgumentException;
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Origin\Tests\Stub\Email;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Origin\Tests\Stub\Hook\HookOriginConditionMessage;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Origin\Tests\Stub\Hook\ProductHookedEntity;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Origin\Tests\Stub\OriginConditionMessage;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\Tests\Stub\Email;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\Tests\Stub\Hook\HookOriginConditionMessage;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\Tests\Stub\Hook\ProductHookedEntity;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\Tests\Stub\OriginConditionMessage;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use PhPhD\ExceptionMapper\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use function PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Origin\Tests\Stub\validate_email_string;
+use function PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\Tests\Stub\validate_email_string;
 
 /**
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Origin\ExceptionOriginMatchCondition
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Origin\ExceptionOriginMatchConditionCompiler
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\ExceptionTraceOriginMatchCondition
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\ExceptionTraceOriginMatchConditionCompiler
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\PreCompiledMatchConditionBlueprint
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionCompiler
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionBlueprint
@@ -30,7 +30,7 @@ use function PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Orig
  *
  * @internal
  */
-final class ExceptionOriginMatchConditionUnitTest extends TestCase
+final class ExceptionTraceOriginMatchConditionUnitTest extends TestCase
 {
     use CatchException;
 

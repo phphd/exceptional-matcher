@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Origin\Tests\Stub;
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\Tests\Stub;
 
 use InvalidArgumentException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;

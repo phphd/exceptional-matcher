@@ -77,7 +77,7 @@ Once `CardDeactivatedException`  is matched by class, custom closure is called:
 
 If neither of them returned `true`, the exception is considered "unmatched" and Mapper returns `null`.
 
-## Origin Source Condition
+## Trace Origin Condition
 
 Specifies whence the exception had to be raised from. \
 Matches the exception by its origin class name and method name.

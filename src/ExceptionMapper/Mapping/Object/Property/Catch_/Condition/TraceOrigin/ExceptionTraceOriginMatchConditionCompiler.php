@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Origin;
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin;
 
 use LogicException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
@@ -26,7 +26,7 @@ use function substr;
  *
  * @implements MatchConditionCompiler<Throwable>
  */
-final class ExceptionOriginMatchConditionCompiler implements MatchConditionCompiler
+final class ExceptionTraceOriginMatchConditionCompiler implements MatchConditionCompiler
 {
     /** @return ?PreCompiledMatchConditionBlueprint<Throwable> */
     public function compile(ReflectionProperty $property, Catch_ $catch): ?PreCompiledMatchConditionBlueprint
@@ -53,7 +53,7 @@ final class ExceptionOriginMatchConditionCompiler implements MatchConditionCompi
         }
 
         /** @psalm-var ?non-empty-string $originFunctionName */
-        $condition = new ExceptionOriginMatchCondition($originClassName, $originFunctionName);
+        $condition = new ExceptionTraceOriginMatchCondition($originClassName, $originFunctionName);
 
         return new PreCompiledMatchConditionBlueprint($condition);
     }

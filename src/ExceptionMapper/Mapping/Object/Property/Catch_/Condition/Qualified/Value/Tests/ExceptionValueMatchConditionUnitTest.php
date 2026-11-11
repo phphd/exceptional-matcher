@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Reference;
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ExceptionValueMatchCondition
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ExceptionValueMatchConditionCompiler
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\QualifiedMatchConditionCompiler
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Origin\ExceptionOriginMatchConditionCompiler
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\ExceptionTraceOriginMatchConditionCompiler
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Closure\SimpleIfClosureMatchConditionCompiler
  *
  * @internal
