@@ -3,3 +3,4 @@
 !/autoload_constants.php
 !/bootstrap.php
 !/composer.json
+!/git-patch-src.sh

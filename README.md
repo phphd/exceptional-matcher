@@ -32,7 +32,9 @@ Install it in either a vanilla PHP project or a Symfony project.
     composer require phphd/exceptional-matcher
     ```
 
-2. \[Symfony\] enable the bundles in the `bundles.php`:
+2. Set up Dependency Injection:
+
+   *\[Symfony\]:* enable the bundles in the `bundles.php`:
 
    ```php
    PhPhD\ExceptionalMatcher\Bundle\PhdExceptionalMatcherBundle::class => ['all' => true],
@@ -40,14 +42,13 @@ Install it in either a vanilla PHP project or a Symfony project.
    ```
 
    > Note: `PhdExceptionToolkitBundle` is a required dependency \
-   > that provides exception unwrapping needful for this library.
+   > for exception unwrapping needed for the library.
 
-3. \[Non-Symfony\] configure the container:
+   *\[Standalone\]:* Read [Standalone Usage](#standalone-usage-) to use outside frameworks.
 
-   You can use features of this library outside frameworks. \
-   See [Standalone Usage](#standalone-usage-).
+3. Add a [Mapping Linter](docs/mapping/linter.md) step to CI.
 
-### 2. Map and Throw 🎯
+### 2. Throw and Map 🎯
 
 Mark a command or dto with `#[Try_]` attribute, and properties with `#[Catch_]`.
 
@@ -57,8 +58,8 @@ Mark a command or dto with `#[Try_]` attribute, and properties with `#[Catch_]`.
 Finally, throw those exceptions from your use-case handler:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 
 #[Try_]
 class UserRegistration
@@ -96,7 +97,7 @@ Here, `LoginAlreadyTakenException` is bound to the `login` property, \
 while `PasswordCompromisedException` is bound to the `password` property.
 
 > You can have additional matching conditions beyond just the exception class name. \
-> See [Match Conditions 🖇️](docs/config/match-conditions.md).
+> See [Match Conditions 🖇️](docs/mapping/match-conditions.md).
 
 The equivalent (very rough) manual logic this library automates:
 
@@ -252,8 +253,8 @@ You don't have limitations at all. \
 The mapping for profile update `Dto` is just as high-level as it was for [registration `Dto`](#map-and-throw-):
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 
 #[Try_]
 class UserProfileUpdate
@@ -314,27 +315,28 @@ It's highly recommended to get acquainted with the examples to apprehend the ful
 
 There are two configuration features:
 
-- [Match Conditions 🖇️](docs/config/match-conditions.md) – determine whether a given exception should match the given
+- [Match Conditions 🖇️](docs/mapping/match-conditions.md) – determine whether a given exception should match the given
   property;
-- [Violation Formatters 🎨](docs/config/violation-formatters.md) – represent the exception in a desired format.
+- [Violation Formatters 🎨](docs/mapping/violation-formatters.md) – represent the exception in a desired format;
+- [Mapping Linter 🕵🏻‍♂️](docs/mapping/linter.md) – catch mapping errors before they arrive in production.
 
-That's really all this library does – matches the exception and formats it (i.e. roasts the fish).
+That's all the library does – it matches the exception and formats it (roasts the fish).
 
 #### Cheat Sheet 📝
 
 For a cheat-sheet example of configuration, check the following:
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Enum\enum_value;
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Uid\uid_value;
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Integration\Validator\validated_value;
-use const PhPhD\ExceptionalMatcher\Rule\Object\Property\Match\Condition\Value\exception_value;
-use const PhPhD\ExceptionalMatcher\Integration\Validator\Formatter\Embedded\embedded_violations;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\enum_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\uid_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\validated_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\exception_value;
+use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 
 #[Try_]
 class ImportProductDto
@@ -386,9 +388,7 @@ class ImportProductDto
 The matcher automatically picks all nested objects for analysis, provided that they define `#[Try_]` attribute.
 
 ```php
-use PhPhD\ExceptionalMatcher\Rule\Object\Try_;
-use PhPhD\ExceptionalMatcher\Rule\Object\Property\Catch_;
-use Symfony\Component\Validator\Constraints as Assert;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
 
 #[Try_]
 class ImportProductBatchDto
@@ -463,10 +463,12 @@ and use it to get necessary services:
 ```php
 use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
 use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList;
+use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 
 $container = (new PhdExceptionalMatcherExtension())->getContainer([
-    // These are not used but still required by Symfony DI
+    // In a non-debug mode broken mappings are logged instead of thrown
+    'kernel.debug' => false,
+    // These are not required by the library but are required by Symfony DI
     'kernel.environment' => 'prod',
     'kernel.build_dir' => __DIR__.'/var/cache',
 ]);

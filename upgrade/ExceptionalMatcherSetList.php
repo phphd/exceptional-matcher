@@ -35,7 +35,7 @@ final class ExceptionalMatcherSetList
     {
         return new self(array_filter(
             self::VERSIONS,
-            static fn (string $targetVersion): bool => version_compare($targetVersion, $version) > 0,
+            static fn(string $targetVersion): bool => version_compare($targetVersion, $version) > 0,
             ARRAY_FILTER_USE_KEY,
         ));
     }
