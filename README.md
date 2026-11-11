@@ -336,7 +336,7 @@ use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualifi
 use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\uid_value;
 use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\validated_value;
 use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\exception_value;
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
+use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 
 #[Try_]
 class ImportProductDto
@@ -463,7 +463,7 @@ and use it to get necessary services:
 ```php
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatchList;
 
 $container = (new PhdExceptionMapperExtension())->getContainer([
     // In a non-debug mode broken mappings are logged instead of thrown

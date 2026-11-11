@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualifi
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Uid\Tests\Stub\MessageWithInvalidUidCondition;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatchList;
 use PhPhD\ExceptionMapper\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;

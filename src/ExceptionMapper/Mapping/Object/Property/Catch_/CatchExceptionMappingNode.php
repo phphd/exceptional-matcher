@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 
 use PhPhD\ExceptionMapper\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\MatchCondition;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionReciprocal;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Path\PropertyPath;
 use Throwable;
 

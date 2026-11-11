@@ -15,7 +15,7 @@ bin/console debug:container ExceptionMapper
 It should provide you with a similar list to this:
 
 ```text
-[0] PhPhD\ExceptionMapper\ExceptionMapper<PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList>
+[0] PhPhD\ExceptionMapper\ExceptionMapper<PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatchList>
 [1] PhPhD\ExceptionMapper\ExceptionMapper<Symfony\Component\Validator\ConstraintViolationListInterface>
 ```
 

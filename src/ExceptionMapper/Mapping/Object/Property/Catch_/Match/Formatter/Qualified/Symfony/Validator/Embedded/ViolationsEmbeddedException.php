@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded;
+
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
+use Throwable;
+
+/**
+ * @api
+ *
+ * Also, {@see ValidationFailedException} of Symfony
+ */
+interface ViolationsEmbeddedException extends Throwable
+{
+    public function getViolations(): ConstraintViolationListInterface;
+}

@@ -28,8 +28,8 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\Mat
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\MatchCondition;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ValueException;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatch;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Path\PropertyPath;
 use PhPhD\ExceptionMapper\Mapping\Object\Try_;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
@@ -84,21 +84,21 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
-    public function testExceptionDependencies(): BuildStep
+    public function testExceptionMatchDependencies(): BuildStep
     {
-        return $this->layerRule('exception');
+        return $this->layerRule('exceptionMatch');
     }
 
     #[TestRule]
-    public function testExceptionFormatterDependencies(): BuildStep
+    public function testExceptionMatchFormatterDependencies(): BuildStep
     {
-        return $this->layerRule('exceptionFormatter');
+        return $this->layerRule('exceptionMatchFormatter');
     }
 
     #[TestRule]
-    public function testValidatorExceptionFormatterDependencies(): BuildStep
+    public function testValidatorExceptionMatchFormatterDependencies(): BuildStep
     {
-        return $this->layerRule('validatorExceptionFormatter');
+        return $this->layerRule('validatorExceptionMatchFormatter');
     }
 
     #[TestRule]
@@ -233,7 +233,7 @@ final class ArchitectureRuleSet
                 'deps' => [
                     $this->mapper(),
                     $this->node(),
-                    $this->exception(),
+                    $this->exceptionMatch(),
                     Selector::inNamespace('Symfony\Component\Validator'),
                 ],
             ],
@@ -241,7 +241,7 @@ final class ArchitectureRuleSet
                 'deps' => [
                     $this->blueprint(),
                     $this->node(),
-                    $this->exception(),
+                    $this->exceptionMatch(),
                     Selector::classname(ExceptionUnwrapper::class),
                 ],
             ],
@@ -250,7 +250,7 @@ final class ArchitectureRuleSet
                 'deps' => [
                     $this->propertyType(),
                     $this->matchConditionCompiler(),
-                    $this->exceptionFormatter(),
+                    $this->exceptionMatchFormatter(),
                     Selector::inNamespace('Psr'),
                 ],
             ],
@@ -264,7 +264,7 @@ final class ArchitectureRuleSet
             'node' => [
                 'deps' => [
                     $this->blueprint(),
-                    $this->exception(),
+                    $this->exceptionMatch(),
                     $this->matchCondition(),
                 ],
                 'description' => 'Mapping nodes are the core model layer and must depend on almost nothing',
@@ -289,27 +289,27 @@ final class ArchitectureRuleSet
             'matchCondition' => [
                 'deps' => [
                     $this->node(),
-                    $this->exception(),
+                    $this->exceptionMatch(),
                 ],
             ],
-            'validatorExceptionFormatter' => [
-                'wraps' => ['exceptionFormatter'],
+            'validatorExceptionMatchFormatter' => [
+                'wraps' => ['exceptionMatchFormatter'],
                 'deps' => [
                     Selector::inNamespace('Symfony\Component\Validator'),
                 ],
             ],
-            'exceptionFormatter' => [
+            'exceptionMatchFormatter' => [
                 'deps' => [
                     Selector::classname(ExceptionMatch::class),
                     Selector::classname(TranslatorInterface::class),
                     Selector::inNamespace('Psr\Container'), // Registry
                 ],
             ],
-            'exception' => [
+            'exceptionMatch' => [
                 'deps' => [
                     Selector::classname(CatchExceptionMappingNode::class),
                 ],
-                'description' => 'Exception models must not depend on anything else',
+                'description' => 'Exception match models must not depend on anything else',
             ],
         ];
     }
@@ -397,30 +397,30 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function exceptionFormatter(): AllOfSelectorModifier
+    public function exceptionMatchFormatter(): AllOfSelectorModifier
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter'),
-            Selector::Not($this->validatorExceptionFormatter()),
+            Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter'),
+            Selector::Not($this->validatorExceptionMatchFormatter()),
             Selector::Not($this->bundle()),
         );
     }
 
-    public function validatorExceptionFormatter(): AllOfSelectorModifier
+    public function validatorExceptionMatchFormatter(): AllOfSelectorModifier
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator'),
+            Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator'),
             Selector::Not($this->bundle()),
         );
     }
 
-    public function exception(): AnyOfSelectorModifier
+    public function exceptionMatch(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
             Selector::AllOf(
-                Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception'),
-                Selector::Not($this->exceptionFormatter()),
-                Selector::Not($this->validatorExceptionFormatter()),
+                Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match'),
+                Selector::Not($this->exceptionMatchFormatter()),
+                Selector::Not($this->validatorExceptionMatchFormatter()),
                 Selector::Not($this->bundle()),
             ),
             Selector::classname(ExceptionMatchFormatter::class),

@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionMapper\Mapping\Object\Property;
 
 use Attribute;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\MatchCondition;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use Throwable;
 
 use function is_array;

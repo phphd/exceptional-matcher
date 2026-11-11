@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionMapper\Mapping\Object;
 
 use PhPhD\ExceptionMapper\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionMapper\Mapping\Matcher\ExceptionMatcher;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionReciprocal;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Path\PropertyPath;
 
 /** @internal */

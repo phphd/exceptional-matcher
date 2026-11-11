@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Iterable\Tests;
 use ArrayObject;
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatchList;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Iterable\Tests\Stub\RootObject;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\NestedItemMatchedException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\MessageWithNoTryAttribute;

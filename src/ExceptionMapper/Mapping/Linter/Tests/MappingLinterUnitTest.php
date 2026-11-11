@@ -48,8 +48,8 @@ use PHPUnit\Framework\TestCase;
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\CatchExceptionMappingCompiler
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Exception\CatchAttributeInstantiationFailedException
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Exception\CatchExceptionMappingPrintCompilationFailedException
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\QualifiedExceptionMatchFormatter
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\UnregisteredExceptionFormatterException
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\QualifiedExceptionMatchFormatter
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\UnregisteredExceptionMatchFormatterException
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionBlueprint
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate
  */
@@ -153,7 +153,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertSame(UnregisteredFormatterMessage::class.'::$divisor', $defect->getLocation()->toReference());
         self::assertSame([
-            'Exception Formatter is not registered: "'.UnregisteredFormatter::class.'"',
+            'Exception Match Formatter is not registered: "'.UnregisteredFormatter::class.'"',
             '#[Catch_] exception mapping compilation failed.',
         ], $defect->getMessages());
     }

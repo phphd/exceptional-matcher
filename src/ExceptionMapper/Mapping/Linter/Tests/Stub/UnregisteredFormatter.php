@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Mapping\Linter\Tests\Stub;
 
 use DivisionByZeroError;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\ExceptionMatchFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatch;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 
 /** @implements ExceptionMatchFormatter<DivisionByZeroError,array{}> */
 final class UnregisteredFormatter implements ExceptionMatchFormatter

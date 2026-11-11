@@ -11,7 +11,7 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\T
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\Tests\Stub\Hook\HookOriginConditionMessage;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\Tests\Stub\Hook\ProductHookedEntity;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\Tests\Stub\OriginConditionMessage;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatchList;
 use PhPhD\ExceptionMapper\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;

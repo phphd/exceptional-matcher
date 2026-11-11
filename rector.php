@@ -29,7 +29,7 @@ return RectorConfig::configure()
             __DIR__.'/src/*/*CompilerPass.php',
         ],
         ClassPropertyAssignToConstructorPromotionRector::class => [
-            __DIR__.'/'.'src/ExceptionMapper/Mapping/Object/Property/Catch_/Exception/ExceptionReciprocal.php',
+            __DIR__.'/'.'src/ExceptionMapper/Mapping/Object/Property/Catch_/Match/ExceptionReciprocal.php',
         ],
         IssetOnPropertyObjectToPropertyExistsRector::class => [
             __DIR__.'/'.'src/ExceptionMapper/Mapping/Object/Property/Catch_/Condition/TraceOrigin/ExceptionTraceOriginMatchCondition.php',

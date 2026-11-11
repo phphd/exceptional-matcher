@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionMapper\Tests\Unit;
 use ArrayObject;
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Main\Tests\Stub\ObjectPropertyMatchedException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Main\Tests\Stub\ObjectPropertyMatchedException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
@@ -34,9 +34,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Iterable\ItemOfIterableExceptionMappingNode
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\PropertyExceptionMappingNode
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Path\PropertyPath
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionReciprocal
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatch
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatchList
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Blueprint\ObjectExceptionMappingBlueprint
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Blueprint\Registry\Compiler\ObjectExceptionMappingCompiler
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingBlueprintRegistry

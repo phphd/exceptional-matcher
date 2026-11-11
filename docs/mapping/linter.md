@@ -26,7 +26,7 @@ src/YourProject/DivideByZeroCommand.php
           ↳ #[Catch_] exception mapping compilation failed.             
  
  ✏️       App\YourProject\DivideByZeroCommand::$divisor          
- [ERROR]  Exception Formatter is not registered: "bad-formatter"   
+ [ERROR]  Exception Match Formatter is not registered: "bad-formatter"   
           ↳ #[Catch_] exception mapping compilation failed.         
 
  1 class scanned: 2 errors found.

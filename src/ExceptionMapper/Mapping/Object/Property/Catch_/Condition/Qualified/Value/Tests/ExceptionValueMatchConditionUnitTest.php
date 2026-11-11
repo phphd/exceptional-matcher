@@ -8,7 +8,7 @@ use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\Tests\Stub\MessageWithExceptionValueCondition;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\Tests\Stub\SomeValueException;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatchList;
 use PhPhD\ExceptionMapper\Tests\Trait\CatchException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
