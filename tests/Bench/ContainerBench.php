@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Tests\Bench;
+namespace PhPhD\ExceptionMapper\Tests\Bench;
 
 use ArrayObject;
 use LogicException;
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedException;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\MessageWithNoTryAttribute;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedItem;
+use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\ExceptionMapper;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\AnException;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\NestedItemMatchedException;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\HandleableMessageStub;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\MessageWithNoTryAttribute;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\NestedItem;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -26,7 +26,7 @@ final class ContainerBench
 {
     public function __construct()
     {
-        if (PhdExceptionalMatcherExtension::nativeProxiesAreSupported()) {
+        if (PhdExceptionMapperExtension::nativeProxiesAreSupported()) {
             throw new LogicException('This bench is only useful for PHP <= 8.4 (when there were no native proxies)');
         }
     }
@@ -46,12 +46,12 @@ final class ContainerBench
     {
         [$isProxyAllowed] = $params;
 
-        $matcher = $this->createMatcher($isProxyAllowed);
+        $mapper = $this->createMapper($isProxyAllowed);
 
         $message = new MessageWithNoTryAttribute(123);
         $exception = new AnException();
 
-        $violationList = $matcher->match($exception, $message);
+        $violationList = $mapper->map($exception, $message);
 
         if (null !== $violationList) {
             throw new RuntimeException('Expected to have no violations');
@@ -73,7 +73,7 @@ final class ContainerBench
     {
         [$isProxyAllowed] = $params;
 
-        $matcher = $this->createMatcher($isProxyAllowed);
+        $mapper = $this->createMapper($isProxyAllowed);
 
         $message = HandleableMessageStub::create()->withNestedIterableItems(new ArrayObject([
             'first' => new NestedItem(1),
@@ -84,7 +84,7 @@ final class ContainerBench
         $originalException = new NestedItemMatchedException(code: 2);
 
         /** @var ConstraintViolationListInterface $violationList */
-        $violationList = $matcher->match($originalException, $message);
+        $violationList = $mapper->map($originalException, $message);
 
         if (1 !== $violationList->count()) {
             throw new RuntimeException('Expected to have 1 violation');
@@ -100,18 +100,18 @@ final class ContainerBench
         ];
     }
 
-    /** @return ExceptionMatcher<ConstraintViolationListInterface> */
-    private function createMatcher(bool $allowGeneratedProxies): ExceptionMatcher
+    /** @return ExceptionMapper<ConstraintViolationListInterface> */
+    private function createMapper(bool $allowGeneratedProxies): ExceptionMapper
     {
         $container = $this->createContainer($allowGeneratedProxies);
 
-        /** @var ExceptionMatcher<ConstraintViolationListInterface> */
-        return $container->get(ExceptionMatcher::class.'<'.ConstraintViolationListInterface::class.'>');
+        /** @var ExceptionMapper<ConstraintViolationListInterface> */
+        return $container->get(ExceptionMapper::class.'<'.ConstraintViolationListInterface::class.'>');
     }
 
     private function createContainer(bool $allowGeneratedProxies): ContainerBuilder
     {
-        $container = (new PhdExceptionalMatcherExtension($allowGeneratedProxies))->getContainer([
+        $container = (new PhdExceptionMapperExtension($allowGeneratedProxies))->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);

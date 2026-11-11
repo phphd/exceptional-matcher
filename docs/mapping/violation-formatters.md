@@ -18,7 +18,7 @@ It creates a basic `ConstraintViolation` with these parameters: \
 > The default messages translation domain is `validators`, \
 > inherited from `validator.translation_domain` parameter.
 >
-> You can change it by setting `phd_exceptional_matcher.translation_domain` parameter.
+> You can change it by setting `phd_exception_mapper.translation_domain` parameter.
 
 ## Embedded Violations Formatter
 
@@ -27,7 +27,7 @@ Allows the retrieval of prebuilt `ConstraintViolationList` directly from the exc
 The exception must implement `ViolationsEmbeddedException`, embedding `ConstraintViolationList` from the validator:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 final class CardNumberValidationFailedException extends \RuntimeException implements ViolationsEmbeddedException
@@ -49,10 +49,10 @@ final class CardNumberValidationFailedException extends \RuntimeException implem
 Finally, the DTO must specify `format: embedded_violations` for the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionMapper\Mapping\Object\Try_;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
+use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 
 #[Try_]
 class IssueCreditCardCommand
@@ -78,12 +78,12 @@ picking up the embedded `ConstraintViolationList`.
 Specify `format: embedded_violations` for the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionMapper\Mapping\Object\Try_;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\validated_value;
-use const PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
+use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Symfony\Validator\validated_value;
+use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 
 #[Try_]
 class RegisterUserCommand
@@ -104,8 +104,8 @@ For example, pass additional parameters to the message translation.
 You can create custom violation formatter by implementing `ExceptionViolationFormatter` interface:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\ExceptionViolationFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\ExceptionViolationFormatter;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
 /** @implements ExceptionViolationFormatter<LoginAlreadyTakenException> */
@@ -118,14 +118,14 @@ final class LoginAlreadyTakenViolationFormatter implements ExceptionViolationFor
     }
 
     /** @return array{ConstraintViolationInterface} */
-    public function format(MatchedException $matchedException): ConstraintViolationInterface
+    public function format(ExceptionMatch $exceptionMatch): ConstraintViolationInterface
     {
         // format violation with the default formatter
         // and then adjust only the necessary parts
-        [$violation] = $this->formatter->format($matchedException);
+        [$violation] = $this->formatter->format($exceptionMatch);
 
         /** @var LoginAlreadyTakenException $exception */
-        $exception = $matchedException->getException();
+        $exception = $exceptionMatch->getException();
 
         $violation = new ConstraintViolation(
             $violation->getMessage(),
@@ -148,7 +148,7 @@ services:
 ```
 
 > For violation formatter to be recognized by the bundle, \
-> its service must be tagged with `MatchedExceptionFormatter` class-name tag.
+> its service must be tagged with `ExceptionMatchFormatter` class-name tag.
 >
 > If you're using [autoconfiguration](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option),
 > it will be done automatically by the service container.
@@ -156,8 +156,8 @@ services:
 Finally, specify formatter in the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionMapper\Mapping\Object\Try_;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 
 #[Try_]
 final class RegisterUserCommand

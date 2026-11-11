@@ -440,7 +440,7 @@ Instead of chaining yourself to a particular tool that will handle both, you can
 This gives you freedom of choice, resulting in much more supple design of the system.
 
 Ultimately, you can validate business logic with any third-party library (or even plain PHP), \
-while exceptional matcher will **_correlate_** these **validation exceptions** to the fields \
+while exception mapper will **_correlate_** these **validation exceptions** to the fields \
 whose values caused them.
 
 ## Recap: Exceptional vs Standard Validation? ⚖️

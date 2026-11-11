@@ -48,7 +48,7 @@ Set up the script to run in your CI flow:
 Lint with a Console command:
 
 ```shell
-bin/console lint:exceptional-matcher -o json src/
+bin/console lint:exception-mapper -o json src/
 ```
 
 ### \[Standalone\]
@@ -56,8 +56,8 @@ bin/console lint:exceptional-matcher -o json src/
 Lint with a PHPUnit test w/o frameworks:
 
 ```php
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\Mapping\Linter\Port\LintMappingUseCase;
+use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Mapping\Linter\Port\LintMappingUseCase;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
@@ -70,7 +70,7 @@ class LintMappingsTest extends TestCase
         parent::setUp();
 
         // Use your project's configured container instead:
-        $container = (new PhdExceptionalMatcherExtension())->getContainer([
+        $container = (new PhdExceptionMapperExtension())->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);

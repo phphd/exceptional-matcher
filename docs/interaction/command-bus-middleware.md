@@ -6,7 +6,7 @@ validation, transactions, and exception handling.
 
 > If you are not using `Messenger` component, it won't be installed automatically.
 >
-> Exceptional Matcher provides a rigorously structured set of tools w/o requiring any particular third-party.
+> Exception Mapper provides a rigorously structured set of tools w/o requiring any particular third-party.
 
 ## Middleware 🔂
 
@@ -26,7 +26,7 @@ Add `phd_exceptional_validation` middleware to the list:
 ```
 
 A `phd_exceptional_validation` middleware intercepts exceptions and performs their matching to object's properties by an
-exception matcher, eventually formatting matched exceptions as
+exception mapper, eventually formatting matched exceptions as
 standard [SF Validator](https://symfony.com/doc/current/validation.html)
 violations.
 
@@ -36,12 +36,12 @@ Once added, the middleware:
 
 - runs next middleware;
 - catches the exception if thrown;
-    - matches it with `ExceptionMatcher<ConstraintViolationListInterface>`;
+    - matches it with `ExceptionMapper<ConstraintViolationListInterface>`;
     - re-throws `ExceptionalValidationFailedException`.
 
 This diagram represents the concept:
 
-![Exceptional Validation.svg](https://raw.githubusercontent.com/phphd/exceptional-matcher/refs/heads/main/assets/Exceptional%20Validation.svg)
+![Exceptional Validation.svg](https://raw.githubusercontent.com/phphd/exception-mapper/refs/heads/main/assets/Exceptional%20Validation.svg)
 
 ## Catch 🏈
 
@@ -68,8 +68,8 @@ property paths.
 
 ## Custom Middleware ✍🏻
 
-You can create custom middleware for your format using [Cutom Matcher Service](./direct-matcher-service-usage.md)
+You can create custom middleware for your format using [Cutom Mapper Service](./direct-mapper-service-usage.md)
 wrapped into a [Messenger Middleware](https://symfony.com/doc/current/messenger.html#middleware) as just shown.
 
-A good base point for implementation to build off on is `ExceptionMatcher<MatchedExceptionList>`. \
+A good base point for implementation to build off on is `ExceptionMapper<ExceptionMatchList>`. \
 It gives you a high-level object representation of matched exceptions you can format. 

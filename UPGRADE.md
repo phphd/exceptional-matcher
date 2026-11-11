@@ -10,28 +10,28 @@ for the changes not covered by automatic upgrade via Rector (see the "Upgrading"
   and reference `@phd_exceptional_validation` middleware service instead.
 
 * Removed: `PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter`. \
-  Use `PhPhD\ExceptionalMatcher\Exception\MatchedExceptionList::format()` instead. 
+  Use `PhPhD\ExceptionMapper\Exception\ExceptionMatchList::format()` instead. 
 
 * Renamed: `PhPhD\ExceptionalValidation\Capture` \
-  was renamed into `PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_`. 
+  was renamed into `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_`. 
 
-* Renamed: `PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_::$when` \
+* Renamed: `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_::$when` \
   was renamed into `$if`.
 
-* Renamed: `PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_::$condition` \
+* Renamed: `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_::$condition` \
   was renamed into `$match`.
 
-* Renamed: `PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_::$formatter` \
+* Renamed: `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_::$formatter` \
   was renamed into `$format`.
 
-* Parameter Moved: `PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_::$message` \
+* Parameter Moved: `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_::$message` \
   was moved to be after `$format`.
 
   Not moving it will cause this error:
-  > Parameter #2 `$from` of attribute class `PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_` constructor expects `array{class-string, non-empty-string}|class-string|null`,  
+  > Parameter #2 `$from` of attribute class `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_` constructor expects `array{class-string, non-empty-string}|class-string|null`,  
   > `'exception.message'` given.
 
   Fix it by passing it as a named parameter: `message: 'exception.message'`.
 
-* Added: the `lint:exceptional-matcher` command to validate the exception mappings have no errors. \
+* Added: the `lint:exception-mapper` command to validate the exception mappings have no errors. \
   See [Linter Docs](docs/mapping/linter.md).
