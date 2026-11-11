@@ -19,14 +19,14 @@ use Throwable;
  *
  * @template TResult of mixed
  *
- * @template TFormatter of ExceptionMatchFormatter<TException,TResult>
- *
  * @implements ExceptionMatchFormatter<TException,TResult>
  */
 final class QualifiedExceptionMatchFormatter implements ExceptionMatchFormatter
 {
     /**
      * @api
+     *
+     * @template TFormatter of ExceptionMatchFormatter<TException,TResult>
      *
      * @param ContainerInterface<class-string<TFormatter>,TFormatter> $formatterRegistry
      * @param ?class-string<TFormatter> $defaultFormatter
@@ -41,22 +41,23 @@ final class QualifiedExceptionMatchFormatter implements ExceptionMatchFormatter
     {
         $catch = $exceptionMatch->getNode();
 
-        /** @var ?class-string<TFormatter> $formatterId */
         $formatterId = $catch->getFormatterId() ?? $this->defaultFormatter;
 
         if (null === $formatterId) {
             throw new LogicException('No ExceptionMatchFormatter provided and no default one configured.');
         }
 
-        return $this->getFormatter($formatterId)->format($exceptionMatch);
+        return $this->getFormatter($formatterId)->format($exceptionMatch); // @phpstan-ignore argument.templateType (that's a fair catch)
     }
 
     /**
-     * @internal
+     * @template TFormatter of ExceptionMatchFormatter<TException,TResult>
      *
      * @param class-string<TFormatter> $formatterId
      *
      * @return TFormatter
+     *
+     * @internal
      */
     public function getFormatter(string $formatterId): ExceptionMatchFormatter
     {

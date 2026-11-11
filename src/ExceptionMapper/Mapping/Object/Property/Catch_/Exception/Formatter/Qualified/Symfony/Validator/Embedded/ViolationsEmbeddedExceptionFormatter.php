@@ -36,7 +36,8 @@ final class ViolationsEmbeddedExceptionFormatter implements ExceptionMatchFormat
     }
 
     /**
-     * @param ExceptionMatch<ViolationsEmbeddedException|ValidationFailedException> $exceptionMatch
+     * @phpstan-param ExceptionMatch<covariant ViolationsEmbeddedException|ValidationFailedException> $exceptionMatch
+     * @psalm-param ExceptionMatch<ViolationsEmbeddedException|ValidationFailedException> $exceptionMatch
      *
      * @return non-empty-list<ConstraintViolation>
      */

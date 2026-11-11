@@ -10,14 +10,14 @@ use Throwable;
 /**
  * @api
  *
- * @template-covariant T of Throwable
+ * @template T of Throwable
  */
 final class ExceptionMatch
 {
     public function __construct(
         /** @var T */
         private readonly Throwable $exception,
-        /** @var CatchExceptionMappingNode<Throwable> */
+        /** @var CatchExceptionMappingNode<T> */
         private readonly CatchExceptionMappingNode $node,
     ) {
     }
@@ -29,7 +29,7 @@ final class ExceptionMatch
     }
 
     /**
-     * @return CatchExceptionMappingNode<Throwable>
+     * @return CatchExceptionMappingNode<T>
      *
      * @internal
      */

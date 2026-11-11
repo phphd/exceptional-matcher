@@ -57,11 +57,7 @@ final class ExceptionMatchAsViolationFormatterServiceTest extends BundleTestCase
         self::assertSame($defaultFormatter, $formatterRegistry->get(MainExceptionViolationFormatter::class));
     }
 
-    /**
-     * @phpstan-param QualifiedExceptionMatchFormatter<Throwable,mixed,ExceptionMatchFormatter<Throwable,mixed>> $exceptionMatchFormatter
-     *
-     * @psalm-param QualifiedExceptionMatchFormatter $exceptionMatchFormatter
-     */
+    /** @param QualifiedExceptionMatchFormatter<Throwable,mixed> $exceptionMatchFormatter */
     private function getFormatterRegistry(QualifiedExceptionMatchFormatter $exceptionMatchFormatter): ?ContainerInterface // @phpstan-ignore missingType.generics
     {
         /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */
