@@ -15,12 +15,12 @@ bin/console debug:container ExceptionMapper
 It should provide you with a similar list to this:
 
 ```text
-[0] PhPhD\ExceptionMapper\ExceptionMapper<PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList>
+[0] PhPhD\ExceptionMapper\ExceptionMapper<PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList>
 [1] PhPhD\ExceptionMapper\ExceptionMapper<Symfony\Component\Validator\ConstraintViolationListInterface>
 ```
 
 These mappers format the Exception to their specified format, defined as a generic parameter. \
-They can format into `MatchedExceptionList`, or `ConstraintViolationList`, or you can create your custom.
+They can format into `ExceptionMatchList`, or `ConstraintViolationList`, or you can create your custom.
 
 The command dumps all the configured formatters.
 

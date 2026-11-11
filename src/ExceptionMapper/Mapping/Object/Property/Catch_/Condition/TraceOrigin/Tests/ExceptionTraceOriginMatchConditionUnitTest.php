@@ -11,7 +11,7 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\T
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\Tests\Stub\Hook\HookOriginConditionMessage;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\Tests\Stub\Hook\ProductHookedEntity;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\TraceOrigin\Tests\Stub\OriginConditionMessage;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
 use PhPhD\ExceptionMapper\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
@@ -34,7 +34,7 @@ final class ExceptionTraceOriginMatchConditionUnitTest extends TestCase
 {
     use CatchException;
 
-    /** @var ExceptionMapper<MatchedExceptionList> */
+    /** @var ExceptionMapper<ExceptionMatchList> */
     private ExceptionMapper $mapper;
 
     protected function setUp(): void
@@ -48,8 +48,8 @@ final class ExceptionTraceOriginMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMapper<MatchedExceptionList> $mapper */
-        $mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
+        /** @var ExceptionMapper<ExceptionMatchList> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.ExceptionMatchList::class.'>');
         $this->mapper = $mapper;
     }
 
@@ -62,12 +62,12 @@ final class ExceptionTraceOriginMatchConditionUnitTest extends TestCase
             ValidationFailedException::class,
         );
 
-        $matchedExceptionList = $this->mapper->map($emailValidationException, $message);
+        $exceptionMatches = $this->mapper->map($emailValidationException, $message);
 
-        self::assertNotNull($matchedExceptionList);
-        self::assertCount(1, $matchedExceptionList);
+        self::assertNotNull($exceptionMatches);
+        self::assertCount(1, $exceptionMatches);
 
-        [$exceptionMatch] = $matchedExceptionList->toArray();
+        [$exceptionMatch] = $exceptionMatches->toArray();
 
         self::assertSame('email', $exceptionMatch->getNode()->getPropertyPath()->join('.'));
     }
@@ -81,12 +81,12 @@ final class ExceptionTraceOriginMatchConditionUnitTest extends TestCase
             InvalidArgumentException::class,
         );
 
-        $matchedExceptionList = $this->mapper->map($uidValidationException, $message);
+        $exceptionMatches = $this->mapper->map($uidValidationException, $message);
 
-        self::assertNotNull($matchedExceptionList);
-        self::assertCount(1, $matchedExceptionList);
+        self::assertNotNull($exceptionMatches);
+        self::assertCount(1, $exceptionMatches);
 
-        [$exceptionMatch] = $matchedExceptionList->toArray();
+        [$exceptionMatch] = $exceptionMatches->toArray();
 
         self::assertSame('uid', $exceptionMatch->getNode()->getPropertyPath()->join('.'));
     }
@@ -100,12 +100,12 @@ final class ExceptionTraceOriginMatchConditionUnitTest extends TestCase
             ValidationFailedException::class,
         );
 
-        $matchedExceptionList = $this->mapper->map($originValidationException, $message);
+        $exceptionMatches = $this->mapper->map($originValidationException, $message);
 
-        self::assertNotNull($matchedExceptionList);
-        self::assertCount(1, $matchedExceptionList);
+        self::assertNotNull($exceptionMatches);
+        self::assertCount(1, $exceptionMatches);
 
-        [$exceptionMatch] = $matchedExceptionList->toArray();
+        [$exceptionMatch] = $exceptionMatches->toArray();
 
         self::assertSame('anotherEmail', $exceptionMatch->getNode()->getPropertyPath()->join('.'));
     }
@@ -124,12 +124,12 @@ final class ExceptionTraceOriginMatchConditionUnitTest extends TestCase
             ValidationFailedException::class,
         );
 
-        $matchedExceptionList = $this->mapper->map($titleValidationException, $message);
+        $exceptionMatches = $this->mapper->map($titleValidationException, $message);
 
-        self::assertNotNull($matchedExceptionList);
-        self::assertCount(1, $matchedExceptionList);
+        self::assertNotNull($exceptionMatches);
+        self::assertCount(1, $exceptionMatches);
 
-        [$exceptionMatch] = $matchedExceptionList->toArray();
+        [$exceptionMatch] = $exceptionMatches->toArray();
 
         self::assertSame('title', $exceptionMatch->getNode()->getPropertyPath()->join('.'));
     }
@@ -150,8 +150,8 @@ final class ExceptionTraceOriginMatchConditionUnitTest extends TestCase
             ValidationFailedException::class,
         );
 
-        $matchedExceptionList = $this->mapper->map($emailValidationException, $message);
+        $exceptionMatches = $this->mapper->map($emailValidationException, $message);
 
-        self::assertNull($matchedExceptionList);
+        self::assertNull($exceptionMatches);
     }
 }

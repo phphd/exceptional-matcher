@@ -6,15 +6,15 @@ namespace PhPhD\ExceptionMapper\Port;
 
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Throwable;
 
 /**
  * @internal
  *
- * @implements ExceptionMapper<MatchedExceptionList>
+ * @implements ExceptionMapper<ExceptionMatchList>
  */
 final class MainExceptionMapper implements ExceptionMapper
 {
@@ -26,7 +26,7 @@ final class MainExceptionMapper implements ExceptionMapper
     ) {
     }
 
-    public function map(Throwable $exception, object $object): ?MatchedExceptionList
+    public function map(Throwable $exception, object $object): ?ExceptionMatchList
     {
         $print = $this->printRegistry->getMappingBlueprint($object::class);
 
@@ -43,6 +43,6 @@ final class MainExceptionMapper implements ExceptionMapper
             return null;
         }
 
-        return $reciprocal->getMatchedExceptionList();
+        return $reciprocal->getMatches();
     }
 }

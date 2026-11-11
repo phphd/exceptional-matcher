@@ -12,7 +12,7 @@ use function array_merge;
 use function count;
 
 /** @api */
-final class MatchedExceptionList implements Countable
+final class ExceptionMatchList implements Countable
 {
     public function __construct(
         /** @var list<ExceptionMatch<Throwable>> */
@@ -32,8 +32,8 @@ final class MatchedExceptionList implements Countable
         /** @var list<list<TResult>> $results */
         $results = [];
 
-        foreach ($this->exceptionMatches as $exceptionMatch) {
-            $results[] = $formatter->format($exceptionMatch);
+        foreach ($this->exceptionMatches as $match) {
+            $results[] = $formatter->format($match);
         }
 
         return array_merge(...$results);

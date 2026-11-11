@@ -46,11 +46,11 @@ final class ExceptionReciprocal
         return [] === $this->remainingExceptions;
     }
 
-    public function getMatchedExceptionList(): MatchedExceptionList
+    public function getMatches(): ExceptionMatchList
     {
         Assert::notEmpty($this->exceptionMatches);
 
-        return new MatchedExceptionList($this->exceptionMatches);
+        return new ExceptionMatchList($this->exceptionMatches);
     }
 
     /** @param CatchExceptionMappingNode<Throwable> $catch */

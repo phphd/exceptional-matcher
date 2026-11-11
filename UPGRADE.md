@@ -10,7 +10,7 @@ for the changes not covered by automatic upgrade via Rector (see the "Upgrading"
   and reference `@phd_exceptional_validation` middleware service instead.
 
 * Removed: `PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter`. \
-  Use `PhPhD\ExceptionMapper\Exception\MatchedExceptionList::format()` instead. 
+  Use `PhPhD\ExceptionMapper\Exception\ExceptionMatchList::format()` instead. 
 
 * Renamed: `PhPhD\ExceptionalValidation\Capture` \
   was renamed into `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_`. 

@@ -8,7 +8,7 @@ use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\Tests\Stub\MessageWithExceptionValueCondition;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\Tests\Stub\SomeValueException;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
 use PhPhD\ExceptionMapper\Tests\Trait\CatchException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
@@ -28,7 +28,7 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
 {
     use CatchException;
 
-    /** @var ExceptionMapper<MatchedExceptionList> */
+    /** @var ExceptionMapper<ExceptionMatchList> */
     private ExceptionMapper $mapper;
 
     protected function setUp(): void
@@ -48,8 +48,8 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMapper<MatchedExceptionList> $mapper */
-        $mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
+        /** @var ExceptionMapper<ExceptionMatchList> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.ExceptionMatchList::class.'>');
         $this->mapper = $mapper;
     }
 
@@ -62,11 +62,11 @@ final class ExceptionValueMatchConditionUnitTest extends TestCase
             new SomeValueException('whatever'),
         ]);
 
-        $matchedExceptionList = $this->mapper->map($exceptionAdapter, $message);
+        $exceptionMatches = $this->mapper->map($exceptionAdapter, $message);
 
-        self::assertNotNull($matchedExceptionList);
-        self::assertCount(2, $matchedExceptionList);
-        [$exceptionMatch1, $exceptionMatch2] = $matchedExceptionList->toArray();
+        self::assertNotNull($exceptionMatches);
+        self::assertCount(2, $exceptionMatches);
+        [$exceptionMatch1, $exceptionMatch2] = $exceptionMatches->toArray();
 
         self::assertSame('matchedProperty', $exceptionMatch1->getNode()->getPropertyPath()->join('.'));
         self::assertSame('anotherMatchedAsNoCondition', $exceptionMatch2->getNode()->getPropertyPath()->join('.'));

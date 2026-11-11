@@ -463,7 +463,7 @@ and use it to get necessary services:
 ```php
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
 
 $container = (new PhdExceptionMapperExtension())->getContainer([
     // In a non-debug mode broken mappings are logged instead of thrown
@@ -475,8 +475,8 @@ $container = (new PhdExceptionMapperExtension())->getContainer([
 
 $container->compile();
 
-/** @var ExceptionMapper<MatchedExceptionList> $mapper */
-$mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
+/** @var ExceptionMapper<ExceptionMatchList> $mapper */
+$mapper = $container->get(ExceptionMapper::class.'<'.ExceptionMatchList::class.'>');
 ```
 
 Herein, you create a Container, compile it, and use to get `ExceptionMapper`.

@@ -71,5 +71,5 @@ property paths.
 You can create custom middleware for your format using [Cutom Mapper Service](./direct-mapper-service-usage.md)
 wrapped into a [Messenger Middleware](https://symfony.com/doc/current/messenger.html#middleware) as just shown.
 
-A good base point for implementation to build off on is `ExceptionMapper<MatchedExceptionList>`. \
+A good base point for implementation to build off on is `ExceptionMapper<ExceptionMatchList>`. \
 It gives you a high-level object representation of matched exceptions you can format. 

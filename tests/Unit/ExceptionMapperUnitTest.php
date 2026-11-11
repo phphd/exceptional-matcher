@@ -36,7 +36,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Path\PropertyPath
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Blueprint\ObjectExceptionMappingBlueprint
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Blueprint\Registry\Compiler\ObjectExceptionMappingCompiler
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingBlueprintRegistry

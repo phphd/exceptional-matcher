@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionMapper\Port;
 use Closure;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -21,7 +21,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
     $hintLazy = $container->get('phd_exception_mapper.hint_lazy_proxy');
 
     $services
-        ->set(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>', MainExceptionMapper::class)
+        ->set(ExceptionMapper::class.'<'.ExceptionMatchList::class.'>', MainExceptionMapper::class)
         ->public()
         ->args([
             service(ObjectExceptionMappingBlueprintRegistry::class),

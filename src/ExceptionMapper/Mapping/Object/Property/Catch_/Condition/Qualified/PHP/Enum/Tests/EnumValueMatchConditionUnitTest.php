@@ -10,7 +10,7 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\PHP
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\Method\DeliveryMethod;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\Priority\DeliveryPriority;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\PHP\Enum\Tests\Stub\SetDeliveryPriorityCommand;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
 use PhPhD\ExceptionMapper\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
 use ValueError;
@@ -30,7 +30,7 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 {
     use CatchException;
 
-    /** @var ExceptionMapper<MatchedExceptionList> */
+    /** @var ExceptionMapper<ExceptionMatchList> */
     private ExceptionMapper $mapper;
 
     protected function setUp(): void
@@ -44,8 +44,8 @@ final class EnumValueMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMapper<MatchedExceptionList> $mapper */
-        $mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
+        /** @var ExceptionMapper<ExceptionMatchList> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.ExceptionMatchList::class.'>');
         $this->mapper = $mapper;
     }
 
@@ -54,9 +54,9 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $message = new ChooseDeliveryMethodCommand(deliveryMethod: null);
         $originalException = $this->deliveryMethodError('lockr');
 
-        $matchedExceptionList = $this->mapper->map($originalException, $message);
+        $exceptionMatches = $this->mapper->map($originalException, $message);
 
-        self::assertNull($matchedExceptionList);
+        self::assertNull($exceptionMatches);
     }
 
     public function testDoesNotCaptureStringEnumErrorWhenValueDiffers(): void
@@ -64,9 +64,9 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $message = new ChooseDeliveryMethodCommand('courier');
         $originalException = $this->deliveryMethodError('courrier');
 
-        $matchedExceptionList = $this->mapper->map($originalException, $message);
+        $exceptionMatches = $this->mapper->map($originalException, $message);
 
-        self::assertNull($matchedExceptionList);
+        self::assertNull($exceptionMatches);
     }
 
     public function testCapturesStringEnumErrorWhenValueIsSame(): void
@@ -74,9 +74,9 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $message = new ChooseDeliveryMethodCommand('lockr');
         $originalException = $this->deliveryMethodError('lockr');
 
-        $matchedExceptionList = $this->mapper->map($originalException, $message);
+        $exceptionMatches = $this->mapper->map($originalException, $message);
 
-        self::assertNotNull($matchedExceptionList);
+        self::assertNotNull($exceptionMatches);
     }
 
     public function testDoesNotCaptureIntEnumErrorWhenRuleValueIsNull(): void
@@ -84,9 +84,9 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $message = new SetDeliveryPriorityCommand(priority: null);
         $originalException = $this->deliveryPriorityError(4);
 
-        $matchedExceptionList = $this->mapper->map($originalException, $message);
+        $exceptionMatches = $this->mapper->map($originalException, $message);
 
-        self::assertNull($matchedExceptionList);
+        self::assertNull($exceptionMatches);
     }
 
     public function testDoesNotCaptureIntEnumErrorWhenValueDiffers(): void
@@ -94,9 +94,9 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $message = new SetDeliveryPriorityCommand(3);
         $originalException = $this->deliveryPriorityError(4);
 
-        $matchedExceptionList = $this->mapper->map($originalException, $message);
+        $exceptionMatches = $this->mapper->map($originalException, $message);
 
-        self::assertNull($matchedExceptionList);
+        self::assertNull($exceptionMatches);
     }
 
     public function testCapturesIntEnumErrorWhenValueIsSame(): void
@@ -104,9 +104,9 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $message = new SetDeliveryPriorityCommand(4);
         $originalException = $this->deliveryPriorityError(4);
 
-        $matchedExceptionList = $this->mapper->map($originalException, $message);
+        $exceptionMatches = $this->mapper->map($originalException, $message);
 
-        self::assertNotNull($matchedExceptionList);
+        self::assertNotNull($exceptionMatches);
     }
 
     public function testDoesNotCaptureIntEnumErrorWhenValueIsNotIntOrString(): void
@@ -114,9 +114,9 @@ final class EnumValueMatchConditionUnitTest extends TestCase
         $message = new SetDeliveryPriorityCommand(4.0);
         $originalException = $this->deliveryPriorityError(4);
 
-        $matchedExceptionList = $this->mapper->map($originalException, $message);
+        $exceptionMatches = $this->mapper->map($originalException, $message);
 
-        self::assertNull($matchedExceptionList);
+        self::assertNull($exceptionMatches);
     }
 
     private function deliveryMethodError(string $value): ValueError

@@ -9,7 +9,7 @@ use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Closure\Tests\Stub\ConditionallyCaughtException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Closure\Tests\Stub\ConditionalMessage;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Closure\Tests\Stub\ConditionalMessageHolder;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class ClosureMatchConditionUnitTest extends TestCase
 {
-    /** @var ExceptionMapper<MatchedExceptionList> */
+    /** @var ExceptionMapper<ExceptionMatchList> */
     private ExceptionMapper $mapper;
 
     protected function setUp(): void
@@ -36,8 +36,8 @@ final class ClosureMatchConditionUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMapper<MatchedExceptionList> $mapper */
-        $mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
+        /** @var ExceptionMapper<ExceptionMatchList> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.ExceptionMatchList::class.'>');
         $this->mapper = $mapper;
     }
 
@@ -56,12 +56,12 @@ final class ClosureMatchConditionUnitTest extends TestCase
         $message = new ConditionalMessageHolder(ConditionalMessage::createWithConditionalProperties(11, 41));
         $originalException = new ConditionallyCaughtException(41);
 
-        $matchedExceptionList = $this->mapper->map($originalException, $message);
+        $exceptionMatches = $this->mapper->map($originalException, $message);
 
-        self::assertNotNull($matchedExceptionList);
-        self::assertCount(1, $matchedExceptionList);
+        self::assertNotNull($exceptionMatches);
+        self::assertCount(1, $exceptionMatches);
 
-        [$exceptionMatch] = $matchedExceptionList->toArray();
+        [$exceptionMatch] = $exceptionMatches->toArray();
 
         self::assertSame('conditionalMessage.secondProperty', $exceptionMatch->getNode()->getPropertyPath()->join('.'));
         self::assertSame(41, $exceptionMatch->getNode()->getValue());

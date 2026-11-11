@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Iterable\Tests;
 use ArrayObject;
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatchList;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Iterable\Tests\Stub\RootObject;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\NestedItemMatchedException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\MessageWithNoTryAttribute;
@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class PropertyBlueprintIterableItemsUnitTest extends TestCase
 {
-    /** @var ExceptionMapper<MatchedExceptionList> */
+    /** @var ExceptionMapper<ExceptionMatchList> */
     private ExceptionMapper $mapper;
 
     protected function setUp(): void
@@ -38,8 +38,8 @@ final class PropertyBlueprintIterableItemsUnitTest extends TestCase
 
         $container->compile();
 
-        /** @var ExceptionMapper<MatchedExceptionList> $mapper */
-        $mapper = $container->get(ExceptionMapper::class.'<'.MatchedExceptionList::class.'>');
+        /** @var ExceptionMapper<ExceptionMatchList> $mapper */
+        $mapper = $container->get(ExceptionMapper::class.'<'.ExceptionMatchList::class.'>');
         $this->mapper = $mapper;
     }
 
@@ -52,12 +52,12 @@ final class PropertyBlueprintIterableItemsUnitTest extends TestCase
         ]);
         $originalException = new NestedItemMatchedException(code: 57);
 
-        $matchedExceptionList = $this->mapper->map($originalException, $message);
+        $exceptionMatches = $this->mapper->map($originalException, $message);
 
-        self::assertNotNull($matchedExceptionList);
-        self::assertCount(1, $matchedExceptionList);
+        self::assertNotNull($exceptionMatches);
+        self::assertCount(1, $exceptionMatches);
 
-        [$exceptionMatch] = $matchedExceptionList->toArray();
+        [$exceptionMatch] = $exceptionMatches->toArray();
 
         self::assertSame('nestedArrayItems[1].property', $exceptionMatch->getNode()->getPropertyPath()->join('.'));
     }
@@ -72,12 +72,12 @@ final class PropertyBlueprintIterableItemsUnitTest extends TestCase
         ]));
         $originalException = new NestedItemMatchedException(code: 3);
 
-        $matchedExceptionList = $this->mapper->map($originalException, $message);
+        $exceptionMatches = $this->mapper->map($originalException, $message);
 
-        self::assertNotNull($matchedExceptionList);
-        self::assertCount(1, $matchedExceptionList);
+        self::assertNotNull($exceptionMatches);
+        self::assertCount(1, $exceptionMatches);
 
-        [$exceptionMatch] = $matchedExceptionList->toArray();
+        [$exceptionMatch] = $exceptionMatches->toArray();
         self::assertSame('nestedIterableItems[third].property', $exceptionMatch->getNode()->getPropertyPath()->join('.'));
     }
 
@@ -91,12 +91,12 @@ final class PropertyBlueprintIterableItemsUnitTest extends TestCase
         ]);
         $originalException = new NestedItemMatchedException(code: 2);
 
-        $matchedExceptionList = $this->mapper->map($originalException, $message);
+        $exceptionMatches = $this->mapper->map($originalException, $message);
 
-        self::assertNotNull($matchedExceptionList);
-        self::assertCount(1, $matchedExceptionList);
+        self::assertNotNull($exceptionMatches);
+        self::assertCount(1, $exceptionMatches);
 
-        [$exceptionMatch] = $matchedExceptionList->toArray();
+        [$exceptionMatch] = $exceptionMatches->toArray();
         self::assertSame('nestedArrayItems[2].property', $exceptionMatch->getNode()->getPropertyPath()->join('.'));
     }
 }
