@@ -18,7 +18,7 @@ final class DefectLocation
     ) {
     }
 
-    public static function ofProperty(ReflectionProperty $property): self
+    public static function atProperty(ReflectionProperty $property): self
     {
         return new self(
             $property->getDeclaringClass()

@@ -20,4 +20,9 @@ abstract class ExceptionMappingPrintCompilationFailedException extends RuntimeEx
 
         return $root;
     }
+
+    /** @return class-string */
+    abstract public function getClassName(): string;
+
+    abstract public function getPropertyName(): ?string;
 }

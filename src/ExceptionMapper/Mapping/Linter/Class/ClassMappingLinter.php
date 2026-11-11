@@ -139,7 +139,7 @@ final class ClassMappingLinter implements MappingLinter
             // but the class itself has no print, that's a defect
             $missingTryDefects[] = MappingDefect::warning(
                 'Properties declare #[Catch_] mappings, but the class is not marked with #[Try_], so it never matches anything.',
-                DefectLocation::ofProperty($property),
+                DefectLocation::atProperty($property),
             );
         }
 

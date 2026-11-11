@@ -27,4 +27,9 @@ final class ObjectExceptionMappingPrintCompilationFailedException extends Except
     {
         return $this->class->getName();
     }
+
+    public function getPropertyName(): ?string
+    {
+        return null;
+    }
 }
