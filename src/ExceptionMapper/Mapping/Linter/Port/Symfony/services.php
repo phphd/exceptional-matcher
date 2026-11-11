@@ -19,7 +19,7 @@ return static function (ContainerConfigurator $configurator): void {
     $services = $configurator->services();
 
     $services
-        ->set($id = LintExceptionalMatcherConsoleCommand::class, $id)
+        ->set($id = LintExceptionMapperConsoleCommand::class, $id)
         ->args([service(LintMappingUseCase::class)])
         ->autoconfigure()
     ;

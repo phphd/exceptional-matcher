@@ -14,10 +14,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /** @internal */
 #[AsCommand(
-    name: 'lint:exceptional-matcher',
+    name: 'lint:exception-mapper',
     description: 'Lints the #[Try_] / #[Catch_] exception mappings of the classes',
 )]
-final class LintExceptionalMatcherConsoleCommand extends Command
+final class LintExceptionMapperConsoleCommand extends Command
 {
     /** @api */
     public function __construct(

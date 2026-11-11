@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Mapping\Linter\Port\Symfony\Tests;
 
 use PhPhD\ExceptionMapper\Bundle\Tests\BundleTestCase;
-use PhPhD\ExceptionMapper\Mapping\Linter\Port\Symfony\LintExceptionalMatcherConsoleCommand;
+use PhPhD\ExceptionMapper\Mapping\Linter\Port\Symfony\LintExceptionMapperConsoleCommand;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Command\LazyCommand;
 
@@ -15,13 +15,13 @@ use Symfony\Component\Console\Command\LazyCommand;
  *
  * @internal
  */
-final class LintExceptionalMatcherConsoleCommandServiceTest extends BundleTestCase
+final class LintExceptionMapperConsoleCommandServiceTest extends BundleTestCase
 {
     public function testCommandIsRegisteredInConsoleApplication(): void
     {
-        $command = (new Application(self::bootKernel()))->find('lint:exceptional-matcher');
+        $command = (new Application(self::bootKernel()))->find('lint:exception-mapper');
 
         self::assertInstanceOf(LazyCommand::class, $command);
-        self::assertInstanceOf(LintExceptionalMatcherConsoleCommand::class, $command->getCommand());
+        self::assertInstanceOf(LintExceptionMapperConsoleCommand::class, $command->getCommand());
     }
 }
