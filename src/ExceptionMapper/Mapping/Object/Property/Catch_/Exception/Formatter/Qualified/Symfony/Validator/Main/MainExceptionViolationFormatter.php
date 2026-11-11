@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Main;
 
 use Closure;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\ExceptionViolationFormatter;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Throwable;
 
@@ -31,10 +31,10 @@ final class MainExceptionViolationFormatter implements ExceptionViolationFormatt
     }
 
     /** @return array{ConstraintViolation} */
-    public function format(MatchedException $matchedException): array
+    public function format(ExceptionMatch $exceptionMatch): array
     {
-        $exception = $matchedException->getException();
-        $node = $matchedException->getCatchNode();
+        $exception = $exceptionMatch->getException();
+        $node = $exceptionMatch->getNode();
 
         $messageTemplate = $node->getMessageTemplate() ?? $exception->getMessage();
         $message = ($this->translate)($messageTemplate);

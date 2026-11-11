@@ -61,9 +61,9 @@ final class ClosureMatchConditionUnitTest extends TestCase
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
 
-        [$matchedException] = $matchedExceptionList->toArray();
+        [$exceptionMatch] = $matchedExceptionList->toArray();
 
-        self::assertSame('conditionalMessage.secondProperty', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
-        self::assertSame(41, $matchedException->getCatchNode()->getValue());
+        self::assertSame('conditionalMessage.secondProperty', $exceptionMatch->getNode()->getPropertyPath()->join('.'));
+        self::assertSame(41, $exceptionMatch->getNode()->getValue());
     }
 }

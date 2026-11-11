@@ -28,8 +28,8 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\Mat
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\MatchCondition;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ValueException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Path\PropertyPath;
 use PhPhD\ExceptionMapper\Mapping\Object\Try_;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
@@ -300,7 +300,7 @@ final class ArchitectureRuleSet
             ],
             'exceptionFormatter' => [
                 'deps' => [
-                    Selector::classname(MatchedException::class),
+                    Selector::classname(ExceptionMatch::class),
                     Selector::classname(TranslatorInterface::class),
                     Selector::inNamespace('Psr\Container'), // Registry
                 ],

@@ -104,7 +104,7 @@ For example, pass additional parameters to the message translation.
 You can create custom violation formatter by implementing `ExceptionViolationFormatter` interface:
 
 ```php
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\ExceptionViolationFormatter;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 
@@ -118,14 +118,14 @@ final class LoginAlreadyTakenViolationFormatter implements ExceptionViolationFor
     }
 
     /** @return array{ConstraintViolationInterface} */
-    public function format(MatchedException $matchedException): ConstraintViolationInterface
+    public function format(ExceptionMatch $exceptionMatch): ConstraintViolationInterface
     {
         // format violation with the default formatter
         // and then adjust only the necessary parts
-        [$violation] = $this->formatter->format($matchedException);
+        [$violation] = $this->formatter->format($exceptionMatch);
 
         /** @var LoginAlreadyTakenException $exception */
-        $exception = $matchedException->getException();
+        $exception = $exceptionMatch->getException();
 
         $violation = new ConstraintViolation(
             $violation->getMessage(),

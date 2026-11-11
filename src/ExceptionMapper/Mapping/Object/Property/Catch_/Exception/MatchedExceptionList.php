@@ -15,8 +15,8 @@ use function count;
 final class MatchedExceptionList implements Countable
 {
     public function __construct(
-        /** @var list<MatchedException<Throwable>> */
-        private readonly array $matchedExceptions,
+        /** @var list<ExceptionMatch<Throwable>> */
+        private readonly array $exceptionMatches,
     ) {
     }
 
@@ -32,8 +32,8 @@ final class MatchedExceptionList implements Countable
         /** @var list<list<TResult>> $results */
         $results = [];
 
-        foreach ($this->matchedExceptions as $matchedException) {
-            $results[] = $formatter->format($matchedException);
+        foreach ($this->exceptionMatches as $exceptionMatch) {
+            $results[] = $formatter->format($exceptionMatch);
         }
 
         return array_merge(...$results);
@@ -43,15 +43,15 @@ final class MatchedExceptionList implements Countable
      * @internal
      * @codeCoverageIgnore
      *
-     * @return list<MatchedException<Throwable>>
+     * @return list<ExceptionMatch<Throwable>>
      */
     public function toArray(): array
     {
-        return $this->matchedExceptions;
+        return $this->exceptionMatches;
     }
 
     public function count(): int
     {
-        return count($this->matchedExceptions);
+        return count($this->exceptionMatches);
     }
 }

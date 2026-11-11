@@ -14,8 +14,8 @@ final class ExceptionReciprocal
     /** @var array<int,Throwable> */
     private array $remainingExceptions;
 
-    /** @var list<MatchedException<Throwable>> */
-    private array $matchedExceptions = [];
+    /** @var list<ExceptionMatch<Throwable>> */
+    private array $exceptionMatches = [];
 
     /** @param non-empty-list<Throwable> $remainingExceptions */
     public function __construct(array $remainingExceptions)
@@ -48,9 +48,9 @@ final class ExceptionReciprocal
 
     public function getMatchedExceptionList(): MatchedExceptionList
     {
-        Assert::notEmpty($this->matchedExceptions);
+        Assert::notEmpty($this->exceptionMatches);
 
-        return new MatchedExceptionList($this->matchedExceptions);
+        return new MatchedExceptionList($this->exceptionMatches);
     }
 
     /** @param CatchExceptionMappingNode<Throwable> $catch */
@@ -60,6 +60,6 @@ final class ExceptionReciprocal
 
         unset($this->remainingExceptions[$exceptionIndex]);
 
-        $this->matchedExceptions[] = new MatchedException($exception, $catch);
+        $this->exceptionMatches[] = new ExceptionMatch($exception, $catch);
     }
 }

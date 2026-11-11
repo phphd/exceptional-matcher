@@ -12,13 +12,13 @@ use Throwable;
  *
  * @template-covariant T of Throwable
  */
-final class MatchedException
+final class ExceptionMatch
 {
     public function __construct(
         /** @var T */
         private readonly Throwable $exception,
         /** @var CatchExceptionMappingNode<Throwable> */
-        private readonly CatchExceptionMappingNode $catchNode,
+        private readonly CatchExceptionMappingNode $node,
     ) {
     }
 
@@ -33,8 +33,8 @@ final class MatchedException
      *
      * @internal
      */
-    public function getCatchNode(): CatchExceptionMappingNode
+    public function getNode(): CatchExceptionMappingNode
     {
-        return $this->catchNode;
+        return $this->node;
     }
 }

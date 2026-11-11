@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter;
 
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch;
 use Throwable;
 
 /**
@@ -19,9 +19,9 @@ use Throwable;
 interface MatchedExceptionFormatter
 {
     /**
-     * @param MatchedException<TException&Throwable> $matchedException
+     * @param ExceptionMatch<TException&Throwable> $exceptionMatch
      *
      * @return non-empty-list<TResult>
      */
-    public function format(MatchedException $matchedException): array;
+    public function format(ExceptionMatch $exceptionMatch): array;
 }

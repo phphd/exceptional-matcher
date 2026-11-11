@@ -108,9 +108,9 @@ final class UidValueMatchConditionUnitTest extends TestCase
 
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
-        [$matchedException] = $matchedExceptionList->toArray();
+        [$exceptionMatch] = $matchedExceptionList->toArray();
 
-        self::assertSame($originalException, $matchedException->getException());
-        self::assertSame('id', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
+        self::assertSame($originalException, $exceptionMatch->getException());
+        self::assertSame('id', $exceptionMatch->getNode()->getPropertyPath()->join('.'));
     }
 }

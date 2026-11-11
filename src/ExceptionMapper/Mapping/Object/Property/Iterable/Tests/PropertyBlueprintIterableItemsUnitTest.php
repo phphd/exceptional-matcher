@@ -57,9 +57,9 @@ final class PropertyBlueprintIterableItemsUnitTest extends TestCase
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
 
-        [$matchedException] = $matchedExceptionList->toArray();
+        [$exceptionMatch] = $matchedExceptionList->toArray();
 
-        self::assertSame('nestedArrayItems[1].property', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
+        self::assertSame('nestedArrayItems[1].property', $exceptionMatch->getNode()->getPropertyPath()->join('.'));
     }
 
     public function testExceptionCanBeCaughtOnANestedIterableItems(): void
@@ -77,8 +77,8 @@ final class PropertyBlueprintIterableItemsUnitTest extends TestCase
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
 
-        [$matchedException] = $matchedExceptionList->toArray();
-        self::assertSame('nestedIterableItems[third].property', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
+        [$exceptionMatch] = $matchedExceptionList->toArray();
+        self::assertSame('nestedIterableItems[third].property', $exceptionMatch->getNode()->getPropertyPath()->join('.'));
     }
 
     public function testExceptionCanBeCaughtOnMixedArrayItems(): void
@@ -96,7 +96,7 @@ final class PropertyBlueprintIterableItemsUnitTest extends TestCase
         self::assertNotNull($matchedExceptionList);
         self::assertCount(1, $matchedExceptionList);
 
-        [$matchedException] = $matchedExceptionList->toArray();
-        self::assertSame('nestedArrayItems[2].property', $matchedException->getCatchNode()->getPropertyPath()->join('.'));
+        [$exceptionMatch] = $matchedExceptionList->toArray();
+        self::assertSame('nestedArrayItems[2].property', $exceptionMatch->getNode()->getPropertyPath()->join('.'));
     }
 }

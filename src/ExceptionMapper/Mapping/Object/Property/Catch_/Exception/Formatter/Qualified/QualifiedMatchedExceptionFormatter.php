@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified;
 
 use LogicException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedException;
 use Psr\Container\ContainerInterface;
 use Throwable;
 
@@ -34,9 +34,9 @@ final class QualifiedMatchedExceptionFormatter implements MatchedExceptionFormat
     ) {
     }
 
-    public function format(MatchedException $matchedException): array
+    public function format(ExceptionMatch $exceptionMatch): array
     {
-        $catch = $matchedException->getCatchNode();
+        $catch = $exceptionMatch->getNode();
 
         $formatterId = $catch->getFormatterId() ?? $this->defaultFormatter;
 
@@ -44,7 +44,7 @@ final class QualifiedMatchedExceptionFormatter implements MatchedExceptionFormat
             throw new LogicException('No MatchedExceptionFormatter provided and no default one configured.');
         }
 
-        return $this->getFormatter($formatterId)->format($matchedException);
+        return $this->getFormatter($formatterId)->format($exceptionMatch);
     }
 
     /**

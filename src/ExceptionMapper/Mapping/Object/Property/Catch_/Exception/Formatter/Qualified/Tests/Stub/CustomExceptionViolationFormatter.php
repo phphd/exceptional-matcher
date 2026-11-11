@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Tests\Stub;
 
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionMatch;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\ExceptionViolationFormatter;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Throwable;
 
@@ -20,9 +20,9 @@ final class CustomExceptionViolationFormatter implements ExceptionViolationForma
     }
 
     /** @return array{ConstraintViolation} */
-    public function format(MatchedException $matchedException): array
+    public function format(ExceptionMatch $exceptionMatch): array
     {
-        [$violation] = $this->formatter->format($matchedException);
+        [$violation] = $this->formatter->format($exceptionMatch);
 
         /** @psalm-suppress ImplicitToStringCast */
         return [
