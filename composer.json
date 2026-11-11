@@ -1,6 +1,6 @@
 {
-    "name": "phphd/exceptional-matcher",
-    "description": "Match exceptions to the properties that originated them",
+    "name": "phphd/exception-mapper",
+    "description": "Map exceptions to the properties that originated them",
     "type": "library",
     "license": "LicenseRef-Apache-2.0-with-Commons-Clause",
     "authors": [
@@ -47,11 +47,12 @@
     "suggest": {
         "symfony/validator": "Install Validator component to format matched exceptions into ConstraintViolationList format",
         "symfony/messenger": "Install Messenger component to match with a middleware",
-        "symfony/console": "Install Console component to lint the exception mappings with the lint:exceptional-matcher command",
-        "composer/class-map-generator": "Install class map generator to discover classes for the lint:exceptional-matcher command",
+        "symfony/console": "Install Console component to lint the exception mappings with the lint:exception-mapper command",
+        "composer/class-map-generator": "Install class map generator to discover classes for the lint:exception-mapper command",
         "amphp/amp": "Install AMP package to match multiple exceptions at once"
     },
     "replace": {
+        "phphd/exceptional-matcher": "*",
         "phphd/exceptional-validation": "*",
         "phphd/exceptional-validation-bundle": "*"
     },
