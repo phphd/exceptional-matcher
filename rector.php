@@ -30,16 +30,16 @@ return RectorConfig::configure()
             __DIR__.'/src/*/*CompilerPass.php',
         ],
         ClassPropertyAssignToConstructorPromotionRector::class => [
-            __DIR__.'/'.'src/ExceptionalMatcher/Mapping/Object/Property/Catch_/Exception/ExceptionReciprocal.php',
+            __DIR__.'/'.'src/ExceptionMapper/Mapping/Object/Property/Catch_/Exception/ExceptionReciprocal.php',
         ],
         IssetOnPropertyObjectToPropertyExistsRector::class => [
-            __DIR__.'/'.'src/ExceptionalMatcher/Mapping/Object/Property/Catch_/Condition/Origin/ExceptionOriginMatchCondition.php',
+            __DIR__.'/'.'src/ExceptionMapper/Mapping/Object/Property/Catch_/Condition/Origin/ExceptionOriginMatchCondition.php',
         ],
         RemoveParentDelegatingClassMethodRector::class => [
-            __DIR__.'/'.'src/ExceptionalMatcher/Port/Symfony/Validator/Middleware/Messenger/Exception/ExceptionalValidationFailedMessengerException.php',
+            __DIR__.'/'.'src/ExceptionMapper/Port/Symfony/Validator/Middleware/Messenger/Exception/ExceptionalValidationFailedMessengerException.php',
         ],
         AddNameToNullArgumentRector::class => [
-            __DIR__.'/'.'src/ExceptionalMatcher/Bundle/DependencyInjection/PhdExceptionalMatcherExtension.php',
+            __DIR__.'/'.'src/ExceptionMapper/Bundle/DependencyInjection/PhdExceptionMapperExtension.php',
         ],
         ...upgradeExclusions(),
         ...stubExclusions(),

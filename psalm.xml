@@ -16,7 +16,7 @@
             <directory name="stubs"/>
             <file name="rector.php"/>
             <!-- References an undefined constant on purpose (broken-mapping lint fixture) -->
-            <file name="src/ExceptionalMatcher/Mapping/Linter/Tests/Stub/Invalid/UndefinedConstantConditionMessage.php"/>
+            <file name="src/ExceptionMapper/Mapping/Linter/Tests/Stub/Invalid/UndefinedConstantConditionMessage.php"/>
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
@@ -40,7 +40,7 @@
         <MismatchingDocblockPropertyType>
             <errorLevel type="suppress">
                 <!-- Psalm resolves the trait's self and parent against the using class -->
-                <file name="src/ExceptionalMatcher/Mapping/Object/Property/Blueprint/Compiler/Tests/Stub/Category/CategoryHierarchy.php"/>
+                <file name="src/ExceptionMapper/Mapping/Object/Property/Blueprint/Compiler/Tests/Stub/Category/CategoryHierarchy.php"/>
             </errorLevel>
         </MismatchingDocblockPropertyType>
         <MissingOverrideAttribute>

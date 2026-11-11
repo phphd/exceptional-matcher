@@ -4,10 +4,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Tests\Unit\Stub;
+namespace PhPhD\ExceptionMapper\Tests\Unit\Stub;
 
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\AnException;
 
 final class MessageWithNoTryAttribute
 {

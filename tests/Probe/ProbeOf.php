@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Tests\Probe;
+namespace PhPhD\ExceptionMapper\Tests\Probe;
 
 use Attribute;
 use UnitEnum;

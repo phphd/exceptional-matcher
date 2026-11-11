@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Tests;
+namespace PhPhD\ExceptionMapper\Tests;
 
 use Composer\InstalledVersions;
 use PHPat\Selector\ClassNamespace;
@@ -13,25 +13,25 @@ use PHPat\Selector\SelectorInterface;
 use PHPat\Test\Attributes\TestRule;
 use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\PHPat;
-use PhPhD\ExceptionalMatcher\Mapping\Blueprint\ExceptionMappingBlueprint;
-use PhPhD\ExceptionalMatcher\Mapping\ExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcher;
-use PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcherAggregate;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingBlueprintRegistry;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingClassDiscovery;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsClassLoader;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\CatchExceptionMappingNode;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\MatchCondition;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ValueException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Path\PropertyPath;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
+use PhPhD\ExceptionMapper\Mapping\Blueprint\ExceptionMappingBlueprint;
+use PhPhD\ExceptionMapper\Mapping\ExceptionMappingNode;
+use PhPhD\ExceptionMapper\Mapping\Matcher\ExceptionMatcher;
+use PhPhD\ExceptionMapper\Mapping\Matcher\ExceptionMatcherAggregate;
+use PhPhD\ExceptionMapper\Mapping\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingBlueprintRegistry;
+use PhPhD\ExceptionMapper\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingClassDiscovery;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsClassLoader;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\CatchExceptionMappingNode;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionBlueprint;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\MatchConditionCompiler;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\MatchCondition;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\Value\ValueException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\MatchedExceptionFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Path\PropertyPath;
+use PhPhD\ExceptionMapper\Mapping\Object\Try_;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -322,7 +322,7 @@ final class ArchitectureRuleSet
     public function bundle(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
-            Selector::inNamespace('PhPhD\ExceptionalMatcher\Bundle'),
+            Selector::inNamespace('PhPhD\ExceptionMapper\Bundle'),
             Selector::implements(CompilerPassInterface::class),
             Selector::classname(ConstantsAutoloadingClassDiscovery::class),
             Selector::implements(ConstantsAutoloadingClassDiscovery::class),
@@ -400,7 +400,7 @@ final class ArchitectureRuleSet
     public function exceptionFormatter(): AllOfSelectorModifier
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter'),
+            Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter'),
             Selector::Not($this->validatorExceptionFormatter()),
             Selector::Not($this->bundle()),
         );
@@ -409,7 +409,7 @@ final class ArchitectureRuleSet
     public function validatorExceptionFormatter(): AllOfSelectorModifier
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator'),
+            Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator'),
             Selector::Not($this->bundle()),
         );
     }
@@ -418,7 +418,7 @@ final class ArchitectureRuleSet
     {
         return Selector::AnyOf(
             Selector::AllOf(
-                Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception'),
+                Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception'),
                 Selector::Not($this->exceptionFormatter()),
                 Selector::Not($this->validatorExceptionFormatter()),
                 Selector::Not($this->bundle()),
@@ -430,7 +430,7 @@ final class ArchitectureRuleSet
     public function linter(): AllOfSelectorModifier
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Linter'),
+            Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Linter'),
             Selector::Not($this->bundle()),
         );
     }
@@ -438,10 +438,10 @@ final class ArchitectureRuleSet
     public function mapper(): AllOfSelectorModifier
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalMatcher'),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping')),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator')),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Upgrade')),
+            Selector::inNamespace('PhPhD\ExceptionMapper'),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionMapper\Mapping')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionMapper\Port\Symfony\Validator')),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionMapper\Upgrade')),
             Selector::Not($this->bundle()),
         );
     }
@@ -449,27 +449,27 @@ final class ArchitectureRuleSet
     public function validatorMapper(): AllOfSelectorModifier
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator'),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware')),
+            Selector::inNamespace('PhPhD\ExceptionMapper\Port\Symfony\Validator'),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware')),
         );
     }
 
     public function validatorMiddleware(): AllOfSelectorModifier
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware'),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger')),
+            Selector::inNamespace('PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware'),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Messenger')),
         );
     }
 
     public function propertyType(): ClassNamespace
     {
-        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type');
+        return Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Type');
     }
 
     /** @psalm-suppress UnusedMethod */
     public function messengerValidatorMiddleware(): ClassNamespace
     {
-        return Selector::inNamespace('PhPhD\ExceptionalMatcher\Port\Symfony\Validator\Middleware\Messenger');
+        return Selector::inNamespace('PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Messenger');
     }
 }

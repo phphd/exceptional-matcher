@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Upgrade;
+namespace PhPhD\ExceptionMapper\Upgrade;
 
 use Composer\InstalledVersions;
 use LogicException;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Tests\Unit\Stub;
+namespace PhPhD\ExceptionMapper\Tests\Unit\Stub;
 
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Try_;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionMapper\Mapping\Object\Try_;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\NestedItemMatchedException;
 
 #[Try_]
 final class NestedItem

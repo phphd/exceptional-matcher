@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Tests\Bench;
+namespace PhPhD\ExceptionMapper\Tests\Bench;
 
 use ArrayObject;
 use LogicException;
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\ExceptionMapper;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedException;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\MessageWithNoTryAttribute;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedItem;
+use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\ExceptionMapper;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\AnException;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\NestedItemMatchedException;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\HandleableMessageStub;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\MessageWithNoTryAttribute;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\NestedItem;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -26,7 +26,7 @@ final class ContainerBench
 {
     public function __construct()
     {
-        if (PhdExceptionalMatcherExtension::nativeProxiesAreSupported()) {
+        if (PhdExceptionMapperExtension::nativeProxiesAreSupported()) {
             throw new LogicException('This bench is only useful for PHP <= 8.4 (when there were no native proxies)');
         }
     }
@@ -111,7 +111,7 @@ final class ContainerBench
 
     private function createContainer(bool $allowGeneratedProxies): ContainerBuilder
     {
-        $container = (new PhdExceptionalMatcherExtension($allowGeneratedProxies))->getContainer([
+        $container = (new PhdExceptionMapperExtension($allowGeneratedProxies))->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
         ]);

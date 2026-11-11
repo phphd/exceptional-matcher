@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Tests\Unit;
+namespace PhPhD\ExceptionMapper\Tests\Unit;
 
 use ArrayObject;
-use PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension;
-use PhPhD\ExceptionalMatcher\ExceptionMapper;
-use PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Main\Tests\Stub\ObjectPropertyMatchedException;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\AnException;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeException;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedItemMatchedException;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\NestedPropertyMatchedException;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\HandleableMessageStub;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\MessageWithNoTryAttribute;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedHandleableMessage;
-use PhPhD\ExceptionalMatcher\Tests\Unit\Stub\NestedItem;
+use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\ExceptionMapper;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\Formatter\Qualified\Symfony\Validator\Main\Tests\Stub\ObjectPropertyMatchedException;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\AnException;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\CompositeException;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\NestedItemMatchedException;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\NestedPropertyMatchedException;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\HandleableMessageStub;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\MessageWithNoTryAttribute;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\NestedHandleableMessage;
+use PhPhD\ExceptionMapper\Tests\Unit\Stub\NestedItem;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -25,34 +25,34 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Try_
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_
- * @covers \PhPhD\ExceptionalMatcher\Bundle\DependencyInjection\PhdExceptionalMatcherExtension
- * @covers \PhPhD\ExceptionalMatcher\Port\MainExceptionMapper
- * @covers \PhPhD\ExceptionalMatcher\Port\Symfony\Validator\ExceptionToViolationListMapper
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\ObjectExceptionMappingNode
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Iterable\ItemOfIterableExceptionMappingNode
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\PropertyExceptionMappingNode
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Path\PropertyPath
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedException
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\ObjectExceptionMappingBlueprint
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\ObjectExceptionMappingCompiler
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingBlueprintRegistry
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Matcher\ExceptionMatcherAggregateAdapter
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\CatchAttributesExceptionMatcherAggregate
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\CatchExceptionMappingNode
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Class\ExceptionClassMatchCondition
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Class\ExceptionClassMatchConditionCompiler
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Blueprint\PreCompiledMatchConditionBlueprint
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Qualified\QualifiedMatchConditionCompiler
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchCondition
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionCompiler
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionBlueprint
- * @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Try_
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_
+ * @covers \PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension
+ * @covers \PhPhD\ExceptionMapper\Port\MainExceptionMapper
+ * @covers \PhPhD\ExceptionMapper\Port\Symfony\Validator\ExceptionToViolationListMapper
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\ObjectExceptionMappingNode
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Iterable\ItemOfIterableExceptionMappingNode
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\PropertyExceptionMappingNode
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Path\PropertyPath
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\ExceptionReciprocal
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedException
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Exception\MatchedExceptionList
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Blueprint\ObjectExceptionMappingBlueprint
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Blueprint\Registry\Compiler\ObjectExceptionMappingCompiler
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingBlueprintRegistry
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint
+ * @covers \PhPhD\ExceptionMapper\Mapping\Matcher\ExceptionMatcherAggregateAdapter
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\CatchAttributesExceptionMatcherAggregate
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\CatchExceptionMappingNode
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Class\ExceptionClassMatchCondition
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Class\ExceptionClassMatchConditionCompiler
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Blueprint\PreCompiledMatchConditionBlueprint
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Qualified\QualifiedMatchConditionCompiler
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchCondition
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionCompiler
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\CompositeMatchConditionBlueprint
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Condition\Composite\MemoizingIteratorAggregate
  *
  * @internal
  */
@@ -65,10 +65,10 @@ final class ExceptionMapperUnitTest extends TestCase
     {
         parent::setUp();
 
-        $container = (new PhdExceptionalMatcherExtension(nativeProxiesAllowed: false))->getContainer([
+        $container = (new PhdExceptionMapperExtension(nativeProxiesAllowed: false))->getContainer([
             'kernel.environment' => 'test',
             'kernel.build_dir' => __DIR__.'/var',
-            'phd_exceptional_matcher.translation_domain' => 'domain',
+            'phd_exception_mapper.translation_domain' => 'domain',
         ]);
 
         $translator = $this->createMock(TranslatorInterface::class);
@@ -135,7 +135,7 @@ final class ExceptionMapperUnitTest extends TestCase
         self::assertSame('foo', $violation->getInvalidValue());
     }
 
-    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\Specification\MixedObjectType */
+    /** @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Type\Specification\MixedObjectType */
     public function testNestedObjectIsNotCapturedWhenPropertyIsNotInitialized(): void
     {
         $message = HandleableMessageStub::create();
@@ -146,7 +146,7 @@ final class ExceptionMapperUnitTest extends TestCase
         self::assertNull($violationList);
     }
 
-    /** @covers \PhPhD\ExceptionalMatcher\Mapping\Object\Property\Type\PropertyType::compoundTypeIncludes */
+    /** @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Type\PropertyType::compoundTypeIncludes */
     public function testCaptureNestedObjectPropertyException(): void
     {
         $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());

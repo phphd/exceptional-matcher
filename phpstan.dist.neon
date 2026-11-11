@@ -55,10 +55,10 @@ parameters:
 
 services:
     -
-        class: PhPhD\ExceptionalMatcher\Tests\ArchitectureRuleSet
+        class: PhPhD\ExceptionMapper\Tests\ArchitectureRuleSet
         tags:
             - phpat.test
     -
-        class: PhPhD\ExceptionalMatcher\Tests\TestsArchitectureRuleSet
+        class: PhPhD\ExceptionMapper\Tests\TestsArchitectureRuleSet
         tags:
             - phpat.test

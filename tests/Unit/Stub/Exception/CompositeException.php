@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Tests\Unit\Stub\Exception;
+namespace PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception;
 
 use RuntimeException;
 use Throwable;

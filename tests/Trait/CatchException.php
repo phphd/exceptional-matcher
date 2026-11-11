@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionalMatcher\Tests\Trait;
+namespace PhPhD\ExceptionMapper\Tests\Trait;
 
 use Closure;
 use PHPUnit\Framework\TestCase;
