@@ -350,23 +350,18 @@ class ImportProductDto
     #[Catch_(CategoryNotFoundException::class, match: exception_value)]
     public string $categoryId;
 
-    #[Catch_(BackorderDisabledForCategoryException::class, if: [self::class, 'thisProductViolatesBackorder'])]
+    #[Catch_(BackorderDisabledForCategoryException::class, if: [self::class, 'catchBackorderException'])]
     public ?int $backorderLimit;
 
-    /**
-     * Needed in case of deep analysis.
-     * 
-     * If this method returns TRUE, the exception is linked to $backorderLimit of *this object*;
-     * otherwise this exception has nothing to do with this object. 
-     */
-    public function thisProductViolatesBackorder(BackorderDisabledForCategoryException $exception): bool
+    /** * Make sure the other category's exception won't map to this object. */
+    public function catchBackorderException(BackorderDisabledForCategoryException $exception): bool
     {
-        if ($exception->categoryId !== $this->categoryId) {
-            return false; // Backorder configuration of the given category has nothing to do with this category.
-        }
-
         if (null === $this->backorderLimit) {
             return false; // The product didn't even enable backorder, much less violated it.
+        }
+
+        if ($exception->categoryId !== $this->categoryId) {
+            return false; // Category reported by exception isn't the current one.
         }
 
         return true;
