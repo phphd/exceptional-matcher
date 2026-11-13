@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionMapper\Bundle;
 
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingCompilerPass;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Scope\ResultScopedExceptionMatchFormatterTagCompilerPass;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Scope\ExceptionMatchFormatterClassTagCompilerPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -23,9 +23,9 @@ final class PhdExceptionMapperBundle extends Bundle
             ConstantsAutoloadingCompilerPass::PRIORITY,
         );
         $container->addCompilerPass(
-            new ResultScopedExceptionMatchFormatterTagCompilerPass(),
+            new ExceptionMatchFormatterClassTagCompilerPass(),
             PassConfig::TYPE_BEFORE_OPTIMIZATION,
-            ResultScopedExceptionMatchFormatterTagCompilerPass::PRIORITY,
+            ExceptionMatchFormatterClassTagCompilerPass::PRIORITY,
         );
     }
 

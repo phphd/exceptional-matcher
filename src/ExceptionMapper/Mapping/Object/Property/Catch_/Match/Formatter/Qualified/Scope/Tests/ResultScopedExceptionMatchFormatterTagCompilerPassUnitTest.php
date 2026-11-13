@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Scope\Tests;
 
+use LogicException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Scope\ResultScopedExceptionMatchFormatterTagCompilerPass;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Scope\ExceptionMatchFormatterClassTagCompilerPass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -13,7 +14,9 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 use Throwable;
 
 /**
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Scope\ResultScopedExceptionMatchFormatterTagCompilerPass
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Scope\ExceptionMatchFormatterClassTagCompilerPass
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Scope\ExceptionMatchFormatterDefinition
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Scope\ExceptionMatchFormatterClassName
  *
  * @internal
  */
@@ -100,6 +103,81 @@ final class ResultScopedExceptionMatchFormatterTagCompilerPassUnitTest extends T
         ], $this->container->findTaggedServiceIds(self::VIOLATION_FORMATTER_TAG));
     }
 
+    public function testRejectsBareOwnId(): void
+    {
+        $this->registerTaggedFormatter(ExceptionMatchFormatter::class);
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(ExceptionMatchFormatter::class.'<TException,TResult>');
+
+        $this->compile();
+    }
+
+    public function testRejectsBareAliasId(): void
+    {
+        $this->registerTaggedFormatter('custom_formatter');
+        $this->container->setAlias(ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>', 'custom_formatter');
+        $this->container->setAlias(ExceptionMatchFormatter::class, 'custom_formatter');
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(ExceptionMatchFormatter::class.'<TException,TResult>');
+
+        $this->compile();
+    }
+
+    /** @return iterable<string,array{string}> */
+    public static function malformedGenericIds(): iterable
+    {
+        yield 'one argument' => [ExceptionMatchFormatter::class.'<'.ConstraintViolationInterface::class.'>'];
+
+        yield 'three arguments' => [ExceptionMatchFormatter::class.'<'.Throwable::class.',string,string>'];
+
+        yield 'empty argument' => [ExceptionMatchFormatter::class.'<'.Throwable::class.',>'];
+
+        yield 'nested argument' => [ExceptionMatchFormatter::class.'<'.Throwable::class.',list<string>>'];
+
+        yield 'whitespace' => [ExceptionMatchFormatter::class.'<'.Throwable::class.', string>'];
+
+        yield 'unclosed' => [ExceptionMatchFormatter::class.'<'.Throwable::class.',string'];
+    }
+
+    /** @dataProvider malformedGenericIds */
+    public function testRejectsMalformedGenericId(string $malformedGenericId): void
+    {
+        $this->registerTaggedFormatter('custom_formatter');
+        $this->container->setAlias(ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>', 'custom_formatter');
+        $this->container->setAlias($malformedGenericId, 'custom_formatter');
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage($malformedGenericId);
+        $this->expectExceptionMessage(ExceptionMatchFormatter::class.'<TException,TResult>');
+
+        $this->compile();
+    }
+
+    public function testRejectsUntypedFormatter(): void
+    {
+        $this->registerTaggedFormatter('custom_formatter');
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("#[AsAlias(ExceptionMatchFormatter::class.'<TException,TResult>')]");
+
+        $this->compile();
+    }
+
+    public function testIgnoresIdSharingOnlyTheClassPrefix(): void
+    {
+        $this->registerTaggedFormatter('custom_formatter');
+        $this->container->setAlias(ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>', 'custom_formatter');
+        $this->container->setAlias(ExceptionMatchFormatter::class.'Factory', 'custom_formatter');
+
+        $this->compile();
+
+        self::assertSame([
+            'custom_formatter' => [[]],
+        ], $this->container->findTaggedServiceIds(self::VIOLATION_FORMATTER_TAG));
+    }
+
     /** @param array<string,string> $tagAttributes */
     private function registerTaggedFormatter(string $formatterId, array $tagAttributes = []): void
     {
@@ -111,6 +189,6 @@ final class ResultScopedExceptionMatchFormatterTagCompilerPassUnitTest extends T
 
     private function compile(): void
     {
-        (new ResultScopedExceptionMatchFormatterTagCompilerPass())->process($this->container);
+        (new ExceptionMatchFormatterClassTagCompilerPass())->process($this->container);
     }
 }
