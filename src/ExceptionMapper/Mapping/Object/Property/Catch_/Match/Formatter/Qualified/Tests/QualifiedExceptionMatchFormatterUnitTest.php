@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Tests;
 
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
-use PhPhD\ExceptionMapper\Bundle\Tests\RegisterCustomViolationFormatterCompilerPass;
 use PhPhD\ExceptionMapper\ExceptionMapper;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\CustomFormattedException;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\CustomFormattedMessage;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\Cart\AddProductToCartCommand;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\Cart\OutOfStockExceptionMatchFormatterCompilerPass;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\Cart\OutOfStockProductException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -33,7 +33,7 @@ final class QualifiedExceptionMatchFormatterUnitTest extends TestCase
             'kernel.build_dir' => __DIR__.'/var',
         ]);
 
-        $container->addCompilerPass(new RegisterCustomViolationFormatterCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, RegisterCustomViolationFormatterCompilerPass::PRIORITY);
+        $container->addCompilerPass(new OutOfStockExceptionMatchFormatterCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, OutOfStockExceptionMatchFormatterCompilerPass::PRIORITY);
 
         $container->compile();
 
@@ -42,23 +42,26 @@ final class QualifiedExceptionMatchFormatterUnitTest extends TestCase
         $this->mapper = $mapper;
     }
 
-    public function testCustomViolationFormatter(): void
+    public function testExceptionCanBeFormattedUsingACustomService(): void
     {
-        $message = new CustomFormattedMessage();
-        $originalException = new CustomFormattedException();
+        $command = new AddProductToCartCommand(productId: 'tshirt-xl', quantity: 5);
+        $exception = OutOfStockProductException::create(availableQuantity: 3);
 
-        $violationList = $this->mapper->map($originalException, $message);
+        $violationList = $this->mapper->map($exception, $command);
 
         self::assertNotNull($violationList);
         self::assertCount(1, $violationList);
 
         /** @var ConstraintViolationInterface $violation */
         $violation = $violationList[0];
-        self::assertSame('custom - oops', $violation->getMessage());
-        self::assertSame('custom.oops', $violation->getMessageTemplate());
+        self::assertSame('Only 3 left in stock. Reduce the quantity by 2 items.', $violation->getMessage());
+        self::assertSame('Only {{ available }} left in stock. Reduce the quantity by {{ shortage }} items.', $violation->getMessageTemplate());
         self::assertSame([
-            'custom' => 'param',
+            '{{ available }}' => '3',
+            '{{ shortage }}' => '2',
         ], $violation->getParameters());
-        self::assertSame('custom.formatted', $violation->getPropertyPath());
+        self::assertSame(2, $violation->getPlural());
+        self::assertSame('quantity', $violation->getPropertyPath());
+        self::assertSame(5, $violation->getInvalidValue());
     }
 }

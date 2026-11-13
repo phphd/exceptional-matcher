@@ -38,7 +38,7 @@ final class MemoizingObjectExceptionMappingBlueprintRegistryServiceTest extends 
         $this->servicesResetter = $servicesResetter;
     }
 
-    /** @return list<CompilerPassInterface> */
+    /** @return array<int,CompilerPassInterface> */
     protected static function compilerPasses(): array
     {
         return [new PublicServiceCompilerPass(ObjectExceptionMappingBlueprintRegistry::class)];

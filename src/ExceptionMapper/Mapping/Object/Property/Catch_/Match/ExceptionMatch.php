@@ -28,11 +28,7 @@ final class ExceptionMatch
         return $this->exception;
     }
 
-    /**
-     * @return CatchExceptionMappingNode<T>
-     *
-     * @internal
-     */
+    /** @return CatchExceptionMappingNode<T> */
     public function getNode(): CatchExceptionMappingNode
     {
         return $this->node;

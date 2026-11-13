@@ -54,7 +54,7 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
         $this->stack = new StackMiddleware([$this->middleware, $this->nextMiddleware]);
     }
 
-    /** @return list<CompilerPassInterface> */
+    /** @return array<int,CompilerPassInterface> */
     protected static function compilerPasses(): array
     {
         return [new PublicServiceCompilerPass('phd_exceptional_validation')];
