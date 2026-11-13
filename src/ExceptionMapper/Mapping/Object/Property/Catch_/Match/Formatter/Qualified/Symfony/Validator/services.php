@@ -25,7 +25,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
             ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'>',
             QualifiedExceptionMatchFormatter::class,
         )->args([
-            tagged_locator(ExceptionMatchFormatter::class, 'id'),
+            tagged_locator(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'>', 'id'),
             MainExceptionViolationFormatter::class,
         ])
     ;

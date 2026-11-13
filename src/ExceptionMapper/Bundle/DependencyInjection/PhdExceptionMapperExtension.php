@@ -8,6 +8,7 @@ use Composer\InstalledVersions;
 use Exception;
 use LogicException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingCompilerPass;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Scope\ResultScopedExceptionMatchFormatterTagCompilerPass;
 use PhPhD\ExceptionToolkit\Bundle\DependencyInjection\PhdExceptionToolkitExtension;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
@@ -75,6 +76,7 @@ final class PhdExceptionMapperExtension extends AbstractExtension implements Com
         $container->addCompilerPass($this, PassConfig::TYPE_BEFORE_OPTIMIZATION, -1000);
         $container->addCompilerPass(new ConstantsAutoloadingCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, ConstantsAutoloadingCompilerPass::PRIORITY);
         $container->addCompilerPass(new ResolveInstanceofConditionalsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 100);
+        $container->addCompilerPass(new ResultScopedExceptionMatchFormatterTagCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, ResultScopedExceptionMatchFormatterTagCompilerPass::PRIORITY);
         $container->addCompilerPass(new ResolveChildDefinitionsPass(), PassConfig::TYPE_OPTIMIZE);
         $container->addCompilerPass(new ServiceLocatorTagPass(), PassConfig::TYPE_OPTIMIZE);
 

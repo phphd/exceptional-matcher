@@ -12,6 +12,8 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualifi
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Main\MainExceptionViolationFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\Cart\OutOfStockExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\Cart\OutOfStockExceptionMatchFormatterCompilerPass;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\Message\ExceptionMessageFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\Message\ExceptionMessageFormatterCompilerPass;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -33,6 +35,7 @@ final class ExceptionMatchAsViolationFormatterServiceTest extends BundleTestCase
     protected static function compilerPasses(): array
     {
         return [
+            ExceptionMessageFormatterCompilerPass::PRIORITY + 1 => new ExceptionMessageFormatterCompilerPass(),
             OutOfStockExceptionMatchFormatterCompilerPass::PRIORITY => new OutOfStockExceptionMatchFormatterCompilerPass(),
         ];
     }
@@ -58,6 +61,10 @@ final class ExceptionMatchAsViolationFormatterServiceTest extends BundleTestCase
 
         $providedServices = $formatterRegistry->getProvidedServices();
         krsort($providedServices);
+        self::assertNotContains(
+            ExceptionMessageFormatter::class,
+            $providedServices, // excluded from the registry because of different TResult
+        );
         self::assertSame([
             OutOfStockExceptionMatchFormatter::class => OutOfStockExceptionMatchFormatter::class,
             MainExceptionViolationFormatter::class => MainExceptionViolationFormatter::class,

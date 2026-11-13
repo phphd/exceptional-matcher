@@ -110,7 +110,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     {
         return new CatchExceptionMappingBlueprint(
             $this->compileMatchConditionPrint($property, $catch),
-            $this->compileExceptionFormatter($catch),
+            $this->compileExceptionMatchFormatter($catch),
             $catch->getMessage(),
         );
     }
@@ -140,7 +140,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
      *
      * @psalm-return ?class-string<ExceptionMatchFormatter>
      */
-    private function compileExceptionFormatter(Catch_ $catch): ?string
+    private function compileExceptionMatchFormatter(Catch_ $catch): ?string
     {
         $formatterId = $catch->getFormat();
 
