@@ -10,9 +10,9 @@ Built-in violation formatters:
 - [`ExceptionMatchToViolationFormatter`](#default) (default);
 - [`ViolationsEmbeddedExceptionFormatter`](#embedded-violations-formatter).
 
-### Main
+### Default
 
-`MainExceptionViolationFormatter` is used if another violation formatter is not specified.
+`ExceptionMatchToViolationFormatter` is used if another violation formatter is not specified.
 
 It creates a basic `ConstraintViolation` with these parameters:
 - `$root` - the given object;

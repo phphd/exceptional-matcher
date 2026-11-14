@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Main;
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation;
 
 use Closure;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatch;
@@ -16,7 +16,7 @@ use Throwable;
  *
  * @implements ExceptionMatchFormatter<Throwable,ConstraintViolationInterface>
  */
-final class MainExceptionViolationFormatter implements ExceptionMatchFormatter
+final class ExceptionMatchToViolationFormatter implements ExceptionMatchFormatter
 {
     /** @var Closure(string):string */
     private readonly Closure $translate;

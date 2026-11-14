@@ -6,10 +6,10 @@ namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Q
 
 use PhPhD\ExceptionMapper\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\QualifiedExceptionMatchFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\ExceptionMatchQualifiedFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedExceptionFormatter;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Main\MainExceptionViolationFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation\ExceptionMatchToViolationFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\Cart\OutOfStockExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\Cart\OutOfStockExceptionMatchFormatterCompilerPass;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\Message\ExceptionMessageFormatter;
@@ -29,7 +29,7 @@ use function krsort;
  *
  * @internal
  */
-final class ExceptionMatchAsViolationFormatterServiceTest extends BundleTestCase
+final class ExceptionMatchToViolationQualifiedFormatterServiceTest extends BundleTestCase
 {
     /** @return array<int,CompilerPassInterface> */
     protected static function compilerPasses(): array
@@ -42,11 +42,11 @@ final class ExceptionMatchAsViolationFormatterServiceTest extends BundleTestCase
 
     public function testViolationFormatter(): void
     {
-        $qualifiedExceptionMatchToViolationFormatter = $this->get(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'>');
-        self::assertInstanceOf(QualifiedExceptionMatchFormatter::class, $qualifiedExceptionMatchToViolationFormatter);
+        $exceptionMatchToViolationQualifiedFormatter = $this->get(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'>');
+        self::assertInstanceOf(ExceptionMatchQualifiedFormatter::class, $exceptionMatchToViolationQualifiedFormatter);
 
         $defaultFormatter = $this->get(ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>');
-        self::assertInstanceOf(MainExceptionViolationFormatter::class, $defaultFormatter);
+        self::assertInstanceOf(ExceptionMatchToViolationFormatter::class, $defaultFormatter);
 
         $violationsEmbeddedExceptionFormatter = $this->get(ExceptionMatchFormatter::class.'<'.ViolationsEmbeddedException::class.','.ConstraintViolationInterface::class.'>');
         self::assertInstanceOf(ViolationsEmbeddedExceptionFormatter::class, $violationsEmbeddedExceptionFormatter);
@@ -56,7 +56,7 @@ final class ExceptionMatchAsViolationFormatterServiceTest extends BundleTestCase
 
         self::assertSame($violationsEmbeddedExceptionFormatter, $validationFailedExceptionFormatter);
 
-        $formatterRegistry = $this->getFormatterRegistry($qualifiedExceptionMatchToViolationFormatter);
+        $formatterRegistry = $this->getFormatterRegistry($exceptionMatchToViolationQualifiedFormatter);
         self::assertInstanceOf(ServiceLocator::class, $formatterRegistry);
 
         $providedServices = $formatterRegistry->getProvidedServices();
@@ -67,19 +67,19 @@ final class ExceptionMatchAsViolationFormatterServiceTest extends BundleTestCase
         );
         self::assertSame([
             OutOfStockExceptionMatchFormatter::class => OutOfStockExceptionMatchFormatter::class,
-            MainExceptionViolationFormatter::class => MainExceptionViolationFormatter::class,
+            ExceptionMatchToViolationFormatter::class => ExceptionMatchToViolationFormatter::class,
             ViolationsEmbeddedExceptionFormatter::class => ViolationsEmbeddedExceptionFormatter::class,
         ], $providedServices);
 
-        self::assertSame($defaultFormatter, $formatterRegistry->get(MainExceptionViolationFormatter::class));
+        self::assertSame($defaultFormatter, $formatterRegistry->get(ExceptionMatchToViolationFormatter::class));
     }
 
-    /** @param QualifiedExceptionMatchFormatter<Throwable,mixed> $exceptionMatchFormatter */
-    private function getFormatterRegistry(QualifiedExceptionMatchFormatter $exceptionMatchFormatter): ?ContainerInterface // @phpstan-ignore missingType.generics
+    /** @param ExceptionMatchQualifiedFormatter<Throwable,mixed> $exceptionMatchFormatter */
+    private function getFormatterRegistry(ExceptionMatchQualifiedFormatter $exceptionMatchFormatter): ?ContainerInterface // @phpstan-ignore missingType.generics
     {
         /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */
         return (static fn(): ContainerInterface => $exceptionMatchFormatter->formatterRegistry) // @phpstan-ignore-line
-            ->bindTo(newThis: null, newScope: QualifiedExceptionMatchFormatter::class)->__invoke()
+            ->bindTo(newThis: null, newScope: ExceptionMatchQualifiedFormatter::class)->__invoke()
         ;
     }
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Main;
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation;
 
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -22,12 +22,12 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
     $services
         ->set(
             ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>',
-            MainExceptionViolationFormatter::class,
+            ExceptionMatchToViolationFormatter::class,
         )
         ->args([
             service('phd_exception_mapper.translator')
                 ->nullOnInvalid(),
         ])
-        ->tag(ExceptionMatchFormatter::class, ['id' => MainExceptionViolationFormatter::class])
+        ->tag(ExceptionMatchFormatter::class, ['id' => ExceptionMatchToViolationFormatter::class])
     ;
 };

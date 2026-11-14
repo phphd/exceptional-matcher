@@ -18,7 +18,7 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Bluepri
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Bool\FalseCondition;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Composite\CompositeMatchConditionBlueprint;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\QualifiedExceptionMatchFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\ExceptionMatchQualifiedFormatter;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
@@ -148,7 +148,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
             return null;
         }
 
-        $formatter = new QualifiedExceptionMatchFormatter($this->exceptionFormatterRegistry);
+        $formatter = new ExceptionMatchQualifiedFormatter($this->exceptionFormatterRegistry);
 
         $formatter->getFormatter($formatterId);
 
