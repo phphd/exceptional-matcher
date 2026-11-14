@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Main\Tests;
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation\Tests;
 
 use LogicException;
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Definition;
  *
  * @internal
  */
-final class MainExceptionViolationFormatterBCBreakUnitTest extends TestCase
+final class ExceptionMatchToViolationFormatterBCBreakUnitTest extends TestCase
 {
     private ContainerBuilder $container;
 

@@ -21,7 +21,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
     $hintLazy = $container->get('phd_exception_mapper.hint_lazy_proxy');
 
     $services
-        ->set(ExceptionMapper::class.'<'.ExceptionMatchList::class.'>', MainExceptionMapper::class)
+        ->set(ExceptionMapper::class.'<'.ExceptionMatchList::class.'>', ExceptionToMatchListMapper::class)
         ->public()
         ->args([
             service(ObjectExceptionMappingBlueprintRegistry::class),

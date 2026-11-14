@@ -1,30 +1,35 @@
 # Violation Formatters 🎨
 
-Violation Formatters are used to represent the exception in a desired format.
+Violation Formatters represent the exception in a desired output format.
 
-There are two built-in violation formatters you can use:
-- `MainExceptionViolationFormatter`;
-- `ViolationsEmbeddedExceptionFormatter`.
+If needed, create a [tailored formatter](#tailored-formatters-) to your format.
 
-If needed, you can create a custom violation formatter as described below.
+## Symfony
 
-## Main
+Built-in violation formatters:
+- [`ExceptionMatchToViolationFormatter`](#default) (default);
+- [`ViolationsEmbeddedExceptionFormatter`](#embedded-violations-formatter).
 
-`MainExceptionViolationFormatter` is used by default if another formatter is not specified.
+### Default
 
-It creates a basic `ConstraintViolation` with these parameters: \
-`$root`, `$message`, `$propertyPath`, `$value`.
+`ExceptionMatchToViolationFormatter` is used if another violation formatter is not specified.
+
+It creates a basic `ConstraintViolation` with these parameters:
+- `$root` - the given object;
+- `$message` - translated message (`#[Catch`-message or exception message);
+- `$propertyPath` - property path from the root to the matched property;
+- `$value` - property value.
 
 > The default messages translation domain is `validators`, \
 > inherited from `validator.translation_domain` parameter.
 >
 > You can change it by setting `phd_exception_mapper.translation_domain` parameter.
 
-## Embedded Violations Formatter
+### Embedded Violations Formatter
 
-Allows the retrieval of prebuilt `ConstraintViolationList` directly from the exception.
+Retrieves a prebuilt `ConstraintViolationList` straight from exception.
 
-The exception must implement `ViolationsEmbeddedException`, embedding `ConstraintViolationList` from the validator:
+The exception is either an implementation of `ViolationsEmbeddedException`, or a child of [`ValidationFailedException`](#validationfailedexception-formatter), embedding a `ConstraintViolationList` received from the validator:
 
 ```php
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedException;
@@ -46,10 +51,12 @@ final class CardNumberValidationFailedException extends \RuntimeException implem
 }
 ```
 
-Finally, the DTO must specify `format: embedded_violations` for the `#[Catch_]` attribute:
+Finally, the DTO must qualify `format: embedded_violations` for the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;use PhPhD\ExceptionMapper\Mapping\Object\Try_;use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
+use PhPhD\ExceptionMapper\Mapping\Object\Try_;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
+use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 
 #[Try_]
 class IssueCreditCardCommand
@@ -62,15 +69,15 @@ class IssueCreditCardCommand
 > If `#[Catch_]` attribute specified a message, \
 > it would be ignored since `ConstraintViolationList` is used directly.
 
-Thus, the resulting violation(s) for `cardNumber` property will be retrieved from
-`CardNumberValidationFailedException::getViolations()` rather than created afresh for the exception itself.
+Thus, the resulting violation(s) for `cardNumber` property are retrieved from
+`CardNumberValidationFailedException::getViolations()` rather than created from the exception itself.
 
-### ValidationFailedException Formatter
+#### ValidationFailedException Formatter
 
 The same `embedded_violations` formatter integrates Symfony's
-`Symfony\Component\Validator\Exception\ValidationFailedException` similarly to how it
-does [ViolationsEmbeddedException](#embedded-violations-formatter) -
-picking up the embedded `ConstraintViolationList`.
+`Symfony\Component\Validator\Exception\ValidationFailedException` the same way as
+[ViolationsEmbeddedException](#embedded-violations-formatter) does it -
+it picks up the `ConstraintViolationList` embedded in it.
 
 Specify `format: embedded_violations` for the `#[Catch_]` attribute:
 
@@ -90,45 +97,73 @@ class RegisterUserCommand
 }
 ```
 
-> Normally, you should match it with [`validated_value`](match-conditions.md#validationfailedexception-condition)
-> condition to prevent collisions.
+> Normally, you'd use `format: embedded_violations` along
+> with [`from: [...]`](match-conditions.md#trace-origin-condition) and
+> [`match: validated_value`](match-conditions.md#validationfailedexception-condition) conditions.
 
-## Custom Violation Formatters 🎨🖌️
+## Tailored Formatters 🎨🖌️
 
-In some cases, you might want to customize the created violations. \
-For example, pass additional parameters to the message translation.
+You might want to introduce a custom result format, or to adjust the default-formatted violations (e.g.
+to pass additional message context for the translation).
 
-You can create custom violation formatter by implementing `ExceptionViolationFormatter` interface:
+Create a custom formatter by implementing `ExceptionMatchFormatter` interface:
 
 ```php
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatch;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
+use Symfony\Component\DependencyInjection\Attribute\AsAlias;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
-/** @implements ExceptionMatchFormatter<LoginAlreadyTakenException,ConstraintViolationInterface> */
-final class LoginAlreadyTakenViolationFormatter implements ExceptionMatchFormatter
+// Used for reference: #[Catch(format: out_of_stock)]
+const out_of_stock = OutOfStockProductExceptionMatchFormatter::class;
+
+/** @implements ExceptionMatchFormatter<OutOfStockProductException,ConstraintViolationInterface> */
+#[AsAlias(ExceptionMatchFormatter::class.'<'.OutOfStockProductException::class.','.ConstraintViolationInterface::class.'>')]
+final class OutOfStockProductExceptionMatchFormatter implements ExceptionMatchFormatter
 {
     public function __construct(
         #[Autowire(service: ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>')]
-        private ExceptionMatchFormatter $formatter,
+        private ExceptionMatchFormatter $defaultFormatter,
+        private TranslatorInterface $translator,
     ) {
     }
 
     /** @return array{ConstraintViolationInterface} */
-    public function format(ExceptionMatch $exceptionMatch): ConstraintViolationInterface
+    public function format(ExceptionMatch $exceptionMatch): array
     {
-        // format violation with the default formatter
-        // and then adjust only the necessary parts
-        [$violation] = $this->formatter->format($exceptionMatch);
+        // Format the $violation using a default formatter; then adjust
+        [$violation] = $this->defaultFormatter->format($exceptionMatch);
 
-        /** @var LoginAlreadyTakenException $exception */
+        /** @var AddProductToCartCommand $command */
+        $command = $exceptionMatch->getNode()->getLeafObject();
+
+        /** @var OutOfStockProductException $exception */
         $exception = $exceptionMatch->getException();
+        
+        if (0 === $exception->getAvailableQuantity()) {
+            return [$violation]; // 'The product is out of stock'
+        }
+
+        $shortage = $command->quantity - $exception->getAvailableQuantity();
+
+        $messageTemplate = 'Only {{ available }} left in stock. Reduce the quantity by {{ shortage }} item.|Only {{ available }} left in stock. Reduce the quantity by {{ shortage }} items.';
+        $parameters = [
+            '{{ available }}' => $exception->getAvailableQuantity(),
+            '{{ shortage }}' => $shortage,
+        ];
 
         $violation = new ConstraintViolation(
-            $violation->getMessage(),
-            $violation->getMessageTemplate(),
-            ['loginHolder' => $exception->getLoginHolder()],
-            // ...
+            $this->translator->trans($messageTemplate, ['%count%' => $shortage] + $parameters, 'validators'),
+            $messageTemplate,
+            $parameters,
+            $violation->getRoot(),
+            $violation->getPropertyPath(),
+            $violation->getInvalidValue(),
+            plural: $shortage,
         );
 
         return [$violation];
@@ -136,36 +171,45 @@ final class LoginAlreadyTakenViolationFormatter implements ExceptionMatchFormatt
 }
 ```
 
-Then, register it as a service:
+Register the service in the container:
 
 ```yaml
 services:
-    App\Auth\User\Support\Validation\LoginAlreadyTakenViolationFormatter:
+    App\Cart\Support\Validation\OutOfStockProductExceptionMatchFormatter:
         autoconfigure: true
 ```
 
-> For violation formatter to be recognized by the bundle, \
-> its service must be tagged with `ExceptionMatchFormatter` class-name tag.
+> For exception match formatter to be recognised by the bundle, the service must:
+> 1. be registered under a generic service ID:
+>    `#[AsAlias(ExceptionMatchFormatter::class.'<TException,TResult>')]`, as above;
+> 2. be tagged with `ExceptionMatchFormatter` class-name tag:
+>    using [autoconfiguration](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option) automates it;
 >
-> If you're using [autoconfiguration](https://symfony.com/doc/current/service_container.html#the-autoconfigure-option),
-> it will be done automatically by the service container.
+> A tagged formatter w/o the generic type fails the container compilation.
 
-Finally, specify formatter in the `#[Catch_]` attribute:
+Finally, specify the formatter in the `#[Catch_]` attribute's `format:`:
 
 ```php
 use PhPhD\ExceptionMapper\Mapping\Object\Try_;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 
-#[Try_]
-final class RegisterUserCommand
-{
-    #[Catch_(LoginAlreadyTakenException::class, format: LoginAlreadyTakenViolationFormatter::class)]
-    private string $login;
+use const App\Cart\Support\Validation\out_of_stock;
 
-    #[Catch_(WeakPasswordException::class, format: WeakPasswordViolationFormatter::class)]
-    private string $password;
+#[Try_]
+final class AddProductToCartCommand
+{
+    public string $productId;
+
+    #[Catch_(OutOfStockProductException::class, if: [self::class, 'catchStockException'], format: out_of_stock)]
+    public int $quantity;
+
+    /** Make sure that the other product's exception doesn't map to this command */
+    public function catchStockException(OutOfStockProductException $e): bool
+    {
+        return $e->getProductId() === $this->productId;
+    }
 }
 ```
 
-In this example, `LoginAlreadyTakenViolationFormatter` formats constraint violation for `LoginAlreadyTakenException`, \
-while `WeakPasswordViolationFormatter` formats `WeakPasswordException`.
+In this example, `OutOfStockProductExceptionMatchFormatter` accepts `OutOfStockProductException`, and creates a \
+specific constraint violation that informs the user by how many items to reduce the requested `$quantity`.

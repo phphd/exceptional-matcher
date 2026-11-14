@@ -30,6 +30,8 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\MatchCo
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Value\ValueException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatch;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Scope\ExceptionMatchFormatterClassName;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Scope\ExceptionMatchFormatterDefinition;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Path\PropertyPath;
 use PhPhD\ExceptionMapper\Mapping\Object\Try_;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
@@ -315,7 +317,7 @@ final class ArchitectureRuleSet
     }
 
     /**
-     * Container wiring: the bundle extension, the compiler passes, and the class discovery they drive.
+     * Container wiring: the bundle extension, the compiler passes, and the class discovery and formatter services they drive.
      *
      * @psalm-suppress UnusedMethod
      */
@@ -326,6 +328,8 @@ final class ArchitectureRuleSet
             Selector::implements(CompilerPassInterface::class),
             Selector::classname(ConstantsAutoloadingClassDiscovery::class),
             Selector::implements(ConstantsAutoloadingClassDiscovery::class),
+            Selector::classname(ExceptionMatchFormatterDefinition::class),
+            Selector::classname(ExceptionMatchFormatterClassName::class),
         );
     }
 

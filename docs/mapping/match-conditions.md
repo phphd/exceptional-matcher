@@ -51,18 +51,18 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 #[Try_]
 class TransferMoneyCommand
 {
-    #[Catch_(CardDeactivatedException::class, if: [self::class, 'isWithdrawalCard'])]
+    #[Catch_(CardDeactivatedException::class, if: [self::class, 'catchWithdrawalException'])]
     public int $withdrawFromCardId;
 
-    #[Catch_(CardDeactivatedException::class, if: [self::class, 'isDepositCard'])]
+    #[Catch_(CardDeactivatedException::class, if: [self::class, 'catchDepositException'])]
     public int $depositToCardId;
 
-    public function isWithdrawalCard(CardDeactivatedException $exception): bool
+    public function catchWithdrawalException(CardDeactivatedException $exception): bool
     {
         return $this->withdrawFromCardId === $exception->getCardId();
     }
 
-    public function isDepositCard(CardDeactivatedException $exception): bool
+    public function catchDepositException(CardDeactivatedException $exception): bool
     {
         return $this->depositToCardId === $exception->getCardId();
     }
@@ -71,8 +71,8 @@ class TransferMoneyCommand
 
 Once `CardDeactivatedException`  is matched by class, custom closure is called:
 
-- If `isWithdrawalCard()` callback returns `true`, the exception is matched for `withdrawalCardId` property.
-- Otherwise, we analyse `depositCardId`, and if `isDepositCard()` callback returns `true`, \
+- If `catchWithdrawalException()` callback returns `true`, the exception is matched for `withdrawalCardId` property.
+- Otherwise, we analyse `depositCardId`, and if `catchDepositException()` callback returns `true`, \
   then the exception is matched for this property.
 
 If neither of them returned `true`, the exception is considered "unmatched" and Mapper returns `null`.
@@ -112,7 +112,7 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
 use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 
 #[Try_]
-class UpdateDriverLicenceCommand
+class RenewDriverLicenceCommand
 {
     #[Catch_(ValidationFailedException::class, from: [DriverLicence::class, '$series::set'], format: embedded_violations)]
     public string $series;
@@ -159,7 +159,7 @@ class DriverLicence
 In a normal use-case, the code's pretty straightforward:
 
 ```php
-public function update(string $series, string $number)
+public function renew(string $series, string $number)
 {
     // Validates right in
     $this->series = $series;

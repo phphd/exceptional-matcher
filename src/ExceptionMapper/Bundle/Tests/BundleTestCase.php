@@ -38,10 +38,9 @@ abstract class BundleTestCase extends KernelTestCase
 
         $kernel->addTestBundle(PhdExceptionMapperBundle::class);
         $kernel->addTestBundle(PhdExceptionToolkitBundle::class);
-        $kernel->addTestCompilerPass(new RegisterCustomViolationFormatterCompilerPass(), priority: RegisterCustomViolationFormatterCompilerPass::PRIORITY);
 
-        foreach (static::compilerPasses() as $compilerPass) {
-            $kernel->addTestCompilerPass($compilerPass);
+        foreach (static::compilerPasses() as $priority => $compilerPass) {
+            $kernel->addTestCompilerPass($compilerPass, priority: $priority);
         }
 
         /** @see https://github.com/SymfonyTest/symfony-bundle-test/issues/94 */
@@ -50,7 +49,7 @@ abstract class BundleTestCase extends KernelTestCase
         return $kernel;
     }
 
-    /** @return list<CompilerPassInterface> */
+    /** @return array<int,CompilerPassInterface> priority => compiler pass */
     protected static function compilerPasses(): array
     {
         return [];

@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Port;
+namespace PhPhD\ExceptionMapper\Port\Tests;
 
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatchList;
+use PhPhD\ExceptionMapper\Port\ExceptionToMatchListMapper;
 use PhPhD\ExceptionToolkit\Unwrapper\Messenger\MessengerExceptionUnwrapper;
 use Symfony\Component\VarExporter\LazyObjectInterface;
 
@@ -17,7 +18,7 @@ use Symfony\Component\VarExporter\LazyObjectInterface;
  *
  * @internal
  */
-final class MainExceptionMapperServiceTest extends BundleTestCase
+final class ExceptionToMatchListMapperServiceTest extends BundleTestCase
 {
     public function testExceptionMapperService(): void
     {
@@ -25,11 +26,11 @@ final class MainExceptionMapperServiceTest extends BundleTestCase
         self::assertInstanceOf(ExceptionMapper::class, $exceptionMapper);
 
         if (PhdExceptionMapperExtension::nativeProxiesAreSupported()) {
-            self::assertInstanceOf(MainExceptionMapper::class, $exceptionMapper);
+            self::assertInstanceOf(ExceptionToMatchListMapper::class, $exceptionMapper);
         } else {
-            self::assertNotInstanceOf(MainExceptionMapper::class, $exceptionMapper);
+            self::assertNotInstanceOf(ExceptionToMatchListMapper::class, $exceptionMapper);
             self::assertInstanceOf(LazyObjectInterface::class, $exceptionMapper);
-            self::assertInstanceOf(MainExceptionMapper::class, $exceptionMapper->initializeLazyObject());
+            self::assertInstanceOf(ExceptionToMatchListMapper::class, $exceptionMapper->initializeLazyObject());
         }
     }
 

@@ -381,14 +381,14 @@ Standard validation robs some of your actual business code.
 This same logic you would've normally implemented in a service:
 
 ```php
-$product = $productRepository->find($itemDto->productId) ?? throw new ProductNotFoundException($itemDto->productId);
+$product = $productRepository->find($itemDto->productId) ?? throw new NotFoundProductException($itemDto->productId);
 
 if (!$product->isActive()) {
-    throw new ProductInactiveException($product);
+    throw new InactiveProductException($product);
 }
 
 if (!$product->hasEnoughStock($itemDto->quantity)) {
-    throw new ProductStockInsufficientException($product);
+    throw new OutOfStockProductException($product);
 }
 ```
 
@@ -404,16 +404,16 @@ fields. \
 +   #[Try_]
     class OrderItemDto
     {
-+       #[Catch_(ProductNotFoundException::class, match: exception_value)]
-+       #[Catch_(ProductInactiveException::class, match: exception_value)]
++       #[Catch_(NotFoundProductException::class, match: exception_value)]
++       #[Catch_(InactiveProductException::class, match: exception_value)]
         public string $productId;
 @@
-+       #[Catch_(ProductStockInsufficientException::class, if: [self::class, 'isExceptionRelatedToThisDto'])]
++       #[Catch_(OutOfStockProductException::class, if: [self::class, 'catchStockException'])]
         public int $quantity;
 @@
-+       public function isExceptionRelatedToThisDto(ProductStockInsufficientException $exception): bool
++       public function catchStockException(OutOfStockProductException $exception): bool
 +       {
-+           return $exception->product->id === $this->productId; 
++           return $exception->productId === $this->productId; 
 +       }
     }
 ```

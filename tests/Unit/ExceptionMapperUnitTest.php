@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionMapper\Tests\Unit;
 use ArrayObject;
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Main\Tests\Stub\ObjectPropertyMatchedException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation\Tests\Stub\ObjectPropertyMatchedException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
@@ -28,7 +28,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Try_
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_
  * @covers \PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension
- * @covers \PhPhD\ExceptionMapper\Port\MainExceptionMapper
+ * @covers \PhPhD\ExceptionMapper\Port\ExceptionToMatchListMapper
  * @covers \PhPhD\ExceptionMapper\Port\Symfony\Validator\ExceptionToViolationListMapper
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\ObjectExceptionMappingNode
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Iterable\ItemOfIterableExceptionMappingNode

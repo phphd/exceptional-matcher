@@ -21,7 +21,7 @@ use Throwable;
  *
  * @implements ExceptionMatchFormatter<TException,TResult>
  */
-final class QualifiedExceptionMatchFormatter implements ExceptionMatchFormatter
+final class ExceptionMatchQualifiedFormatter implements ExceptionMatchFormatter
 {
     /**
      * @api

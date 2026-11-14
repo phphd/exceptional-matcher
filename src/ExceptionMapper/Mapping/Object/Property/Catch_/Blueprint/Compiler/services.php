@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler;
 
 use PhPhD\ExceptionMapper\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsClassLoader;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Blueprint\MatchConditionCompiler;
@@ -21,7 +22,7 @@ return static function (ContainerConfigurator $configurator): void {
 
     $services
         ->set(
-            ExceptionMappingCompiler::class.'<'.ReflectionAttribute::class.','.CatchExceptionMappingBlueprint::class.'>',
+            ExceptionMappingCompiler::class.'<'.ReflectionAttribute::class.'<'.Catch_::class.'>,'.CatchExceptionMappingBlueprint::class.'>',
             CatchExceptionMappingCompiler::class,
         )
         ->arg('$matchConditionCompiler', service(MatchConditionCompiler::class.'<'.Throwable::class.'>'))

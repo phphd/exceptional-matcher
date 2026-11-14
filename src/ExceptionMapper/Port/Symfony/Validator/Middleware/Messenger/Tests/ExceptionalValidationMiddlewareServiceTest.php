@@ -24,7 +24,7 @@ final class ExceptionalValidationMiddlewareServiceTest extends BundleTestCase
         self::assertInstanceOf(ExceptionalValidationMiddleware::class, $middleware);
     }
 
-    /** @return list<CompilerPassInterface> */
+    /** @return array<int,CompilerPassInterface> */
     protected static function compilerPasses(): array
     {
         return [new PublicServiceCompilerPass('phd_exceptional_validation')];

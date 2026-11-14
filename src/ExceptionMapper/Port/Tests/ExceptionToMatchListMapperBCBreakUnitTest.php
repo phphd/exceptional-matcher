@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Port;
+namespace PhPhD\ExceptionMapper\Port\Tests;
 
 use LogicException;
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Definition;
  *
  * @internal
  */
-final class MainExceptionMapperBCBreakUnitTest extends TestCase
+final class ExceptionToMatchListMapperBCBreakUnitTest extends TestCase
 {
     private ContainerBuilder $container;
 

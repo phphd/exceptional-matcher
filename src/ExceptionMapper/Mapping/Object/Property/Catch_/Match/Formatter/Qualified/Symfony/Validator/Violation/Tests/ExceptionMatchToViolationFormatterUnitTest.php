@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Main\Tests;
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation\Tests;
 
 use LogicException;
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Main\Tests\Stub\MessageContainingException;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Main\Tests\Stub\ObjectPropertyMatchedException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation\Tests\Stub\MessageContainingException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation\Tests\Stub\ObjectPropertyMatchedException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\CompositeException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\CompositeExceptionUnwrapper;
@@ -21,7 +21,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Main\MainExceptionViolationFormatter
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation\ExceptionMatchToViolationFormatter
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Translator\SymfonyTranslator
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\CatchExceptionMappingNode
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\PropertyExceptionMappingNode
@@ -29,7 +29,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * @internal
  */
-final class MainExceptionViolationFormatterUnitTest extends TestCase
+final class ExceptionMatchToViolationFormatterUnitTest extends TestCase
 {
     /** @var ExceptionMapper<ConstraintViolationListInterface> */
     private ExceptionMapper $mapper;

@@ -16,7 +16,7 @@ use Throwable;
  *
  * @implements ExceptionMapper<ExceptionMatchList>
  */
-final class MainExceptionMapper implements ExceptionMapper
+final class ExceptionToMatchListMapper implements ExceptionMapper
 {
     /** @api */
     public function __construct(

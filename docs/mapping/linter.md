@@ -2,7 +2,7 @@
 
 Mapping Linter checks exception mappings for every statically detectable problem.
 
-For example, look at a class that has broken mappings:
+For example, look at a class with the incorrect mappings:
 ```php
 #[Try_]
 class DivideByZeroCommand
