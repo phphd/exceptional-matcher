@@ -8,6 +8,7 @@ use Closure;
 use PhPhD\ExceptionMapper\Mapping\Blueprint\Compiler\ExceptionMappingCompiler;
 use PhPhD\ExceptionMapper\Mapping\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
 use ReflectionAttribute;
 use ReflectionProperty;
@@ -27,7 +28,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
             ExceptionMappingCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingBlueprint::class.'>',
             PropertyExceptionMappingCompiler::class,
         )->args([
-            service(ExceptionMappingCompiler::class.'<'.ReflectionAttribute::class.','.CatchExceptionMappingBlueprint::class.'>'),
+            service(ExceptionMappingCompiler::class.'<'.ReflectionAttribute::class.'<'.Catch_::class.'>,'.CatchExceptionMappingBlueprint::class.'>'),
             // #[Autowire(lazy: ObjectExceptionMappingBlueprintRegistry::class)]
             service(PropertyExceptionMappingCompiler::class.'::$printRegistry'),
         ])
